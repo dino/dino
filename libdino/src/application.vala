@@ -55,6 +55,7 @@ public interface Application : GLib.Application {
         EntityInfo.start(stream_interactor, db);
         MessageCorrection.start(stream_interactor, db);
         FileTransferStorage.start(stream_interactor, db);
+        Reactions.start(stream_interactor, db);
 
         create_actions();
 

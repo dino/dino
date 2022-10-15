@@ -75,6 +75,7 @@ SOURCES
 
     "src/module/xep/0047_in_band_bytestreams.vala"
     "src/module/xep/0049_private_xml_storage.vala"
+    "src/module/xep/0059_result_set_management.vala"
     "src/module/xep/0054_vcard/module.vala"
     "src/module/xep/0060_pubsub.vala"
     "src/module/xep/0065_socks5_bytestreams.vala"
@@ -126,9 +127,11 @@ SOURCES
     "src/module/xep/0261_jingle_in_band_bytestreams.vala"
     "src/module/xep/0272_muji.vala"
     "src/module/xep/0280_message_carbons.vala"
+    "src/module/xep/0297_stanza_forwarding.vala"
     "src/module/xep/0298_coin.vala"
     "src/module/xep/0308_last_message_correction.vala"
     "src/module/xep/0313_message_archive_management.vala"
+    "src/module/xep/0313_2_message_archive_management.vala"
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0334_message_processing_hints.vala"
     "src/module/xep/0353_jingle_message_initiation.vala"
@@ -138,6 +141,8 @@ SOURCES
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/0410_muc_self_ping.vala"
+    "src/module/xep/0421_occupant_ids.vala"
+    "src/module/xep/0444_reactions.vala"
     "src/module/xep/pixbuf_storage.vala"
 
     "src/util.vala"

@@ -188,7 +188,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null) return false;
+            if (Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null) return false;
 
             ChatInteraction outer = stream_interactor.get_module(ChatInteraction.IDENTITY);
             outer.send_delivery_receipt(message, stanza, conversation);

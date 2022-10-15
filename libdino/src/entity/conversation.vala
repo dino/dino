@@ -22,6 +22,7 @@ public class Conversation : Object {
     public Jid counterpart { get; private set; }
     public string? nickname { get; set; }
     public bool active { get; set; default = false; }
+    public DateTime active_last_changed { get; private set; }
     private DateTime? _last_active;
     public DateTime? last_active {
         get { return _last_active; }
@@ -63,6 +64,7 @@ public class Conversation : Object {
         if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
         nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
+        active_last_changed = new DateTime.from_unix_utc(row[db.conversation.active_last_changed]);
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
         encryption = (Encryption) row[db.conversation.encryption];
@@ -78,12 +80,15 @@ public class Conversation : Object {
 
     public void persist(Database db) {
         this.db = db;
+        this.active_last_changed = new DateTime.now_utc();
+
         var insert = db.conversation.insert()
                 .value(db.conversation.account_id, account.id)
                 .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.type_, type_)
                 .value(db.conversation.encryption, encryption)
                 .value(db.conversation.active, active)
+                .value(db.conversation.active_last_changed, (long) active_last_changed.to_unix())
                 .value(db.conversation.notification, notify_setting)
                 .value(db.conversation.send_typing, send_typing)
                 .value(db.conversation.send_marker, send_marker);
@@ -176,7 +181,9 @@ public class Conversation : Object {
             case "nickname":
                 update.set(db.conversation.resource, nickname); break;
             case "active":
-                update.set(db.conversation.active, active); break;
+                update.set(db.conversation.active, active);
+                update.set(db.conversation.active_last_changed, (long) new DateTime.now_utc().to_unix());
+                break;
             case "last-active":
                 if (last_active != null) {
                     update.set(db.conversation.last_active, (long) last_active.to_unix());

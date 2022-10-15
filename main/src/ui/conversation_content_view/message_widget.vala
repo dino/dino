@@ -22,6 +22,7 @@ public class MessageMetaItem : ContentMetaItem {
 
     MessageItemEditMode? edit_mode = null;
     ChatTextViewController? controller = null;
+    private bool supports_reaction = false;
     AdditionalInfo additional_info = AdditionalInfo.NONE;
 
     ulong realize_id = -1;
@@ -34,6 +35,8 @@ public class MessageMetaItem : ContentMetaItem {
         base(content_item);
         message_item = content_item as MessageItem;
         this.stream_interactor = stream_interactor;
+
+        init.begin();
 
         label.activate_link.connect(on_label_activate_link);
 
@@ -66,6 +69,10 @@ public class MessageMetaItem : ContentMetaItem {
         }
 
         update_label();
+    }
+
+    private async void init() {
+        supports_reaction = yield stream_interactor.get_module(Reactions.IDENTITY).conversation_supports_reactions(message_item.conversation);
     }
 
     private string generate_markup_text(ContentItem item) {
@@ -187,17 +194,30 @@ public class MessageMetaItem : ContentMetaItem {
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) {
-        if (content_item as FileItem != null) return null;
+        if (content_item as FileItem != null || this.in_edit_mode) return null;
+        if (in_edit_mode) return null;
 
-        bool allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
-        if (allowed && !in_edit_mode) {
+
+        bool correction_allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
+        if (correction_allowed) {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
             action1.icon_name = "document-edit-symbolic";
             action1.callback = (button, content_meta_item_activated, widget) => {
                 this.in_edit_mode = true;
             };
             actions.add(action1);
+        }
+
+        if (supports_reaction) {
+            Plugins.MessageAction action2 = new Plugins.MessageAction();
+            action2.icon_name = "dino-emoticon-add-symbolic";
+            EmojiChooser chooser = new EmojiChooser();
+            chooser.emoji_picked.connect((emoji) => {
+                stream_interactor.get_module(Reactions.IDENTITY).add_reaction(message_item.conversation, message_item, emoji);
+            });
+            action2.popover = chooser;
+            actions.add(action2);
         }
         return actions;
     }

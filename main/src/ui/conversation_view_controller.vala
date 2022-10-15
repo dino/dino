@@ -82,7 +82,7 @@ public class ConversationViewController : Object {
             }
         });
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-            if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
+            if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
                 update_conversation_display_name();
             }
         });
@@ -154,20 +154,20 @@ public class ConversationViewController : Object {
         conversation_topic = null;
     }
 
-    private void update_file_upload_status() {
-        stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.begin(conversation, (_, res) => {
-            bool upload_available = stream_interactor.get_module(FileManager.IDENTITY).is_upload_available.end(res);
-            chat_input_controller.set_file_upload_active(upload_available);
-            if (conversation.account.bare_jid.to_string().has_prefix("f")) {
-                if (drop_event_controller.widget == null) {
-                    view.add_controller(drop_event_controller);
-                }
-            } else {
-                if (drop_event_controller.widget != null) {
-                    view.remove_controller(drop_event_controller);
-                }
+    private async void update_file_upload_status() {
+        if (conversation == null) return;
+
+        bool upload_available = yield stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
+        chat_input_controller.set_file_upload_active(upload_available);
+        if (upload_available && overlay_dialog == null) {
+            if (drop_event_controller.widget == null) {
+                view.add_controller(drop_event_controller);
             }
-        });
+        } else {
+            if (drop_event_controller.widget != null) {
+                view.remove_controller(drop_event_controller);
+            }
+        }
     }
 
     private void update_conversation_display_name() {

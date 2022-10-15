@@ -36,6 +36,9 @@
                                                                 <property name="margin-end">10</property>
                                                                 <property name="halign">end</property>
                                                                 <property name="valign">start</property>
+                                                                <style>
+                                                                    <class name="linked"/>
+                                                                </style>
                                                                 <child>
                                                                     <object class="GtkButton" id="button1">
                                                                         <property name="visible">0</property>

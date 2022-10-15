@@ -1,6 +1,6 @@
 namespace Xmpp.Xep.DelayedDelivery {
 
-private const string NS_URI = "urn:xmpp:delay";
+public const string NS_URI = "urn:xmpp:delay";
 
 public static DateTime? get_time_for_node(StanzaNode node) {
     string? time = node.get_attribute("stamp");

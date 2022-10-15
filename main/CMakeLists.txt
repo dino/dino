@@ -14,7 +14,12 @@ find_packages(MAIN_PACKAGES REQUIRED
 )
 
 set(RESOURCE_LIST
+    dino-conversation-list-placeholder-arrow.svg
+
     icons/scalable/actions/dino-account-plus-symbolic.svg
+    icons/scalable/actions/dino-emoticon-add-symbolic.svg
+    icons/scalable/actions/dino-emoticon-symbolic.svg
+    icons/scalable/actions/dino-qr-code-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino.svg
     icons/scalable/apps/im.dino.Dino-symbolic.svg
@@ -27,8 +32,6 @@ set(RESOURCE_LIST
     icons/scalable/devices/dino-phone-ring-symbolic.svg
     icons/scalable/devices/dino-phone-symbolic.svg
 
-    icons/scalable/emotes/dino-emoticon-symbolic.svg
-
     icons/scalable/mimetypes/dino-file-document-symbolic.svg
     icons/scalable/mimetypes/dino-file-download-symbolic.svg
     icons/scalable/mimetypes/dino-file-image-symbolic.svg
@@ -40,6 +43,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-double-tick-symbolic.svg
     icons/scalable/status/dino-microphone-off-symbolic.svg
     icons/scalable/status/dino-microphone-symbolic.svg
+    icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
     icons/scalable/status/dino-status-away.svg
     icons/scalable/status/dino-status-chat.svg
@@ -48,10 +52,6 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
-
-    icons/scalable/ui/dino-conversation-list-placeholder-arrow.svg
-    icons/scalable/ui/dino-qr-code-symbolic.svg
-    icons/scalable/ui/dino-party-popper-symbolic.svg
 
     add_conversation/add_contact_dialog.ui
     add_conversation/add_groupchat_dialog.ui
@@ -157,6 +157,7 @@ SOURCES
     src/ui/conversation_content_view/file_image_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
+    src/ui/conversation_content_view/reactions_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
 
     src/ui/chat_input/chat_input_controller.vala

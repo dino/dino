@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 22;
+    private const int VERSION = 23;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -119,6 +119,20 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class OccupantIdTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<string> last_nick = new Column.Text("last_nick");
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> occupant_id = new Column.Text("occupant_id");
+
+        internal OccupantIdTable(Database db) {
+            base(db, "occupant_id");
+            init({id, account_id, last_nick, jid_id, occupant_id});
+            unique({account_id, jid_id, occupant_id}, "REPLACE");
+        }
+    }
+
     public class UndecryptedTable : Table {
         public Column<int> message_id = new Column.Integer("message_id");
         public Column<int> type_ = new Column.Integer("type");
@@ -193,6 +207,7 @@ public class Database : Qlite.Database {
         public Column<int> jid_id = new Column.Integer("jid_id") { not_null = true };
         public Column<string> resource = new Column.Text("resource") { min_version=1 };
         public Column<bool> active = new Column.BoolInt("active");
+        public Column<long> active_last_changed = new Column.Integer("active_last_changed") { not_null=true, default="0", min_version=23 };
         public Column<long> last_active = new Column.Long("last_active");
         public Column<int> type_ = new Column.Integer("type");
         public Column<int> encryption = new Column.Integer("encryption");
@@ -204,7 +219,7 @@ public class Database : Qlite.Database {
 
         internal ConversationTable(Database db) {
             base(db, "conversation");
-            init({id, account_id, jid_id, resource, active, last_active, type_, encryption, read_up_to, read_up_to_item, notification, send_typing, send_marker});
+            init({id, account_id, jid_id, resource, active, active_last_changed, last_active, type_, encryption, read_up_to, read_up_to_item, notification, send_typing, send_marker});
         }
     }
 
@@ -263,15 +278,33 @@ public class Database : Qlite.Database {
     public class MamCatchupTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
-        public Column<bool> from_end = new Column.BoolInt("from_end");
-        public Column<string> from_id = new Column.Text("from_id");
+        public Column<string> server_jid = new Column.Text("server_jid") { not_null = true };
+        public Column<string> from_id = new Column.Text("from_id") { not_null = true };
         public Column<long> from_time = new Column.Long("from_time") { not_null = true };
-        public Column<string> to_id = new Column.Text("to_id");
+        public Column<bool> from_end = new Column.BoolInt("from_end") { not_null = true };
+        public Column<string> to_id = new Column.Text("to_id") { not_null = true };
         public Column<long> to_time = new Column.Long("to_time") { not_null = true };
 
         internal MamCatchupTable(Database db) {
             base(db, "mam_catchup");
-            init({id, account_id, from_end, from_id, from_time, to_id, to_time});
+            init({id, account_id, server_jid, from_end, from_id, from_time, to_id, to_time});
+        }
+    }
+
+    public class ReactionTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<int> occupant_id = new Column.Integer("occupant_id");
+        public Column<int> content_item_id = new Column.Integer("content_item_id") { not_null = true };
+        public Column<long> time = new Column.Long("time") { not_null = true };
+        public Column<int> jid_id = new Column.Integer("jid_id");
+        public Column<string> emojis = new Column.Text("emojis");
+
+        internal ReactionTable(Database db) {
+            base(db, "reaction");
+            init({id, account_id, occupant_id, content_item_id, time, jid_id, emojis});
+            unique({account_id, content_item_id, jid_id}, "REPLACE");
+            unique({account_id, content_item_id, occupant_id}, "REPLACE");
         }
     }
 
@@ -306,6 +339,7 @@ public class Database : Qlite.Database {
     public MessageTable message { get; private set; }
     public MessageCorrectionTable message_correction { get; private set; }
     public RealJidTable real_jid { get; private set; }
+    public OccupantIdTable occupantid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
@@ -315,6 +349,7 @@ public class Database : Qlite.Database {
     public EntityFeatureTable entity_feature { get; private set; }
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
+    public ReactionTable reaction { get; private set; }
     public SettingsTable settings { get; private set; }
     public ConversationSettingsTable conversation_settings { get; private set; }
 
@@ -330,6 +365,7 @@ public class Database : Qlite.Database {
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
         message_correction = new MessageCorrectionTable(this);
+        occupantid = new OccupantIdTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
         call = new CallTable(this);
@@ -340,9 +376,10 @@ public class Database : Qlite.Database {
         entity_feature = new EntityFeatureTable(this);
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
+        reaction = new ReactionTable(this);
         settings = new SettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_correction, real_jid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_correction, real_jid, occupantid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -473,6 +510,25 @@ public class Database : Qlite.Database {
 //                            SELECT id, account_id, our_resource, direction, time, local_time, end_time, encryption, state
 //                            FROM call2");
 //                exec("DROP TABLE call2");
+        }
+        if (oldVersion < 23) {
+            try {
+                exec("ALTER TABLE mam_catchup RENAME TO mam_catchup2");
+                mam_catchup.create_table_at_version(VERSION);
+                exec("""INSERT INTO mam_catchup (id, account_id, server_jid, from_id, from_time, from_end, to_id, to_time)
+                                SELECT mam_catchup2.id, account_id, bare_jid, ifnull(from_id, ""), from_time, ifnull(from_end, 0), ifnull(to_id, ""), to_time
+                                FROM mam_catchup2 JOIN account ON mam_catchup2.account_id=account.id""");
+                exec("DROP TABLE mam_catchup2");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 23 (mam_catchup): %s", e.message);
+            }
+
+            try {
+                long active_last_updated = (long) new DateTime.now_utc().to_unix();
+                exec(@"UPDATE conversation SET active_last_changed=$active_last_updated WHERE active_last_changed=0");
+            } catch (Error e) {
+                error("Failed to upgrade to database version 23 (conversation): %s", e.message);
+            }
         }
     }
 

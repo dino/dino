@@ -1,5 +1,3 @@
-using Gdk;
-
 [CCode (cheader_filename = "qrencode.h")]
 namespace Qrencode {
 
@@ -36,13 +34,14 @@ namespace Qrencode {
         [CCode (cname = "QRcode_encodeString")]
         public QRcode (string str, int version = 0, ECLevel level = ECLevel.L, EncodeMode hint = EncodeMode.EIGHT_BIT, bool casesensitive = true);
 
-        public Pixbuf to_pixbuf(int module_size) {
+        public Gdk.Paintable to_paintable(int module_size) {
             GLib.assert(module_size > 0);
             var dst_width = width*module_size;
             var dst_data  = new uint8[dst_width*dst_width*3];
             expand_and_upsample(data,width,width, dst_data,dst_width,dst_width);
-            return new Pixbuf.from_data(dst_data,
-                Colorspace.RGB, false, 8, dst_width, dst_width, dst_width*3);
+            return new Gdk.MemoryTexture(dst_width, dst_width, Gdk.MemoryFormat.R8G8B8,
+                    new GLib.Bytes.take((owned) dst_data), dst_width*3);
+
         }
 
         /**  Does 2D nearest-neighbor upsampling of an array of single-byte

@@ -17,6 +17,7 @@
         </child>
         <child>
             <object class="GtkGrid">
+                <property name="valign">center</property>
                 <property name="orientation">vertical</property>
                 <child>
                     <object class="GtkLabel" id="name_label">

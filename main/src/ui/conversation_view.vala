@@ -55,12 +55,6 @@ public class ConversationView : Widget {
         }
     }
 
-    public override void dispose() {
-        // To prevent a warning when closing Dino
-        // "Can't set a target list on a widget until you've called gtk_drag_dest_set() to make the widget into a drag destination"
-//        Gtk.drag_dest_unset(this);
-    }
-
     private void on_upper_notify() {
         print("on_upper_notify\n");
         if (at_current_content) {
