@@ -364,7 +364,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         ReactionsTime reactions_time = null;
         if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
             reactions_time = get_muc_user_reactions(account, content_item_id, occupant_id, real_jid);
-        } else if (stanza.type_ == MessageStanza.TYPE_CHAT) {
+        } else {
             reactions_time = get_chat_user_reactions(account, content_item_id, from_jid);
         }
 
@@ -374,10 +374,10 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
 
         // Save reactions
-        if (stanza.type_ == MessageStanza.TYPE_CHAT) {
-            save_chat_reactions(account, from_jid, content_item_id, reaction_time_long, reactions);
-        } else if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
+        if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
             save_muc_reactions(account, content_item_id, from_jid, occupant_id, real_jid, reaction_time_long, reactions);
+        } else {
+            save_chat_reactions(account, from_jid, content_item_id, reaction_time_long, reactions);
         }
 
         // Notify about reaction changes
