@@ -221,7 +221,8 @@ namespace GnuTLS {
     public enum PKAlgorithm {
         UNKNOWN,
         RSA,
-        DSA;
+        DSA,
+        ECDSA;
     }
 
     [CCode (cname = "gnutls_digest_algorithm_t", cprefix = "GNUTLS_DIG_", has_type_id = false)]
