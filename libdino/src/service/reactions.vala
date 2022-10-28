@@ -393,6 +393,8 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT &&
                 signal_jid.equals(stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(from_jid, account))) {
             signal_jid = account.bare_jid;
+        } else if (stanza.type_ == MessageStanza.TYPE_CHAT) {
+            signal_jid = signal_jid.bare_jid;
         }
 
         foreach (string current_reaction in current_reactions) {
