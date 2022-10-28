@@ -76,7 +76,7 @@ public class Handler {
         int err = 0;
 
         X509.PrivateKey private_key = X509.PrivateKey.create();
-        err = private_key.generate(PKAlgorithm.RSA, 2048);
+        err = private_key.generate(PKAlgorithm.ECDSA, 256);
         throw_if_error(err);
 
         var start_time = new DateTime.now_local().add_days(1);
