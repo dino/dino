@@ -101,7 +101,7 @@ public class FileProvider : Dino.FileProvider, Object {
         head_message.request_headers.append("Accept-Encoding", "identity");
 
         try {
-#if SOUP_3
+#if SOUP_3_0
             yield session.send_async(head_message, GLib.Priority.LOW, null);
 #else
             yield session.send_async(head_message, null);
@@ -136,7 +136,7 @@ public class FileProvider : Dino.FileProvider, Object {
         var get_message = new Soup.Message("GET", http_receive_data.url);
 
         try {
-#if SOUP_3
+#if SOUP_3_0
             InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
 #else
             InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);

@@ -1,11 +1,4 @@
-set(HTTP_FILES_DEFINITIONS)
-if(USE_SOUP3)
-   set(Soup Soup3)
-   set(HTTP_FILES_DEFINITIONS ${HTTP_FILES_DEFINITIONS} SOUP_3)
-else()
-   set(Soup Soup2)
-endif()
-
+include(SoupVersion)
 find_packages(HTTP_FILES_PACKAGES REQUIRED
     Gee
     GLib
@@ -14,6 +7,12 @@ find_packages(HTTP_FILES_PACKAGES REQUIRED
     GTK3
     ${Soup}
 )
+
+set(HTTP_FILES_DEFINITIONS)
+
+if(${Soup}_VERSION VERSION_GREATER_EQUAL "3.0")
+   set(HTTP_FILES_DEFINITIONS ${HTTP_FILES_DEFINITIONS} SOUP_3_0)
+endif()
 
 vala_precompile(HTTP_FILES_VALA_C
 SOURCES
