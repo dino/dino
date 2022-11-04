@@ -79,21 +79,18 @@ public class Module : XmppStreamModule {
         // Build and send query
         Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=mam_server };
 
-        print(@"OUT:\n$(iq.stanza.to_string())\n");
         Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
-
-        print(result_iq.stanza.to_string() + "\n");
 
         // Parse the response IQ into a QueryResult.
         StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", ns);
-        if (fin_node == null) { print(@"$ns a1\n"); res.malformed = true; return res; }
+        if (fin_node == null) { res.malformed = true; return res; }
 
         StanzaNode? rsm_node = fin_node.get_subnode("set", Xmpp.ResultSetManagement.NS_URI);
-        if (rsm_node == null) { print("a2\n"); res.malformed = true; return res; }
+        if (rsm_node == null) { res.malformed = true; return res; }
 
         res.first = rsm_node.get_deep_string_content("first");
         res.last = rsm_node.get_deep_string_content("last");
-        if ((res.first == null) != (res.last == null)) { print("a3\n"); res.malformed = true; }
+        if ((res.first == null) != (res.last == null)) { res.malformed = true; return res; }
         res.complete = fin_node.get_attribute_bool("complete", false, ns);
 
         return res;

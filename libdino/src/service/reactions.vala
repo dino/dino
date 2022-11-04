@@ -261,7 +261,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
 
         // Store reaction infos for later processing after we got the message
-        print(@"Got reaction for $message_id but dont have message yet $(db.get_jid_id(stanza.from.bare_jid))\n");
+        debug("Got reaction for %s but dont have message yet %s", message_id, db.get_jid_id(stanza.from.bare_jid).to_string());
         if (!reaction_infos.has_key(message_id)) {
             reaction_infos[message_id] = new ArrayList<ReactionInfo>();
         }
@@ -297,9 +297,15 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
         if (reaction_info == null) return;
         reaction_info_list.remove(reaction_info);
-        if (reaction_info_list.is_empty) reaction_infos.unset(message.stanza_id);
+        if (reaction_info_list.is_empty) {
+            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                reaction_infos.unset(message.server_id);
+            } else {
+                reaction_infos.unset(message.stanza_id);
+            }
+        }
 
-        print(@"Got message for reaction\n");
+        debug("Got message for reaction %s", message.stanza_id);
         process_reaction_for_message(message.id, reaction_info);
     }
 
@@ -400,16 +406,14 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             }
         }
 
-        print("reactions were: ");
+        debug("reactions were: ");
         foreach (string reac in current_reactions) {
-            print(reac + " ");
+            debug(reac);
         }
-        print("\n");
-        print("reactions new : ");
+        debug("reactions new : ");
         foreach (string reac in reactions) {
-            print(reac + " ");
+            debug(reac);
         }
-        print("\n");
     }
 
     private void save_chat_reactions(Account account, Jid jid, int content_item_id, long reaction_time, Gee.List<string> reactions) {

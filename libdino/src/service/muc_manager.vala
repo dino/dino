@@ -72,7 +72,6 @@ public class MucManager : StreamInteractionModule, Object {
         bool receive_history = true;
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         bool can_do_mam = yield entity_info.has_feature(account, jid, Xmpp.MessageArchiveManagement.NS_URI_2);
-        print(@"$(jid) $can_do_mam\n");
         if (can_do_mam) {
             receive_history = false;
             history_since = null;
