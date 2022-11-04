@@ -7,15 +7,6 @@ find_packages(ENGINE_PACKAGES REQUIRED
     ICU
 )
 
-set(ENGINE_DEFINITIONS "")
-
-find_package(GIO)
-if(GIO_VERSION VERSION_GREATER "2.60")
-    message(STATUS "ALPN support enabled")
-    set(ENGINE_DEFINITIONS ALPN_SUPPORT)
-else()
-    message(STATUS "No ALPN support, needs GIO >= 2.60")
-endif()
 set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 
 vala_precompile(ENGINE_VALA_C
@@ -154,8 +145,6 @@ GENERATE_HEADER
     xmpp-vala
 CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/glib_fixes.vapi"
-DEFINITIONS
-    ${ENGINE_DEFINITIONS}
 OPTIONS
     ${ENGINE_EXTRA_OPTIONS}
 )
