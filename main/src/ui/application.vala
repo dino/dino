@@ -76,6 +76,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                     }
                 }
             });
+
         });
 
         activate.connect(() => {
@@ -90,15 +91,14 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
 
                 if (start_minimized_arg || settings.start_minimized) {
                     if (!settings.systray) {
-                        /* becomes window.minimize() in gtk4 */
-                        window.iconify();
+                        window.minimize();
                         window.present();
                     }
-                } else {
-                    window.present();
+                    return;
                 }
-
             }
+
+            window.present();
         });
     }
 
@@ -156,7 +156,7 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             }
         });
 
-        window.delete_event.connect(() => {
+        window.close_request.connect(() => {
             if (settings.systray) {
                 window.hide();
             } else {
