@@ -324,5 +324,8 @@ namespace Dino.Plugins.WindowsNotification {
         private void run_on_ui(owned DelegateToUi func) {
             Idle.add(() => { func(); return false; }, GLib.Priority.HIGH);
         }
+
+        public async void notify_dialing(){}
+        public async void retract_dialing(){}
     }
 }

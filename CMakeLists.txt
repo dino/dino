@@ -13,8 +13,11 @@ endif ()
 # Prepare Plugins
 set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
 if (WIN32)
-    set(DEFAULT_PLUGINS ${DEFAULT_PLUGINS};win32-fonts;windows-notification)
-endif (WIN32)
+    list(APPEND DEFAULT_PLUGINS win32-fonts windows-notification)
+else()
+    list(APPEND DEFAULT_PLUGINS phone-ringer)
+endif()
+
 foreach (plugin ${DEFAULT_PLUGINS})
     if ("$CACHE{DINO_PLUGIN_ENABLED_${plugin}}" STREQUAL "")
         if (NOT DEFINED DINO_PLUGIN_ENABLED_${plugin}})
