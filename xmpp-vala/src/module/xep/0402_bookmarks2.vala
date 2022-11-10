@@ -105,6 +105,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         conference.name = conference_node.get_attribute("name", NS_URI);
         conference.autojoin = conference_node.get_attribute_bool("autojoin", false, NS_URI);
         conference.nick = conference_node.get_deep_string_content("nick");
+        conference.password = conference_node.get_deep_string_content("password");
         return conference;
     }
 
