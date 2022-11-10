@@ -78,7 +78,7 @@ public class StreamModule : XmppStreamModule {
             if (!am_on_devicelist) {
                 debug("Not on device list, adding id");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
-                stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, jid, NODE_DEVICELIST, id, node);
+                stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, jid, NODE_DEVICELIST, id, node, new Pubsub.PublishOptions().set_access_model("open"));
             }
             publish_bundles_if_needed(stream, jid);
         }
