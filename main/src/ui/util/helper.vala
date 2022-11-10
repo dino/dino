@@ -453,7 +453,7 @@ public bool use_tooltips() {
 }
 
 public static void menu_button_set_icon_with_size(MenuButton menu_button, string icon_name, int pixel_size) {
-#if GTK_4_6
+#if GTK_4_6 && VALA_0_52
     menu_button.set_child(new Image.from_icon_name(icon_name) { pixel_size=pixel_size });
 #else
     menu_button.set_icon_name(icon_name);
