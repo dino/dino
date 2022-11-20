@@ -46,7 +46,7 @@ public class Dino.HistorySync {
     }
 
     public void update_latest_db_range(Account account, Xmpp.MessageStanza message_stanza) {
-        Jid mam_server = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(message_stanza.from, account) ? message_stanza.from.bare_jid : account.bare_jid;
+        Jid mam_server = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(message_stanza.from.bare_jid, account) ? message_stanza.from.bare_jid : account.bare_jid;
 
         if (!current_catchup_id.has_key(account) || !current_catchup_id[account].has_key(mam_server)) return;
 
@@ -205,7 +205,12 @@ public class Dino.HistorySync {
 
         PageRequestResult page_result = yield get_mam_page(account, query_params, null);
 
-        if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Duplicate) {
+        if (page_result.page_result == PageResult.Duplicate) {
+            // No new messages
+            return null;
+        }
+
+        if (page_result.page_result == PageResult.Error) {
             debug("[%s | %s] Failed fetching latest page %s", mam_server.to_string(), mam_server.to_string(), page_result.page_result.to_string());
             return null;
         }
@@ -214,13 +219,13 @@ public class Dino.HistorySync {
         if (page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages } && latest_row_id != -1) {
             if (page_result.stanzas == null || page_result.stanzas.is_empty) return null;
 
-            string first_mam_id = page_result.query_result.first;
-            long first_mam_time = (long) mam_times[account][first_mam_id].to_unix();
+            string latest_mam_id = page_result.query_result.last;
+            long latest_mam_time = (long) mam_times[account][latest_mam_id].to_unix();
 
             var query = db.mam_catchup.update()
                     .with(db.mam_catchup.id, "=", latest_row_id)
-                    .set(db.mam_catchup.to_time, first_mam_time)
-                    .set(db.mam_catchup.to_id, first_mam_id);
+                    .set(db.mam_catchup.to_time, latest_mam_time)
+                    .set(db.mam_catchup.to_id, latest_mam_id);
 
             if (page_result.page_result == PageResult.NoMoreMessages) {
                 // If the server doesn't have more messages, store that this range is at its end.
@@ -326,14 +331,14 @@ public class Dino.HistorySync {
 
             if (page_result.page_result == PageResult.Error || page_result.stanzas == null) return page_result;
 
-            string last_mam_id = page_result.query_result.last;
-            long last_mam_time = (long)mam_times[account][last_mam_id].to_unix();
+            string earliest_mam_id = page_result.query_result.first;
+            long earliest_mam_time = (long)mam_times[account][earliest_mam_id].to_unix();
 
-            debug("Updating %s to %s, %s", query_params.mam_server.to_string(), last_mam_time.to_string(), last_mam_id);
+            debug("Updating %s to %s, %s", query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
             var query = db.mam_catchup.update()
                     .with(db.mam_catchup.id, "=", db_id)
-                    .set(db.mam_catchup.from_time, last_mam_time)
-                    .set(db.mam_catchup.from_id, last_mam_id);
+                    .set(db.mam_catchup.from_time, earliest_mam_time)
+                    .set(db.mam_catchup.from_id, earliest_mam_id);
 
             if (page_result.page_result == PageResult.NoMoreMessages) {
                 // If the server doesn't have more messages, store that this range is at its end.
@@ -349,7 +354,7 @@ public class Dino.HistorySync {
         MorePagesAvailable,
         TargetReached,
         NoMoreMessages,
-        Duplicate, // TODO additional boolean
+        Duplicate,
         Error
     }
 
@@ -364,10 +369,10 @@ public class Dino.HistorySync {
         } else {
             query_result = yield Xmpp.MessageArchiveManagement.V2.page_through_results(stream, query_params, prev_page_result.query_result);
         }
-        return yield process_query_result(account, query_result, query_params.query_id, query_params.start_id);
+        return yield process_query_result(account, query_params, query_result);
     }
 
-    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.QueryResult query_result, string query_id, string? after_id) {
+    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result) {
         PageResult page_result = PageResult.MorePagesAvailable;
 
         if (query_result.malformed || query_result.error) {
@@ -387,6 +392,9 @@ public class Dino.HistorySync {
         string selection = null;
         string[] selection_args = {};
 
+        string query_id = query_params.query_id;
+        string? after_id = query_params.start_id;
+
         // Check the server id of all returned messages. Check if we've hit our target (from_id) or got a duplicate.
         if (stanzas.has_key(query_id) && !stanzas[query_id].is_empty) {
             foreach (Xmpp.MessageStanza message in stanzas[query_id]) {
@@ -397,8 +405,12 @@ public class Dino.HistorySync {
                         page_result = PageResult.TargetReached;
                     }
 
-                    if (selection != null) selection += " OR ";
-                    selection = @"$(db.message.server_id) = ?";
+                    if (selection == null) {
+                        selection = @"$(db.message.server_id) = ?";
+                    } else {
+                        selection += @" OR $(db.message.server_id) = ?";
+                    }
+                    selection_args += mam_message_flag.mam_id;
                 }
             }
 
@@ -407,8 +419,18 @@ public class Dino.HistorySync {
                 page_result = PageResult.TargetReached;
             }
 
-            int64 duplicates_found = db.message.select().where(selection, selection_args).count();
-            if (duplicates_found > 0) {
+            // Check for duplicates among the messages of the page.
+            var duplicates_qry = db.message.select()
+                    .with(db.message.account_id, "=", account.id)
+                    .where(selection, selection_args);
+            // We don't want messages from different MAM servers to interfere with each other.
+            if (!query_params.mam_server.equals_bare(account.bare_jid)) {
+                duplicates_qry.with(db.message.counterpart_id, "=", db.get_jid_id(query_params.mam_server));
+            } else {
+                duplicates_qry.with(db.message.type_, "=", Message.Type.CHAT);
+            }
+            var duplicates_count = duplicates_qry.count();
+            if (duplicates_count > 0) {
                 // We got a duplicate although we thought we have to catch up.
                 // There was a server bug where prosody would send all messages if it didn't know the after ID that was given
                 page_result = PageResult.Duplicate;
