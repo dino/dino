@@ -43,6 +43,9 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         this.item = item;
         this.content_meta_item = item as ContentMetaItem;
 
+        item.bind_property("in-edit-mode", this, "item-in-edit-mode");
+        this.notify["item-in-edit-mode"].connect(update_edit_mode);
+
         Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_item_widget.ui");
         main_grid = (Grid) builder.get_object("main_grid");
         main_grid.add_css_class("message-box");

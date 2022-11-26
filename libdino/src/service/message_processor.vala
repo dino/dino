@@ -128,7 +128,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         // If it's a message from MAM, it's going to be processed by HistorySync which calls run_pipeline_announce later.
         if (history_sync.process(account, message_stanza)) return;
 
-        run_pipeline_announce(account, message_stanza);
+        run_pipeline_announce.begin(account, message_stanza);
     }
 
     public async void run_pipeline_announce(Account account, Xmpp.MessageStanza message_stanza) {

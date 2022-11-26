@@ -35,7 +35,6 @@ public class FileImageWidget : Box {
             pixbuf = pixbuf.apply_embedded_orientation();
 
             image.load(pixbuf);
-            Picture picture = new Picture.for_pixbuf(pixbuf) { can_shrink=true, keep_aspect_ratio=true, halign=Align.START };
 
             Idle.add(load_from_file.callback);
             return image;

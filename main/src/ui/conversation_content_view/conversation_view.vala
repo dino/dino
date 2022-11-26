@@ -136,7 +136,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         // Get widget under pointer
         int h = 0;
         Widget? w = null;
-        Plugins.MetaConversationItem? meta_item = null;
         foreach (Plugins.MetaConversationItem item in meta_items) {
             Widget widget = widgets[item];
             h += widget.get_allocated_height() + widget.margin_top + widget.margin_bottom;
@@ -404,7 +403,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
         if (lower_item != null) {
             if (can_merge(item, lower_item)) {
-                ConversationItemSkeleton lower_skeleton = item_item_skeletons[lower_item];
                 item_skeleton.show_skeleton = false;
             } else {
                 item_skeleton.show_skeleton = true;

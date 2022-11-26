@@ -146,7 +146,7 @@ public class ConversationViewController : Object {
             view.conversation_frame.initialize_for_conversation(conversation);
         }
 
-        update_file_upload_status();
+        update_file_upload_status.begin();
     }
 
     public void unset_conversation() {
@@ -159,6 +159,7 @@ public class ConversationViewController : Object {
 
         bool upload_available = yield stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         chat_input_controller.set_file_upload_active(upload_available);
+
         if (upload_available && overlay_dialog == null) {
             if (drop_event_controller.widget == null) {
                 view.add_controller(drop_event_controller);
@@ -246,13 +247,13 @@ public class ConversationViewController : Object {
         overlay.close.connect(() => {
             // We don't want drag'n'drop to be active while the overlay is active
             overlay_dialog = null;
-            update_file_upload_status();
+            update_file_upload_status.begin();
         });
 
         view.add_overlay_dialog(overlay.get_widget());
         overlay_dialog = overlay.get_widget();
 
-        update_file_upload_status();
+        update_file_upload_status.begin();
     }
 
     private void send_file(File file) {

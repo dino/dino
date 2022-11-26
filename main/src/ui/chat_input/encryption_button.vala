@@ -11,7 +11,6 @@ public class EncryptionButton {
 
     private MenuButton menu_button;
     private Conversation? conversation;
-    private CheckButton? button_unencrypted;
     private string? current_icon;
     private StreamInteractor stream_interactor;
     private SimpleAction action;

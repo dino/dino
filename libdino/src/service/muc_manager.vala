@@ -387,7 +387,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public string? get_own_occupant_id(Account account, Jid muc_jid) {
-        if (account in own_occupant_ids && muc_jid in own_occupant_ids[account]) {
+        if (own_occupant_ids.has_key(account) && own_occupant_ids[account].has_key(muc_jid)) {
             return own_occupant_ids[account][muc_jid];
         }
         return null;
@@ -421,7 +421,7 @@ public class MucManager : StreamInteractionModule, Object {
             }
         });
         stream_interactor.module_manager.get_module(account, Xep.OccupantIds.Module.IDENTITY).received_own_occupant_id.connect( (stream, jid, occupant_id) => {
-            if (!(account in own_occupant_ids)) {
+            if (!own_occupant_ids.has_key(account)) {
                 own_occupant_ids[account] = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
             }
             own_occupant_ids[account][jid] = occupant_id;

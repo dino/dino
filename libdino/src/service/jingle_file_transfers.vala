@@ -115,8 +115,6 @@ public class JingleFileProvider : FileProvider, Object {
     }
 
     private void on_account_added(Account account) {
-        XmppStream stream = stream_interactor.get_stream(account);
-
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.JingleFileTransfer.Module.IDENTITY).file_incoming.connect((stream, jingle_file_transfer) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jingle_file_transfer.peer.bare_jid, account);
             if (conversation == null) return;

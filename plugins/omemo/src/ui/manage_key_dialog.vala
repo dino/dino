@@ -6,7 +6,6 @@ namespace Dino.Plugins.Omemo {
 [GtkTemplate (ui = "/im/dino/Dino/omemo/manage_key_dialog.ui")]
 public class ManageKeyDialog : Gtk.Dialog {
 
-    [GtkChild] private unowned HeaderBar headerbar;
     [GtkChild] private unowned Stack manage_stack;
 
     [GtkChild] private unowned Button cancel_button;

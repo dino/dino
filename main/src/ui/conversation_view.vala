@@ -28,9 +28,6 @@ public class ConversationView : Widget {
 //        conversation_scrolled.set_child(list_view);
 //        list_view.set_factory(get_item_factory());
 
-//        conversation_scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
-//        conversation_scrolled.vadjustment.notify["value"].connect(on_value_notify);
-
     }
 
     public void add_overlay_dialog(Widget widget) {
@@ -53,21 +50,6 @@ public class ConversationView : Widget {
         if (!white_revealer.child_revealed) {
             white_revealer.visible = false;
         }
-    }
-
-    private void on_upper_notify() {
-        print("on_upper_notify\n");
-        if (at_current_content) {
-            print("on_upper_notify2\n");
-            // scroll down
-//            conversation_scrolled.vadjustment.value = conversation_scrolled.vadjustment.upper - conversation_scrolled.vadjustment.page_size;
-//            conversation_scrolled.scroll_child(ScrollType.END, false);
-        }
-    }
-
-    private void on_value_notify() {
-        print("on_value_notify\n");
-//        at_current_content = false;
     }
 }
 
