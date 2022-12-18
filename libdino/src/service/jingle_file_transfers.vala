@@ -64,7 +64,7 @@ public class JingleFileProvider : FileProvider, Object {
     public JingleFileProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        stream_interactor.stream_negotiated.connect(on_stream_negotiated);
+        stream_interactor.account_added.connect(on_account_added);
     }
 
     public FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError {
@@ -114,15 +114,14 @@ public class JingleFileProvider : FileProvider, Object {
         return 1;
     }
 
-    private void on_stream_negotiated(Account account, XmppStream stream) {
+    private void on_account_added(Account account) {
+        XmppStream stream = stream_interactor.get_stream(account);
+
         stream_interactor.module_manager.get_module(account, Xmpp.Xep.JingleFileTransfer.Module.IDENTITY).file_incoming.connect((stream, jingle_file_transfer) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jingle_file_transfer.peer.bare_jid, account);
-            if (conversation == null) {
-                // TODO(hrxi): What to do?
-                return;
-            }
-            string id = random_uuid();
+            if (conversation == null) return;
 
+            string id = random_uuid();
             file_transfers[id] = jingle_file_transfer;
 
             FileMeta file_meta = new FileMeta();
