@@ -9,6 +9,7 @@
         </style>
         <child>
             <object class="GtkMenuButton" id="add_button">
+                <property name="has-frame">False</property>
                 <child>
                     <object class="GtkImage">
                         <property name="icon-name">list-add-symbolic</property>
@@ -19,6 +20,7 @@
         </child>
         <child type="end">
             <object class="GtkMenuButton" id="menu_button">
+                <property name="has-frame">False</property>
                 <child>
                     <object class="GtkImage">
                         <property name="icon-name">open-menu-symbolic</property>

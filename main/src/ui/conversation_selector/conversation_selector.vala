@@ -38,7 +38,6 @@ public class ConversationSelector : Widget {
 
     construct {
         add_css_class("sidebar");
-        list_box.set_header_func(header);
         list_box.set_sort_func(sort);
 
         realize.connect(() => {
@@ -136,14 +135,6 @@ public class ConversationSelector : Widget {
         if (next_select_row != null) {
             list_box.select_row(next_select_row);
             row_activated(next_select_row);
-        }
-    }
-
-    private void header(ListBoxRow row, ListBoxRow? before_row) {
-        if (row.get_header() == null && before_row != null) {
-            row.set_header(new Separator(Orientation.HORIZONTAL));
-        } else if (row.get_header() != null && before_row == null) {
-            row.set_header(null);
         }
     }
 
