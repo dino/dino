@@ -395,16 +395,31 @@ public class Dino.HistorySync {
         string query_id = query_params.query_id;
         string? after_id = query_params.start_id;
 
-        // Check the server id of all returned messages. Check if we've hit our target (from_id) or got a duplicate.
         if (stanzas.has_key(query_id) && !stanzas[query_id].is_empty) {
+
+            // Check it we reached our target (from_id)
             foreach (Xmpp.MessageStanza message in stanzas[query_id]) {
                 Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
                 if (mam_message_flag != null && mam_message_flag.mam_id != null) {
                     if (after_id != null && mam_message_flag.mam_id == after_id) {
                         // Successfully fetched the whole range
-                        page_result = PageResult.TargetReached;
+                        var ret = new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
+                        send_messages_back_into_pipeline(account, query_id);
+                        return ret;
                     }
+                }
+            }
+            if (hitted_range.has_key(query_id) && hitted_range[query_id] == -2) {
+                // Message got filtered out by xmpp-vala, but succesfull range fetch nevertheless
+                var ret = new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
+                send_messages_back_into_pipeline(account, query_id);
+                return ret;
+            }
 
+            // Check for duplicates. Go through all messages and build a db query.
+            foreach (Xmpp.MessageStanza message in stanzas[query_id]) {
+                Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
+                if (mam_message_flag != null && mam_message_flag.mam_id != null) {
                     if (selection == null) {
                         selection = @"$(db.message.server_id) = ?";
                     } else {
@@ -413,13 +428,6 @@ public class Dino.HistorySync {
                     selection_args += mam_message_flag.mam_id;
                 }
             }
-
-            if (hitted_range.has_key(query_id)) {
-                // Message got filtered out by xmpp-vala, but succesfull range fetch nevertheless
-                page_result = PageResult.TargetReached;
-            }
-
-            // Check for duplicates among the messages of the page.
             var duplicates_qry = db.message.select()
                     .with(db.message.account_id, "=", account.id)
                     .where(selection, selection_args);
@@ -437,7 +445,7 @@ public class Dino.HistorySync {
             }
         }
 
-        var res = new PageRequestResult() { stanzas=stanzas[query_id], page_result=page_result, query_result=query_result };
+        var res = new PageRequestResult(page_result, query_result, stanzas.has_key(query_id) ? stanzas[query_id] : null);
         send_messages_back_into_pipeline(account, query_id);
         return res;
     }
@@ -501,7 +509,7 @@ public class Dino.HistorySync {
                     // range1: #####################
                     // range2:         ######
                     if (range1.from_time <= range2.from_time && range1.to_time >= range2.to_time) {
-                        critical("Removing db range which is a subset of another one");
+                        warning("Removing db range which is a subset of %li-%li", range1.from_time, range1.to_time);
                         to_delete.add(range2);
                         continue;
                     }
@@ -509,27 +517,13 @@ public class Dino.HistorySync {
                     // Check if range2 is an extension of range1 (towards earlier)
                     // range1:        #####################
                     // range2: ###############
-                    if (range1.from_time <= range2.from_time <= range1.to_time && range1.to_time < range2.to_time) {
-                        critical("Removing db range that overlapped another one (towards earlier)");
+                    if (range1.from_time <= range2.to_time <= range1.to_time && range2.from_time <= range1.from_time) {
+                        warning("Removing db range that overlapped %li-%li (towards earlier)", range1.from_time, range1.to_time);
                         db.mam_catchup.update()
                                 .with(db.mam_catchup.id, "=", range1.id)
-                                .set(db.mam_catchup.from_id, range2.to_id)
-                                .set(db.mam_catchup.from_time, range2.to_time)
+                                .set(db.mam_catchup.from_id, range2.from_id)
+                                .set(db.mam_catchup.from_time, range2.from_time)
                                 .set(db.mam_catchup.from_end, range2.from_end)
-                                .perform();
-                        to_delete.add(range2);
-                        continue;
-                    }
-
-                    // Check if range2 is an extension of range1 (towards more current)
-                    // range1: #####################
-                    // range2:             ###############
-                    if (range1.from_time <= range2.from_time <= range1.to_time && range1.to_time < range2.to_time) {
-                        critical("Removing db range that overlapped another one (towards more current)");
-                        db.mam_catchup.update()
-                                .with(db.mam_catchup.id, "=", range1.id)
-                                .set(db.mam_catchup.to_id, range2.to_id)
-                                .set(db.mam_catchup.to_time, range2.to_time)
                                 .perform();
                         to_delete.add(range2);
                         continue;
@@ -540,6 +534,7 @@ public class Dino.HistorySync {
 
         foreach (MamRange row in to_delete) {
             db.mam_catchup.delete().with(db.mam_catchup.id, "=", row.id).perform();
+            warning("Removing db range %s %li-%li", row.server_jid.to_string(), row.from_time, row.to_time);
         }
     }
 
@@ -557,5 +552,11 @@ public class Dino.HistorySync {
         public Gee.List<MessageStanza> stanzas { get; set; }
         public PageResult page_result { get; set; }
         public Xmpp.MessageArchiveManagement.QueryResult query_result { get; set; }
+
+        public PageRequestResult(PageResult page_result, Xmpp.MessageArchiveManagement.QueryResult query_result, Gee.List<MessageStanza>? stanzas) {
+            this.page_result = page_result;
+            this.query_result = query_result;
+            this.stanzas = stanzas;
+        }
     }
 }
