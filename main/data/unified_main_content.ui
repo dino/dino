@@ -30,37 +30,18 @@
                             <object class="GtkStackPage">
                                 <property name="name">placeholder</property>
                                 <property name="child">
-                                    <object class="GtkBox">
+                                    <object class="AdwStatusPage">
+                                        <style>
+                                            <class name="compact"/>
+                                        </style>
                                         <property name="margin-start">20</property>
                                         <property name="margin-end">20</property>
                                         <property name="margin-top">20</property>
                                         <property name="margin-bottom">20</property>
-                                        <property name="spacing">10</property>
-                                        <property name="valign">start</property>
-                                        <property name="halign">start</property>
                                         <property name="width_request">260</property>
-                                        <child>
-                                            <object class="GtkImage" id="conversation_list_placeholder_image">
-                                                <property name="valign">start</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="wrap">1</property>
-                                                <property name="margin-top">70</property>
-                                                <property name="margin-end">50</property>
-                                                <property name="xalign">0</property>
-                                                <property name="valign">end</property>
-                                                <property name="max-width-chars">0</property>
-                                                <property name="label" translatable="1">Click here to start a conversation or join a channel.</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
+
+                                        <property name="title" translatable="True">You have no open chats</property>
+                                        <property name="description" translatable="True">Click + to start a conversation or join a channel</property>
                                     </object>
                                 </property>
                             </object>
@@ -89,33 +70,10 @@
                                     <object class="GtkStackPage">
                                         <property name="name">placeholder</property>
                                         <property name="child">
-                                            <object class="GtkBox">
-                                                <property name="orientation">vertical</property>
-                                                <property name="hexpand">1</property>
-                                                <property name="vexpand">1</property>
-                                                <property name="halign">center</property>
-                                                <property name="valign">center</property>
-                                                <child>
-                                                    <object class="GtkImage">
-                                                        <property name="icon-name">im.dino.Dino-symbolic</property>
-                                                        <property name="pixel-size">144</property>
-                                                        <property name="margin-bottom">30</property>
-                                                        <style>
-                                                            <class name="dim-label"/>
-                                                        </style>
-                                                    </object>
-                                                </child>
-                                                <child>
-                                                    <object class="GtkLabel">
-                                                        <property name="label" translatable="1">You have no open chats</property>
-                                                        <style>
-                                                            <class name="dim-label"/>
-                                                        </style>
-                                                        <attributes>
-                                                            <attribute name="scale" value="1.2"></attribute>
-                                                        </attributes>
-                                                    </object>
-                                                </child>
+                                            <object class="AdwStatusPage">
+                                                <property name="icon-name">im.dino.Dino-symbolic</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="vexpand">True</property>
                                             </object>
                                         </property>
                                     </object>

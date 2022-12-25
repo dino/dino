@@ -74,9 +74,6 @@ public class MainWindow : Adw.Window {
         Frame search_frame = (Frame) builder.get_object("search_frame");
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
-
-        Image conversation_list_placeholder_image = (Image) builder.get_object("conversation_list_placeholder_image");
-        conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/dino-conversation-list-placeholder-arrow.svg"));
     }
 
     private void setup_headerbar() {
@@ -179,28 +176,24 @@ public class MainWindow : Adw.Window {
 
 public class WelcomePlaceholder : MainWindowPlaceholder {
     public WelcomePlaceholder() {
-        title_label.label = _("Welcome to Dino!");
-        label.label = _("Sign in or create an account to get started.");
+        status_page.title = _("Welcome to Dino!");
+        status_page.description = _("Sign in or create an account to get started.");
         primary_button.label = _("Set up account");
-        title_label.visible = true;
-        secondary_button.visible = false;
+        primary_button.visible = true;
     }
 }
 
 public class NoAccountsPlaceholder : MainWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        title_label.label = _("No active accounts");
+        status_page.title = _("No active accounts");
         primary_button.label = _("Manage accounts");
-        title_label.visible = true;
-        label.visible = false;
-        secondary_button.visible = false;
+        primary_button.visible = true;
     }
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class MainWindowPlaceholder : Box {
-    [GtkChild] public unowned Label title_label;
-    [GtkChild] public unowned Label label;
+    [GtkChild] public unowned Adw.StatusPage status_page;
     [GtkChild] public unowned Button primary_button;
     [GtkChild] public unowned Button secondary_button;
 }

@@ -2,69 +2,47 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiMainWindowPlaceholder">
-        <property name="valign">fill</property>
         <child>
             <object class="GtkBox" id="box">
                 <property name="orientation">vertical</property>
-                <property name="valign">fill</property>
-                <property name="halign">fill</property>
-                <property name="hexpand">1</property>
-                <property name="vexpand">1</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
                 <child>
                     <object class="GtkHeaderBar">
                         <property name="show-title-buttons">true</property>
                     </object>
                 </child>
                 <child>
-                    <object class="GtkImage">
-                        <property name="icon-name">im.dino.Dino-symbolic</property>
-                        <property name="pixel-size">144</property>
-                        <property name="margin-start">30</property>
-                        <property name="margin-end">30</property>
-                        <property name="margin-top">30</property>
-                        <property name="margin-bottom">30</property>
-                        <style>
-                            <class name="dim-label"/>
-                        </style>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkLabel" id="title_label">
-                        <property name="visible">0</property>
-                        <style>
-                            <class name="dim-label"/>
-                        </style>
-                        <attributes>
-                            <attribute name="scale" value="1.3"></attribute>
-                        </attributes>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkLabel" id="label">
-                        <property name="margin-top">5</property>
-                        <style>
-                            <class name="dim-label"/>
-                        </style>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkButton" id="primary_button">
-                        <property name="margin-top">15</property>
-                        <property name="halign">center</property>
-                        <style>
-                            <class name="text-button"/>
-                            <class name="suggested-action"/>
-                        </style>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkButton" id="secondary_button">
-                        <property name="visible">0</property>
-                        <property name="halign">center</property>
-<!--                        <property name="no_show_all">True</property>-->
-                        <style>
-                            <class name="text-button"/>
-                        </style>
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <child>
+                            <object class="AdwStatusPage" id="status_page">
+                                <property name="icon-name">im.dino.Dino-symbolic</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="primary_button">
+                                <property name="halign">center</property>
+                                <property name="visible">False</property>
+                                <style>
+                                    <class name="text-button"/>
+                                    <class name="suggested-action"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="secondary_button">
+                                <property name="visible">0</property>
+                                <property name="halign">center</property>
+                                <property name="visible">False</property>
+                                <style>
+                                    <class name="text-button"/>
+                                </style>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

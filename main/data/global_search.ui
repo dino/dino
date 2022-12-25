@@ -19,40 +19,13 @@
                             <object class="GtkStackPage">
                                 <property name="name">empty</property>
                                 <property name="child">
-                                    <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">10</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">system-search-symbolic</property>
-                                                <property name="icon-size">large</property>
-                                                <property name="pixel-size">72</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="1">No active search</property>
-                                                <attributes>
-                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
-                                                    <attribute name="scale" value="1.3"></attribute>
-                                                </attributes>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="1">Type to start a search</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
+                                    <object class="AdwStatusPage">
+                                        <style>
+                                            <class name="compact"/>
+                                        </style>
+                                        <property name="icon-name">system-search-symbolic</property>
+                                        <property name="title" translatable="1">No active search</property>
+                                        <property name="description" translatable="1">Type to start a search</property>
                                     </object>
                                 </property>
                             </object>
@@ -61,40 +34,13 @@
                             <object class="GtkStackPage">
                                 <property name="name">no-result</property>
                                 <property name="child">
-                                    <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">10</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">face-uncertain-symbolic</property>
-                                                <property name="icon-size">large</property>
-                                                <property name="pixel-size">72</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="1">No matching messages</property>
-                                                <attributes>
-                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
-                                                    <attribute name="scale" value="1.3"></attribute>
-                                                </attributes>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="1">Check the spelling or try to remove filters</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
+                                    <object class="AdwStatusPage">
+                                        <style>
+                                            <class name="compact"/>
+                                        </style>
+                                        <property name="icon-name">face-uncertain-symbolic</property>
+                                        <property name="title" translatable="1">No matching messages</property>
+                                        <property name="description" translatable="1">Check the spelling or try to remove filters</property>
                                     </object>
                                 </property>
                             </object>

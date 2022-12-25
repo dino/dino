@@ -3,6 +3,10 @@
  * It provides sane defaults for things that are very Dino-specific.
  */
 
+statuspage {
+    opacity: 0.5;
+}
+
 window.dino-main .dino-header-right {
     background: @theme_base_color;
 }
