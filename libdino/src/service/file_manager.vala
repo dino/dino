@@ -246,7 +246,15 @@ public class FileManager : StreamInteractionModule, Object {
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
 
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE | OutputStreamSpliceFlags.CLOSE_TARGET, Priority.LOW, file_transfer.cancellable);
+            uint8[] buffer = new uint8[1024];
+            ssize_t read;
+            while ((read = yield input_stream.read_async(buffer, Priority.LOW, file_transfer.cancellable)) > 0) {
+                buffer.length = (int) read;
+                yield os.write_async(buffer, Priority.LOW, file_transfer.cancellable);
+                buffer.length = 1024;
+            }
+            yield input_stream.close_async(Priority.LOW, file_transfer.cancellable);
+            yield os.close_async(Priority.LOW, file_transfer.cancellable);
             file_transfer.path = file.get_basename();
             file_transfer.input_stream = yield file.read_async();
 

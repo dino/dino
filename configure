@@ -1,7 +1,7 @@
 #!/bin/sh
 
 OPTS=`getopt -o "h" --long \
-help,fetch-only,no-debug,disable-fast-vapi,with-tests,release,with-libsignal-in-tree,\
+help,fetch-only,no-debug,disable-fast-vapi,with-tests,release,with-libsignal-in-tree,with-libsoup3,\
 enable-plugin:,disable-plugin:,\
 prefix:,program-prefix:,exec-prefix:,lib-suffix:,\
 bindir:,libdir:,includedir:,datadir:,\
@@ -22,6 +22,7 @@ DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
 FETCH_ONLY=
+USE_SOUP3=
 
 EXEC_PREFIX=
 BINDIR=
@@ -56,6 +57,7 @@ Configuration:
   --release                  Configure to build an optimized release version
   --with-libsignal-in-tree   Build libsignal-protocol-c in tree and link it
                              statically.
+  --with-libsoup3            Build with libsoup-3.0
   --with-tests               Also build tests.
 
 Plugin configuration:
@@ -111,6 +113,7 @@ while true; do
         --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
         --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
         --with-libsignal-in-tree ) BUILD_LIBSIGNAL_IN_TREE=yes; shift ;;
+        --with-libsoup3 ) USE_SOUP3=yes; shift ;;
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
         --no-debug ) NO_DEBUG=yes; shift ;;
         --fetch-only ) FETCH_ONLY=yes; shift ;;
@@ -256,6 +259,7 @@ cmake -G "$cmake_type" \
     -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
     -DBUILD_TESTS="$BUILD_TESTS" \
     -DBUILD_LIBSIGNAL_IN_TREE="$BUILD_LIBSIGNAL_IN_TREE" \
+    -DUSE_SOUP3="$USE_SOUP3" \
     -DVALA_EXECUTABLE="$VALAC" \
     -DCMAKE_VALA_FLAGS="$VALACFLAGS" \
     -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" \
