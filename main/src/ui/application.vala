@@ -272,24 +272,30 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 case "0.3": version = @"$version - <span font_style='italic'>Theikenmeer</span>"; break;
             }
         }
-        Adw.AboutWindow about = new Adw.AboutWindow();
-        about.destroy_with_parent = true;
-        about.transient_for = window;
-        about.modal = true;
-        about.title = _("About Dino");
-
-        about.application_icon = "im.dino.Dino";
-        about.application_name = "Dino";
-        about.version = version;
-        about.comments = "Dino. Communicating happiness.";
-        about.website = "https://dino.im/";
-        about.copyright = "Copyright © 2016-2022 - Dino Team";
-        about.license_type = License.GPL_3_0;
+#if Adw_1_2
+        Adw.AboutWindow about_window = new Adw.AboutWindow();
+        about_window.application_icon = "im.dino.Dino";
+        about_window.application_name = "Dino";
+#else
+        Gtk.AboutDialog about_window = new Gtk.AboutDialog();
+        about_window.logo_icon_name = "im.dino.Dino";
+        about_window.program_name = "Dino";
+        about_window.website_label = "dino.im";
+#endif
+        about_window.destroy_with_parent = true;
+        about_window.transient_for = window;
+        about_window.modal = true;
+        about_window.title = _("About Dino");
+        about_window.version = version;
+        about_window.comments = "Dino. Communicating happiness.";
+        about_window.website = "https://dino.im/";
+        about_window.copyright = "Copyright © 2016-2022 - Dino Team";
+        about_window.license_type = License.GPL_3_0;
 
         if (!use_csd()) {
-            about.set_titlebar(null);
+            about_window.set_titlebar(null);
         }
-        about.present();
+        about_window.present();
     }
 
     private void show_join_muc_dialog(Account? account, string jid) {
