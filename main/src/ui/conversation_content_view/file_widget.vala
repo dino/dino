@@ -10,19 +10,44 @@ namespace Dino.Ui {
 public class FileMetaItem : ConversationSummary.ContentMetaItem {
 
     private StreamInteractor stream_interactor;
+    private FileItem file_item;
+    private FileTransfer file_transfer;
 
     public FileMetaItem(ContentItem content_item, StreamInteractor stream_interactor) {
         base(content_item);
         this.stream_interactor = stream_interactor;
+        this.file_item = content_item as FileItem;
+        this.file_transfer = file_item.file_transfer;
     }
 
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
-        FileItem file_item = content_item as FileItem;
-        FileTransfer transfer = file_item.file_transfer;
-        return new FileWidget(stream_interactor, transfer);
+        return new FileWidget(stream_interactor, file_transfer);
     }
 
-    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) {
+        if (file_transfer.provider != 0 || file_transfer.info == null) return null;
+
+        Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
+
+        if (stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(file_item.conversation, content_item) != null) {
+            Plugins.MessageAction reply_action = new Plugins.MessageAction();
+            reply_action.icon_name = "mail-reply-sender-symbolic";
+            reply_action.callback = (button, content_meta_item_activated, widget) => {
+                GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(file_item.conversation.id), new GLib.Variant.int32(content_item.id) }));
+            };
+            actions.add(reply_action);
+
+            Plugins.MessageAction action2 = new Plugins.MessageAction();
+            action2.icon_name = "dino-emoticon-add-symbolic";
+            EmojiChooser chooser = new EmojiChooser();
+            chooser.emoji_picked.connect((emoji) => {
+                stream_interactor.get_module(Reactions.IDENTITY).add_reaction(file_item.conversation, content_item, emoji);
+            });
+            action2.popover = chooser;
+            actions.add(action2);
+        }
+        return actions;
+    }
 }
 
 public class FileWidget : SizeRequestBox {

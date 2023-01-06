@@ -198,7 +198,7 @@ public class MessageMetaItem : ContentMetaItem {
             if (quoted_content_item != null) {
                 var quote_model = new Quote.Model.from_content_item(quoted_content_item, message_item.conversation, stream_interactor);
                 quote_model.jump_to.connect(() => {
-                    GLib.Application.get_default().activate_action("jump-to-conversation-message", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(message_item.id) }));
+                    GLib.Application.get_default().activate_action("jump-to-conversation-message", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(quoted_content_item.id) }));
                 });
                 var quote_widget = Quote.get_widget(quote_model);
                 outer.set_widget(quote_widget, Plugins.WidgetType.GTK4, 1);
@@ -226,7 +226,7 @@ public class MessageMetaItem : ContentMetaItem {
         Plugins.MessageAction reply_action = new Plugins.MessageAction();
         reply_action.icon_name = "mail-reply-sender-symbolic";
         reply_action.callback = (button, content_meta_item_activated, widget) => {
-            GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(message_item.id) }));
+            GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(content_item.id) }));
         };
         actions.add(reply_action);
 

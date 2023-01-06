@@ -10,7 +10,6 @@ public class Dino.Reactions : StreamInteractionModule, Object {
     public string id { get { return IDENTITY.id; } }
 
     public signal void reaction_added(Account account, int content_item_id, Jid jid, string reaction);
-//    [Signal(detailed=true)]
     public signal void reaction_removed(Account account, int content_item_id, Jid jid, string reaction);
 
     private StreamInteractor stream_interactor;
@@ -35,15 +34,19 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         if (!reactions.contains(reaction)) {
             reactions.add(reaction);
         }
-        send_reactions(conversation, content_item, reactions);
-        reaction_added(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
+        try {
+            send_reactions(conversation, content_item, reactions);
+            reaction_added(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
+        } catch (SendError e) {}
     }
 
     public void remove_reaction(Conversation conversation, ContentItem content_item, string reaction) {
         Gee.List<string> reactions = get_own_reactions(conversation, content_item);
         reactions.remove(reaction);
-        send_reactions(conversation, content_item, reactions);
-        reaction_removed(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
+        try {
+            send_reactions(conversation, content_item, reactions);
+            reaction_removed(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
+        } catch (SendError e) {}
     }
 
     public Gee.List<ReactionUsers> get_item_reactions(Conversation conversation, ContentItem content_item) {
@@ -80,35 +83,28 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         return false;
     }
 
-    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) {
-        Message? message = null;
+    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws SendError {
+        string? message_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
+        if (message_id == null) throw new SendError.Misc("No message for content_item");
 
-        FileItem? file_item = content_item as FileItem;
-        if (file_item != null) {
-            int message_id = int.parse(file_item.file_transfer.info);
-            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(message_id, conversation);
-        }
-        MessageItem? message_item = content_item as MessageItem;
-        if (message_item != null) {
-            message = message_item.message;
-        }
+        XmppStream? stream = stream_interactor.get_stream(conversation.account);
+        if (stream == null) throw new SendError.NoStream("");
 
-        if (message == null) {
-            return;
-        }
+        var reactions_module = stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY);
 
-        XmppStream stream = stream_interactor.get_stream(conversation.account);
-        if (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY).send_reaction(stream, conversation.counterpart, "groupchat", message.server_id ?? message.stanza_id, reactions);
-            } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-                stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY).send_reaction(stream, conversation.counterpart, "chat", message.server_id ?? message.stanza_id, reactions);
-            }
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            reactions_module.send_reaction.begin(stream, conversation.counterpart, "groupchat", message_id, reactions);
             // We save the reaction when it gets reflected back to us
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            reactions_module.send_reaction(stream, conversation.counterpart, "chat", message_id, reactions);
         } else if (conversation.type_ == Conversation.Type.CHAT) {
-            stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY).send_reaction(stream, conversation.counterpart, "chat", message.stanza_id, reactions);
             int64 now_millis = GLib.get_real_time () / 1000;
-            save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_millis, reactions);
+            reactions_module.send_reaction.begin(stream, conversation.counterpart, "chat", message_id, reactions, (_, res) => {
+                try {
+                    reactions_module.send_reaction.end(res);
+                    save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_millis, reactions);
+                } catch (SendError e) {}
+            });
         }
     }
 
@@ -251,11 +247,11 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         Message reaction_message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(reaction_message);
 
-        Message? message = get_message_for_reaction(conversation, message_id);
+        int content_item_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_id_for_message_id(conversation, message_id);
         var reaction_info = new ReactionInfo() { account=account, from_jid=from_jid, reactions=reactions, stanza=stanza, received_time=new DateTime.now() };
 
-        if (message != null) {
-            process_reaction_for_message(message.id, reaction_info);
+        if (content_item_id != -1) {
+            process_reaction_for_message(content_item_id, reaction_info);
             return;
         }
 
@@ -317,29 +313,11 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    private void process_reaction_for_message(int message_db_id, ReactionInfo reaction_info) {
+    private void process_reaction_for_message(int content_item_id, ReactionInfo reaction_info) {
         Account account = reaction_info.account;
         MessageStanza stanza = reaction_info.stanza;
         Jid from_jid = reaction_info.from_jid;
         Gee.List<string> reactions = reaction_info.reactions;
-
-        RowOption file_transfer_row = db.file_transfer.select()
-                .with(db.file_transfer.account_id, "=", account.id)
-                .with(db.file_transfer.info, "=", message_db_id.to_string())
-                .single().row(); // TODO better
-
-        var content_item_row = db.content_item.select();
-
-        if (file_transfer_row.is_present()) {
-            content_item_row.with(db.content_item.foreign_id, "=", file_transfer_row[db.file_transfer.id])
-                    .with(db.content_item.content_type, "=", 2);
-        } else {
-            content_item_row.with(db.content_item.foreign_id, "=", message_db_id)
-                    .with(db.content_item.content_type, "=", 1);
-        }
-        var content_item_row_opt = content_item_row.single().row();
-        if (!content_item_row_opt.is_present()) return;
-        int content_item_id = content_item_row_opt[db.content_item.id];
 
         // Get reaction time
         DateTime? reaction_time = null;
