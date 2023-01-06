@@ -44,6 +44,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
         Message out_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(correction_text, conversation);
         out_message.edit_to = stanza_id;
+        out_message.quoted_item_id = old_message.quoted_item_id;
         outstanding_correction_nodes[out_message.stanza_id] = stanza_id;
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(out_message, conversation);
 

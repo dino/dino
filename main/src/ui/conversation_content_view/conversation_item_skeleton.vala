@@ -16,7 +16,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public Image encryption_image { get; set; }
     public Image received_image { get; set; }
 
-    public Widget? content_widget = null;
+    private HashMap<int, Widget> content_widgets = new HashMap<int, Widget>();
 
     private bool show_skeleton_ = false;
     public bool show_skeleton {
@@ -58,7 +58,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         widget = item.get_widget(this, Plugins.WidgetType.GTK4) as Widget;
         if (widget != null) {
             widget.valign = Align.END;
-            set_widget(widget, Plugins.WidgetType.GTK4);
+            set_widget(widget, Plugins.WidgetType.GTK4, 2);
         }
 
         if (item.requires_header) {
@@ -72,7 +72,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (content_meta_item != null) {
             reactions_controller = new ReactionsController(conversation, content_meta_item.content_item, stream_interactor);
             reactions_controller.box_activated.connect((widget) => {
-                main_grid.attach(widget, 1, 2, 4, 1);
+                set_widget(widget, Plugins.WidgetType.GTK4, 3);
             });
             reactions_controller.init();
         }
@@ -103,12 +103,18 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         update_received_mark();
     }
 
-    public void set_widget(Object object, Plugins.WidgetType type) {
-        if (content_widget != null) content_widget.unparent();
+    public void set_widget(Object object, Plugins.WidgetType type, int priority) {
+        foreach (var content_widget in content_widgets.values) {
+            content_widget.unparent();
+        }
 
-        Widget widget = (Widget) object;
-        content_widget = widget;
-        main_grid.attach(widget, 1, 1, 4, 1);
+        content_widgets[priority] = (Widget) object;
+        int row_no = 1;
+        for (int i = 0; i < 5; i++) {
+            if (!content_widgets.has_key(i)) continue;
+            main_grid.attach(content_widgets[i], 1, row_no, 4, 1);
+            row_no++;
+        }
     }
 
     private void update_margin() {

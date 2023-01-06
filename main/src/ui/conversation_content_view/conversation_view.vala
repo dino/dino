@@ -18,7 +18,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     [GtkChild] private unowned Box notifications;
     [GtkChild] private unowned Box main;
     [GtkChild] private unowned Box main_wrap_box;
-    [GtkChild] private unowned Stack stack;
 
     private ArrayList<Widget> action_buttons = new ArrayList<Widget>();
     private Gee.List<Dino.Plugins.MessageAction>? message_actions = null;
@@ -208,7 +207,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                     Button button = new Button();
                     button.icon_name = message_action.icon_name;
                     button.clicked.connect(() => {
-                        print(@"$(current_meta_item.jid) skdfj \n");
                         message_action.callback(button, current_meta_item, currently_highlighted);
                     });
                     action_buttons.add(button);
@@ -233,15 +231,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             });
             firstLoad = false;
         }
-        stack.set_visible_child_name("void");
         clear();
         initialize_for_conversation_(conversation);
         display_latest();
-        stack.set_visible_child_name("main");
     }
 
     public void initialize_around_message(Conversation conversation, ContentItem content_item) {
-        stack.set_visible_child_name("void");
         clear();
         initialize_for_conversation_(conversation);
         Gee.List<ContentMetaItem> before_items = content_populator.populate_before(conversation, content_item, 40);
@@ -277,7 +272,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             scrolled.vadjustment.value = h - scrolled.vadjustment.page_size * 1/3;
             w.add_css_class("highlight-once");
             reload_messages = true;
-            stack.set_visible_child_name("main");
             return false;
         });
     }

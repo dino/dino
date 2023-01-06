@@ -67,6 +67,9 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
+    public int quoted_item_id = 0;
+
+    private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
 
     private Database? db;
 
@@ -105,6 +108,7 @@ public class Message : Object {
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
 
         edit_to = row[db.message_correction.to_stanza_id];
+        quoted_item_id = row[db.reply.quoted_content_item_id];
 
         notify.connect(on_update);
     }
@@ -136,6 +140,32 @@ public class Message : Object {
                 .perform();
         }
         notify.connect(on_update);
+    }
+
+    public Gee.List<Xep.FallbackIndication.Fallback> get_fallbacks() {
+        if (fallbacks != null) return fallbacks;
+
+        var fallbacks_by_ns = new HashMap<string, ArrayList<Xep.FallbackIndication.FallbackLocation>>();
+        foreach (Qlite.Row row in db.body_meta.select().with(db.body_meta.message_id, "=", id)) {
+            if (row[db.body_meta.info_type] != Xep.FallbackIndication.NS_URI) continue;
+
+            string ns_uri = row[db.body_meta.info];
+            if (!fallbacks_by_ns.has_key(ns_uri)) {
+                fallbacks_by_ns[ns_uri] = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
+            }
+            fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation(row[db.body_meta.from_char], row[db.body_meta.to_char]));
+        }
+
+        var fallbacks = new ArrayList<Xep.FallbackIndication.Fallback>();
+        foreach (string ns_uri in fallbacks_by_ns.keys) {
+            fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri].to_array()));
+        }
+        this.fallbacks = fallbacks;
+        return fallbacks;
+    }
+
+    public void set_fallbacks(Gee.List<Xep.FallbackIndication.Fallback> fallbacks) {
+        this.fallbacks = fallbacks;
     }
 
     public void set_type_string(string type) {
@@ -208,6 +238,13 @@ public class Message : Object {
             db.real_jid.upsert()
                 .value(db.real_jid.message_id, id, true)
                 .value(db.real_jid.real_jid, real_jid.to_string())
+                .perform();
+        }
+
+        if (sp.get_name() == "quoted-item-id") {
+            db.reply.upsert()
+                .value(db.reply.message_id, id, true)
+                .value(db.reply.quoted_content_item_id, quoted_item_id)
                 .perform();
         }
     }

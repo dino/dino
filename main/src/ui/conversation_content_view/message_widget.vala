@@ -82,7 +82,8 @@ public class MessageMetaItem : ContentMetaItem {
 
         bool theme_dependent = false;
 
-        string markup_text = message.body;
+        string markup_text = Dino.message_body_without_reply_fallback(message);
+
         if (markup_text.length > 10000) {
             markup_text = markup_text.substring(0, 10000) + " [" + _("Message too long") + "]";
         }
@@ -169,7 +170,7 @@ public class MessageMetaItem : ContentMetaItem {
 
                 edit_mode.cancelled.connect(() => {
                     in_edit_mode = false;
-                    outer.set_widget(label, Plugins.WidgetType.GTK4);
+                    outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
                 });
                 edit_mode.send.connect(() => {
                     if (((MessageItem) content_item).message.body != edit_mode.chat_text_view.text_view.buffer.text) {
@@ -178,18 +179,31 @@ public class MessageMetaItem : ContentMetaItem {
 //                        edit_cancelled();
                     }
                     in_edit_mode = false;
-                    outer.set_widget(label, Plugins.WidgetType.GTK4);
+                    outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
                 });
 
                 edit_mode.chat_text_view.text_view.buffer.text = message.body;
 
-                outer.set_widget(edit_mode, Plugins.WidgetType.GTK4);
+                outer.set_widget(edit_mode, Plugins.WidgetType.GTK4, 2);
                 edit_mode.chat_text_view.text_view.grab_focus();
             } else {
                 this.in_edit_mode = false;
             }
         });
 
+        outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
+
+        if (message_item.message.quoted_item_id > 0) {
+            var quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(message_item.conversation, message_item.message.quoted_item_id);
+            if (quoted_content_item != null) {
+                var quote_model = new Quote.Model.from_content_item(quoted_content_item, message_item.conversation, stream_interactor);
+                quote_model.jump_to.connect(() => {
+                    GLib.Application.get_default().activate_action("jump-to-conversation-message", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(message_item.id) }));
+                });
+                var quote_widget = Quote.get_widget(quote_model);
+                outer.set_widget(quote_widget, Plugins.WidgetType.GTK4, 1);
+            }
+        }
         return label;
     }
 
@@ -208,6 +222,13 @@ public class MessageMetaItem : ContentMetaItem {
             };
             actions.add(action1);
         }
+
+        Plugins.MessageAction reply_action = new Plugins.MessageAction();
+        reply_action.icon_name = "mail-reply-sender-symbolic";
+        reply_action.callback = (button, content_meta_item_activated, widget) => {
+            GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(message_item.id) }));
+        };
+        actions.add(reply_action);
 
         if (supports_reaction) {
             Plugins.MessageAction action2 = new Plugins.MessageAction();

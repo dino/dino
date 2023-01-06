@@ -424,6 +424,26 @@ public class MessageProcessor : StreamInteractionModule, Object {
         } else {
             new_message.type_ = MessageStanza.TYPE_CHAT;
         }
+
+        if (message.quoted_item_id > 0) {
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
+            if (content_item != null && content_item.type_ == MessageItem.TYPE)  {
+                Message? quoted_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(((MessageItem) content_item).message.id, conversation);
+                if (quoted_message != null) {
+                    Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_message.from, quoted_message.stanza_id));
+
+                    string body_with_fallback = "> " + Dino.message_body_without_reply_fallback(quoted_message);
+                    body_with_fallback.replace("\n", "\n> ");
+                    body_with_fallback += "\n";
+                    long fallback_length = body_with_fallback.length;
+                    body_with_fallback += message.body;
+                    new_message.body = body_with_fallback;
+                    var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback_length);
+                    Xep.FallbackIndication.set_fallback(new_message, new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
+                }
+            }
+        }
+
         build_message_stanza(message, new_message, conversation);
         pre_message_send(message, new_message, conversation);
         if (message.marked == Entities.Message.Marked.UNSENT || message.marked == Entities.Message.Marked.WONTSEND) return;

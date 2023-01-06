@@ -82,6 +82,7 @@ set(RESOURCE_LIST
     message_item_widget_edit_mode.ui
     occupant_list.ui
     occupant_list_item.ui
+    quote.ui
     search_autocomplete.ui
     settings_dialog.ui
     shortcuts.ui
@@ -157,6 +158,7 @@ SOURCES
     src/ui/conversation_content_view/file_image_widget.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/message_widget.vala
+    src/ui/conversation_content_view/quote_widget.vala
     src/ui/conversation_content_view/reactions_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
 

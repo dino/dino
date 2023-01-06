@@ -149,7 +149,7 @@ public class ConversationSelectorRow : ListBoxRow {
                     MessageItem message_item = last_content_item as MessageItem;
                     Message last_message = message_item.message;
 
-                    string body = last_message.body;
+                    string body = Dino.message_body_without_reply_fallback(last_message);
                     bool me_command = body.has_prefix("/me ");
 
                     /* If we have a /me command, we always show the display

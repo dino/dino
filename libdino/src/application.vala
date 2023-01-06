@@ -56,6 +56,8 @@ public interface Application : GLib.Application {
         MessageCorrection.start(stream_interactor, db);
         FileTransferStorage.start(stream_interactor, db);
         Reactions.start(stream_interactor, db);
+        Replies.start(stream_interactor, db);
+        FallbackBody.start(stream_interactor, db);
 
         create_actions();
 

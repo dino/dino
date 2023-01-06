@@ -27,9 +27,6 @@ public class ReactionsController : Object {
 
     public void init() {
         Gee.List<ReactionUsers> reactions = stream_interactor.get_module(Reactions.IDENTITY).get_item_reactions(conversation, content_item);
-        if (reactions.size > 0) {
-            initialize_widget();
-        }
         foreach (ReactionUsers reaction_users in reactions) {
             foreach (Jid jid in reaction_users.jids) {
                 reaction_added(reaction_users.reaction, jid);
