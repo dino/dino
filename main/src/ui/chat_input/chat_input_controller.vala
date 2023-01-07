@@ -136,9 +136,6 @@ public class ChatInputController : Object {
 
         string text = chat_input.chat_text_view.text_view.buffer.text;
 
-        chat_input.chat_text_view.text_view.buffer.text = "";
-        chat_input.unset_quoted_message();
-
         if (text.has_prefix("/")) {
             string[] token = text.split(" ", 2);
             switch(token[0]) {
@@ -196,6 +193,11 @@ public class ChatInputController : Object {
             stream_interactor.get_module(Replies.IDENTITY).set_message_is_reply_to(out_message, quoted_content_item);
         }
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(out_message, conversation);
+
+        // Reset input state
+        chat_input.chat_text_view.text_view.buffer.text = "";
+        chat_input.unset_quoted_message();
+        quoted_content_item = null;
     }
 
     private void on_text_input_changed() {
