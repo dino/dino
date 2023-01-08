@@ -20,8 +20,8 @@ public class View : Box {
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
     [GtkChild] public unowned Frame frame;
+    [GtkChild] public unowned Box quote_box;
     [GtkChild] public unowned ChatTextView chat_text_view;
-    [GtkChild] public unowned Box outer_box;
     [GtkChild] public unowned Button file_button;
     [GtkChild] public unowned MenuButton emoji_button;
     [GtkChild] public unowned MenuButton encryption_button;
@@ -92,6 +92,19 @@ public class View : Box {
             chat_input_status.remove_css_class("input-status-highlight-once");
             return false;
         });
+    }
+
+    public void set_quoted_message(Widget quote_widget) {
+        Widget? quote_box_child = quote_box.get_first_child();
+        if (quote_box_child != null) quote_box.remove(quote_box_child);
+        quote_box.append(quote_widget);
+        quote_box.visible = true;
+    }
+
+    public void unset_quoted_message() {
+        Widget? quote_box_child = quote_box.get_first_child();
+        if (quote_box_child != null) quote_box.remove(quote_box_child);
+        quote_box.visible = false;
     }
 
     public void do_focus() {

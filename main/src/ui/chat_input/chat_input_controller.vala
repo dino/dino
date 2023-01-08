@@ -24,6 +24,8 @@ public class ChatInputController : Object {
     private Plugins.InputFieldStatus input_field_status;
     private ChatTextViewController chat_text_view_controller;
 
+    private ContentItem? quoted_content_item = null;
+
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
         this.status_description_label = chat_input.chat_input_status;
@@ -58,12 +60,34 @@ public class ChatInputController : Object {
             }
             return true;
         });
+
+        SimpleAction quote_action = new SimpleAction("quote", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
+        quote_action.activate.connect((variant) => {
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null || !this.conversation.equals(conversation)) return;
+
+            int content_item_id = variant.get_child_value(1).get_int32();
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, content_item_id);
+            if (content_item == null) return;
+
+            quoted_content_item = content_item;
+            var quote_model = new Quote.Model.from_content_item(content_item, conversation, stream_interactor) { can_abort = true };
+            quote_model.aborted.connect(() => {
+                content_item = null;
+                chat_input.unset_quoted_message();
+            });
+            chat_input.set_quoted_message(Quote.get_widget(quote_model));
+        });
+        GLib.Application.get_default().add_action(quote_action);
     }
 
     public void set_conversation(Conversation conversation) {
-        this.conversation = conversation;
-
+        this.quoted_content_item = null;
         reset_input_field_status();
+        chat_input.unset_quoted_message();
+
+        this.conversation = conversation;
 
         chat_input.encryption_widget.set_conversation(conversation);
 
@@ -111,7 +135,7 @@ public class ChatInputController : Object {
         }
 
         string text = chat_input.chat_text_view.text_view.buffer.text;
-        chat_input.chat_text_view.text_view.buffer.text = "";
+
         if (text.has_prefix("/")) {
             string[] token = text.split(" ", 2);
             switch(token[0]) {
@@ -164,7 +188,16 @@ public class ChatInputController : Object {
                     break;
             }
         }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_text(text, conversation);
+        Message out_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(text, conversation);
+        if (quoted_content_item != null) {
+            stream_interactor.get_module(Replies.IDENTITY).set_message_is_reply_to(out_message, quoted_content_item);
+        }
+        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(out_message, conversation);
+
+        // Reset input state
+        chat_input.chat_text_view.text_view.buffer.text = "";
+        chat_input.unset_quoted_message();
+        quoted_content_item = null;
     }
 
     private void on_text_input_changed() {

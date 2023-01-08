@@ -32,8 +32,21 @@
                             </object>
                         </child>
                         <child>
-                            <object class="DinoUiChatTextView" id="chat_text_view">
-                                <property name="margin_start">7</property>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                    <object class="GtkBox" id="quote_box">
+                                        <property name="margin-top">10</property>
+                                        <property name="margin-start">10</property>
+                                        <property name="margin-end">10</property>
+                                        <property name="visible">False</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="DinoUiChatTextView" id="chat_text_view">
+                                        <property name="margin_start">7</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                         <child>

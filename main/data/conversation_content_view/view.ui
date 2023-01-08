@@ -3,95 +3,64 @@
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiConversationSummaryConversationView">
         <child>
-            <object class="GtkStack" id="stack">
-                <property name="transition_type">crossfade</property>
-                <child>
-                    <object class="GtkStackPage">
-                        <property name="name">main</property>
+            <object class="GtkOverlay">
+                <property name="child">
+                    <object class="GtkScrolledWindow" id="scrolled">
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="hexpand">1</property>
+                        <property name="vexpand">1</property>
                         <property name="child">
-                            <object class="GtkOverlay">
-                                <property name="child">
-                                    <object class="GtkScrolledWindow" id="scrolled">
-                                        <property name="hscrollbar_policy">never</property>
-                                        <property name="hexpand">1</property>
-                                        <property name="vexpand">1</property>
-                                        <property name="child">
-                                            <object class="GtkBox" id="main_wrap_box">
-                                                <property name="valign">end</property>
+                            <object class="GtkBox" id="main_wrap_box">
+                                <property name="valign">end</property>
+                                <child>
+                                    <object class="GtkOverlay">
+                                        <child>
+                                            <object class="GtkBox" id="main_event_box">
                                                 <child>
-                                                    <object class="GtkOverlay">
-                                                        <child>
-                                                            <object class="GtkBox" id="main_event_box">
-                                                                <child>
-                                                                    <object class="DinoUiSizeRequestBox" id="main">
-                                                                        <property name="margin-bottom">15</property>
-                                                                        <property name="orientation">vertical</property>
-                                                                        <property name="size-request-mode">height-for-width</property>
-                                                                    </object>
-                                                                </child>
-                                                            </object>
-                                                        </child>
-                                                        <child type="overlay">
-                                                            <object class="GtkBox" id="message_menu_box">
-                                                                <property name="margin-end">10</property>
-                                                                <property name="halign">end</property>
-                                                                <property name="valign">start</property>
-                                                                <style>
-                                                                    <class name="linked"/>
-                                                                </style>
-                                                                <child>
-                                                                    <object class="GtkButton" id="button1">
-                                                                        <property name="visible">0</property>
-                                                                        <property name="vexpand">0</property>
-                                                                        <property name="halign">end</property>
-                                                                        <property name="valign">end</property>
-                                                                        <child>
-                                                                            <object class="GtkImage" id="button1_icon">
-                                                                                <property name="icon-size">normal</property>
-                                                                            </object>
-                                                                        </child>
-                                                                    </object>
-                                                                </child>
-                                                            </object>
-                                                        </child>
-                                                    </object>
-                                                </child>
-                                            </object>
-                                        </property>
-                                    </object>
-                                </property>
-                                <child type="overlay">
-                                    <object class="GtkRevealer" id="notification_revealer">
-                                        <property name="halign">center</property>
-                                        <property name="valign">start</property>
-                                        <property name="child">
-                                            <object class="GtkFrame" id="frame2">
-                                                <style>
-                                                    <class name="app-notification"/>
-                                                </style>
-                                                <property name="child">
-                                                    <object class="GtkBox" id="notifications">
-                                                        <property name="hexpand">0</property>
-                                                        <property name="vexpand">0</property>
+                                                    <object class="DinoUiSizeRequestBox" id="main">
+                                                        <property name="margin-bottom">15</property>
                                                         <property name="orientation">vertical</property>
+                                                        <property name="size-request-mode">height-for-width</property>
                                                     </object>
-                                                </property>
-                                                <child type="label_item">
-                                                    <placeholder/>
                                                 </child>
                                             </object>
-                                        </property>
+                                        </child>
+                                        <child type="overlay">
+                                            <object class="GtkBox" id="message_menu_box">
+                                                <property name="margin-end">10</property>
+                                                <property name="halign">end</property>
+                                                <property name="valign">start</property>
+                                                <style>
+                                                    <class name="linked"/>
+                                                </style>
+                                            </object>
+                                        </child>
                                     </object>
                                 </child>
                             </object>
                         </property>
                     </object>
-                </child>
-                <child>
-                    <object class="GtkStackPage">
-                        <property name="name">void</property>
+                </property>
+                <child type="overlay">
+                    <object class="GtkRevealer" id="notification_revealer">
+                        <property name="halign">center</property>
+                        <property name="valign">start</property>
                         <property name="child">
-                            <object class="GtkBox"/>
+                            <object class="GtkFrame" id="frame2">
+                                <style>
+                                    <class name="app-notification"/>
+                                </style>
+                                <property name="child">
+                                    <object class="GtkBox" id="notifications">
+                                        <property name="hexpand">0</property>
+                                        <property name="vexpand">0</property>
+                                        <property name="orientation">vertical</property>
+                                    </object>
+                                </property>
+                                <child type="label_item">
+                                    <placeholder/>
+                                </child>
+                            </object>
                         </property>
                     </object>
                 </child>

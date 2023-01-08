@@ -315,7 +315,7 @@ public class Dino.HistorySync {
                     latest_time, latest_id
             );
         }
-        PageRequestResult page_result = yield fetch_query(account, query_params, range[db.mam_catchup.id]);
+        yield fetch_query(account, query_params, range[db.mam_catchup.id]);
     }
 
     /**

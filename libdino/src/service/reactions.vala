@@ -107,9 +107,8 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             // We save the reaction when it gets reflected back to us
         } else if (conversation.type_ == Conversation.Type.CHAT) {
             stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY).send_reaction(stream, conversation.counterpart, "chat", message.stanza_id, reactions);
-            var datetime_now = new DateTime.now();
-            long now_long = (long) (datetime_now.to_unix() * 1000 + datetime_now.get_microsecond());
-            save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_long, reactions);
+            int64 now_millis = GLib.get_real_time () / 1000;
+            save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_millis, reactions);
         }
     }
 
@@ -127,7 +126,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
 
     private class ReactionsTime {
         public Gee.List<string>? emojis = null;
-        public long time = -1;
+        public int64 time = -1;
     }
 
     private ReactionsTime get_chat_user_reactions(Account account, int content_item_id, Jid jid) {
@@ -357,7 +356,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         if (reaction_time.compare(time_now) > 0)  {
             reaction_time = reaction_info.received_time;
         }
-        long reaction_time_long = (long) (reaction_time.to_unix() * 1000 + reaction_time.get_microsecond() / 1000);
+        int64 reaction_time_long = (int64) (reaction_time.to_unix() * 1000 + reaction_time.get_microsecond() / 1000);
 
         // Get current reactions
         string? occupant_id = OccupantIds.get_occupant_id(stanza.stanza);
@@ -418,7 +417,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    private void save_chat_reactions(Account account, Jid jid, int content_item_id, long reaction_time, Gee.List<string> reactions) {
+    private void save_chat_reactions(Account account, Jid jid, int content_item_id, int64 reaction_time, Gee.List<string> reactions) {
         var emoji_builder = new StringBuilder();
         for (int i = 0; i < reactions.size; i++) {
             if (i != 0) emoji_builder.append(",");
@@ -430,11 +429,11 @@ public class Dino.Reactions : StreamInteractionModule, Object {
                 .value(db.reaction.content_item_id, content_item_id, true)
                 .value(db.reaction.jid_id, db.get_jid_id(jid), true)
                 .value(db.reaction.emojis, emoji_builder.str, false)
-                .value(db.reaction.time, reaction_time, false)
+                .value(db.reaction.time, (long)reaction_time, false)
                 .perform();
     }
 
-    private void save_muc_reactions(Account account, int content_item_id, Jid jid, string? occupant_id, Jid? real_jid, long reaction_time, Gee.List<string> reactions) {
+    private void save_muc_reactions(Account account, int content_item_id, Jid jid, string? occupant_id, Jid? real_jid, int64 reaction_time, Gee.List<string> reactions) {
         assert(occupant_id != null || real_jid != null);
 
         int jid_id = db.get_jid_id(jid);
@@ -449,7 +448,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
                 .value(db.reaction.account_id, account.id, true)
                 .value(db.reaction.content_item_id, content_item_id, true)
                 .value(db.reaction.emojis, emoji_builder.str, false)
-                .value(db.reaction.time, reaction_time, false);
+                .value(db.reaction.time, (long)reaction_time, false);
 
         if (real_jid != null) {
             builder.value(db.reaction.jid_id, db.get_jid_id(real_jid), occupant_id == null);

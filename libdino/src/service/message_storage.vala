@@ -42,6 +42,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .order_by(db.message.time, "DESC")
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                .outer_join_with(db.reply, db.reply.message_id, db.message.id)
                 .limit(count);
 
         Gee.List<Message> ret = new LinkedList<Message>(Message.equals_func);
@@ -92,6 +93,7 @@ public class MessageStorage : StreamInteractionModule, Object {
 
         RowOption row_option = db.message.select().with(db.message.id, "=", id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                .outer_join_with(db.reply, db.reply.message_id, db.message.id)
                 .row();
 
         return create_message_from_row_opt(row_option, conversation);
@@ -111,7 +113,8 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.stanza_id, "=", stanza_id)
                 .order_by(db.message.time, "DESC")
-                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id);
+                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                .outer_join_with(db.reply, db.reply.message_id, db.message.id);
 
         if (conversation.counterpart.resourcepart == null) {
             query.with_null(db.message.counterpart_resource);
@@ -138,7 +141,8 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.server_id, "=", server_id)
                 .order_by(db.message.time, "DESC")
-                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id);
+                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
+                .outer_join_with(db.reply, db.reply.message_id, db.message.id);
 
         if (conversation.counterpart.resourcepart == null) {
             query.with_null(db.message.counterpart_resource);

@@ -148,7 +148,7 @@ public abstract class MetaConversationItem : Object {
 }
 
 public interface ConversationItemWidgetInterface: Object {
-    public abstract void set_widget(Object object, WidgetType type);
+    public abstract void set_widget(Object object, WidgetType type, int priority);
 }
 
 public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);

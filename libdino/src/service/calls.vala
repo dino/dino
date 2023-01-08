@@ -82,7 +82,6 @@ namespace Dino {
                 return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
             } else {
                 bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
-                EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
                 return is_private && can_initiate_groupcall(conversation.account);
             }
         }

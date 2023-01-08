@@ -23,6 +23,21 @@ public class MainWindowController : Object {
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(check_unset_conversation);
         stream_interactor.account_removed.connect(check_unset_conversation);
+
+        SimpleAction jump_to_conversatio_message_action = new SimpleAction("jump-to-conversation-message", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
+        jump_to_conversatio_message_action.activate.connect((variant) => {
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null || !this.conversation.equals(conversation)) return;
+
+            int item_id = variant.get_child_value(1).get_int32();
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, item_id);
+
+            select_conversation(conversation, false, false);
+            window.conversation_view.conversation_frame.initialize_around_message(conversation, content_item);
+        });
+        app.add_action(jump_to_conversatio_message_action);
+
     }
 
     public void set_window(MainWindow window) {

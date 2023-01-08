@@ -40,7 +40,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         collection_conversations.unset(conversation);
     }
 
-    public Gee.List<ContentItem> get_items_from_query(QueryBuilder select, Conversation conversation) {
+    private Gee.List<ContentItem> get_items_from_query(QueryBuilder select, Conversation conversation) {
         Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare_func);
 
         foreach (var row in select) {
@@ -58,7 +58,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return ret;
     }
 
-    public ContentItem get_item(Conversation conversation, int id, int content_type, int foreign_id, DateTime time) throws Error {
+    private ContentItem get_item(Conversation conversation, int id, int content_type, int foreign_id, DateTime time) throws Error {
         switch (content_type) {
             case 1:
                 Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
