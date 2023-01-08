@@ -8,7 +8,6 @@ namespace Dino.Ui {
 
 public class FileImageWidget : Box {
 
-    private ScalingImage image;
     FileDefaultWidget file_default_widget;
     FileDefaultWidgetController file_default_widget_controller;
 
@@ -19,29 +18,7 @@ public class FileImageWidget : Box {
     }
 
     public async void load_from_file(File file, string file_name, int MAX_WIDTH=600, int MAX_HEIGHT=300) throws GLib.Error {
-        // Load and prepare image in tread
-        Thread<ScalingImage?> thread = new Thread<ScalingImage?> (null, () => {
-            ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = MAX_WIDTH, max_height = MAX_HEIGHT };
-
-            Gdk.Pixbuf pixbuf;
-            try {
-                pixbuf = new Gdk.Pixbuf.from_file(file.get_path());
-            } catch (Error error) {
-                warning("Can't load picture %s - %s", file.get_path(), error.message);
-                Idle.add(load_from_file.callback);
-                return null;
-            }
-
-            pixbuf = pixbuf.apply_embedded_orientation();
-
-            image.load(pixbuf);
-
-            Idle.add(load_from_file.callback);
-            return image;
-        });
-        yield;
-        image = thread.join();
-        if (image == null) throw new Error(-1, 0, "Error loading image");
+        FixedRatioPicture image = new FixedRatioPicture() { min_width = 100, min_height = 100, max_width = MAX_WIDTH, max_height = MAX_HEIGHT, file = file };
 
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
         string? mime_type = file_info.get_content_type();

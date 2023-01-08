@@ -132,7 +132,7 @@ window.dino-main .dino-quote:hover {
     margin-bottom: 0;
 }
 
-/* Fie Widget */
+/* File Widget */
 
 window.dino-main .file-box-outer,
 window.dino-main .call-box-outer {
@@ -148,7 +148,7 @@ window.dino-main .call-box {
 
 window.dino-main .file-image-widget {
     border: 1px solid alpha(@theme_fg_color, 0.1);
-    border-radius: 3px;
+    border-radius: 6px;
 }
 
 window.dino-main .file-image-widget .file-box-outer {
@@ -165,6 +165,10 @@ window.dino-main .file-image-widget .file-box-outer button {
 
 window.dino-main .file-image-widget .file-box-outer button:hover {
     background: rgba(100, 100, 100, 0.5);
+}
+
+.dino-main .file-image-widget picture {
+    border-radius: 6px;
 }
 
 /* Call widget */
