@@ -9,6 +9,7 @@ namespace Dino.Ui.ConversationSummary {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
 public class ConversationView : Widget, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
+    private const int MESSAGE_MENU_BOX_OFFSET = -20;
 
     public Conversation? conversation { get; private set; }
 
@@ -173,7 +174,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             currently_highlighted.add_css_class("highlight");
 
             // Move message menu
-            message_menu_box.margin_top = (int)(widget_y - 10);
+            message_menu_box.margin_top = (int)(widget_y + MESSAGE_MENU_BOX_OFFSET);
         }
     }
 

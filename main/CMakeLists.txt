@@ -90,7 +90,8 @@ set(RESOURCE_LIST
     unified_main_content.ui
     unified_window_placeholder.ui
 
-    theme.css
+    style.css
+    style-dark.css
 )
 
 compile_gresources(

@@ -33,10 +33,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("im.dino.Dino");
 
-        CssProvider provider = new CssProvider();
-        provider.load_from_resource("/im/dino/Dino/theme.css");
-        StyleContext.add_provider_for_display(Gdk.Display.get_default(), provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
-
         create_actions();
         add_main_option_entries(options);
 

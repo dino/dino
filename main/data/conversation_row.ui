@@ -144,7 +144,7 @@
                                                 <property name="margin-start">5</property>
                                                 <style>
                                                     <class name="conversation_list_row_xbutton"/>
-                                                    <class name="circular-button"/>
+                                                    <class name="circular"/>
                                                     <class name="flat"/>
                                                 </style>
                                                 <child>
