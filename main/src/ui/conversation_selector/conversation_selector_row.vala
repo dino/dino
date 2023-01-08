@@ -246,6 +246,14 @@ public class ConversationSelectorRow : ListBoxRow {
         time_label.label = time_label.label;
         nick_label.label = nick_label.label;
         message_label.label = message_label.label;
+
+        conversation.unread = num_unread;
+        int all_unread = 0;
+        foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
+            all_unread += conversation.unread;
+        }
+        Application app = GLib.Application.get_default() as Application;
+        app.set_unread(all_unread);
     }
 
     public override void state_flags_changed(StateFlags flags) {
