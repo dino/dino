@@ -433,7 +433,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_message.from, quoted_message.stanza_id));
 
                     string body_with_fallback = "> " + Dino.message_body_without_reply_fallback(quoted_message);
-                    body_with_fallback.replace("\n", "\n> ");
+                    body_with_fallback = body_with_fallback.replace("\n", "\n> ");
                     body_with_fallback += "\n";
                     long fallback_length = body_with_fallback.length;
                     body_with_fallback += message.body;
