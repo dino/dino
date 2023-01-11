@@ -94,7 +94,17 @@ public class MessageMetaItem : ContentMetaItem {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent);
         } else {
-            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent);
+            Util.LinkDisplay roster_lookup = (uri) => {
+                string? s = null;
+                if (GLib.Uri.parse_scheme(uri) == "xmpp") {
+                    try {
+                        Jid? j = new Jid(uri["xmpp:".length:uri.length]);
+                        s = Dino.get_real_display_name(stream_interactor, conversation.account, j);
+                    } catch (InvalidJidError e) { /* it's fine */ }
+                }
+                return s;
+            };
+            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent, false, roster_lookup);
         }
 
         if (message.body.has_prefix("/me ")) {
