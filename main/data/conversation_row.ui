@@ -88,20 +88,33 @@
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkRevealer" id="unread_count_revealer">
+                                            <object class="GtkRevealer" id="top_row_revealer">
                                                 <property name="transition-type">slide-right</property>
                                                 <property name="transition-duration">50</property>
                                                 <property name="reveal-child">True</property>
+                                                <property name="margin-start">15</property>
                                                 <child>
-                                                    <object class="GtkLabel" id="unread_count_label">
-                                                        <property name="vexpand">False</property>
-                                                        <property name="visible">False</property>
-                                                        <property name="margin-start">15</property>
-                                                        <property name="xalign">0.5</property>
-                                                        <attributes>
-                                                            <attribute name="scale" value="0.6"/>
-                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                        </attributes>
+                                                    <object class="GtkBox">
+                                                        <property name="orientation">horizontal</property>
+                                                        <property name="spacing">6</property>
+                                                        <child>
+                                                            <object class="GtkLabel" id="unread_count_label">
+                                                                <property name="vexpand">False</property>
+                                                                <property name="visible">False</property>
+                                                                <property name="xalign">0.5</property>
+                                                                <attributes>
+                                                                    <attribute name="scale" value="0.6"/>
+                                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkImage" id="pinned_image">
+                                                                <property name="icon-name">view-pin-symbolic</property>
+                                                                <property name="pixel-size">12</property>
+                                                                <property name="visible">False</property>
+                                                            </object>
+                                                        </child>
                                                     </object>
                                                 </child>
                                             </object>
