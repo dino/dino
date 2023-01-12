@@ -224,11 +224,12 @@ public class FileDefaultWidgetController : Object {
                 open_file();
                 break;
             case FileTransfer.State.NOT_STARTED:
+            case FileTransfer.State.FAILED:
                 assert(stream_interactor != null && file_transfer != null);
                 stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
                 break;
             default:
-                // Clicking doesn't do anything in FAILED and IN_PROGRESS states
+                // Clicking doesn't do anything in IN_PROGRESS state
                 break;
         }
     }
