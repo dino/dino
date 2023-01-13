@@ -121,6 +121,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Message? message = get_message_for_content_item(conversation, content_item);
         if (message == null) return null;
 
+        if (message.edit_to != null) return message.edit_to;
+
         if (conversation.type_ == Conversation.Type.CHAT) {
             return message.stanza_id;
         } else {
@@ -131,6 +133,9 @@ public class ContentItemStore : StreamInteractionModule, Object {
     public Jid? get_message_sender_for_content_item(Conversation conversation, ContentItem content_item) {
         Message? message = get_message_for_content_item(conversation, content_item);
         if (message == null) return null;
+
+        // No need to look at edit_to, because it's the same sender JID.
+
         return message.from;
     }
 
