@@ -50,7 +50,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             combobox.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox.active_id); } );
         }
 
-        Switch pinned_switch = new Switch();
+        Switch pinned_switch = new Switch() { valign=Align.CENTER };
         string category = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;
         contact_details.add(category, _("Pin conversation"), _("Pins the conversation to the top of the conversation list"), pinned_switch);
         pinned_switch.state = conversation.pinned != 0;
