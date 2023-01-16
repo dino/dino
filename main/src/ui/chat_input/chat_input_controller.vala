@@ -74,7 +74,7 @@ public class ChatInputController : Object {
             quoted_content_item = content_item;
             var quote_model = new Quote.Model.from_content_item(content_item, conversation, stream_interactor) { can_abort = true };
             quote_model.aborted.connect(() => {
-                content_item = null;
+                quoted_content_item = null;
                 chat_input.unset_quoted_message();
             });
             chat_input.set_quoted_message(Quote.get_widget(quote_model));
@@ -83,8 +83,8 @@ public class ChatInputController : Object {
     }
 
     public void set_conversation(Conversation conversation) {
-        this.quoted_content_item = null;
         reset_input_field_status();
+        this.quoted_content_item = null;
         chat_input.unset_quoted_message();
 
         this.conversation = conversation;
