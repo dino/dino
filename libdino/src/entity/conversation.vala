@@ -227,7 +227,6 @@ public class Conversation : Object {
             case "send-marker":
                 update.set(db.conversation.send_marker, send_marker); break;
             case "pinned":
-                print("auto-update %d %d %d\n", id, pinned, 0);
                 update.set(db.conversation.pinned, pinned); break;
         }
         update.perform();
