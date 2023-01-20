@@ -54,7 +54,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
         string category = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;
         contact_details.add(category, _("Pin conversation"), _("Pins the conversation to the top of the conversation list"), pinned_switch);
         pinned_switch.state = conversation.pinned != 0;
-        pinned_switch.state_set.connect((state) => { conversation.pinned = state ? 1 : 0; return false; });
+        pinned_switch.state_set.connect((state) => { if (state) conversation.pin(); else conversation.unpin(); return false; });
     }
 
     private Conversation.Setting get_setting(string id) {
