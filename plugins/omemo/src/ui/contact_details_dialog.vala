@@ -107,6 +107,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             var qr_paintable = new QRcode(iri, 2)
                 .to_paintable(MODULE_SIZE_PX * qrcode_image.scale_factor);
             qrcode_image.paintable = qr_paintable;
+            qrcode_image.set_pixel_size(100);
             qrcode_image.margin_top = qrcode_image.margin_end =
                     qrcode_image.margin_bottom = qrcode_image.margin_start = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
             qrcode_popover.add_css_class("qrcode-container");
