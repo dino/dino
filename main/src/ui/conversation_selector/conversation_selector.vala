@@ -45,14 +45,13 @@ public class ConversationSelector : Widget {
             ListBoxRow? first_row = list_box.get_row_at_index(0);
             if (first_row != null) {
                 list_box.select_row(first_row);
-                row_activated(first_row);
             }
         });
 
-        list_box.row_activated.connect(row_activated);
+        list_box.row_selected.connect(row_selected);
     }
 
-    public void row_activated(ListBoxRow r) {
+    public void row_selected(ListBoxRow? r) {
         ConversationSelectorRow? row = r as ConversationSelectorRow;
         if (row != null) {
             conversation_selected(row.conversation);
@@ -113,7 +112,6 @@ public class ConversationSelector : Widget {
             }
             if (next_select_row != null) {
                 list_box.select_row(next_select_row);
-                row_activated(next_select_row);
             }
         }
     }
@@ -135,7 +133,6 @@ public class ConversationSelector : Widget {
         ListBoxRow? next_select_row = list_box.get_row_at_index(new_index);
         if (next_select_row != null) {
             list_box.select_row(next_select_row);
-            row_activated(next_select_row);
         }
     }
 
