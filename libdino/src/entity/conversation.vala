@@ -3,6 +3,11 @@ using Xmpp;
 namespace Dino.Entities {
 
 public class Conversation : Object {
+    private static Conversation[] list = new Conversation[0];
+    public delegate void Applicable(Conversation c);
+    public static void apply(Applicable func) {
+        foreach(var c in list) func(c);
+    }
 
     public signal void object_updated(Conversation conversation);
 
@@ -52,6 +57,8 @@ public class Conversation : Object {
         this.account = account;
         this.counterpart = jid;
         this.type_ = type;
+
+        Conversation.list += this;
     }
 
     public Conversation.from_row(Database db, Qlite.Row row) throws InvalidJidError {
@@ -78,6 +85,25 @@ public class Conversation : Object {
         pinned = row[db.conversation.pinned];
 
         notify.connect(on_update);
+
+        Conversation.list += this;
+    }
+
+    public int pin() {
+        var column = db.conversation.pinned;
+        int order = db.conversation.select({column}).order_by(column, "DESC")
+                .single().get(column);
+        pinned = order+1;
+        return pinned;
+    }
+
+    public int unpin() {
+        Conversation.apply( (c) => {
+            if (c.pinned > pinned)
+                c.pinned -= 1;
+        });
+        pinned = 0;
+        return 0;
     }
 
     public void persist(Database db) {
@@ -201,6 +227,7 @@ public class Conversation : Object {
             case "send-marker":
                 update.set(db.conversation.send_marker, send_marker); break;
             case "pinned":
+                print("auto-update %d %d %d\n", id, pinned, 0);
                 update.set(db.conversation.pinned, pinned); break;
         }
         update.perform();
