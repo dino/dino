@@ -40,6 +40,7 @@ public class ConversationSelector : Widget {
         add_css_class("sidebar");
         list_box.set_header_func(header);
         list_box.set_sort_func(sort);
+        list_box.set_activate_on_single_click(false);
 
         realize.connect(() => {
             ListBoxRow? first_row = list_box.get_row_at_index(0);
@@ -49,12 +50,23 @@ public class ConversationSelector : Widget {
         });
 
         list_box.row_selected.connect(row_selected);
+        list_box.row_activated.connect(row_activated);
     }
 
     public void row_selected(ListBoxRow? r) {
         ConversationSelectorRow? row = r as ConversationSelectorRow;
         if (row != null) {
             conversation_selected(row.conversation);
+        }
+    }
+
+    public void row_activated(ListBoxRow r) {
+        ConversationSelectorRow? row = r as ConversationSelectorRow;
+        Conversation c = row.conversation;
+        if (c.pinned != 0) {
+            c.unpin();
+        } else {
+            c.pin();
         }
     }
 
