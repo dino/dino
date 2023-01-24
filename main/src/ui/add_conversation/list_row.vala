@@ -9,7 +9,7 @@ namespace Dino.Ui {
 public class ListRow : Widget {
 
     public Grid outer_grid;
-    public AvatarImage image;
+    public AvatarPicture picture;
     public Label name_label;
     public Label via_label;
 
@@ -19,7 +19,7 @@ public class ListRow : Widget {
     construct {
         Builder builder = new Builder.from_resource("/im/dino/Dino/add_conversation/list_row.ui");
         outer_grid = (Grid) builder.get_object("outer_grid");
-        image = (AvatarImage) builder.get_object("image");
+        picture = (AvatarPicture) builder.get_object("picture");
         name_label = (Label) builder.get_object("name_label");
         via_label = (Label) builder.get_object("via_label");
 
@@ -45,7 +45,7 @@ public class ListRow : Widget {
             via_label.visible = false;
         }
         name_label.label = display_name;
-        image.set_conversation(stream_interactor, conv);
+        picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conv);
     }
 
     public override void dispose() {

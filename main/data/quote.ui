@@ -7,10 +7,9 @@
       <class name="dino-quote"/>
     </style>
     <child>
-      <object class="DinoUiAvatarImage" id="avatar">
-        <property name="allow_gray">False</property>
-        <property name="height">15</property>
-        <property name="width">15</property>
+      <object class="DinoUiAvatarPicture" id="avatar">
+        <property name="height-request">15</property>
+        <property name="width-request">15</property>
         <property name="valign">center</property>
         <layout>
           <property name="column">0</property>

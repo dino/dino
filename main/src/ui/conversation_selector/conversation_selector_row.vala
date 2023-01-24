@@ -12,7 +12,7 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_row.ui")]
 public class ConversationSelectorRow : ListBoxRow {
 
-    [GtkChild] protected unowned AvatarImage image;
+    [GtkChild] protected unowned AvatarPicture picture;
     [GtkChild] protected unowned Label name_label;
     [GtkChild] protected unowned Label time_label;
     [GtkChild] protected unowned Label nick_label;
@@ -101,7 +101,7 @@ public class ConversationSelectorRow : ListBoxRow {
         x_button.clicked.connect(() => {
             stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
         });
-        image.set_conversation(stream_interactor, conversation);
+        picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
         conversation.notify["read-up-to-item"].connect(() => update_read());
         conversation.notify["pinned"].connect(() => { update_pinned_icon(); });
 

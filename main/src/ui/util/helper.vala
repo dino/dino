@@ -61,62 +61,6 @@ public static string color_for_show(string show) {
     }
 }
 
-public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation) {
-    return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
-}
-
-public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, owned Jid[] jids) {
-    AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
-    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-    if (conversation.type_ != Conversation.Type.GROUPCHAT) {
-        Jid jid = jids.length == 1 ? jids[0] : conversation.counterpart;
-        Jid avatar_jid = jid;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-        return new AvatarDrawer().tile(yield avatar_manager.get_avatar(conversation.account, avatar_jid), jids.length == 1 ?
-                get_participant_display_name(stream_interactor, conversation, jid) :
-                get_conversation_display_name(stream_interactor, conversation),
-                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
-    }
-    if (jids.length > 0) {
-        AvatarDrawer drawer = new AvatarDrawer();
-        for (int i = 0; i < (jids.length <= 4 ? jids.length : 3); i++) {
-            Jid avatar_jid = jids[i];
-            Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-            if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-                avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-                part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-            }
-            drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jids[i]),
-                        Util.get_avatar_hex_color(stream_interactor, conversation.account, jids[i], conversation));
-        }
-        if (jids.length > 4) {
-            drawer.plus();
-        }
-        return drawer;
-    }
-    Gdk.Pixbuf? room_avatar = yield avatar_manager.get_avatar(conversation.account, conversation.counterpart);
-    Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, conversation.account);
-    if (room_avatar != null || !muc_manager.is_private_room(conversation.account, conversation.counterpart) || occupants == null || occupants.size == 0) {
-        return new AvatarDrawer().tile(room_avatar, "#", Util.get_avatar_hex_color(stream_interactor, conversation.account, conversation.counterpart, conversation));
-    }
-    AvatarDrawer drawer = new AvatarDrawer();
-    for (int i = 0; i < (occupants.size <= 4 ? occupants.size : 3); i++) {
-        Jid jid = occupants[i];
-        Jid avatar_jid = jid;
-        Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-        if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-            avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-            part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-        }
-        drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jid),
-                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
-    }
-    if (occupants.size > 4) {
-        drawer.plus();
-    }
-    return drawer;
-}
-
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
     return Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
 }
@@ -136,27 +80,6 @@ public static string get_groupchat_display_name(StreamInteractor stream_interact
 public static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
     return Dino.get_occupant_display_name(stream_interactor, conversation, jid, me_is_me ? _("Me") : null);
 }
-
-// TODO this has no usages?
-//public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {
-//    if (scale == 0) scale = image.scale_factor;
-//    Cairo.Surface surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window());
-//    if (height == 0 && width != 0) {
-//        height = (int) ((double) width / pixbuf.width * pixbuf.height);
-//    } else if (height != 0 && width == 0) {
-//        width = (int) ((double) height / pixbuf.height * pixbuf.width);
-//    }
-//    if (width != 0) {
-//        Cairo.Surface surface_new = new Cairo.Surface.similar_image(surface, Cairo.Format.ARGB32, width, height);
-//        Cairo.Context context = new Cairo.Context(surface_new);
-//        context.scale((double) width * scale / pixbuf.width, (double) height * scale / pixbuf.height);
-//        context.set_source_surface(surface, 0, 0);
-//        context.get_source().set_filter(Cairo.Filter.BEST);
-//        context.paint();
-//        surface = surface_new;
-//    }
-//    image.set_from_surface(surface);
-//}
 
 public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
     Gtk.CssProvider provider = force_color(label, css_color);

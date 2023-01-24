@@ -68,7 +68,7 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
     private Conversation conversation;
     private Gee.List<Jid> jids = new ArrayList<Jid>();
     private Label label;
-    private AvatarImage image;
+    private AvatarPicture picture;
 
     public MetaChatStateItem(StreamInteractor stream_interactor, Conversation conversation, Gee.List<Jid> jids) {
         this.stream_interactor = stream_interactor;
@@ -79,10 +79,10 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType widget_type) {
         label = new Label("") { xalign=0, vexpand=true };
         label.add_css_class("dim-label");
-        image = new AvatarImage() { margin_top=2, valign=Align.START };
+        picture = new AvatarPicture() { margin_top=2, valign=Align.START };
 
         Box image_content_box = new Box(Orientation.HORIZONTAL, 8);
-        image_content_box.append(image);
+        image_content_box.append(picture);
         image_content_box.append(label);
 
         update();
@@ -97,9 +97,7 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
     }
 
     private void update() {
-        if (image == null || label == null) return;
-
-        image.set_conversation_participants(stream_interactor, conversation, jids.to_array());
+        if (picture == null || label == null) return;
 
         Gee.List<string> display_names = new ArrayList<string>();
         foreach (Jid jid in jids) {
@@ -108,12 +106,26 @@ private class MetaChatStateItem : Plugins.MetaConversationItem {
         string new_text = "";
         if (jids.size > 3) {
             new_text = _("%s, %s and %i others are typing…").printf(display_names[0], display_names[1], jids.size - 2);
+            picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor)
+                    .add_participant(conversation, jids[0])
+                    .add_participant(conversation, jids[1])
+                    .add_participant(conversation, jids[2])
+                    .add("+");
         } else if (jids.size == 3) {
             new_text = _("%s, %s and %s are typing…").printf(display_names[0], display_names[1], display_names[2]);
+            picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor)
+                    .add_participant(conversation, jids[0])
+                    .add_participant(conversation, jids[1])
+                    .add_participant(conversation, jids[2]);
         } else if (jids.size == 2) {
             new_text =_("%s and %s are typing…").printf(display_names[0], display_names[1]);
+            picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor)
+                    .add_participant(conversation, jids[0])
+                    .add_participant(conversation, jids[1]);
         } else {
             new_text = _("%s is typing…").printf(display_names[0]);
+            picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor)
+                    .add_participant(conversation, jids[0]);
         }
 
         label.label = new_text;

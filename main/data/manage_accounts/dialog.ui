@@ -93,11 +93,9 @@
                                                                     <class name="image-button"/>
                                                                 </style>
                                                                 <child>
-                                                                    <object class="DinoUiAvatarImage" id="image">
-                                                                        <property name="height">50</property>
-                                                                        <property name="width">50</property>
-<!--                                                                        <property name="xalign">1</property>-->
-                                                                        <property name="allow_gray">False</property>
+                                                                    <object class="DinoUiAvatarPicture" id="picture">
+                                                                        <property name="height-request">50</property>
+                                                                        <property name="width-request">50</property>
                                                                     </object>
                                                                 </child>
                                                             </object>
