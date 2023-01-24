@@ -23,7 +23,7 @@ public class MainWindow : Adw.Window {
     public Adw.Leaflet leaflet;
     public Box left_box;
     public Box right_box;
-    public Revealer search_revealer;
+    public Adw.Flap search_flap;
     public GlobalSearch global_search;
     private Stack stack = new Stack();
     private Stack left_stack;
@@ -35,7 +35,7 @@ public class MainWindow : Adw.Window {
 
     class construct {
         var shortcut = new Shortcut(new KeyvalTrigger(Key.F, ModifierType.CONTROL_MASK), new CallbackAction((widget, args) => {
-            ((MainWindow) widget).search_revealer.reveal_child = true;
+            ((MainWindow) widget).search_flap.reveal_flap = true;
             return false;
         }));
         add_shortcut(shortcut);
@@ -67,11 +67,11 @@ public class MainWindow : Adw.Window {
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
-        search_revealer = (Revealer) builder.get_object("search_revealer");
+        search_flap = (Adw.Flap) builder.get_object("search_flap");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         conversation_selector.conversation_selected.connect_after(() => leaflet.navigate(Adw.NavigationDirection.FORWARD));
 
-        Frame search_frame = (Frame) builder.get_object("search_frame");
+        Adw.Bin search_frame = (Adw.Bin) builder.get_object("search_frame");
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
     }

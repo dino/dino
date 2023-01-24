@@ -217,6 +217,7 @@ public class MessageMetaItem : ContentMetaItem {
         if (correction_allowed) {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
             action1.icon_name = "document-edit-symbolic";
+            action1.tooltip = _("Edit message");
             action1.callback = (button, content_meta_item_activated, widget) => {
                 this.in_edit_mode = true;
             };
@@ -225,6 +226,7 @@ public class MessageMetaItem : ContentMetaItem {
 
         Plugins.MessageAction reply_action = new Plugins.MessageAction();
         reply_action.icon_name = "mail-reply-sender-symbolic";
+        reply_action.tooltip = _("Reply");
         reply_action.callback = (button, content_meta_item_activated, widget) => {
             GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(content_item.id) }));
         };
@@ -233,6 +235,7 @@ public class MessageMetaItem : ContentMetaItem {
         if (supports_reaction) {
             Plugins.MessageAction action2 = new Plugins.MessageAction();
             action2.icon_name = "dino-emoticon-add-symbolic";
+            action2.tooltip = _("Add reaction");
             EmojiChooser chooser = new EmojiChooser();
             chooser.emoji_picked.connect((emoji) => {
                 stream_interactor.get_module(Reactions.IDENTITY).add_reaction(message_item.conversation, message_item, emoji);

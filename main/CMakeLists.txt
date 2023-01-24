@@ -112,6 +112,9 @@ set(MAIN_DEFINITIONS)
 if(GTK4_VERSION VERSION_GREATER_EQUAL "4.6")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_6)
 endif()
+if(GTK4_VERSION VERSION_GREATER_EQUAL "4.8")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_8)
+endif()
 if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_2)
 endif()
@@ -204,7 +207,9 @@ SOURCES
     src/ui/util/label_hybrid.vala
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
-    src/ui/util/scaling_image.vala
+
+    src/ui/widgets/fixed_ratio_picture.vala
+    src/ui/widgets/natural_size_increase.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi

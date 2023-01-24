@@ -151,6 +151,8 @@ public class GlobalSearch {
     }
 
     private void clear_search() {
+        // Scroll to top
+        results_scrolled.vadjustment.value = 0;
         foreach (Widget widget in results_box_children) {
             results_box.remove(widget);
         }
