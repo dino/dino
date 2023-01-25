@@ -27,7 +27,8 @@ namespace Dino.Ui.Quote {
                 var message = ((MessageItem) content_item).message;
                 this.message = Dino.message_body_without_reply_fallback(message);
             } else if (content_item.type_ == FileItem.TYPE) {
-                this.message = "[File]";
+                var file_transfer = ((FileItem) content_item).file_transfer;
+                this.message = _("File") + ": " + file_transfer.file_name;
             }
             this.message_time = content_item.time;
 

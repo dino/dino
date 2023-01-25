@@ -11,7 +11,7 @@ class OccupantsEntry : Plugins.ConversationTitlebarEntry, Object {
     StreamInteractor stream_interactor;
     private Conversation? conversation;
 
-    private MenuButton button = new MenuButton() { icon_name="system-users-symbolic", tooltip_text=Util.string_if_tooltips_active(_("Members")) };
+    private MenuButton button = new MenuButton() { icon_name="system-users-symbolic", tooltip_text=Util.string_if_tooltips_active(_("Members")), visible=false };
 
     private OccupantMenu.View menu = null;
 

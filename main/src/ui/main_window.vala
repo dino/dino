@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class MainWindow : Gtk.Window {
+public class MainWindow : Adw.Window {
 
     public signal void conversation_selected(Conversation conversation);
 
@@ -19,11 +19,11 @@ public class MainWindow : Gtk.Window {
     public ConversationSelector conversation_selector;
     public ConversationTitlebar conversation_titlebar;
     public Widget conversation_list_titlebar;
-    public HeaderBar placeholder_headerbar = new HeaderBar() { show_title_buttons=true };
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL };
-    public Paned headerbar_paned = new Paned(Orientation.HORIZONTAL) { resize_start_child=false, shrink_start_child=false, shrink_end_child=false };
-    public Paned paned;
-    public Revealer search_revealer;
+    public Adw.Leaflet leaflet;
+    public Box left_box;
+    public Box right_box;
+    public Adw.Flap search_flap;
     public GlobalSearch global_search;
     private Stack stack = new Stack();
     private Stack left_stack;
@@ -35,7 +35,7 @@ public class MainWindow : Gtk.Window {
 
     class construct {
         var shortcut = new Shortcut(new KeyvalTrigger(Key.F, ModifierType.CONTROL_MASK), new CallbackAction((widget, args) => {
-            ((MainWindow) widget).search_revealer.reveal_child = true;
+            ((MainWindow) widget).search_flap.reveal_flap = true;
             return false;
         }));
         add_shortcut(shortcut);
@@ -51,65 +51,56 @@ public class MainWindow : Gtk.Window {
 
         this.add_css_class("dino-main");
 
-        Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
-        ((Widget)this).realize.connect(set_window_buttons);
         ((Widget)this).realize.connect(restore_window_size);
 
-        setup_headerbar();
         setup_unified();
+        setup_headerbar();
         setup_stack();
-
-        paned.bind_property("position", headerbar_paned, "position", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
     }
 
     private void setup_unified() {
         Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
-        paned = (Paned) builder.get_object("paned");
-        box.append(paned);
+        leaflet = (Adw.Leaflet) builder.get_object("leaflet");
+        box.append(leaflet);
+        left_box = (Box) builder.get_object("left_box");
+        right_box = (Box) builder.get_object("right_box");
         left_stack = (Stack) builder.get_object("left_stack");
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
-        search_revealer = (Revealer) builder.get_object("search_revealer");
+        search_flap = (Adw.Flap) builder.get_object("search_flap");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
+        conversation_selector.conversation_selected.connect_after(() => leaflet.navigate(Adw.NavigationDirection.FORWARD));
 
-        Frame search_frame = (Frame) builder.get_object("search_frame");
+        Adw.Bin search_frame = (Adw.Bin) builder.get_object("search_frame");
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
-
-        Image conversation_list_placeholder_image = (Image) builder.get_object("conversation_list_placeholder_image");
-        conversation_list_placeholder_image.set_from_pixbuf(new Pixbuf.from_resource("/im/dino/Dino/dino-conversation-list-placeholder-arrow.svg"));
     }
 
     private void setup_headerbar() {
         if (Util.use_csd()) {
             conversation_list_titlebar = get_conversation_list_titlebar_csd();
             conversation_titlebar = new ConversationTitlebarCsd();
+            leaflet.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
+            leaflet.bind_property("folded", conversation_titlebar.get_widget(), "show-start-title-buttons", BindingFlags.SYNC_CREATE);
         } else {
+            Label title_label = new Label("Dino");
+            HeaderBar titlebar = new HeaderBar() { title_widget=title_label, show_title_buttons=true };
+            box.prepend(titlebar);
+
             conversation_list_titlebar = new ConversationListTitlebar();
             conversation_titlebar = new ConversationTitlebarNoCsd();
-            box.append(headerbar_paned);
         }
-        headerbar_paned.set_start_child(conversation_list_titlebar);
-        headerbar_paned.set_end_child(conversation_titlebar.get_widget());
-    }
-
-    private void set_window_buttons() {
-        if (!Util.use_csd()) return;
-        Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
-        if (gtk_settings == null) return;
-
-        string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
-        HeaderBar conversation_headerbar = this.conversation_titlebar.get_widget() as HeaderBar;
-        conversation_headerbar.decoration_layout = ((buttons.length == 2) ? ":" + buttons[1] : "");
-        HeaderBar conversation_list_headerbar = this.conversation_list_titlebar as HeaderBar;
-        conversation_list_headerbar.decoration_layout = buttons[0] + ":";
+        left_box.prepend(conversation_list_titlebar);
+        right_box.prepend(conversation_titlebar.get_widget());
+        leaflet.notify["folded"].connect_after(() => conversation_titlebar.back_button_visible = leaflet.folded);
+        conversation_titlebar.back_pressed.connect(() => leaflet.navigate(Adw.NavigationDirection.BACK));
     }
 
     private void setup_stack() {
         stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
-        set_child(stack);
+        set_content(stack);
     }
 
     public enum StackState {
@@ -125,25 +116,16 @@ public class MainWindow : Gtk.Window {
             right_stack.set_visible_child_name("content");
 
             stack.set_visible_child_name("main");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
         } else if (stack_state == StackState.CLEAN_START || stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
             if (stack_state == StackState.CLEAN_START) {
                 stack.set_visible_child_name("welcome_placeholder");
             } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
                 stack.set_visible_child_name("accounts_placeholder");
             }
-            if (Util.use_csd()) {
-                set_titlebar(placeholder_headerbar);
-            }
         } else if (stack_state == StackState.NO_ACTIVE_CONVERSATIONS) {
             stack.set_visible_child_name("main");
             left_stack.set_visible_child_name("placeholder");
             right_stack.set_visible_child_name("placeholder");
-            if (Util.use_csd()) {
-                set_titlebar(headerbar_paned);
-            }
         }
     }
 
@@ -194,28 +176,24 @@ public class MainWindow : Gtk.Window {
 
 public class WelcomePlaceholder : MainWindowPlaceholder {
     public WelcomePlaceholder() {
-        title_label.label = _("Welcome to Dino!");
-        label.label = _("Sign in or create an account to get started.");
+        status_page.title = _("Welcome to Dino!");
+        status_page.description = _("Sign in or create an account to get started.");
         primary_button.label = _("Set up account");
-        title_label.visible = true;
-        secondary_button.visible = false;
+        primary_button.visible = true;
     }
 }
 
 public class NoAccountsPlaceholder : MainWindowPlaceholder {
     public NoAccountsPlaceholder() {
-        title_label.label = _("No active accounts");
+        status_page.title = _("No active accounts");
         primary_button.label = _("Manage accounts");
-        title_label.visible = true;
-        label.visible = false;
-        secondary_button.visible = false;
+        primary_button.visible = true;
     }
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
 public class MainWindowPlaceholder : Box {
-    [GtkChild] public unowned Label title_label;
-    [GtkChild] public unowned Label label;
+    [GtkChild] public unowned Adw.StatusPage status_page;
     [GtkChild] public unowned Button primary_button;
     [GtkChild] public unowned Button secondary_button;
 }

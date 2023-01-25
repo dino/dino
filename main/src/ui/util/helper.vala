@@ -419,7 +419,8 @@ public string summarize_whitespaces_to_space(string s) {
     try {
         return (/\s+/).replace_literal(s, -1, 0, " ");
     } catch (RegexError e) {
-        assert_not_reached();
+        critical("RegexError when summarizing whitespaces in '%s': %s", s, e.message);
+        return s;
     }
 }
 

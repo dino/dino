@@ -80,7 +80,7 @@ public class SelectContactDialog : Gtk.Dialog {
             add_contact_dialog.present();
         });
         select_jid_fragment.remove_jid.connect((row) => {
-            ListRow list_row = roster_list_box.get_selected_row() as ListRow;
+            ListRow list_row = roster_list_box.get_selected_row().child as ListRow;
             stream_interactor.get_module(RosterManager.IDENTITY).remove_jid(list_row.account, list_row.jid);
         });
         select_jid_fragment.notify["done"].connect(() => {
