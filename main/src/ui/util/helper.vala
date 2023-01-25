@@ -445,7 +445,7 @@ public Widget? widget_if_tooltips_active(Widget w) {
     return use_tooltips() ? w : null;
 }
 
-public string? string_if_tooltips_active(string s) {
+public string? string_if_tooltips_active(string? s) {
     return use_tooltips() ? s : null;
 }
 
