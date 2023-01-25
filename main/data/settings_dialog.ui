@@ -63,6 +63,24 @@
                                 </layout>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkCheckButton" id="unread_count_checkbutton">
+                                <property name="label" translatable="yes">Count unread messages</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">5</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkCheckButton" id="unread_count_notifications_checkbutton">
+                                <property name="label" translatable="yes">Include without notifications chats in unread count</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">6</property>
+                                </layout>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

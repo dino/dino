@@ -12,6 +12,8 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        unread_count_ = col_to_bool_or_default("unread_count", true);
+        unread_count_notifications_ = col_to_bool_or_default("unread_count_notifications", true);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -76,6 +78,30 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private bool unread_count_;
+    public bool unread_count {
+        get { return unread_count_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "unread_count", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            unread_count_ = value;
+        }
+    }
+
+    private bool unread_count_notifications_;
+    public bool unread_count_notifications {
+        get { return unread_count_notifications_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "unread_count_notifications", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            unread_count_notifications_ = value;
         }
     }
 }
