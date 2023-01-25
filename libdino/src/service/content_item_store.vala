@@ -139,7 +139,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return message.from;
     }
 
-    private Message? get_message_for_content_item(Conversation conversation, ContentItem content_item) {
+    public Message? get_message_for_content_item(Conversation conversation, ContentItem content_item) {
         FileItem? file_item = content_item as FileItem;
         if (file_item != null) {
             if (file_item.file_transfer.provider != 0 || file_item.file_transfer.info == null) return null;

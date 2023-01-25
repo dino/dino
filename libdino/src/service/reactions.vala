@@ -26,7 +26,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         this.db = database;
         stream_interactor.account_added.connect(on_account_added);
 
-        stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent_or_received.connect(on_new_message);
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_new_item);
     }
 
     public void add_reaction(Conversation conversation, ContentItem content_item, string reaction) {
@@ -248,7 +248,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(reaction_message);
 
         int content_item_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_id_for_message_id(conversation, message_id);
-        var reaction_info = new ReactionInfo() { account=account, from_jid=from_jid, reactions=reactions, stanza=stanza, received_time=new DateTime.now() };
+        var reaction_info = new ReactionInfo() { conversation=conversation, from_jid=from_jid, reactions=reactions, stanza=stanza, received_time=new DateTime.now() };
 
         if (content_item_id != -1) {
             process_reaction_for_message(content_item_id, reaction_info);
@@ -263,45 +263,33 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         reaction_infos[message_id].add(reaction_info);
     }
 
-    private void on_new_message(Message message, Conversation conversation) {
-        Gee.List<ReactionInfo>? reaction_info_list = null;
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            reaction_info_list = reaction_infos[message.stanza_id];
-        } else {
-            reaction_info_list = reaction_infos[message.server_id];
-        }
+    /*
+     * When we get a new ContentItem, check if we have any reactions cached that apply to it.
+     * If so, process the reactions, map and store them.
+     */
+    private void on_new_item(ContentItem item, Conversation conversation) {
+        string? stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, item);
+        if (stanza_id == null) return;
+
+        Gee.List<ReactionInfo>? reaction_info_list = reaction_infos[stanza_id];
         if (reaction_info_list == null) return;
 
+        Message? message = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_for_content_item(conversation, item);
+        if (message == null) return;
+
         // Check if the (or potentially which) reaction fits the message
-        ReactionInfo? reaction_info = null;
-        foreach (ReactionInfo info in reaction_info_list) {
-            if (!info.account.equals(conversation.account)) return;
-            switch (info.stanza.type_) {
-                case MessageStanza.TYPE_CHAT:
-                    Jid counterpart = message.from.equals_bare(conversation.account.bare_jid) ? info.stanza.from: info.stanza.to;
-                    if (message.type_ != Message.Type.CHAT || !counterpart.equals_bare(conversation.counterpart)) continue;
-                    break;
-                case MessageStanza.TYPE_GROUPCHAT:
-                    if (message.type_ != Message.Type.GROUPCHAT || !message.from.equals_bare(conversation.counterpart)) continue;
-                    break;
-                default:
-                    break;
+        var applicable_reactions = new ArrayList<ReactionInfo>();
+        applicable_reactions.add_all_iterator(reaction_info_list.filter(info => info.conversation.equals(conversation)));
+
+        foreach (ReactionInfo applicable_reaction in applicable_reactions) {
+            reaction_info_list.remove(applicable_reaction);
+            if (reaction_info_list.is_empty) {
+                reaction_infos.unset(stanza_id);
             }
 
-            reaction_info = info;
+            debug("Got ContentItem for reaction %s", stanza_id);
+            process_reaction_for_message(item.id, applicable_reaction);
         }
-        if (reaction_info == null) return;
-        reaction_info_list.remove(reaction_info);
-        if (reaction_info_list.is_empty) {
-            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-                reaction_infos.unset(message.server_id);
-            } else {
-                reaction_infos.unset(message.stanza_id);
-            }
-        }
-
-        debug("Got message for reaction %s", message.stanza_id);
-        process_reaction_for_message(message.id, reaction_info);
     }
 
     private Message? get_message_for_reaction(Conversation conversation, string message_id) {
@@ -314,7 +302,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
     }
 
     private void process_reaction_for_message(int content_item_id, ReactionInfo reaction_info) {
-        Account account = reaction_info.account;
+        Account account = reaction_info.conversation.account;
         MessageStanza stanza = reaction_info.stanza;
         Jid from_jid = reaction_info.from_jid;
         Gee.List<string> reactions = reaction_info.reactions;
@@ -463,7 +451,7 @@ public class Dino.ReactionUsers {
 }
 
 public class Dino.ReactionInfo {
-    public Account account { get; set; }
+    public Conversation conversation { get; set; }
     public Jid from_jid { get; set; }
     public Gee.List<string> reactions { get; set; }
     public MessageStanza stanza { get; set; }
