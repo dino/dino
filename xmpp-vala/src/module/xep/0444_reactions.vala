@@ -67,7 +67,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         }
         stream.get_module(Module.IDENTITY).received_reactions(stream, message.from, id_attribute, reactions, message);
 
-        return false;
+        return true;
     }
 }
 
