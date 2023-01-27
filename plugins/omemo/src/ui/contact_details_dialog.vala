@@ -38,7 +38,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
     [GtkChild] private unowned Switch auto_accept_switch;
     [GtkChild] private unowned Button copy_button;
     [GtkChild] private unowned MenuButton show_qrcode_button;
-    [GtkChild] private unowned Image qrcode_image;
+    [GtkChild] private unowned Picture qrcode_picture;
     [GtkChild] private unowned Popover qrcode_popover;
 
     private ArrayList<Widget> new_keys_listbox_children = new ArrayList<Widget>();
@@ -105,10 +105,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
             const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
             const int MODULE_SIZE_PX = 4;  // arbitrary
             var qr_paintable = new QRcode(iri, 2)
-                .to_paintable(MODULE_SIZE_PX * qrcode_image.scale_factor);
-            qrcode_image.paintable = qr_paintable;
-            qrcode_image.margin_top = qrcode_image.margin_end =
-                    qrcode_image.margin_bottom = qrcode_image.margin_start = QUIET_ZONE_MODULES*MODULE_SIZE_PX;
+                .to_paintable(MODULE_SIZE_PX * qrcode_picture.scale_factor);
+            qrcode_picture.paintable = qr_paintable;
+            qrcode_picture.margin_top = qrcode_picture.margin_end =
+                    qrcode_picture.margin_bottom = qrcode_picture.margin_start = QUIET_ZONE_MODULES * MODULE_SIZE_PX;
             qrcode_popover.add_css_class("qrcode-container");
 
             show_qrcode_button.popover = qrcode_popover;
