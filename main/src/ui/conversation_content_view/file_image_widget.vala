@@ -8,64 +8,70 @@ namespace Dino.Ui {
 
 public class FileImageWidget : Box {
 
-    private ScalingImage image;
-    FileDefaultWidget file_default_widget;
-    FileDefaultWidgetController file_default_widget_controller;
-
     public FileImageWidget() {
         this.halign = Align.START;
 
         this.add_css_class("file-image-widget");
+        this.set_cursor_from_name("zoom-in");
     }
 
     public async void load_from_file(File file, string file_name, int MAX_WIDTH=600, int MAX_HEIGHT=300) throws GLib.Error {
-        // Load and prepare image in tread
-        Thread<ScalingImage?> thread = new Thread<ScalingImage?> (null, () => {
-            ScalingImage image = new ScalingImage() { halign=Align.START, visible = true, max_width = MAX_WIDTH, max_height = MAX_HEIGHT };
+        Gtk.Box image_overlay_toolbar = new Gtk.Box(Orientation.HORIZONTAL, 0) { halign=Gtk.Align.END, valign=Gtk.Align.START, margin_top=10, margin_start=10, margin_end=10, margin_bottom=10, vexpand=false, visible=false };
+        image_overlay_toolbar.add_css_class("card");
+        image_overlay_toolbar.add_css_class("toolbar");
+        image_overlay_toolbar.add_css_class("overlay-toolbar");
+        image_overlay_toolbar.set_cursor_from_name("default");
 
-            Gdk.Pixbuf pixbuf;
-            try {
-                pixbuf = new Gdk.Pixbuf.from_file(file.get_path());
-            } catch (Error error) {
-                warning("Can't load picture %s - %s", file.get_path(), error.message);
-                Idle.add(load_from_file.callback);
-                return null;
+        FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=MAX_WIDTH, max_height=MAX_HEIGHT, file=file };
+        GestureClick gesture_click_controller = new GestureClick();
+        gesture_click_controller.button = 1; // listen for left clicks
+        gesture_click_controller.released.connect((n_press, x, y) => {
+            switch (gesture_click_controller.get_device().source) {
+                case Gdk.InputSource.TOUCHSCREEN:
+                case Gdk.InputSource.PEN:
+                    if (n_press == 1) {
+                        image_overlay_toolbar.visible = !image_overlay_toolbar.visible;
+                    } else if (n_press == 2) {
+                        this.activate_action("file.open", null);
+                        image_overlay_toolbar.visible = false;
+                    }
+                    break;
+                default:
+                    this.activate_action("file.open", null);
+                    image_overlay_toolbar.visible = false;
+                    break;
             }
-
-            pixbuf = pixbuf.apply_embedded_orientation();
-
-            image.load(pixbuf);
-
-            Idle.add(load_from_file.callback);
-            return image;
         });
-        yield;
-        image = thread.join();
-        if (image == null) throw new Error(-1, 0, "Error loading image");
+        image.add_controller(gesture_click_controller);
 
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
         string? mime_type = file_info.get_content_type();
 
-        file_default_widget = new FileDefaultWidget() { valign=Align.END, vexpand=false, visible=false };
-        file_default_widget.image_stack.visible = false;
-        file_default_widget_controller = new FileDefaultWidgetController(file_default_widget);
-        file_default_widget_controller.set_file(file, file_name, mime_type);
+        MenuButton button = new MenuButton();
+        button.icon_name = "open-menu";
+        Menu menu_model = new Menu();
+        menu_model.append(_("Open"), "file.open");
+        menu_model.append(_("Save as…"), "file.save_as");
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+        button.popover = popover_menu;
+
+        image_overlay_toolbar.append(button);
 
         Overlay overlay = new Overlay();
         overlay.set_child(image);
-        overlay.add_overlay(file_default_widget);
+        overlay.add_overlay(image_overlay_toolbar);
         overlay.set_measure_overlay(image, true);
-        overlay.set_clip_overlay(file_default_widget, true);
+        overlay.set_clip_overlay(image_overlay_toolbar, true);
 
         EventControllerMotion this_motion_events = new EventControllerMotion();
         this.add_controller(this_motion_events);
         this_motion_events.enter.connect(() => {
-            file_default_widget.visible = true;
+            image_overlay_toolbar.visible = true;
         });
         this_motion_events.leave.connect(() => {
-            if (file_default_widget.file_menu.popover != null && file_default_widget.file_menu.popover.visible) return;
+            if (button.popover != null && button.popover.visible) return;
 
-            file_default_widget.visible = false;
+            image_overlay_toolbar.visible = false;
         });
 
         this.append(overlay);

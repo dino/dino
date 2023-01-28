@@ -31,7 +31,9 @@
                                                 <property name="halign">end</property>
                                                 <property name="valign">start</property>
                                                 <style>
-                                                    <class name="linked"/>
+                                                    <class name="card"/>
+                                                    <class name="toolbar"/>
+                                                    <class name="overlay-toolbar"/>
                                                 </style>
                                             </object>
                                         </child>

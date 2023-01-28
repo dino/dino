@@ -425,24 +425,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
             new_message.type_ = MessageStanza.TYPE_CHAT;
         }
 
-        if (message.quoted_item_id > 0) {
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
-            if (content_item != null && content_item.type_ == MessageItem.TYPE)  {
-                Message? quoted_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(((MessageItem) content_item).message.id, conversation);
-                if (quoted_message != null) {
-                    Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_message.from, quoted_message.stanza_id));
-
-                    string body_with_fallback = "> " + Dino.message_body_without_reply_fallback(quoted_message);
-                    body_with_fallback = body_with_fallback.replace("\n", "\n> ");
-                    body_with_fallback += "\n";
-                    long fallback_length = body_with_fallback.length;
-                    body_with_fallback += message.body;
-                    new_message.body = body_with_fallback;
-                    var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback_length);
-                    Xep.FallbackIndication.set_fallback(new_message, new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
-                }
-            }
-        }
+        string? fallback = get_fallback_body_set_infos(message, new_message, conversation);
+        new_message.body = fallback == null ? message.body : fallback + message.body;
 
         build_message_stanza(message, new_message, conversation);
         pre_message_send(message, new_message, conversation);
@@ -486,6 +470,37 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             }
         });
+    }
+
+    public string? get_fallback_body_set_infos(Entities.Message message, MessageStanza new_stanza, Conversation conversation) {
+        if (message.quoted_item_id == 0) return null;
+
+        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
+        if (content_item == null) return null;
+
+        Jid? quoted_sender = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_sender_for_content_item(conversation, content_item);
+        string? quoted_stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
+        if (quoted_sender != null && quoted_stanza_id != null) {
+            Xep.Replies.set_reply_to(new_stanza, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
+        }
+
+        string fallback = "> ";
+
+        if (content_item.type_ == MessageItem.TYPE) {
+            Message? quoted_message = ((MessageItem) content_item).message;
+            fallback += Dino.message_body_without_reply_fallback(quoted_message);
+            fallback = fallback.replace("\n", "\n> ");
+        } else if (content_item.type_ == FileItem.TYPE) {
+            FileTransfer? quoted_file = ((FileItem) content_item).file_transfer;
+            fallback += quoted_file.file_name;
+        }
+        fallback += "\n";
+
+        long fallback_length = fallback.length;
+        var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback_length);
+        Xep.FallbackIndication.set_fallback(new_stanza, new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
+
+        return fallback;
     }
 }
 

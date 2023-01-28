@@ -154,6 +154,7 @@ public interface ConversationItemWidgetInterface: Object {
 public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);
 public class MessageAction : Object {
     public string icon_name;
+    public string? tooltip;
     public Object? popover;
     public MessageActionEvoked? callback;
 }

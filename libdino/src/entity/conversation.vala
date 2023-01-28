@@ -42,8 +42,9 @@ public class Conversation : Object {
 
     public enum Setting { DEFAULT, ON, OFF }
     public Setting send_typing { get; set; default = Setting.DEFAULT; }
-
     public Setting send_marker { get; set; default = Setting.DEFAULT; }
+
+    public int pinned { get; set; default = 0; }
 
     private Database? db;
 
@@ -74,6 +75,7 @@ public class Conversation : Object {
         notify_setting = (NotifySetting) row[db.conversation.notification];
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
+        pinned = row[db.conversation.pinned];
 
         notify.connect(on_update);
     }
@@ -91,7 +93,8 @@ public class Conversation : Object {
                 .value(db.conversation.active_last_changed, (long) active_last_changed.to_unix())
                 .value(db.conversation.notification, notify_setting)
                 .value(db.conversation.send_typing, send_typing)
-                .value(db.conversation.send_marker, send_marker);
+                .value(db.conversation.send_marker, send_marker)
+                .value(db.conversation.pinned, pinned);
         if (read_up_to != null) {
             insert.value(db.conversation.read_up_to, read_up_to.id);
         }
@@ -197,6 +200,8 @@ public class Conversation : Object {
                 update.set(db.conversation.send_typing, send_typing); break;
             case "send-marker":
                 update.set(db.conversation.send_marker, send_marker); break;
+            case "pinned":
+                update.set(db.conversation.pinned, pinned); break;
         }
         update.perform();
     }

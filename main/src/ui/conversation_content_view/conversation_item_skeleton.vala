@@ -37,7 +37,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     private uint time_update_timeout = 0;
     private ulong updated_roster_handler_id = 0;
 
-    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
+    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;

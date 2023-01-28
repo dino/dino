@@ -11,7 +11,7 @@ public class Module : XmppStreamModule {
 
     private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
 
-    public void send_reaction(XmppStream stream, Jid jid, string stanza_type, string message_id, Gee.List<string> reactions) {
+    public async void send_reaction(XmppStream stream, Jid jid, string stanza_type, string message_id, Gee.List<string> reactions) throws SendError {
         StanzaNode reactions_node = new StanzaNode.build("reactions", NS_URI).add_self_xmlns();
         reactions_node.put_attribute("id", message_id);
         foreach (string reaction in reactions) {
@@ -25,7 +25,7 @@ public class Module : XmppStreamModule {
 
         MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_STORE);
 
-        stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
+        yield stream.get_module(MessageModule.IDENTITY).send_message(stream, message);
     }
 
     public override void attach(XmppStream stream) {
@@ -67,7 +67,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         }
         stream.get_module(Module.IDENTITY).received_reactions(stream, message.from, id_attribute, reactions, message);
 
-        return false;
+        return true;
     }
 }
 

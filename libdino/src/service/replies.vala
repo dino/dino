@@ -77,22 +77,7 @@ public class Dino.Replies : StreamInteractionModule, Object {
         Xep.Replies.ReplyTo? reply_to = Xep.Replies.get_reply_to(stanza);
         if (reply_to == null) return;
 
-        Message? quoted_message = null;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            quoted_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(reply_to.to_message_id, conversation);
-        } else {
-            quoted_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(reply_to.to_message_id, conversation);
-        }
-        if (quoted_message == null) {
-            db.reply.upsert()
-                    .value(db.reply.message_id, message.id, true)
-                    .value(db.reply.quoted_message_stanza_id, reply_to.to_message_id)
-                    .value(db.reply.quoted_message_from, reply_to.to_jid.to_string())
-                    .perform();
-            return;
-        }
-
-        ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, quoted_message.id);
+        ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_message_id(conversation, reply_to.to_message_id);
         if (quoted_content_item == null) return;
 
         set_message_is_reply_to(message, quoted_content_item);

@@ -38,3 +38,11 @@ public long from_hex(string numeral) {
 }
 
 }
+
+namespace Xmpp {
+    public errordomain SendError {
+        IO,
+        NoStream,
+        Misc
+    }
+}

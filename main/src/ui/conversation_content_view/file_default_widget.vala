@@ -10,9 +10,6 @@ namespace Dino.Ui {
 public class FileDefaultWidget : Box {
 
     public signal void clicked();
-    public signal void open_file();
-    public signal void save_file_as();
-    public signal void cancel_download();
 
     [GtkChild] public unowned Stack image_stack;
     [GtkChild] public unowned Label name_label;
@@ -22,12 +19,6 @@ public class FileDefaultWidget : Box {
     [GtkChild] public unowned MenuButton file_menu;
 
     private FileTransfer.State state;
-
-    class construct {
-        install_action("file.open", null, (widget, action_name) => { ((FileDefaultWidget) widget).open_file(); });
-        install_action("file.save_as", null, (widget, action_name) => { ((FileDefaultWidget) widget).save_file_as(); });
-        install_action("file.cancel", null, (widget, action_name) => { ((FileDefaultWidget) widget).cancel_download(); });
-    }
 
     public FileDefaultWidget() {
         EventControllerMotion this_motion_events = new EventControllerMotion();

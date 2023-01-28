@@ -31,7 +31,8 @@
                                                 <property name="halign">end</property>
                                                 <property name="valign">end</property>
                                                 <style>
-                                                    <class name="circular-button"/>
+                                                    <class name="circular"/>
+                                                    <class name="opaque"/>
                                                 </style>
                                                 <child>
                                                     <object class="GtkImage">
