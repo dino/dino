@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 22:06+0100\n"
-"PO-Revision-Date: 2019-01-12 20:06+0000\n"
+"POT-Creation-Date: 2023-01-28 14:28+0100\n"
+"PO-Revision-Date: 2022-05-05 19:13+0000\n"
 "Language-Team: Flemish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/nl_BE/>\n"
 "Language: nl_BE\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 4.12.1\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:157
 #, c-format
@@ -24,22 +24,24 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
+"%s gebruikte een onvertrouwd apparaat. Berichten van onvertrouwde apparaten "
+"worden niet getoond."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:158
 msgid "Manage devices"
-msgstr ""
+msgstr "Apparaten beheren"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:160
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
+msgstr "%s vertrouwt dit apparaat niet. Je mist hierdoor mogelijk berichten."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+#: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
 msgstr "Sleutel beheren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
@@ -47,40 +49,42 @@ msgstr ""
 "Vergelijkt de vingerafdruk, teken per teken, met die op het apparaat van uw "
 "contact."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
-msgstr ""
+msgstr "Vingerafdrukken wijken af"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Vingerafdrukken komen overeen"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Fingerprints match"
-msgstr ""
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:39
-#: plugins/omemo/src/ui/manage_key_dialog.vala:82
-#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+#: plugins/omemo/src/ui/manage_key_dialog.vala:81
+#: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
 msgstr "Sleutel verifiëren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:61
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"Toekomstige berichten van %s van het apparaat dat deze sleutel gebruikt, "
+"worden gemarkeerd in het gespreksvenster."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+#: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
 msgstr "Vingerafdrukken komen niet overeen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:72
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
@@ -91,11 +95,11 @@ msgstr ""
 "vingerafdrukken niet overeenkomen kan het zijn dat den account van %s "
 "gecompromitteerd is. Overweegt in dat geval van deze sleutel af te wijzen."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
 msgstr "Vingerafdruk van sleutel verifiëren"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
@@ -103,84 +107,94 @@ msgstr ""
 "Vergelijkt de vingerafdruk van deze sleutel met de vingerafdruk die dat "
 "wordt getoond op het apparaat van uw contact."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
-#: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:256
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
 msgstr "Sleutel afwijzen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Blokkeer versleutelde communicatie met het apparaat van deze contactpersoon "
+"dat deze sleutel gebruikt."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
-#: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:251
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+#: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
 msgstr "Sleutel aanvaarden"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
+"Sta versleutelde communicatie toe met het apparaat van deze contactpersoon "
+"dat deze sleutel gebruikt."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
 msgstr "Deze sleutel is momenteel %s."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
 msgstr "aanvaard"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, fuzzy, c-format
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
-"Dit betekent dat %s deze kan gebruiken voor berichten te ontvangen en "
-"versturen."
+"Dit betekent dat %s deze kan gebruiken om versleutelde berichten te "
+"ontvangen en versturen."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
 msgstr "geverifieerd"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
 "Bovendien komt het geverifieerd overeen met de sleutel op het apparaat van "
 "het contact."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
 msgstr "afgewezen"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
+"De sleutel kan niet door %s worden gebruikt om je berichten te ontcijferen, "
+"en je zal geen berichten zien die ermee versleuteld zijn."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:153
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
 msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"Je ziet geen versleutelde berichten van het apparaat van %s dat deze sleutel "
+"gebruikt. Omgekeerd kan het apparaat jouw berichten niet meer ontsleutelen."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:161
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
+"Je zal versleutelde berichten kunnen uitwisselen met het apparaat van %s dat "
+"deze sleutel gebruikt."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:167
+#: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
 msgstr "Terug"
 
@@ -192,15 +206,6 @@ msgstr "Beheren"
 msgid "This contact has new devices"
 msgstr "Dit contact heeft nieuwe apparaten"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "Eigen vingerafdruk"
-
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "Wordt bij de eerste verbinding gegenereerd"
-
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "OMEMO-vertrouwenskeuze vereist"
@@ -209,6 +214,15 @@ msgstr "OMEMO-vertrouwenskeuze vereist"
 #, c-format
 msgid "Did you add a new device for account %s?"
 msgstr "Gebruikt ge een nieuw apparaat met account %s?"
+
+#: plugins/omemo/src/ui/account_settings_entry.vala:47
+#: plugins/omemo/src/ui/account_settings_entry.vala:50
+msgid "Own fingerprint"
+msgstr "Eigen vingerafdruk"
+
+#: plugins/omemo/src/ui/account_settings_entry.vala:47
+msgid "Will be generated on first connection"
+msgstr "Wordt bij de eerste verbinding gegenereerd"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
@@ -221,52 +235,54 @@ msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO-apparaat"
 msgstr[1] "%d OMEMO-apparaten"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "OMEMO Key Management"
 msgstr "OMEMO-sleutelbeheer"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"
 msgstr "Nieuwe sleutels automatisch aanvaarden"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New encryption keys from this contact will be accepted automatically."
 msgstr ""
+"Nieuwe sleutels van deze contactpersoon worden automatisch geaccepteerd."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Own key"
 msgstr "Eigen sleutel"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr "Nieuwe sleutels"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
+#: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
 msgstr "Geassocieerde sleutels"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/contact_details_dialog.vala:54
 msgid "Inactive keys"
-msgstr ""
+msgstr "Inactieve sleutels"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+#: plugins/omemo/src/ui/contact_details_dialog.vala:86
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
+"Nieuwe sleutels van je andere apparaten worden automatisch geaccepteerd."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+#: plugins/omemo/src/ui/contact_details_dialog.vala:335
 msgid "Accepted"
 msgstr "Aanvaard"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+#: plugins/omemo/src/ui/contact_details_dialog.vala:340
 msgid "Rejected"
 msgstr "Afgewezen"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+#: plugins/omemo/src/ui/contact_details_dialog.vala:345
 msgid "Verified"
 msgstr "Geverifieerd"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:336
+#: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
 msgstr "Ongebruikt"
 

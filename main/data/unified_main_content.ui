@@ -40,8 +40,8 @@
                                         <property name="margin-bottom">20</property>
                                         <property name="width_request">260</property>
 
-                                        <property name="title" translatable="True">You have no open chats</property>
-                                        <property name="description" translatable="True">Click + to start a conversation or join a channel</property>
+                                        <property name="title" translatable="yes">You have no open chats</property>
+                                        <property name="description" translatable="yes">Click + to start a chat or join a channel</property>
                                     </object>
                                 </property>
                             </object>
