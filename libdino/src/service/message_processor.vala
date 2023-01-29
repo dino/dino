@@ -484,17 +484,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             Xep.Replies.set_reply_to(new_stanza, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
         }
 
-        string fallback = "> ";
-
-        if (content_item.type_ == MessageItem.TYPE) {
-            Message? quoted_message = ((MessageItem) content_item).message;
-            fallback += Dino.message_body_without_reply_fallback(quoted_message);
-            fallback = fallback.replace("\n", "\n> ");
-        } else if (content_item.type_ == FileItem.TYPE) {
-            FileTransfer? quoted_file = ((FileItem) content_item).file_transfer;
-            fallback += quoted_file.file_name;
-        }
-        fallback += "\n";
+        string fallback = FallbackBody.get_quoted_fallback_body(content_item);
 
         long fallback_length = fallback.length;
         var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback_length);

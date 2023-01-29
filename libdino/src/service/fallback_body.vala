@@ -64,4 +64,20 @@ public class Dino.FallbackBody : StreamInteractionModule, Object {
             return false;
         }
     }
+
+    public static string get_quoted_fallback_body(ContentItem content_item) {
+        string fallback = "> ";
+
+        if (content_item.type_ == MessageItem.TYPE) {
+            Message? quoted_message = ((MessageItem) content_item).message;
+            fallback += Dino.message_body_without_reply_fallback(quoted_message);
+            fallback = fallback.replace("\n", "\n> ");
+        } else if (content_item.type_ == FileItem.TYPE) {
+            FileTransfer? quoted_file = ((FileItem) content_item).file_transfer;
+            fallback += quoted_file.file_name;
+        }
+        fallback += "\n";
+
+        return fallback;
+    }
 }

@@ -57,30 +57,21 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    public async bool conversation_supports_reactions(Conversation conversation) {
+    public bool conversation_supports_reactions(Conversation conversation) {
         if (conversation.type_ == Conversation.Type.CHAT) {
-            Gee.List<Jid>? resources = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
-            if (resources == null) return false;
-
-            foreach (Jid full_jid in resources) {
-                bool? has_feature = yield stream_interactor.get_module(EntityInfo.IDENTITY).has_feature(conversation.account, full_jid, Xep.Reactions.NS_URI);
-                if (has_feature == true) {
-                    return true;
-                }
-            }
+            return true;
         } else {
             // The MUC server needs to 1) support stable stanza ids 2) either support occupant ids or be a private room (where we know real jids)
             var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-            bool server_supports_sid = (yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
+            bool server_supports_sid = (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
+                    (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
             if (!server_supports_sid) return false;
 
-            bool? supports_occupant_ids = yield entity_info.has_feature(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
+            bool? supports_occupant_ids = entity_info.has_feature_cached(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
             if (supports_occupant_ids) return true;
 
             return stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
         }
-        return false;
     }
 
     private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws SendError {
@@ -96,7 +87,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             reactions_module.send_reaction.begin(stream, conversation.counterpart, "groupchat", message_id, reactions);
             // We save the reaction when it gets reflected back to us
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-            reactions_module.send_reaction(stream, conversation.counterpart, "chat", message_id, reactions);
+            reactions_module.send_reaction.begin(stream, conversation.counterpart, "chat", message_id, reactions);
         } else if (conversation.type_ == Conversation.Type.CHAT) {
             int64 now_millis = GLib.get_real_time () / 1000;
             reactions_module.send_reaction.begin(stream, conversation.counterpart, "chat", message_id, reactions, (_, res) => {
@@ -240,7 +231,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
             // Apply the same restrictions for incoming reactions as we do on sending them
             Conversation muc_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, account.bare_jid, account, MessageStanza.TYPE_GROUPCHAT);
-            bool muc_supports_reactions = yield conversation_supports_reactions(muc_conversation);
+            bool muc_supports_reactions = conversation_supports_reactions(muc_conversation);
             if (!muc_supports_reactions) return;
         }
 
