@@ -37,7 +37,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     private uint time_update_timeout = 0;
     private ulong updated_roster_handler_id = 0;
 
-    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
+    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
@@ -154,7 +154,6 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
             icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
-            encryption_image.set_tooltip_text ("Encrypted, User not-verified");
             encryption_image.visible = true;
         }
 
@@ -187,10 +186,14 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     private void update_received_mark() {
         switch (content_meta_item.mark) {
-            case Message.Marked.RECEIVED: received_image.icon_name = "dino-tick-symbolic";
-                received_image.set_tooltip_text ("Received"); break;
-            case Message.Marked.READ: received_image.icon_name = "dino-double-tick-symbolic";
-                received_image.set_tooltip_text ("Seen"); break;
+            case Message.Marked.RECEIVED: 
+                received_image.icon_name = "dino-tick-symbolic";
+                received_image.set_tooltip_text(_("Delivered"));
+                break;
+            case Message.Marked.READ:
+                received_image.icon_name = "dino-double-tick-symbolic";
+                received_image.set_tooltip_text (_("Read"));
+                break;
             case Message.Marked.WONTSEND:
                 received_image.icon_name = "dialog-warning-symbolic";
                 Util.force_error_color(received_image);
