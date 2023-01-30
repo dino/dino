@@ -186,8 +186,14 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     private void update_received_mark() {
         switch (content_meta_item.mark) {
-            case Message.Marked.RECEIVED: received_image.icon_name = "dino-tick-symbolic"; break;
-            case Message.Marked.READ: received_image.icon_name = "dino-double-tick-symbolic"; break;
+            case Message.Marked.RECEIVED: 
+                received_image.icon_name = "dino-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Delivered"));
+                break;
+            case Message.Marked.READ:
+                received_image.icon_name = "dino-double-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Read"));
+                break;
             case Message.Marked.WONTSEND:
                 received_image.icon_name = "dialog-warning-symbolic";
                 Util.force_error_color(received_image);
