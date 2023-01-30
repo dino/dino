@@ -17,7 +17,11 @@ namespace Xmpp {
 
         public async void send_message(XmppStream stream, MessageStanza message) throws IOStreamError {
             yield send_pipeline.run(stream, message);
-            yield stream.write_async(message.stanza);
+            try {
+                yield stream.write_async(message.stanza);
+            } catch (IOStreamError e) {
+                throw new SendError.IO(e.message);
+            }
         }
 
         public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {

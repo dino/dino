@@ -1,74 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0"/>
-    <object class="GtkPaned" id="paned">
-        <property name="shrink-start-child">False</property>
-        <property name="shrink-end-child">False</property>
-        <property name="resize-start-child">False</property>
-        <property name="position">300</property>
+    <object class="AdwLeaflet" id="leaflet">
+        <property name="transition-type">slide</property>
+        <property name="can-navigate-back">true</property>
+        <property name="can-navigate-forward">true</property>
         <child>
-            <object class="GtkStack" id="left_stack">
+            <object class="GtkBox" id="left_box">
+                <property name="orientation">vertical</property>
                 <child>
-                    <object class="GtkStackPage">
-                        <property name="name">content</property>
-                        <property name="child">
-                            <object class="GtkScrolledWindow">
-                                <property name="hscrollbar_policy">never</property>
-                                <child>
-                                    <object class="DinoUiConversationSelector" id="conversation_list">
-                                    </object>
-                                </child>
-                            </object>
-                        </property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkStackPage">
-                        <property name="name">placeholder</property>
-                        <property name="child">
-                            <object class="GtkBox">
-                                <property name="margin-start">20</property>
-                                <property name="margin-end">20</property>
-                                <property name="margin-top">20</property>
-                                <property name="margin-bottom">20</property>
-                                <property name="spacing">10</property>
-                                <property name="valign">start</property>
-                                <property name="halign">start</property>
-                                <child>
-                                    <object class="GtkImage" id="conversation_list_placeholder_image">
-                                        <property name="valign">start</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel">
-                                        <property name="wrap">1</property>
-                                        <property name="margin-top">70</property>
-                                        <property name="margin-end">50</property>
-                                        <property name="valign">end</property>
-                                        <property name="label" translatable="1">Click here to start a conversation or join a channel.</property>
-                                        <style>
-                                            <class name="dim-label"/>
-                                        </style>
-                                    </object>
-                                </child>
-                            </object>
-                        </property>
-                    </object>
-                </child>
-            </object>
-        </child>
-        <child>
-            <object class="GtkOverlay">
-                <property name="child">
-                    <object class="GtkStack" id="right_stack">
+                    <object class="GtkStack" id="left_stack">
+                        <property name="hexpand">False</property>
                         <child>
                             <object class="GtkStackPage">
                                 <property name="name">content</property>
                                 <property name="child">
-                                    <object class="DinoUiConversationView" id="conversation_view">
+                                    <object class="GtkScrolledWindow">
+                                        <property name="hscrollbar_policy">never</property>
+                                        <property name="vexpand">1</property>
+                                        <child>
+                                            <object class="DinoUiConversationSelector" id="conversation_list">
+                                            </object>
+                                        </child>
                                     </object>
                                 </property>
                             </object>
@@ -77,51 +30,86 @@
                             <object class="GtkStackPage">
                                 <property name="name">placeholder</property>
                                 <property name="child">
-                                    <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="hexpand">1</property>
-                                        <property name="vexpand">1</property>
-                                        <property name="halign">center</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">im.dino.Dino-symbolic</property>
-                                                <property name="pixel-size">144</property>
-                                                <property name="margin-bottom">30</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                            </object>
-                                        </child>
-                                        <child>
-                                            <object class="GtkLabel">
-                                                <property name="label" translatable="1">You have no open chats</property>
-                                                <style>
-                                                    <class name="dim-label"/>
-                                                </style>
-                                                <attributes>
-                                                    <attribute name="scale" value="1.2"></attribute>
-                                                </attributes>
-                                            </object>
-                                        </child>
+                                    <object class="AdwStatusPage">
+                                        <style>
+                                            <class name="compact"/>
+                                        </style>
+                                        <property name="margin-start">20</property>
+                                        <property name="margin-end">20</property>
+                                        <property name="margin-top">20</property>
+                                        <property name="margin-bottom">20</property>
+                                        <property name="width_request">260</property>
+
+                                        <property name="title" translatable="yes">You have no open chats</property>
+                                        <property name="description" translatable="yes">Click + to start a chat or join a channel</property>
                                     </object>
                                 </property>
                             </object>
                         </child>
                     </object>
-                </property>
-                <child type="overlay">
-                    <object class="GtkRevealer" id="search_revealer">
-                        <property name="halign">end</property>
-                        <property name="transition-type">slide-left</property>
-                        <style>
-                            <class name="dino-sidebar"/>
-                        </style>
-                        <property name="child">
-                            <object class="GtkFrame" id="search_frame">
-                                <property name="width-request">400</property>
+                </child>
+            </object>
+        </child>
+        <child>
+            <object class="GtkBox" id="right_box">
+                <property name="orientation">vertical</property>
+                <child>
+                    <object class="AdwFlap" id="search_flap">
+                        <property name="flap-position">end</property>
+                        <property name="modal">true</property>
+                        <property name="locked">true</property>
+                        <property name="swipe-to-open">false</property>
+                        <property name="fold-threshold-policy">natural</property>
+                        <property name="hexpand">true</property>
+                        <child type="content">
+                            <object class="DinoUiNaturalSizeIncrease">
+                                <property name="min-natural-width">600</property>
+                                <child>
+                                    <object class="GtkStack" id="right_stack">
+                                        <property name="hexpand">false</property>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">content</property>
+                                                <property name="child">
+                                                    <object class="DinoUiConversationView" id="conversation_view">
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">placeholder</property>
+                                                <property name="child">
+                                                    <object class="AdwStatusPage">
+                                                        <property name="icon-name">im.dino.Dino-symbolic</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="vexpand">True</property>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
                             </object>
-                        </property>
+                        </child>
+                        <child type="separator">
+                            <object class="GtkSeparator" />
+                        </child>
+                        <child type="flap">
+                            <object class="AdwClamp">
+                                <property name="hexpand">false</property>
+                                <property name="maximum-size">400</property>
+                                <property name="tightening-threshold">400</property>
+                                <child>
+                                    <object class="AdwBin" id="search_frame">
+                                        <property name="hexpand">true</property>
+                                        <style>
+                                            <class name="background"/>
+                                        </style>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

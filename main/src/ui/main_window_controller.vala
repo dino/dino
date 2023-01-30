@@ -45,10 +45,10 @@ public class MainWindowController : Object {
 
         this.conversation_view_controller = new ConversationViewController(window.conversation_view, window.conversation_titlebar, stream_interactor);
 
-        conversation_view_controller.search_menu_entry.button.bind_property("active", window.search_revealer, "reveal_child", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        conversation_view_controller.search_menu_entry.button.bind_property("active", window.search_flap, "reveal-flap", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
-        window.search_revealer.notify["child-revealed"].connect(() => {
-            if (window.search_revealer.child_revealed) {
+        window.search_flap.notify["reveal-flap"].connect(() => {
+            if (window.search_flap.reveal_flap) {
                 if (window.conversation_view.conversation_frame.conversation != null && window.global_search.search_entry.text == "") {
                     reset_search_entry();
                 }
@@ -59,7 +59,9 @@ public class MainWindowController : Object {
         window.global_search.selected_item.connect((item) => {
             select_conversation(item.conversation, false, false);
             window.conversation_view.conversation_frame.initialize_around_message(item.conversation, item);
-            close_search();
+            if (window.search_flap.folded) {
+                close_search();
+            }
         });
 
         window.welcome_placeholder.primary_button.clicked.connect(() => {
@@ -90,16 +92,6 @@ public class MainWindowController : Object {
 //        });
 
         Widget window_widget = ((Widget) window);
-
-        GestureClick gesture_click_controller = new GestureClick();
-        window_widget.add_controller(gesture_click_controller);
-        gesture_click_controller.pressed.connect((n_press, click_x, click_y) => {
-            double search_x, search_y;
-            bool ret = window.search_revealer.translate_coordinates(window, 0, 0, out search_x, out search_y);
-            if (ret && click_x < search_x) {
-                close_search();
-            }
-        });
 
         EventControllerKey key_event_controller = new EventControllerKey();
         window_widget.add_controller(key_event_controller);

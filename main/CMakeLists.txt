@@ -11,6 +11,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GObject
     GTK4
     ICU
+    Adwaita
 )
 
 set(RESOURCE_LIST
@@ -89,7 +90,8 @@ set(RESOURCE_LIST
     unified_main_content.ui
     unified_window_placeholder.ui
 
-    theme.css
+    style.css
+    style-dark.css
 )
 
 compile_gresources(
@@ -109,6 +111,12 @@ set(MAIN_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DI
 set(MAIN_DEFINITIONS)
 if(GTK4_VERSION VERSION_GREATER_EQUAL "4.6")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_6)
+endif()
+if(GTK4_VERSION VERSION_GREATER_EQUAL "4.8")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_8)
+endif()
+if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_2)
 endif()
 
 vala_precompile(MAIN_VALA_C
@@ -199,7 +207,9 @@ SOURCES
     src/ui/util/label_hybrid.vala
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
-    src/ui/util/scaling_image.vala
+
+    src/ui/widgets/fixed_ratio_picture.vala
+    src/ui/widgets/natural_size_increase.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi

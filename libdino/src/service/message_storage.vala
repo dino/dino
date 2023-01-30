@@ -116,9 +116,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id);
 
-        if (conversation.counterpart.resourcepart == null) {
-            query.with_null(db.message.counterpart_resource);
-        } else {
+        if (conversation.counterpart.resourcepart != null) {
             query.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
         }
 

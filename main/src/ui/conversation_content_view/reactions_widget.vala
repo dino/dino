@@ -123,9 +123,10 @@ public class ReactionsWidget : Grid {
     public ReactionsWidget() {
         this.row_spacing = this.column_spacing = 5;
         this.margin_top = 2;
+        this.add_css_class("reaction-grid");
 
         add_button = new MenuButton() { tooltip_text= _("Add reaction") };
-        add_button.get_style_context().add_class("reaction-box");
+        add_button.add_css_class("pill");
         Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
 
         EmojiChooser chooser = new EmojiChooser();
@@ -140,8 +141,8 @@ public class ReactionsWidget : Grid {
             Label reaction_label = new Label("<span size='small'>" + reaction + "</span>") { use_markup=true };
             Label count_label = new Label("") { use_markup=true };
             Button button = new Button();
-            button.get_style_context().add_class("reaction-box");
-            Box reaction_box = new Box(Orientation.HORIZONTAL, 4);
+            button.add_css_class("pill");
+            Box reaction_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.CENTER };
             reaction_box.append(reaction_label);
             reaction_box.append(count_label);
             button.set_child(reaction_box);
@@ -161,9 +162,9 @@ public class ReactionsWidget : Grid {
 
         reaction_counts[reaction].label = "<span font_family='monospace' size='small'>" + count.to_string() + "</span>";
         if (own) {
-            reaction_buttons[reaction].get_style_context().add_class("own-reaction");
+            reaction_buttons[reaction].add_css_class("own-reaction");
         } else {
-            reaction_buttons[reaction].get_style_context().remove_class("own-reaction");
+            reaction_buttons[reaction].remove_css_class("own-reaction");
         }
 
         // Build tooltip

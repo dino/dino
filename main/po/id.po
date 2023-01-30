@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"POT-Creation-Date: 2023-01-28 14:28+0100\n"
 "PO-Revision-Date: 2022-01-04 01:53+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
@@ -17,151 +17,230 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.10.1\n"
 
-#: main/src/ui/file_send_overlay.vala:85
+#: main/src/ui/file_send_overlay.vala:92
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Ukuran file melebihi ukuran unggahan maksimum."
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
-#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
-#: main/src/ui/util/helper.vala:134
-msgid "Me"
-msgstr "Saya"
+#: main/src/ui/conversation_content/message_item_widget.vala:124
+#: main/src/ui/conversation_content_view/message_widget.vala:88
+msgid "Message too long"
+msgstr "Pesan terlalu panjang"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-#: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:71
-msgid "Image sent"
-msgstr "Gambar terkirim"
+#: main/src/ui/conversation_content/message_item_widget.vala:150
+#: main/src/ui/conversation_content_view/message_widget.vala:114
+msgid "edited"
+msgstr "Diedit"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-#: main/src/ui/notifier_gnotifications.vala:36
-#: main/src/ui/notifier_freedesktop.vala:71
-msgid "File sent"
-msgstr "File terkirim"
+#: main/src/ui/conversation_content/message_item_widget.vala:159
+#: main/src/ui/conversation_content_view/message_widget.vala:123
+msgid "pending…"
+msgstr "tertunda…"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-#: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:73
-msgid "Image received"
-msgstr "Gambar diterima"
+#: main/src/ui/conversation_content/message_item_widget.vala:172
+#: main/src/ui/conversation_content_view/message_widget.vala:136
+msgid "delivery failed"
+msgstr "pengiriman gagal"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-#: main/src/ui/notifier_gnotifications.vala:38
-#: main/src/ui/notifier_freedesktop.vala:73
-msgid "File received"
-msgstr "File diterima"
+#: main/src/ui/conversation_content/conversation_content_model.vala:85
+#: main/src/ui/chat_input/encryption_button.vala:26
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:163
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "Tidak terenkripsi"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/conversation_content_view/call_widget.vala:166
-msgid "Outgoing call"
-msgstr "Panggilan keluar"
+#: main/src/ui/conversation_content/conversation_content_model.vala:101
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:195
+msgid "Unable to send message"
+msgstr "Tidak bisa mengirimkan pesan"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
-#: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:128
-#: main/src/ui/conversation_content_view/call_widget.vala:166
-msgid "Incoming call"
-msgstr "Panggilan masuk"
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:126
+#: main/src/ui/conversation_content/conversation_content_model.vala:122
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:233
 #, no-c-format
-msgid "%b %d"
-msgstr "%d %b"
+msgid "%x, %H∶%M"
+msgstr "%x, %H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:346
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:117
-msgid "Yesterday"
-msgstr "Kemarin"
+#: main/src/ui/conversation_content/conversation_content_model.vala:123
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:234
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:349
-#: main/src/ui/conversation_content_view/call_widget.vala:173
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:303
+#: main/src/ui/conversation_content/conversation_content_model.vala:126
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:237
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%d %b, %H∶%M"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:127
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:238
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%d %b, %l∶%M %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:130
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %H∶%M"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:131
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶%M %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:134
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:356
+#: main/src/ui/conversation_content_view/call_widget.vala:178
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:350
-#: main/src/ui/conversation_content_view/call_widget.vala:173
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:304
+#: main/src/ui/conversation_content/conversation_content_model.vala:135
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:357
+#: main/src/ui/conversation_content_view/call_widget.vala:178
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:308
+#: main/src/ui/conversation_content/conversation_content_model.vala:139
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:360
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
 msgstr[0] "%i menit yang lalu"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:355
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:310
+#: main/src/ui/conversation_content/conversation_content_model.vala:141
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:362
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:252
 msgid "Just now"
 msgstr "Sesaat lalu"
 
-#: main/src/ui/occupant_menu/list.vala:105
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:172
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:197
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:212
+#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
+#: main/src/ui/util/helper.vala:134
+msgid "Me"
+msgstr "Saya"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:71
+msgid "Image sent"
+msgstr "Gambar terkirim"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:71
+msgid "File sent"
+msgstr "File terkirim"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:73
+msgid "Image received"
+msgstr "Gambar diterima"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:73
+msgid "File received"
+msgstr "File diterima"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
+#: main/src/ui/conversation_content_view/call_widget.vala:171
+msgid "Outgoing call"
+msgstr "Panggilan keluar"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:113
+#: main/src/ui/conversation_content_view/call_widget.vala:133
+#: main/src/ui/conversation_content_view/call_widget.vala:171
+msgid "Incoming call"
+msgstr "Panggilan masuk"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:349
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:126
+#, no-c-format
+msgid "%b %d"
+msgstr "%d %b"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
+#: main/src/ui/conversation_content_view/date_separator_populator.vala:117
+msgid "Yesterday"
+msgstr "Kemarin"
+
+#: main/src/ui/conversation_list_titlebar.vala:27
+#: main/src/ui/add_conversation/select_contact_dialog.vala:99
+#: main/data/menu_add.ui:7 main/data/shortcuts.ui:14
+msgid "Start Conversation"
+msgstr "Mulai percakapan"
+
+#: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
 msgstr "Pemilik"
 
-#: main/src/ui/occupant_menu/list.vala:107
+#: main/src/ui/occupant_menu/list.vala:112
 msgid "Admin"
 msgstr "Moderator"
 
-#: main/src/ui/occupant_menu/list.vala:109
+#: main/src/ui/occupant_menu/list.vala:114
 msgid "Member"
 msgstr "Anggota"
 
-#: main/src/ui/occupant_menu/list.vala:111
+#: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
 msgstr "Pengguna"
 
-#: main/src/ui/occupant_menu/view.vala:28
-#: main/src/ui/occupant_menu/view.vala:146
-#: main/src/ui/call_window/call_window_controller.vala:129
+#: main/src/ui/occupant_menu/view.vala:27
+#: main/src/ui/occupant_menu/view.vala:145
+#: main/src/ui/call_window/call_window_controller.vala:151
 msgid "Invite"
 msgstr "Undang"
 
-#: main/src/ui/occupant_menu/view.vala:83
+#: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
 msgstr "Mulai percakapan pribadi"
 
-#: main/src/ui/occupant_menu/view.vala:91
+#: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
 msgstr "Depak"
 
-#: main/src/ui/occupant_menu/view.vala:97
+#: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
 msgstr "Beri ijin menulis"
 
-#: main/src/ui/occupant_menu/view.vala:103
+#: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
 msgstr "Batalkan ijin menulis"
 
-#: main/src/ui/occupant_menu/view.vala:145
+#: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
 msgstr "Undang ke Grup"
 
-#: main/src/ui/conversation_view_controller.vala:219
+#: main/src/ui/conversation_view_controller.vala:214
 msgid "Select file"
 msgstr "Pilih file"
 
-#: main/src/ui/conversation_view_controller.vala:219
-#: main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/conversation_view_controller.vala:214
+#: main/src/ui/manage_accounts/dialog.vala:146
 msgid "Select"
 msgstr "Pilih"
 
-#: main/src/ui/conversation_view_controller.vala:219
-#: main/src/ui/add_conversation/select_contact_dialog.vala:38
-#: main/src/ui/add_conversation/add_conference_dialog.vala:15
-#: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/application.vala:308 main/src/ui/manage_accounts/dialog.vala:152
-#: main/data/message_item_widget_edit_mode.ui:54
-#: main/data/add_conversation/add_groupchat_dialog.ui:11
-#: main/data/add_conversation/add_contact_dialog.ui:12
+#: main/src/ui/conversation_view_controller.vala:214
+#: main/src/ui/add_conversation/select_contact_dialog.vala:39
+#: main/src/ui/add_conversation/add_conference_dialog.vala:42
+#: main/src/ui/add_conversation/add_conference_dialog.vala:118
+#: main/src/ui/application.vala:298 main/src/ui/manage_accounts/dialog.vala:146
+#: main/src/ui/conversation_content_view/file_default_widget.vala:70
+#: main/data/message_item_widget_edit_mode.ui:46
+#: main/data/add_conversation/add_groupchat_dialog.ui:12
+#: main/data/add_conversation/add_contact_dialog.ui:13
 msgid "Cancel"
 msgstr "Batal"
 
@@ -170,59 +249,64 @@ msgstr "Batal"
 msgid "%s from %s"
 msgstr "%s dari %s"
 
-#: main/src/ui/chat_input/chat_input_controller.vala:179
+#: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
 msgstr "Grup ini tidak mengijinkan anda mengirim pesan."
 
-#: main/src/ui/chat_input/chat_input_controller.vala:179
+#: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
 msgstr "Meminta ijin"
 
-#: main/src/ui/conversation_titlebar/call_entry.vala:19
+#: main/src/ui/chat_input/view.vala:44 main/data/file_send_overlay.ui:24
+#: main/data/shortcuts.ui:37
+msgid "Send a file"
+msgstr "Kirim file"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
 msgstr "Mulai panggilan"
 
-#: main/src/ui/conversation_titlebar/call_entry.vala:37
+#: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
 msgstr "Panggilan audio"
 
-#: main/src/ui/conversation_titlebar/call_entry.vala:38
+#: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
 msgstr "Panggilan video"
 
-#: main/src/ui/conversation_titlebar/search_entry.vala:11
-#: main/data/shortcuts.ui:37
+#: main/src/ui/conversation_titlebar/search_entry.vala:12
+#: main/data/shortcuts.ui:31
 msgid "Search messages"
 msgstr "Cari pesan"
 
-#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:14
 msgid "Members"
 msgstr "Anggota"
 
-#: main/src/ui/call_window/participant_widget.vala:96
+#: main/src/ui/call_window/participant_widget.vala:118
 msgid "Debug information"
 msgstr ""
 
-#: main/src/ui/call_window/participant_widget.vala:105
-#: main/src/ui/conversation_content_view/call_widget.vala:143
+#: main/src/ui/call_window/participant_widget.vala:127
+#: main/src/ui/conversation_content_view/call_widget.vala:148
 msgid "Calling…"
 msgstr "Memanggil…"
 
-#: main/src/ui/call_window/participant_widget.vala:107
+#: main/src/ui/call_window/participant_widget.vala:129
 msgid "Ringing…"
 msgstr "Berdering…"
 
-#: main/src/ui/call_window/participant_widget.vala:109
-#: main/src/ui/manage_accounts/dialog.vala:219
+#: main/src/ui/call_window/participant_widget.vala:131
+#: main/src/ui/manage_accounts/dialog.vala:216
 msgid "Connecting…"
 msgstr "Menghubungi…"
 
-#: main/src/ui/call_window/call_window.vala:181
+#: main/src/ui/call_window/call_window.vala:191
 #, c-format
 msgid "%s ended the call"
 msgstr "%s mengakhiri panggilan"
 
-#: main/src/ui/call_window/call_window.vala:183
+#: main/src/ui/call_window/call_window.vala:193
 #, c-format
 msgid "%s declined the call"
 msgstr "%s menolak panggilan"
@@ -251,80 +335,74 @@ msgstr ""
 msgid "No speaker found."
 msgstr ""
 
-#: main/src/ui/call_window/call_window_controller.vala:128
+#: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
 msgstr ""
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12 main/data/menu_add.ui:7
-#: main/data/shortcuts.ui:17 main/data/conversation_list_titlebar.ui:16
-msgid "Start Conversation"
-msgstr "Mulai percakapan"
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:98
+#: main/src/ui/add_conversation/select_contact_dialog.vala:100
 msgid "Start"
 msgstr "Mulai"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/src/ui/application.vala:308 main/data/menu_add.ui:13
-#: main/data/shortcuts.ui:24
+#: main/src/ui/add_conversation/add_conference_dialog.vala:25
+#: main/src/ui/application.vala:298 main/data/menu_add.ui:11
+#: main/data/shortcuts.ui:20
 msgid "Join Channel"
 msgstr "Bergabung dengan Channel"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:47
-#: main/src/ui/add_conversation/add_conference_dialog.vala:118
-#: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:410
-#: main/data/manage_accounts/add_account_dialog.ui:490
+#: main/src/ui/add_conversation/add_conference_dialog.vala:45
+#: main/src/ui/add_conversation/add_conference_dialog.vala:114
+#: main/data/manage_accounts/add_account_dialog.ui:94
+#: main/data/manage_accounts/add_account_dialog.ui:353
+#: main/data/manage_accounts/add_account_dialog.ui:426
 msgid "Next"
 msgstr "Selanjutnya"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:66
-#: main/src/ui/add_conversation/add_conference_dialog.vala:142
-#: main/src/ui/add_conversation/conference_details_fragment.vala:157
-#: main/src/ui/application.vala:308
+#: main/src/ui/add_conversation/add_conference_dialog.vala:63
+#: main/src/ui/add_conversation/add_conference_dialog.vala:138
+#: main/src/ui/add_conversation/conference_details_fragment.vala:156
+#: main/src/ui/application.vala:298
 msgid "Join"
 msgstr "Bergabung"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:147
-#: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:267
+#: main/src/ui/add_conversation/add_conference_dialog.vala:143
+#: main/data/manage_accounts/add_account_dialog.ui:160
+#: main/data/manage_accounts/add_account_dialog.ui:226
 msgid "Back"
 msgstr "Kembali"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:149
+#: main/src/ui/add_conversation/conference_details_fragment.vala:148
 msgid "Joining…"
 msgstr "Bergabung…"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:170
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Password required to enter room"
 msgstr "Password diperlukan untuk memasuki kamar"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:175
+#: main/src/ui/add_conversation/conference_details_fragment.vala:174
 msgid "Banned from joining or creating conference"
 msgstr "Dilarang bergabung atau membuat grup"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:177
+#: main/src/ui/add_conversation/conference_details_fragment.vala:176
 msgid "Room does not exist"
 msgstr "Kamar tidak ada"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:179
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Not allowed to create room"
 msgstr "Tidak diperbolehkan membuat kamar"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Members-only room"
 msgstr "Kamar khusus anggota"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:184
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
 msgid "Choose a different nick"
 msgstr "Pilih nama panggilan lain"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:186
+#: main/src/ui/add_conversation/conference_details_fragment.vala:185
 msgid "Too many occupants in room"
 msgstr "Terlalu banyak penghuni di kamar"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/add_conversation/conference_details_fragment.vala:188
 #: main/src/ui/notifier_gnotifications.vala:104
 #: main/src/ui/notifier_freedesktop.vala:185
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
@@ -332,20 +410,20 @@ msgstr "Terlalu banyak penghuni di kamar"
 msgid "Could not connect to %s"
 msgstr "Tidak terhubung ke %s"
 
-#: main/src/ui/add_conversation/conference_details_fragment.vala:192
+#: main/src/ui/add_conversation/conference_details_fragment.vala:191
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
 #: main/src/ui/manage_accounts/add_account_dialog.vala:299
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
-#: main/src/ui/manage_accounts/add_account_dialog.vala:397
+#: main/src/ui/manage_accounts/add_account_dialog.vala:402
 msgid "Invalid address"
 msgstr "Alamat tidak valid"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
-#: main/data/add_conversation/add_contact_dialog.ui:24
+#: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
 msgstr "Tambah"
 
-#: main/src/ui/application.vala:213 main/data/menu_app.ui:17
+#: main/src/ui/application.vala:204 main/data/menu_app.ui:17
 msgid "Keyboard Shortcuts"
 msgstr "Kombinasi tombol"
 
@@ -353,43 +431,43 @@ msgstr "Kombinasi tombol"
 msgid "About Dino"
 msgstr "Tentang Dino"
 
-#: main/src/ui/global_search.vala:147
+#: main/src/ui/global_search.vala:179
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
 msgstr[0] "%i hasil pencarian"
 
-#: main/src/ui/global_search.vala:174
+#: main/src/ui/global_search.vala:206
 #, c-format
 msgid "In %s"
 msgstr "di %s"
 
-#: main/src/ui/global_search.vala:174
+#: main/src/ui/global_search.vala:206
 #, c-format
 msgid "With %s"
 msgstr "Pada %s"
 
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:128
+#: main/src/ui/conversation_content_view/call_widget.vala:133
 msgid "Incoming video call"
 msgstr "Panggilan video masuk"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:130
+#: main/src/ui/conversation_content_view/call_widget.vala:135
 msgid "Incoming video group call"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:130
+#: main/src/ui/conversation_content_view/call_widget.vala:135
 msgid "Incoming group call"
 msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:123
-#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:80
+#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:73
 msgid "Reject"
 msgstr "Tolak"
 
@@ -402,7 +480,7 @@ msgstr "Tolak"
 #: main/src/ui/notifier_freedesktop.vala:220
 #: main/src/ui/notifier_freedesktop.vala:253
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
-#: main/data/call_widget.ui:89
+#: main/data/call_widget.ui:81
 msgid "Accept"
 msgstr "Terima"
 
@@ -445,7 +523,7 @@ msgstr "%smeminta ijin untuk menulis ke dalam %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:12
 #: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
+#: main/data/settings_dialog.ui:4 main/data/menu_app.ui:11
 msgid "Settings"
 msgstr "Pengaturan"
 
@@ -454,12 +532,12 @@ msgid "Local Settings"
 msgstr "Pengaturan lokal"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:22
+#: main/data/settings_dialog.ui:23
 msgid "Send typing notifications"
 msgstr "Kirim pemberitahuan pengetikan"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:34
+#: main/data/settings_dialog.ui:32
 msgid "Send read receipts"
 msgstr "Kirim tanda telah dibaca"
 
@@ -468,24 +546,32 @@ msgstr "Kirim tanda telah dibaca"
 msgid "Notifications"
 msgstr "Notifikasi"
 
-#: main/src/ui/contact_details/settings_provider.vala:83
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:125
+#: main/src/ui/contact_details/settings_provider.vala:55
+msgid "Pin conversation"
+msgstr ""
+
+#: main/src/ui/contact_details/settings_provider.vala:55
+msgid "Pins the conversation to the top of the conversation list"
+msgstr ""
+
+#: main/src/ui/contact_details/settings_provider.vala:89
+#: main/src/ui/contact_details/settings_provider.vala:129
+#: main/src/ui/contact_details/settings_provider.vala:131
 msgid "On"
 msgstr "On"
 
-#: main/src/ui/contact_details/settings_provider.vala:85
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:126
+#: main/src/ui/contact_details/settings_provider.vala:91
+#: main/src/ui/contact_details/settings_provider.vala:129
+#: main/src/ui/contact_details/settings_provider.vala:132
 msgid "Off"
 msgstr "Mati"
 
-#: main/src/ui/contact_details/settings_provider.vala:87
+#: main/src/ui/contact_details/settings_provider.vala:93
 msgid "Only when mentioned"
 msgstr "Hanya jika dipanggil"
 
-#: main/src/ui/contact_details/settings_provider.vala:89
-#: main/src/ui/contact_details/settings_provider.vala:124
+#: main/src/ui/contact_details/settings_provider.vala:95
+#: main/src/ui/contact_details/settings_provider.vala:130
 #, c-format
 msgid "Default: %s"
 msgstr "Pengaturan awal: %s"
@@ -551,10 +637,10 @@ msgid "Who is allowed to view the occupants' JIDs?"
 msgstr "Siapa yang diijinkan untuk melihat JID penghuni?"
 
 #: main/src/ui/contact_details/muc_config_form_provider.vala:70
-#: main/data/add_conversation/conference_details_fragment.ui:175
-#: main/data/add_conversation/add_groupchat_dialog.ui:147
-#: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:211
+#: main/data/add_conversation/conference_details_fragment.ui:162
+#: main/data/add_conversation/add_groupchat_dialog.ui:122
+#: main/data/manage_accounts/dialog.ui:151
+#: main/data/manage_accounts/add_account_dialog.ui:194
 msgid "Password"
 msgstr "Kata sandi"
 
@@ -590,67 +676,67 @@ msgstr "Jumlah maksimum backlog yang diterbitkan oleh kamar"
 msgid "Room Configuration"
 msgstr "Konfigurasi kamar"
 
-#: main/src/ui/main_window.vala:198
+#: main/src/ui/main_window.vala:179
 msgid "Welcome to Dino!"
 msgstr "Selamat datang di Dino!"
 
-#: main/src/ui/main_window.vala:199
+#: main/src/ui/main_window.vala:180
 msgid "Sign in or create an account to get started."
 msgstr "Masuk atau buat akun untuk memulai."
 
-#: main/src/ui/main_window.vala:200
+#: main/src/ui/main_window.vala:181
 msgid "Set up account"
 msgstr "Buat akun"
 
-#: main/src/ui/main_window.vala:208
+#: main/src/ui/main_window.vala:188
 msgid "No active accounts"
 msgstr "Tidak ada akun aktif"
 
-#: main/src/ui/main_window.vala:209
+#: main/src/ui/main_window.vala:189
 msgid "Manage accounts"
 msgstr "Atur akun"
 
 #: main/src/ui/notifier_freedesktop.vala:189
-#: main/src/ui/manage_accounts/dialog.vala:232
+#: main/src/ui/manage_accounts/dialog.vala:229
 msgid "Wrong password"
 msgstr "Password salah"
 
 #: main/src/ui/notifier_freedesktop.vala:192
-#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Invalid TLS certificate"
 msgstr "Sertifikat TLS tidak valid"
 
-#: main/src/ui/manage_accounts/dialog.vala:125
+#: main/src/ui/manage_accounts/dialog.vala:116
 #, c-format
 msgid "Remove account %s?"
 msgstr "Hapus akun %s?"
 
-#: main/src/ui/manage_accounts/dialog.vala:128
+#: main/src/ui/manage_accounts/dialog.vala:119
 msgid "Remove"
 msgstr "Hapus"
 
-#: main/src/ui/manage_accounts/dialog.vala:152
+#: main/src/ui/manage_accounts/dialog.vala:146
 msgid "Select avatar"
 msgstr "Pilih gambar profil"
 
-#: main/src/ui/manage_accounts/dialog.vala:159
+#: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Images"
 msgstr "Gambar"
 
-#: main/src/ui/manage_accounts/dialog.vala:163
+#: main/src/ui/manage_accounts/dialog.vala:157
 msgid "All files"
 msgstr "Semua file"
 
-#: main/src/ui/manage_accounts/dialog.vala:221
+#: main/src/ui/manage_accounts/dialog.vala:218
 msgid "Connected"
 msgstr "Terhubung"
 
-#: main/src/ui/manage_accounts/dialog.vala:223
+#: main/src/ui/manage_accounts/dialog.vala:220
 msgid "Disconnected"
 msgstr "Terputus"
 
-#: main/src/ui/manage_accounts/dialog.vala:237
-#: main/src/ui/manage_accounts/dialog.vala:239
+#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Error"
 msgstr "Rusak"
 
@@ -701,43 +787,55 @@ msgstr "Ada yang tidak beres"
 msgid "No response from server"
 msgstr "Server tidak merespon"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:333
+#: main/src/ui/manage_accounts/add_account_dialog.vala:338
 #, c-format
 msgid "Register on %s"
 msgstr "Terdaftar pada %s"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:336
+#: main/src/ui/manage_accounts/add_account_dialog.vala:341
 msgid "The server requires to sign up through a website"
 msgstr "Server ini mengharuskan pendaftaran melalui website"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:338
+#: main/src/ui/manage_accounts/add_account_dialog.vala:343
 msgid "Open website"
 msgstr "Buka website"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:359
+#: main/src/ui/manage_accounts/add_account_dialog.vala:364
 msgid "Register"
 msgstr "Daftar"
 
-#: main/src/ui/manage_accounts/add_account_dialog.vala:361
+#: main/src/ui/manage_accounts/add_account_dialog.vala:366
 #, c-format
 msgid "Check %s for information on how to sign up"
 msgstr "Periksa %s untuk informasi pendaftaran"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:194
-msgid "Message too long"
-msgstr "Pesan terlalu panjang"
-
 #: main/src/ui/conversation_content_view/message_widget.vala:220
-msgid "edited"
-msgstr "Diedit"
+msgid "Edit message"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/message_widget.vala:229
-msgid "pending…"
-msgstr "tertunda…"
+msgid "Reply"
+msgstr ""
 
-#: main/src/ui/conversation_content_view/message_widget.vala:242
-msgid "delivery failed"
-msgstr "pengiriman gagal"
+#: main/src/ui/conversation_content_view/message_widget.vala:238
+#: main/src/ui/conversation_content_view/reactions_widget.vala:128
+msgid "Add reaction"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/reactions_widget.vala:102
+msgid "You"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/file_image_widget.vala:53
+#: main/src/ui/conversation_content_view/file_default_widget.vala:57
+msgid "Open"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/file_image_widget.vala:54
+#: main/src/ui/conversation_content_view/file_widget.vala:184
+#: main/src/ui/conversation_content_view/file_default_widget.vala:58
+msgid "Save as…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:110
 #, c-format
@@ -759,151 +857,103 @@ msgstr "%s dan%s sedang mengetik…"
 msgid "%s is typing…"
 msgstr "%s sedang mengetik…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:150
+#: main/src/ui/conversation_content_view/call_widget.vala:155
 msgid "Call started"
 msgstr "Panggilan dimulai"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:152
+#: main/src/ui/conversation_content_view/call_widget.vala:157
 #, c-format
 msgid "Started %s ago"
 msgstr "Dimulai %s yang lalu"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:167
+#: main/src/ui/conversation_content_view/call_widget.vala:172
 msgid "You handled this call on another device"
 msgstr "Anda menangani panggilan ini di perangkat lain"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:172
+#: main/src/ui/conversation_content_view/call_widget.vala:177
 msgid "Call ended"
 msgstr "Panggilan berakhir"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/call_widget.vala:180
 #, c-format
 msgid "Ended at %s"
 msgstr "Berakhir pada %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:177
+#: main/src/ui/conversation_content_view/call_widget.vala:182
 #, c-format
 msgid "Lasted %s"
 msgstr "Berlangsung %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:181
+#: main/src/ui/conversation_content_view/call_widget.vala:186
 msgid "Call missed"
 msgstr "Panggilan tak terjawab"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:183
+#: main/src/ui/conversation_content_view/call_widget.vala:188
 msgid "You missed this call"
 msgstr "Anda melewatkan panggilan ini"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:186
+#: main/src/ui/conversation_content_view/call_widget.vala:191
 #, c-format
 msgid "%s missed this call"
 msgstr "%s melewatkan panggilan ini"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:191
+#: main/src/ui/conversation_content_view/call_widget.vala:196
 msgid "Call declined"
 msgstr "Panggilan ditolak"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:193
+#: main/src/ui/conversation_content_view/call_widget.vala:198
 msgid "You declined this call"
 msgstr "Anda menolak panggilan ini"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:196
+#: main/src/ui/conversation_content_view/call_widget.vala:201
 #, c-format
 msgid "%s declined this call"
 msgstr "%s menolak panggilan ini"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:201
+#: main/src/ui/conversation_content_view/call_widget.vala:206
 msgid "Call failed"
 msgstr "Panggilan gagal"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:225
+#: main/src/ui/conversation_content_view/call_widget.vala:230
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
 msgstr[0] "%i jam"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:232
+#: main/src/ui/conversation_content_view/call_widget.vala:237
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
 msgstr[0] "%i menit"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:239
+#: main/src/ui/conversation_content_view/call_widget.vala:244
 msgid "a few seconds"
 msgstr "beberapa detik"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:188
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr "Tidak terenkripsi"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:232
-msgid "Unable to send message"
-msgstr "Tidak bisa mengirimkan pesan"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:291
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr "%x, %H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:292
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr "%x, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:295
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr "%d %b, %H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:296
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr "%d %b, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:299
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr "%a, %H∶%M"
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:300
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr "%a, %l∶%M %p"
-
-#: main/src/ui/conversation_content_view/file_widget.vala:175
-#: main/src/ui/conversation_content_view/file_default_widget.vala:29
-msgid "Save as…"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
 msgstr "Kontak ini ingin menambahkan anda kedalam daftar kontaknya"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:28
-msgid "Open"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/file_default_widget.vala:59
+#: main/src/ui/conversation_content_view/file_default_widget.vala:64
 #, c-format
 msgid "Downloading %s…"
 msgstr "Mengunduh %s…"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:65
+#: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "%s offered: %s"
 msgstr "%s ditawarkan: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:67
+#: main/src/ui/conversation_content_view/file_default_widget.vala:79
 #, c-format
 msgid "File offered: %s"
 msgstr "File ditawarkan: %s"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:69
+#: main/src/ui/conversation_content_view/file_default_widget.vala:81
 msgid "File offered"
 msgstr "File ditawarkan"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:75
+#: main/src/ui/conversation_content_view/file_default_widget.vala:87
 msgid "File transfer failed"
 msgstr "Transfer file gagal"
 
@@ -915,60 +965,59 @@ msgstr "Hari ini"
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
-#: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
-#: main/data/shortcuts.ui:44
-msgid "Send a file"
-msgstr "Kirim file"
+#: main/src/ui/conversation_content_view/quote_widget.vala:31
+msgid "File"
+msgstr ""
 
-#: main/data/message_item_widget_edit_mode.ui:60
+#: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
 msgstr "Update pesan"
 
-#: main/data/unified_main_content.ui:48
-msgid "Click here to start a conversation or join a channel."
-msgstr "Klik untuk memulai percakapan atau bergabung dengan channel."
-
-#: main/data/unified_main_content.ui:100
+#: main/data/unified_main_content.ui:43
 msgid "You have no open chats"
 msgstr "Anda tidak memiliki percakapan terbuka"
 
-#: main/data/add_conversation/conference_details_fragment.ui:19
-#: main/data/add_conversation/add_groupchat_dialog.ui:49
-#: main/data/add_conversation/add_contact_dialog.ui:49
+#: main/data/unified_main_content.ui:44
+msgid "Click + to start a chat or join a channel"
+msgstr ""
+
+#: main/data/add_conversation/conference_details_fragment.ui:20
+#: main/data/add_conversation/add_groupchat_dialog.ui:40
+#: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
 msgstr "Akun"
 
-#: main/data/add_conversation/conference_details_fragment.ui:123
-#: main/data/add_conversation/add_groupchat_dialog.ui:120
+#: main/data/add_conversation/conference_details_fragment.ui:114
+#: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
 msgstr "Panggilan"
 
-#: main/data/add_conversation/add_groupchat_dialog.ui:175
-#: main/data/add_conversation/add_contact_dialog.ui:102
+#: main/data/add_conversation/add_groupchat_dialog.ui:144
+#: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
 msgstr "Alias"
 
-#: main/data/add_conversation/add_contact_dialog.ui:8
+#: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
 msgstr "Tambah kontak"
 
-#: main/data/settings_dialog.ui:46
+#: main/data/settings_dialog.ui:41
 msgid "Notify when a new message arrives"
 msgstr "Beri tahu saat ada pesan"
 
-#: main/data/settings_dialog.ui:58
+#: main/data/settings_dialog.ui:50
 msgid "Convert smileys to emojis"
 msgstr "Ubah smiley menjadi emoji"
 
-#: main/data/settings_dialog.ui:70
+#: main/data/settings_dialog.ui:59
 msgid "Check spelling"
 msgstr "Periksa ejaan"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
 msgstr "Aplikasi chat XMPP modern"
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:9
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
@@ -977,7 +1026,7 @@ msgstr ""
 "Dino adalah aplikasi chat open source modern untuk PC. Menyediakan "
 "pengalaman Jabber / XMPP yang handal dengan tetap menjunjung privasi Anda."
 
-#: main/data/im.dino.Dino.appdata.xml.in:11
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -987,7 +1036,7 @@ msgstr ""
 "pengaturan fitur terkait privasi seperti tanda pesan dibaca dan "
 "pemberitahuan pengetikan."
 
-#: main/data/im.dino.Dino.appdata.xml.in:12
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
@@ -995,99 +1044,102 @@ msgstr ""
 "Dino mengambil riwayat pesan dari server dan menyinkronkan pesan dengan "
 "perangkat lain."
 
-#: main/data/global_search.ui:37
+#: main/data/global_search.ui:27
 msgid "No active search"
 msgstr "Tidak ada pencarian aktif"
 
-#: main/data/global_search.ui:52
+#: main/data/global_search.ui:28
 msgid "Type to start a search"
 msgstr "Ketik untuk memulai pencarian"
 
-#: main/data/global_search.ui:85
+#: main/data/global_search.ui:42
 msgid "No matching messages"
 msgstr "Tidak ada pesan yang cocok"
 
-#: main/data/global_search.ui:100
+#: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
 msgstr "Periksa ejaan atau coba hapus filter"
 
-#: main/data/file_send_overlay.ui:80
+#: main/data/file_send_overlay.ui:61
 msgid "Send"
 msgstr "Kirim"
 
-#: main/data/shortcuts.ui:12
+#: main/data/shortcuts.ui:10
 msgid "General"
 msgstr "Umum"
 
-#: main/data/shortcuts.ui:32
+#: main/data/shortcuts.ui:27
 msgid "Conversation"
 msgstr "Percakapan"
 
-#: main/data/shortcuts.ui:52
+#: main/data/shortcuts.ui:44
 msgid "Navigation"
 msgstr "Navigasi"
 
-#: main/data/shortcuts.ui:57
+#: main/data/shortcuts.ui:48
 msgid "Jump to next conversation"
 msgstr "Pesan selanjutnya"
 
-#: main/data/shortcuts.ui:64
+#: main/data/shortcuts.ui:54
 msgid "Jump to previous conversation"
 msgstr "Pesan sebelumnya"
 
-#: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:9
+#: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:5
 msgid "Accounts"
 msgstr "Akun"
 
-#: main/data/manage_accounts/dialog.ui:200
+#: main/data/manage_accounts/dialog.ui:176
 msgid "Local alias"
 msgstr "Alias lokal"
 
-#: main/data/manage_accounts/dialog.ui:255
+#: main/data/manage_accounts/dialog.ui:225
 msgid "No accounts configured"
 msgstr "Tidak ada akun yang dikonfigurasi"
 
-#: main/data/manage_accounts/dialog.ui:266
+#: main/data/manage_accounts/dialog.ui:233
 msgid "Add an account"
 msgstr "Tambah akun"
 
-#: main/data/manage_accounts/add_account_dialog.ui:31
+#: main/data/manage_accounts/add_account_dialog.ui:35
 msgid "Sign in"
 msgstr "Masuk"
 
-#: main/data/manage_accounts/add_account_dialog.ui:78
-#: main/data/manage_accounts/add_account_dialog.ui:328
+#: main/data/manage_accounts/add_account_dialog.ui:75
+#: main/data/manage_accounts/add_account_dialog.ui:284
 msgid "Create account"
 msgstr "Buat akun"
 
-#: main/data/manage_accounts/add_account_dialog.ui:153
+#: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"
 msgstr "Tidak dapat membuat sambungan aman"
 
-#: main/data/manage_accounts/add_account_dialog.ui:288
+#: main/data/manage_accounts/add_account_dialog.ui:245
 msgid "Connect"
 msgstr "Hubungi"
 
-#: main/data/manage_accounts/add_account_dialog.ui:340
+#: main/data/manage_accounts/add_account_dialog.ui:294
 msgid "Choose a public server"
 msgstr "Pilih server publik"
 
-#: main/data/manage_accounts/add_account_dialog.ui:369
+#: main/data/manage_accounts/add_account_dialog.ui:318
 msgid "Or specify a server address"
 msgstr "Atau tentukan alamat server"
 
-#: main/data/manage_accounts/add_account_dialog.ui:389
+#: main/data/manage_accounts/add_account_dialog.ui:334
 msgid "Sign in instead"
 msgstr "Masuk saja"
 
-#: main/data/manage_accounts/add_account_dialog.ui:470
+#: main/data/manage_accounts/add_account_dialog.ui:408
 msgid "Pick another server"
 msgstr "Pilih server lain"
 
-#: main/data/manage_accounts/add_account_dialog.ui:542
+#: main/data/manage_accounts/add_account_dialog.ui:476
 msgid "All set up!"
 msgstr "Selesai!"
 
-#: main/data/manage_accounts/add_account_dialog.ui:578
+#: main/data/manage_accounts/add_account_dialog.ui:506
 msgid "Finish"
 msgstr "Selesai"
+
+#~ msgid "Click here to start a conversation or join a channel."
+#~ msgstr "Klik untuk memulai percakapan atau bergabung dengan channel."

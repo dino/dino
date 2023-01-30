@@ -204,19 +204,18 @@ public class Dino.HistorySync {
         var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, latest_message_time, latest_message_id);
 
         PageRequestResult page_result = yield get_mam_page(account, query_params, null);
-
-        if (page_result.page_result == PageResult.Duplicate) {
-            // No new messages
-            return null;
-        }
+        debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
 
         if (page_result.page_result == PageResult.Error) {
-            debug("[%s | %s] Failed fetching latest page %s", mam_server.to_string(), mam_server.to_string(), page_result.page_result.to_string());
             return null;
         }
 
+        // If we get PageResult.Duplicate, we still want to update the db row to the latest message.
+
         // Catchup finished within first page. Update latest db entry.
-        if (page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages } && latest_row_id != -1) {
+        if (latest_row_id != -1 &&
+                page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages, PageResult.Duplicate }) {
+
             if (page_result.stanzas == null || page_result.stanzas.is_empty) return null;
 
             string latest_mam_id = page_result.query_result.last;
@@ -258,7 +257,7 @@ public class Dino.HistorySync {
                 .value(db.mam_catchup.server_jid, mam_server.to_string())
                 .value(db.mam_catchup.from_id, from_id)
                 .value(db.mam_catchup.from_time, from_time)
-                .value(db.mam_catchup.from_end, false)
+                .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages)
                 .value(db.mam_catchup.to_id, to_id)
                 .value(db.mam_catchup.to_time, to_time)
                 .perform();

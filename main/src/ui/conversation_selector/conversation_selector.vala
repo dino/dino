@@ -38,7 +38,6 @@ public class ConversationSelector : Widget {
 
     construct {
         add_css_class("sidebar");
-        list_box.set_header_func(header);
         list_box.set_sort_func(sort);
 
         realize.connect(() => {
@@ -75,6 +74,8 @@ public class ConversationSelector : Widget {
     private void add_conversation(Conversation conversation) {
         ConversationSelectorRow row;
         if (!rows.has_key(conversation)) {
+            conversation.notify["pinned"].connect(list_box.invalidate_sort);
+
             row = new ConversationSelectorRow(stream_interactor, conversation);
             rows[conversation] = row;
             list_box.append(row);
@@ -119,6 +120,8 @@ public class ConversationSelector : Widget {
     private async void remove_conversation(Conversation conversation) {
         select_fallback_conversation(conversation);
         if (rows.has_key(conversation)) {
+            conversation.notify["pinned"].disconnect(list_box.invalidate_sort);
+
             yield rows[conversation].colapse();
             list_box.remove(rows[conversation]);
             rows.unset(conversation);
@@ -135,20 +138,16 @@ public class ConversationSelector : Widget {
         }
     }
 
-    private void header(ListBoxRow row, ListBoxRow? before_row) {
-        if (row.get_header() == null && before_row != null) {
-            row.set_header(new Separator(Orientation.HORIZONTAL));
-        } else if (row.get_header() != null && before_row == null) {
-            row.set_header(null);
-        }
-    }
-
     private int sort(ListBoxRow row1, ListBoxRow row2) {
         ConversationSelectorRow cr1 = row1 as ConversationSelectorRow;
         ConversationSelectorRow cr2 = row2 as ConversationSelectorRow;
         if (cr1 != null && cr2 != null) {
             Conversation c1 = cr1.conversation;
             Conversation c2 = cr2.conversation;
+
+            int pin_comp = c2.pinned - c1.pinned;
+            if (pin_comp != 0) return pin_comp;
+
             if (c1.last_active == null) return -1;
             if (c2.last_active == null) return 1;
             int comp = c2.last_active.compare(c1.last_active);
