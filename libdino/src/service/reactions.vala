@@ -136,12 +136,19 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         return ret;
     }
 
-    private ReactionsTime get_muc_user_reactions(Account account, int content_item_id, string? occupantid, Jid? real_jid) {
+    private ReactionsTime get_muc_user_reactions(Account account, int content_item_id, string? occupant_id, Jid? real_jid) {
+        if (occupant_id == null && real_jid == null) critical("Need occupant id or real jid of a reaction");
+
         QueryBuilder query = db.reaction.select()
                 .with(db.reaction.account_id, "=", account.id)
                 .with(db.reaction.content_item_id, "=", content_item_id)
-                .join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
-                .with(db.occupantid.occupant_id, "=", occupantid);
+                .outer_join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id);
+
+        if (occupant_id != null) {
+            query.with(db.occupantid.occupant_id, "=", occupant_id);
+        } else if (real_jid != null) {
+            query.with(db.reaction.jid_id, "=", db.get_jid_id(real_jid));
+        }
 
         RowOption row = query.single().row();
         ReactionsTime ret = new ReactionsTime();
@@ -191,7 +198,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         QueryBuilder select = db.reaction.select()
                 .with(db.reaction.account_id, "=", account.id)
                 .with(db.reaction.content_item_id, "=", content_item.id)
-                .join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
+                .outer_join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
                 .order_by(db.reaction.time, "DESC");
 
         string? own_occupant_id = stream_interactor.get_module(MucManager.IDENTITY).get_own_occupant_id(account, content_item.jid);
