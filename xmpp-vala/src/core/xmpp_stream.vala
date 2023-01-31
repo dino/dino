@@ -37,9 +37,9 @@ public abstract class Xmpp.XmppStream {
     public abstract async StanzaNode read() throws IOError;
 
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
-    public abstract void write(StanzaNode node);
+    public abstract void write(StanzaNode node, int io_priority = Priority.DEFAULT);
 
-    public abstract async void write_async(StanzaNode node) throws IOError;
+    public abstract async void write_async(StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError;
 
     public abstract async void setup() throws IOError;
 

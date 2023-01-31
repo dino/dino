@@ -71,7 +71,7 @@ public class Module : XmppStreamModule {
         return query_node;
     }
 
-    internal async QueryResult query_archive(XmppStream stream, string ns, Jid? mam_server, StanzaNode query_node) {
+    internal async QueryResult query_archive(XmppStream stream, string ns, Jid? mam_server, StanzaNode query_node, Cancellable? cancellable = null) {
         var res = new QueryResult();
 
         if (stream.get_flag(Flag.IDENTITY) == null) { res.error = true; return res; }
@@ -79,7 +79,7 @@ public class Module : XmppStreamModule {
         // Build and send query
         Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=mam_server };
 
-        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
 
         // Parse the response IQ into a QueryResult.
         StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", ns);

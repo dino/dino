@@ -1,7 +1,7 @@
 using Gee;
 
 public interface Xmpp.WriteNodeFunc : Object {
-    public abstract async void write_stanza(XmppStream stream, StanzaNode node) throws IOError;
+    public abstract async void write_stanza(XmppStream stream, StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError;
 }
 
 public abstract class Xmpp.IoXmppStream : XmppStream {
@@ -44,22 +44,22 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
     }
 
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
-    public override void write(StanzaNode node) {
-        write_async.begin(node, (obj, res) => {
+    public override void write(StanzaNode node, int io_priority = Priority.DEFAULT) {
+        write_async.begin(node, io_priority, null, (obj, res) => {
             try {
                 write_async.end(res);
             } catch (Error e) { }
         });
     }
 
-    public override async void write_async(StanzaNode node) throws IOError {
+    public override async void write_async(StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         if (write_obj != null) {
-            yield write_obj.write_stanza(this, node);
+            yield write_obj.write_stanza(this, node, io_priority, cancellable);
         } else {
             StanzaWriter? writer = this.writer;
             if (writer == null) throw new IOError.NOT_CONNECTED("trying to write, but no stream open");
             log.node("OUT", node, this);
-            yield ((!)writer).write_node(node);
+            yield ((!)writer).write_node(node, io_priority, cancellable);
         }
     }
 

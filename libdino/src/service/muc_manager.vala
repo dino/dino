@@ -109,7 +109,7 @@ public class MucManager : StreamInteractionModule, Object {
                 } else {
                     // Fetch everything up to the last time the user actively joined
                     stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync
-                            .fetch_everything.begin(account, jid.bare_jid, conversation.active_last_changed);
+                            .fetch_everything.begin(account, jid.bare_jid, null, conversation.active_last_changed);
                 }
             }
         } else if (res.muc_error != null) {
