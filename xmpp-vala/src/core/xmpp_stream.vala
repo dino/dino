@@ -1,13 +1,5 @@
 using Gee;
 
-public errordomain Xmpp.IOStreamError {
-    READ,
-    WRITE,
-    CONNECT,
-    DISCONNECT,
-    TLS
-}
-
 public abstract class Xmpp.XmppStream {
 
     public signal void received_node(XmppStream stream, StanzaNode node);
@@ -38,18 +30,18 @@ public abstract class Xmpp.XmppStream {
         this.remote_name = remote_name;
     }
 
-    public abstract async void connect() throws IOStreamError;
+    public abstract async void connect() throws IOError;
 
-    public abstract async void disconnect() throws IOStreamError, XmlError, IOError;
+    public abstract async void disconnect() throws IOError;
 
-    public abstract async StanzaNode read() throws IOStreamError;
+    public abstract async StanzaNode read() throws IOError;
 
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
     public abstract void write(StanzaNode node);
 
-    public abstract async void write_async(StanzaNode node) throws IOStreamError;
+    public abstract async void write_async(StanzaNode node) throws IOError;
 
-    public abstract async void setup() throws IOStreamError;
+    public abstract async void setup() throws IOError;
 
     public void require_setup() {
         setup_needed = true;
@@ -105,7 +97,7 @@ public abstract class Xmpp.XmppStream {
         return null;
     }
 
-    public async void loop() throws IOStreamError {
+    public async void loop() throws IOError {
         while (true) {
             if (setup_needed) {
                 yield setup();
@@ -168,7 +160,7 @@ public abstract class Xmpp.XmppStream {
         return false;
     }
 
-    private bool negotiation_modules_done() throws IOStreamError {
+    private bool negotiation_modules_done() throws IOError {
         if (setup_needed) return false;
         if (is_negotiation_active()) return false;
 
@@ -176,7 +168,7 @@ public abstract class Xmpp.XmppStream {
             if (module is XmppStreamNegotiationModule) {
                 XmppStreamNegotiationModule negotiation_module = (XmppStreamNegotiationModule) module;
                 if (negotiation_module.mandatory_outstanding(this)) {
-                    throw new IOStreamError.CONNECT("mandatory-to-negotiate feature not negotiated: " + negotiation_module.get_id());
+                    throw new IOError.FAILED("mandatory-to-negotiate feature not negotiated: " + negotiation_module.get_id());
                 }
             }
         }

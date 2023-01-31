@@ -65,7 +65,7 @@ class StanzaTest : Gee.TestCase {
         try {
             yield reader.read_node();
             fail_if_reached("end of stream should be reached");
-        } catch (XmlError.EOF e) {
+        } catch (IOError.CLOSED e) {
             return;
         } catch (Error e) {
             fail_if_reached("Unexpected error");

@@ -10,7 +10,7 @@ namespace Xmpp {
     public class XmppStreamResult {
         public TlsXmppStream? stream { get; set; }
         public TlsCertificateFlags? tls_errors { get; set; }
-        public IOStreamError? io_error { get; set; }
+        public IOError? io_error { get; set; }
     }
 
     public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
@@ -55,7 +55,7 @@ namespace Xmpp {
         // Try all connection options from lowest to highest priority
         TlsXmppStream? stream = null;
         TlsCertificateFlags? tls_errors = null;
-        IOStreamError? io_error = null;
+        IOError? io_error = null;
         foreach (SrvTargetInfo target in targets) {
             try {
                 if (target.service == "xmpp-client") {
@@ -72,7 +72,7 @@ namespace Xmpp {
                 yield stream.connect();
 
                 return new XmppStreamResult() { stream=stream };
-            } catch (IOStreamError e) {
+            } catch (IOError e) {
                 warning("Could not establish XMPP session with %s:%i: %s", target.host, target.port, e.message);
 
                 if (stream != null) {

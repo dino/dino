@@ -459,7 +459,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 if (!conversation.type_.is_muc_semantic() && current_own_jid != null && !current_own_jid.equals(message.ourpart)) {
                     message.ourpart = current_own_jid;
                 }
-            } catch (IOStreamError e) {
+            } catch (IOError e) {
                 message.marked = Entities.Message.Marked.UNSENT;
 
                 if (stream != stream_interactor.get_stream(conversation.account)) {

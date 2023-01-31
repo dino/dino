@@ -25,7 +25,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
         }
     }
 
-    public async void write_stanza(XmppStream stream, StanzaNode node) throws IOStreamError {
+    public async void write_stanza(XmppStream stream, StanzaNode node) throws IOError {
         var promise = new Promise<IOError?>();
 
         node_queue.add(new QueueItem(node, promise));
@@ -34,7 +34,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
         try {
             yield promise.future.wait_async();
         } catch (FutureError e) {
-            throw new IOStreamError.WRITE("Future returned error %i".printf(e.code));
+            throw new IOError.FAILED("Future returned error %i".printf(e.code));
         }
     }
 
@@ -50,7 +50,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
             } else {
                 yield ((!)writer).write_node(node);
             }
-        } catch (XmlError e) { }
+        } catch (IOError e) { }
     }
 
     private void check_queue(XmppStream stream) {
@@ -158,7 +158,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                         handle_incoming_h(stream, h_outbound);
                     }
                     foreach (var id in in_flight_stanzas.keys) {
-                        in_flight_stanzas[id].promise.set_exception(new IOStreamError.WRITE("Stanza not acked and session not resumed"));
+                        in_flight_stanzas[id].promise.set_exception(new IOError.FAILED("Stanza not acked and session not resumed"));
                     }
                     in_flight_stanzas.clear();
                     check_queue(stream);

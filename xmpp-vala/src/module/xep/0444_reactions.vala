@@ -11,7 +11,7 @@ public class Module : XmppStreamModule {
 
     private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
 
-    public async void send_reaction(XmppStream stream, Jid jid, string stanza_type, string message_id, Gee.List<string> reactions) throws SendError {
+    public async void send_reaction(XmppStream stream, Jid jid, string stanza_type, string message_id, Gee.List<string> reactions) throws IOError {
         StanzaNode reactions_node = new StanzaNode.build("reactions", NS_URI).add_self_xmlns();
         reactions_node.put_attribute("id", message_id);
         foreach (string reaction in reactions) {

@@ -12,11 +12,11 @@ public class StanzaWriter {
         this.output = output;
     }
 
-    public async void write_node(StanzaNode node) throws XmlError {
+    public async void write_node(StanzaNode node) throws IOError {
         yield write_data(node.to_xml().data);
     }
 
-    public async void write_nodes(StanzaNode node1, StanzaNode node2) throws XmlError {
+    public async void write_nodes(StanzaNode node1, StanzaNode node2) throws IOError {
         var data1 = node1.to_xml().data;
         var data2 = node2.to_xml().data;
 
@@ -32,11 +32,11 @@ public class StanzaWriter {
         yield write_data(concat);
     }
 
-    public async void write(string s) throws XmlError {
+    public async void write(string s) throws IOError {
         yield write_data(s.data);
     }
 
-    private async void write_data(owned uint8[] data) throws XmlError {
+    private async void write_data(owned uint8[] data) throws IOError {
         if (running) {
             queue.push_tail(new SourceFuncWrapper(write_data.callback));
             yield;
@@ -44,9 +44,12 @@ public class StanzaWriter {
         running = true;
         try {
             yield output.write_all_async(data, 0, null, null);
+        } catch (IOError e) {
+            cancel();
+            throw e;
         } catch (GLib.Error e) {
             cancel();
-            throw new XmlError.IO(@"IOError in GLib: $(e.message)");
+            throw new IOError.FAILED("Error in GLib: %s".printf(e.message));
         } finally {
             SourceFuncWrapper? sfw = queue.pop_head();
             if (sfw != null) {

@@ -37,7 +37,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         try {
             send_reactions(conversation, content_item, reactions);
             reaction_added(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
-        } catch (SendError e) {}
+        } catch (IOError e) {}
     }
 
     public void remove_reaction(Conversation conversation, ContentItem content_item, string reaction) {
@@ -46,7 +46,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         try {
             send_reactions(conversation, content_item, reactions);
             reaction_removed(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
-        } catch (SendError e) {}
+        } catch (IOError e) {}
     }
 
     public Gee.List<ReactionUsers> get_item_reactions(Conversation conversation, ContentItem content_item) {
@@ -74,12 +74,12 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws SendError {
+    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws IOError {
         string? message_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
-        if (message_id == null) throw new SendError.Misc("No message for content_item");
+        if (message_id == null) throw new IOError.FAILED("No message for content_item");
 
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) throw new SendError.NoStream("");
+        if (stream == null) throw new IOError.NOT_CONNECTED("No stream");
 
         var reactions_module = stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY);
 
@@ -94,7 +94,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
                 try {
                     reactions_module.send_reaction.end(res);
                     save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_millis, reactions);
-                } catch (SendError e) {}
+                } catch (IOError e) {}
             });
         }
     }
