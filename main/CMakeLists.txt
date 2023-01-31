@@ -209,6 +209,7 @@ SOURCES
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
 
+    src/ui/widgets/date_separator.vala
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
 CUSTOM_VAPIS
