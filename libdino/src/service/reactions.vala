@@ -199,6 +199,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
                 .with(db.reaction.account_id, "=", account.id)
                 .with(db.reaction.content_item_id, "=", content_item.id)
                 .outer_join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
+                .outer_join_with(db.jid, db.jid.id, db.reaction.jid_id)
                 .order_by(db.reaction.time, "DESC");
 
         string? own_occupant_id = stream_interactor.get_module(MucManager.IDENTITY).get_own_occupant_id(account, content_item.jid);
@@ -209,11 +210,17 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             string emoji_str = row[db.reaction.emojis];
 
             Jid jid = null;
-            if (row[db.occupantid.occupant_id] == own_occupant_id) {
-                jid = account.bare_jid;
+            if (!db.jid.bare_jid.is_null(row)) {
+                jid = new Jid(row[db.jid.bare_jid]);
+            } else if (!db.occupantid.occupant_id.is_null(row)) {
+                if (row[db.occupantid.occupant_id] == own_occupant_id) {
+                    jid = account.bare_jid;
+                } else {
+                    string nick = row[db.occupantid.last_nick];
+                    jid = content_item.jid.with_resource(nick);
+                }
             } else {
-                string nick = row[db.occupantid.last_nick];
-                jid = content_item.jid.with_resource(nick);
+                warning("Reaction with neither JID nor occupant id");
             }
 
             foreach (string emoji in emoji_str.split(",")) {

@@ -323,6 +323,14 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Jid? get_occupant_jid(Account account, Jid room, Jid occupant_real_jid) {
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag != null) {
+            return flag.get_occupant_jid(occupant_real_jid, room);
+        }
+        return null;
+    }
+
     public Xep.Muc.Role? get_role(Jid jid, Account account) {
         Xep.Muc.Flag? flag = get_muc_flag(account);
         if (flag != null) {
