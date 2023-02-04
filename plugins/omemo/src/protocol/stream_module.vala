@@ -78,7 +78,9 @@ public class StreamModule : XmppStreamModule {
             if (!am_on_devicelist) {
                 debug("Not on device list, adding id");
                 node.put_node(new StanzaNode.build("device", NS_URI).put_attribute("id", store.local_registration_id.to_string()));
-                stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, jid, NODE_DEVICELIST, id, node);
+                stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, jid, NODE_DEVICELIST, id, node, null, true, () => {
+                    try_make_node_public.begin(stream, NODE_DEVICELIST);
+                });
             }
             publish_bundles_if_needed(stream, jid);
         }
@@ -298,19 +300,20 @@ public class StreamModule : XmppStreamModule {
         }
         bundle.put_node(prekeys);
 
-        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, @"$NODE_BUNDLES:$device_id", "1", bundle);
-        yield try_make_bundle_public(stream, device_id);
+        string node_id = @"$NODE_BUNDLES:$device_id";
+        yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, node_id, "1", bundle);
+        yield try_make_node_public(stream, node_id);
 
     }
 
-    private async void try_make_bundle_public(XmppStream stream, int32 device_id) {
-        DataForms.DataForm? data_form = yield stream.get_module(Pubsub.Module.IDENTITY).request_node_config(stream, null, @"$NODE_BUNDLES:$device_id");
+    private async void try_make_node_public(XmppStream stream, string node_id) {
+        DataForms.DataForm? data_form = yield stream.get_module(Pubsub.Module.IDENTITY).request_node_config(stream, null, node_id);
         if (data_form == null) return;
 
         foreach (DataForms.DataForm.Field field in data_form.fields) {
             if (field.var == "pubsub#access_model" && field.get_value_string() != Pubsub.ACCESS_MODEL_OPEN) {
                 field.set_value_string(Pubsub.ACCESS_MODEL_OPEN);
-                yield stream.get_module(Pubsub.Module.IDENTITY).submit_node_config(stream, data_form, @"$NODE_BUNDLES:$device_id");
+                yield stream.get_module(Pubsub.Module.IDENTITY).submit_node_config(stream, data_form, node_id);
                 break;
             }
         }
