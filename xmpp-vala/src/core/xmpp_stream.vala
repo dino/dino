@@ -1,6 +1,6 @@
 using Gee;
 
-public abstract class Xmpp.XmppStream {
+public abstract class Xmpp.XmppStream : Object {
 
     public signal void received_node(XmppStream stream, StanzaNode node);
     public signal void received_root_node(XmppStream stream, StanzaNode node);
