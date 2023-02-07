@@ -40,8 +40,8 @@ public class EntryLabelHybrid : LabelHybrid {
     public string text {
         get { return entry.text; }
         set {
-            entry.text = value;
-            set_label_label(value);
+            entry.text = value.dup();
+            update_label();
         }
     }
 
@@ -79,22 +79,21 @@ public class EntryLabelHybrid : LabelHybrid {
         if (e == null) return;
         entry = e;
         base.init(entry);
-        set_label_label(entry.text);
+        update_label();
 
         var key_events = new EventControllerKey();
         key_events.key_released.connect(on_key_released);
         entry.add_controller(key_events);
+        entry.changed.connect(update_label);
 
         var focus_events = new EventControllerFocus();
-        focus_events.leave.connect(on_focus_leave);
+        focus_events.leave.connect(update_label);
         entry.add_controller(focus_events);
     }
 
     private void on_key_released(uint keyval) {
         if (keyval == Gdk.Key.Return) {
             show_label();
-        } else {
-            set_label_label(entry.text);
         }
     }
 
@@ -102,12 +101,12 @@ public class EntryLabelHybrid : LabelHybrid {
         show_label();
     }
 
-    private void set_label_label(string value) {
+    private void update_label() {
         if (visibility) {
-            label.label = value;
+            label.label = entry.text;
         } else {
             string filler = "";
-            for (int i = 0; i < value.length; i++) filler += entry.get_invisible_char().to_string();
+            for (int i = 0; i < entry.text.length; i++) filler += entry.get_invisible_char().to_string();
             label.label = filler;
         }
     }

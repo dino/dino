@@ -42,8 +42,8 @@ public class Dialog : Gtk.Dialog {
             if (selected_account != null) remove_account(account_row);
         });
         image_button.clicked.connect(show_select_avatar);
-//        alias_hybrid.entry.key_release_event.connect(() => { selected_account.alias = alias_hybrid.text; return false; });
-//        password_hybrid.entry.key_release_event.connect(() => { selected_account.password = password_hybrid.text; return false; });
+        alias_hybrid.entry.changed.connect(() => { selected_account.alias = alias_hybrid.text; });
+        password_hybrid.entry.changed.connect(() => { selected_account.password = password_hybrid.text; });
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
