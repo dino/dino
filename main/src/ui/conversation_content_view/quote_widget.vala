@@ -13,6 +13,7 @@ namespace Dino.Ui.Quote {
 
         public string display_name { get; set; }
         public string message { get; set; }
+        public string display_time { get; set; }
         public DateTime message_time { get; set; }
 
         public StreamInteractor stream_interactor { get; set; }
@@ -20,6 +21,8 @@ namespace Dino.Ui.Quote {
         public Jid author_jid { get; set; }
 
         public bool can_abort { get; set; default=false; }
+
+        private uint display_time_timeout;
 
         public Model.from_content_item(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
             this.display_name = Util.get_participant_display_name(stream_interactor, conversation, content_item.jid, true);
@@ -31,10 +34,28 @@ namespace Dino.Ui.Quote {
                 this.message = _("File") + ": " + file_transfer.file_name;
             }
             this.message_time = content_item.time;
+            update_display_time();
 
             this.stream_interactor = stream_interactor;
             this.conversation = conversation;
             this.author_jid = content_item.jid;
+        }
+
+        private void update_display_time() {
+            this.display_time = ConversationItemSkeleton.get_relative_time(message_time.to_local());
+            display_time_timeout = Timeout.add_seconds((int) ConversationItemSkeleton.get_next_time_change(message_time), () => {
+                if (display_time_timeout != 0) update_display_time();
+                return false;
+            });
+        }
+
+        public override void dispose() {
+            base.dispose();
+
+            if (display_time_timeout != 0) {
+                Source.remove(display_time_timeout);
+                display_time_timeout = 0;
+            }
         }
     }
 
@@ -48,11 +69,7 @@ namespace Dino.Ui.Quote {
 
         avatar.set_conversation_participant(model.stream_interactor, model.conversation, model.author_jid);
         model.bind_property("display-name", author, "label", BindingFlags.SYNC_CREATE);
-        model.bind_property("message-time", time, "label", BindingFlags.SYNC_CREATE, (_, from_value, ref to_value) => {
-            DateTime message_time = (DateTime) from_value;
-            to_value = ConversationItemSkeleton.get_relative_time(message_time);
-            return true;
-        });
+        model.bind_property("display-time", time, "label", BindingFlags.SYNC_CREATE);
         model.bind_property("message", message, "label", BindingFlags.SYNC_CREATE);
         model.bind_property("can-abort", abort_button, "visible", BindingFlags.SYNC_CREATE);
 
