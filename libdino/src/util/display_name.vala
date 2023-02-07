@@ -20,13 +20,6 @@ namespace Dino {
     }
 
     public static string get_participant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid participant, string? self_word = null) {
-        if (self_word != null) {
-            if (conversation.account.bare_jid.equals_bare(participant) ||
-                    (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) &&
-                            conversation.nickname != null && participant.equals_bare(conversation.counterpart) && conversation.nickname == participant.resourcepart) {
-                return self_word;
-            }
-        }
         if (conversation.type_ == Conversation.Type.CHAT) {
             return get_real_display_name(stream_interactor, conversation.account, participant, self_word) ?? participant.bare_jid.to_string();
         }
@@ -38,7 +31,7 @@ namespace Dino {
 
     public static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, string? self_word = null) {
         if (jid.equals_bare(account.bare_jid)) {
-            if (self_word != null || account.alias == null || account.alias.length == 0) {
+            if (self_word != null && (account.alias == null || account.alias.length == 0)) {
                 return self_word;
             }
             return account.alias;

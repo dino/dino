@@ -181,7 +181,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_name_label() {
-        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
+        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid, true);
     }
 
     private void update_received_mark() {
