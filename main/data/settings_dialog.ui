@@ -63,6 +63,25 @@
                                 </layout>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkCheckButton" id="systray_checkbutton">
+                                <property name="label" translatable="yes">Minimize to tray</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">5</property>
+                                </layout>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkCheckButton" id="start_minimized_checkbutton">
+                                <property name="label" translatable="yes">Start minimized</property>
+                                <property name="visible">True</property>
+                                <layout>
+                                    <property name="column">0</property>
+                                    <property name="row">6</property>
+                                </layout>
+                            </object>
+                        </child>
                     </object>
                 </child>
             </object>

@@ -12,6 +12,8 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        systray = col_to_bool_or_default("systray", true);
+        start_minimized = col_to_bool_or_default("start_minimized", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -78,6 +80,31 @@ public class Settings : Object {
             check_spelling_ = value;
         }
     }
+
+    private bool systray_;
+    public bool systray {
+        get { return systray_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "systray", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            systray_ = value;
+        }
+    }
+
+    private bool start_minimized_;
+    public bool start_minimized {
+        get { return start_minimized_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "start_minimized", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            start_minimized_ = value;
+        }
+    }
+
 }
 
 }

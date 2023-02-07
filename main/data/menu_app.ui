@@ -21,5 +21,11 @@
                 <attribute name="label" translatable="yes">About Dino</attribute>
             </item>
         </section>
+        <section>
+            <item>
+                <attribute name="action">app.quit</attribute>
+                <attribute name="label" translatable="yes">Quit</attribute>
+            </item>
+        </section>
     </menu>
 </interface>

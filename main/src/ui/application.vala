@@ -11,6 +11,8 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
 
+    private StatusNotifierItem systray;
+
     private MainWindow window;
     public MainWindowController controller;
 
@@ -22,8 +24,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     public SearchPathGenerator? search_path_generator { get; set; }
 
     internal static bool print_version = false;
+    internal static bool start_minimized_arg = false;
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref print_version, "Display version number", null },
+        { "minimized", 0, 0, OptionArg.NONE, ref start_minimized_arg, "Start Dino minimized", null },
         { null }
     };
 
@@ -68,16 +72,28 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                     }
                 }
             });
+
         });
 
         activate.connect(() => {
+
             if (window == null) {
                 controller = new MainWindowController(this, stream_interactor, db);
                 config = new Config(db);
                 window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
-                if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
+
+                setup_systray();
+
+                if (start_minimized_arg || settings.start_minimized) {
+                    if (!settings.systray) {
+                        window.minimize();
+                        window.present();
+                    }
+                    return;
+                }
             }
+
             window.present();
         });
     }
@@ -112,6 +128,53 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         }
     }
 
+    private void setup_systray() {
+
+        systray = new StatusNotifierItem() {
+            id = "org.dino.Dino",
+            category = "Communications",
+            title = "Dino",
+            status = "Active",
+            icon_name = "im.dino.Dino",
+            text_direction = get_locale_direction() == TextDirection.RTL ? "rtl" : "ltr"
+        };
+
+        var menu = new GLib.Menu();
+        menu.append("Show", "app.show");
+        menu.append("Quit", "app.quit");
+        systray.menu_model = menu;
+
+        systray.activate.connect((x, y) => {
+            if (window.visible) {
+                window.hide();
+            } else {
+                window.show();
+            }
+        });
+
+        window.close_request.connect(() => {
+            if (settings.systray) {
+                window.hide();
+            } else {
+                quit();
+            }
+            return true;
+        });
+
+        settings.notify["systray"].connect(() => {
+            if (settings.systray) {
+                systray.register();
+            } else {
+                systray.unregister();
+            }
+        });
+
+        if (settings.systray) {
+            systray.register();
+        }
+
+    }
+
     private void create_actions() {
         SimpleAction accounts_action = new SimpleAction("accounts", null);
         accounts_action.activate.connect(show_accounts_window);
@@ -129,6 +192,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         quit_action.activate.connect(quit);
         add_action(quit_action);
         set_accels_for_action("app.quit", KEY_COMBINATION_QUIT);
+
+        SimpleAction show_action = new SimpleAction("show", null);
+        show_action.activate.connect(() => window.show());
+        add_action(show_action);
 
         SimpleAction open_conversation_action = new SimpleAction("open-conversation", VariantType.INT32);
         open_conversation_action.activate.connect((variant) => {
