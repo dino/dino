@@ -8,7 +8,7 @@
             </item>
             <item>
                 <attribute name="action">app.settings</attribute>
-                <attribute name="label" translatable="yes">Settings</attribute>
+                <attribute name="label" translatable="yes">Preferences</attribute>
             </item>
         </section>
         <section>
