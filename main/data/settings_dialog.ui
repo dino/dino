@@ -1,66 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <template class="DinoUiSettingsDialog">
-        <property name="title" translatable="yes">Settings</property>
+    <template class="DinoUiSettingsDialog" parent="AdwPreferencesWindow">
+        <property name="default-width">500</property>
+        <property name="default-height">420</property>
         <property name="modal">True</property>
-        <child type="titlebar">
-            <object class="GtkHeaderBar">
-            </object>
-        </child>
-        <child internal-child="content_area">
-            <object class="GtkBox">
+        <property name="search-enabled">False</property>
+        <child>
+            <object class="AdwPreferencesPage">
                 <child>
-                    <object class="GtkGrid">
-                        <property name="margin_top">10</property>
-                        <property name="margin_bottom">10</property>
-                        <property name="margin_start">10</property>
-                        <property name="margin_end">10</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                        <property name="row-spacing">10</property>
+                    <object class="AdwPreferencesGroup">
                         <child>
-                            <object class="GtkCheckButton" id="typing_checkbutton">
-                                <property name="label" translatable="yes">Send typing notifications</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">0</property>
-                                </layout>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Send _Typing Notifications</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">typing_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="typing_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                         <child>
-                            <object class="GtkCheckButton" id="marker_checkbutton">
-                                <property name="label" translatable="yes">Send read receipts</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">1</property>
-                                </layout>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Send _Read Receipts</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">marker_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="marker_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">_Notifications</property>
+                                <property name="subtitle" translatable="yes">Notify when a new message arrives</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">notification_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="notification_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">_Convert Smileys to Emoji</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">emoji_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="emoji_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                         <child>
-                            <object class="GtkCheckButton" id="notification_checkbutton">
-                                <property name="label" translatable="yes">Notify when a new message arrives</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">2</property>
-                                </layout>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkCheckButton" id="emoji_checkbutton">
-                                <property name="label" translatable="yes">Convert smileys to emojis</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">3</property>
-                                </layout>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkCheckButton" id="check_spelling_checkbutton">
-                                <property name="label" translatable="yes">Check spelling</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">4</property>
-                                </layout>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Check _Spelling</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">check_spelling_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="check_spelling_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
