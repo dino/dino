@@ -9,7 +9,6 @@ class SettingsDialog : Adw.PreferencesWindow {
     [GtkChild] private unowned Switch marker_switch;
     [GtkChild] private unowned Switch notification_switch;
     [GtkChild] private unowned Switch emoji_switch;
-    [GtkChild] private unowned Switch check_spelling_switch;
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
@@ -20,13 +19,11 @@ class SettingsDialog : Adw.PreferencesWindow {
         marker_switch.active = settings.send_marker;
         notification_switch.active = settings.notifications;
         emoji_switch.active = settings.convert_utf8_smileys;
-        check_spelling_switch.active = settings.check_spelling;
 
         typing_switch.notify["active"].connect(() => { settings.send_typing = typing_switch.active; } );
         marker_switch.notify["active"].connect(() => { settings.send_marker = marker_switch.active; } );
         notification_switch.notify["active"].connect(() => { settings.notifications = notification_switch.active; } );
         emoji_switch.notify["active"].connect(() => { settings.convert_utf8_smileys = emoji_switch.active; });
-        check_spelling_switch.notify["active"].connect(() => { settings.check_spelling = check_spelling_switch.active; });
     }
 }
 

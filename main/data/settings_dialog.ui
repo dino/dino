@@ -2,7 +2,7 @@
 <interface>
     <template class="DinoUiSettingsDialog" parent="AdwPreferencesWindow">
         <property name="default-width">500</property>
-        <property name="default-height">420</property>
+        <property name="default-height">360</property>
         <property name="modal">True</property>
         <property name="search-enabled">False</property>
         <child>
@@ -61,18 +61,6 @@
                                 <property name="activatable-widget">emoji_switch</property>
                                 <child type="suffix">
                                     <object class="GtkSwitch" id="emoji_switch">
-                                        <property name="valign">center</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="AdwActionRow">
-                                <property name="title" translatable="yes">Check _Spelling</property>
-                                <property name="use-underline">True</property>
-                                <property name="activatable-widget">check_spelling_switch</property>
-                                <child type="suffix">
-                                    <object class="GtkSwitch" id="check_spelling_switch">
                                         <property name="valign">center</property>
                                     </object>
                                 </child>
