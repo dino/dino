@@ -22,11 +22,11 @@ class SettingsDialog : Adw.PreferencesWindow {
         emoji_switch.active = settings.convert_utf8_smileys;
         check_spelling_switch.active = settings.check_spelling;
 
-        typing_switch.activate.connect(() => { settings.send_typing = typing_switch.active; } );
-        marker_switch.activate.connect(() => { settings.send_marker = marker_switch.active; } );
-        notification_switch.activate.connect(() => { settings.notifications = notification_switch.active; } );
-        emoji_switch.activate.connect(() => { settings.convert_utf8_smileys = emoji_switch.active; });
-        check_spelling_switch.activate.connect(() => { settings.check_spelling = check_spelling_switch.active; });
+        typing_switch.notify["active"].connect(() => { settings.send_typing = typing_switch.active; } );
+        marker_switch.notify["active"].connect(() => { settings.send_marker = marker_switch.active; } );
+        notification_switch.notify["active"].connect(() => { settings.notifications = notification_switch.active; } );
+        emoji_switch.notify["active"].connect(() => { settings.convert_utf8_smileys = emoji_switch.active; });
+        check_spelling_switch.notify["active"].connect(() => { settings.check_spelling = check_spelling_switch.active; });
     }
 }
 
