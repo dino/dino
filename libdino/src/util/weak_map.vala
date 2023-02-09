@@ -22,12 +22,11 @@ public class WeakMap<K, V> : Gee.AbstractMap<K, V> {
             hash_map = new HashMap<K, weak V>();
             notify_map = new HashMap<K, WeakNotifyWrapper>();
         } else {
-            hash_map = new HashMap<K, weak V>((v) => { return this.key_hash_func(v); },
-                    (a, b) => { return this.key_equal_func(a, b); },
-                    (a, b) => { return this.value_equal_func(a, b); });
-            notify_map = new HashMap<K, WeakNotifyWrapper>((v) => { return this.key_hash_func(v); },
-                    (a, b) => { return this.key_equal_func(a, b); },
-                    (a, b) => { return this.value_equal_func(a, b); });
+            hash_map = new HashMap<K, weak V>((v) => { return this.key_hash_func != null ? this.key_hash_func(v) : 0; },
+                    (a, b) => { return this.key_equal_func != null ? this.key_equal_func(a, b) : a == b; },
+                    (a, b) => { return this.value_equal_func != null ? this.value_equal_func(a, b) : a == b; });
+            notify_map = new HashMap<K, WeakNotifyWrapper>((v) => { return this.key_hash_func != null ? this.key_hash_func(v) : 0; },
+                    (a, b) => { return this.key_equal_func != null ? this.key_equal_func(a, b) : a == b; });
         }
     }
 
@@ -49,7 +48,7 @@ public class WeakMap<K, V> : Gee.AbstractMap<K, V> {
     }
 
     public override bool has(K key, V value) {
-        assert_not_reached();
+        return has_key(key) && (this.value_equal_func != null ? this.value_equal_func(hash_map[key], value) : hash_map[key] == value);
     }
 
     public override bool has_key(K key) {

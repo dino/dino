@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"POT-Creation-Date: 2023-02-07 21:31+0100\n"
 "PO-Revision-Date: 2018-10-23 17:22+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ar/>\n"
@@ -19,29 +19,29 @@ msgstr ""
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Weblate 3.3-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
+#: plugins/openpgp/src/account_settings_entry.vala:68
+#: plugins/openpgp/src/account_settings_entry.vala:72
+#: plugins/openpgp/src/account_settings_entry.vala:101
 msgid "Key publishing disabled"
 msgstr "نشر المفاتيح معطل"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_entry.vala:68
 msgid "Error in GnuPG"
 msgstr "خطأ في GnuPG"
 
-#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_entry.vala:72
 msgid "No keys available. Generate one!"
 msgstr "لا مفتاح متوفر. قم بتوليد واحد !"
 
-#: plugins/openpgp/src/account_settings_widget.vala:93
+#: plugins/openpgp/src/account_settings_entry.vala:101
 msgid "Select key"
 msgstr "اختيار مفتاح"
 
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/account_settings_entry.vala:114
 msgid "Loading…"
 msgstr "جارٍ التحميل…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/account_settings_entry.vala:114
 msgid "Querying GnuPG"
 msgstr "استعلام GnuPG"
 

@@ -182,7 +182,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label += ": ";
                     }
 
-                    message_label.attributes.filter((attr) => attr.equal(attr_style_new(Pango.Style.ITALIC)));
+                    change_label_attribute(message_label, attr_style_new(Pango.Style.NORMAL));
                     message_label.label = Util.summarize_whitespaces_to_space(body);
 
                     break;
@@ -198,7 +198,7 @@ public class ConversationSelectorRow : ListBoxRow {
                     }
 
                     bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
-                    message_label.attributes.insert(attr_style_new(Pango.Style.ITALIC));
+                    change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
                     if (transfer.direction == Message.DIRECTION_SENT) {
                         message_label.label = (file_is_image ? _("Image sent") : _("File sent") );
                     } else {
@@ -210,13 +210,19 @@ public class ConversationSelectorRow : ListBoxRow {
                     Call call = call_item.call;
 
                     nick_label.label = call.direction == Call.DIRECTION_OUTGOING ? _("Me") + ": " : "";
-                    message_label.attributes.insert(attr_style_new(Pango.Style.ITALIC));
+                    change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
                     message_label.label = call.direction == Call.DIRECTION_OUTGOING ? _("Outgoing call") : _("Incoming call");
                     break;
             }
             nick_label.visible = true;
             message_label.visible = true;
         }
+    }
+
+    private static void change_label_attribute(Label label, owned Attribute attribute) {
+        AttrList copy = label.attributes.copy();
+        copy.change((owned) attribute);
+        label.attributes = copy;
     }
 
     protected void update_read(bool force_update = false) {
@@ -227,10 +233,10 @@ public class ConversationSelectorRow : ListBoxRow {
         if (num_unread == 0) {
             unread_count_label.visible = false;
 
-            name_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            time_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            nick_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
-            message_label.attributes.filter((attr) => attr.equal(attr_weight_new(Weight.BOLD)));
+            change_label_attribute(name_label, attr_weight_new(Weight.NORMAL));
+            change_label_attribute(time_label, attr_weight_new(Weight.NORMAL));
+            change_label_attribute(nick_label, attr_weight_new(Weight.NORMAL));
+            change_label_attribute(message_label, attr_weight_new(Weight.NORMAL));
         } else {
             unread_count_label.label = num_unread.to_string();
             unread_count_label.visible = true;
@@ -243,11 +249,12 @@ public class ConversationSelectorRow : ListBoxRow {
                 unread_count_label.remove_css_class("unread-count-notify");
             }
 
-            name_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            time_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            nick_label.attributes.insert(attr_weight_new(Weight.BOLD));
-            message_label.attributes.insert(attr_weight_new(Weight.BOLD));
+            change_label_attribute(name_label, attr_weight_new(Weight.BOLD));
+            change_label_attribute(time_label, attr_weight_new(Weight.BOLD));
+            change_label_attribute(nick_label, attr_weight_new(Weight.BOLD));
+            change_label_attribute(message_label, attr_weight_new(Weight.BOLD));
         }
+<<<<<<< HEAD
 
         name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
         time_label.label = time_label.label;
@@ -265,6 +272,8 @@ public class ConversationSelectorRow : ListBoxRow {
             Application app = GLib.Application.get_default() as Application;
             app.set_unread(all_unread);
         }
+=======
+>>>>>>> master
     }
 
     public override void state_flags_changed(StateFlags flags) {

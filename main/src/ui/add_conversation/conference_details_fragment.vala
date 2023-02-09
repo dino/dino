@@ -110,13 +110,8 @@ protected class ConferenceDetailsFragment : Box {
 //        nick_entry.key_release_event.connect(on_nick_key_release_event);
 //        password_entry.key_release_event.connect(on_password_key_release_event);
 
-        var jid_entry_controller = new EventControllerKey();
-        jid_entry_controller.key_released.connect(() => { check_if_done(); });
-        jid_entry.add_controller(jid_entry_controller);
-
-        var nick_entry_controller = new EventControllerKey();
-        nick_entry_controller.key_released.connect(() => { check_if_done(); });
-        nick_entry.add_controller(nick_entry_controller);
+        jid_entry.changed.connect(() => { check_if_done(); });
+        nick_entry.changed.connect(() => { check_if_done(); });
 
         check_if_done();
 

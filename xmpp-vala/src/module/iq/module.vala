@@ -12,22 +12,25 @@ namespace Xmpp.Iq {
         private HashMap<string, ResponseListener> responseListeners = new HashMap<string, ResponseListener>();
         private HashMap<string, ArrayList<Handler>> namespaceRegistrants = new HashMap<string, ArrayList<Handler>>();
 
-        public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq) {
+        public async Iq.Stanza send_iq_async(XmppStream stream, Iq.Stanza iq, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
             assert(iq.type_ == Iq.Stanza.TYPE_GET || iq.type_ == Iq.Stanza.TYPE_SET);
 
+            preprocess_outgoing_iq_set_get(stream, iq);
             Iq.Stanza? return_stanza = null;
-            send_iq(stream, iq, (_, result_iq) => {
+            responseListeners[iq.id] = new ResponseListener((_, result_iq) => {
                 return_stanza = result_iq;
                 Idle.add(send_iq_async.callback);
             });
+            stream.write_async(iq.stanza, io_priority, cancellable);
             yield;
+            cancellable.set_error_if_cancelled();
             return return_stanza;
         }
 
         public delegate void OnResult(XmppStream stream, Iq.Stanza iq);
-        public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null) {
+        public void send_iq(XmppStream stream, Iq.Stanza iq, owned OnResult? listener = null, int io_priority = Priority.DEFAULT) {
             preprocess_outgoing_iq_set_get(stream, iq);
-            stream.write(iq.stanza);
+            stream.write(iq.stanza, io_priority);
             if (listener != null) {
                 responseListeners[iq.id] = new ResponseListener((owned) listener);
             }

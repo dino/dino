@@ -165,6 +165,7 @@ SOURCES
     src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_image_widget.vala
     src/ui/conversation_content_view/file_widget.vala
+    src/ui/conversation_content_view/item_actions.vala
     src/ui/conversation_content_view/message_widget.vala
     src/ui/conversation_content_view/quote_widget.vala
     src/ui/conversation_content_view/reactions_widget.vala
@@ -208,6 +209,7 @@ SOURCES
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
 
+    src/ui/widgets/date_separator.vala
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
 CUSTOM_VAPIS

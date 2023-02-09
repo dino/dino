@@ -13,7 +13,7 @@ public class Account : Object {
     public Jid full_jid { get; private set; }
     public string? password { get; set; }
     public string display_name {
-        owned get { return alias ?? bare_jid.to_string(); }
+        owned get { return (alias != null && alias.length > 0) ? alias.dup() : bare_jid.to_string(); }
     }
     public string? alias { get; set; }
     public bool enabled { get; set; default = false; }

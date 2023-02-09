@@ -1,0 +1,50 @@
+using Dino.Entities;
+using Gtk;
+
+namespace Dino.Ui {
+    public Plugins.MessageAction get_reaction_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
+        Plugins.MessageAction action = new Plugins.MessageAction();
+        action.icon_name = "dino-emoticon-add-symbolic";
+        action.tooltip = _("Add reaction");
+
+        EmojiChooser chooser = new EmojiChooser();
+        chooser.emoji_picked.connect((emoji) => {
+            stream_interactor.get_module(Reactions.IDENTITY).add_reaction(conversation, content_item, emoji);
+        });
+        action.popover = chooser;
+
+        // Disable the button if reaction aren't possible.
+        bool supports_reactions = stream_interactor.get_module(Reactions.IDENTITY).conversation_supports_reactions(conversation);
+        string? message_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
+
+        if (!supports_reactions) {
+            action.tooltip = _("This conversation does not support reactions.");
+            action.sensitive = false;
+        } else if (message_id == null) {
+            action.tooltip = "This message does not support reactions.";
+            action.sensitive = false;
+        }
+        return action;
+    }
+
+    public Plugins.MessageAction get_reply_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
+        Plugins.MessageAction action = new Plugins.MessageAction();
+        action.icon_name = "mail-reply-sender-symbolic";
+        action.tooltip = _("Reply");
+        action.callback = (button, content_meta_item_activated, widget) => {
+            GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(conversation.id), new GLib.Variant.int32(content_item.id) }));
+        };
+
+        // Disable the button if replies aren't possible.
+        string? message_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
+        if (message_id == null) {
+            action.sensitive = false;
+            if (conversation.type_.is_muc_semantic()) {
+                action.tooltip = _("This conversation does not support replies.");
+            } else {
+                action.tooltip = "This message does not support replies.";
+            }
+        }
+        return action;
+    }
+}

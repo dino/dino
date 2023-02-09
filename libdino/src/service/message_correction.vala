@@ -97,9 +97,10 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
         if (conversation.type_ != Conversation.Type.CHAT) {
-            // Don't process messages or corrections from MUC history
+            // Don't process messages or corrections from MUC history or MUC MAM
             DateTime? mam_delay = Xep.DelayedDelivery.get_time_for_message(stanza, message.from.bare_jid);
             if (mam_delay != null) return false;
+            if (Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null) return false;
         }
 
         string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);

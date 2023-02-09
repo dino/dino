@@ -11,6 +11,8 @@ public class Dino.HistorySync {
     private Database db;
 
     public HashMap<Account, HashMap<Jid, int>> current_catchup_id = new HashMap<Account, HashMap<Jid, int>>(Account.hash_func, Account.equals_func);
+    public WeakMap<Account, XmppStream> sync_streams = new WeakMap<Account, XmppStream>(Account.hash_func, Account.equals_func);
+    public HashMap<Account, HashMap<Jid, Cancellable>> cancellables = new HashMap<Account, HashMap<Jid, Cancellable>>(Account.hash_func, Account.equals_func);
     public HashMap<Account, HashMap<string, DateTime>> mam_times = new HashMap<Account, HashMap<string, DateTime>>();
     public HashMap<string, int> hitted_range = new HashMap<string, int>();
 
@@ -27,9 +29,11 @@ public class Dino.HistorySync {
 
         stream_interactor.account_added.connect(on_account_added);
 
-        stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
-            debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
-            current_catchup_id.unset(account);
+        stream_interactor.stream_negotiated.connect((account, stream) => {
+            if (current_catchup_id.has_key(account)) {
+                debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
+                current_catchup_id[account].clear();
+            }
         });
     }
 
@@ -118,7 +122,7 @@ public class Dino.HistorySync {
         }
     }
 
-    public async void fetch_everything(Account account, Jid mam_server, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
+    public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
         debug("Fetch everything for %s %s", mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
         RowOption latest_row_opt = db.mam_catchup.select()
                 .with(db.mam_catchup.account_id, "=", account.id)
@@ -128,7 +132,7 @@ public class Dino.HistorySync {
                 .single().row();
         Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
 
-        Row? new_row = yield fetch_latest_page(account, mam_server, latest_row, until_earliest_time);
+        Row? new_row = yield fetch_latest_page(account, mam_server, latest_row, until_earliest_time, cancellable);
 
         if (new_row != null) {
             current_catchup_id[account][mam_server] = new_row[db.mam_catchup.id];
@@ -182,7 +186,7 @@ public class Dino.HistorySync {
     }
 
     // Fetches the latest page (up to previous db row). Extends the previous db row if it was reached, creates a new row otherwise.
-    public async Row? fetch_latest_page(Account account, Jid mam_server, Row? latest_row, DateTime? until_earliest_time) {
+    public async Row? fetch_latest_page(Account account, Jid mam_server, Row? latest_row, DateTime? until_earliest_time, Cancellable? cancellable = null) {
         debug("[%s | %s] Fetching latest page", account.bare_jid.to_string(), mam_server.to_string());
 
         int latest_row_id = -1;
@@ -203,10 +207,10 @@ public class Dino.HistorySync {
 
         var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, latest_message_time, latest_message_id);
 
-        PageRequestResult page_result = yield get_mam_page(account, query_params, null);
+        PageRequestResult page_result = yield get_mam_page(account, query_params, null, cancellable);
         debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
 
-        if (page_result.page_result == PageResult.Error) {
+        if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) {
             return null;
         }
 
@@ -239,7 +243,7 @@ public class Dino.HistorySync {
         }
 
         // Either we need to fetch more pages or this is the first db entry ever
-        debug("[%s | %s] Creating new db range for latest page", mam_server.to_string(), mam_server.to_string());
+        debug("[%s | %s] Creating new db range for latest page", account.bare_jid.to_string(), mam_server.to_string());
 
         string from_id = page_result.query_result.first;
         string to_id = page_result.query_result.last;
@@ -299,7 +303,7 @@ public class Dino.HistorySync {
         return null;
     }
 
-    private async void fetch_before_range(Account account, Jid mam_server, Row range, DateTime? until_earliest_time) {
+    private async void fetch_before_range(Account account, Jid mam_server, Row range, DateTime? until_earliest_time, Cancellable? cancellable = null) {
         DateTime latest_time = new DateTime.from_unix_utc(range[db.mam_catchup.from_time]);
         string latest_id = range[db.mam_catchup.from_id];
         debug("[%s | %s] Fetching before range < %s, %s", account.bare_jid.to_string(), mam_server.to_string(), latest_time.to_string(), latest_id);
@@ -314,21 +318,21 @@ public class Dino.HistorySync {
                     latest_time, latest_id
             );
         }
-        yield fetch_query(account, query_params, range[db.mam_catchup.id]);
+        yield fetch_query(account, query_params, range[db.mam_catchup.id], cancellable);
     }
 
     /**
      * Iteratively fetches all pages returned for a query (until a PageResult other than MorePagesAvailable is returned)
      * @return The last PageRequestResult result
      **/
-    private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int db_id) {
+    private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int db_id, Cancellable? cancellable = null) {
         debug("[%s | %s] Fetch query %s - %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start != null ? query_params.start.to_string() : "", query_params.end != null ? query_params.end.to_string() : "");
         PageRequestResult? page_result = null;
         do {
-            page_result = yield get_mam_page(account, query_params, page_result);
+            page_result = yield get_mam_page(account, query_params, page_result, cancellable);
             debug("Page result %s %b", page_result.page_result.to_string(), page_result.stanzas == null);
 
-            if (page_result.page_result == PageResult.Error || page_result.stanzas == null) return page_result;
+            if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled || page_result.stanzas == null) return page_result;
 
             string earliest_mam_id = page_result.query_result.first;
             long earliest_mam_time = (long)mam_times[account][earliest_mam_id].to_unix();
@@ -354,24 +358,25 @@ public class Dino.HistorySync {
         TargetReached,
         NoMoreMessages,
         Duplicate,
-        Error
+        Error,
+        Cancelled
     }
 
     /**
      * prev_page_result: null if this is the first page request
      **/
-    private async PageRequestResult get_mam_page(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result) {
+    private async PageRequestResult get_mam_page(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result, Cancellable? cancellable = null) {
         XmppStream stream = stream_interactor.get_stream(account);
         Xmpp.MessageArchiveManagement.QueryResult query_result = null;
         if (prev_page_result == null) {
-            query_result = yield Xmpp.MessageArchiveManagement.V2.query_archive(stream, query_params);
+            query_result = yield Xmpp.MessageArchiveManagement.V2.query_archive(stream, query_params, cancellable);
         } else {
-            query_result = yield Xmpp.MessageArchiveManagement.V2.page_through_results(stream, query_params, prev_page_result.query_result);
+            query_result = yield Xmpp.MessageArchiveManagement.V2.page_through_results(stream, query_params, prev_page_result.query_result, cancellable);
         }
-        return yield process_query_result(account, query_params, query_result);
+        return yield process_query_result(account, query_params, query_result, cancellable);
     }
 
-    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result) {
+    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result, Cancellable? cancellable = null) {
         PageResult page_result = PageResult.MorePagesAvailable;
 
         if (query_result.malformed || query_result.error) {
@@ -394,6 +399,10 @@ public class Dino.HistorySync {
         string query_id = query_params.query_id;
         string? after_id = query_params.start_id;
 
+        if (cancellable != null && cancellable.is_cancelled()) {
+            return new PageRequestResult(PageResult.Cancelled, query_result, stanzas[query_id]);
+        }
+
         if (stanzas.has_key(query_id) && !stanzas[query_id].is_empty) {
 
             // Check it we reached our target (from_id)
@@ -402,17 +411,21 @@ public class Dino.HistorySync {
                 if (mam_message_flag != null && mam_message_flag.mam_id != null) {
                     if (after_id != null && mam_message_flag.mam_id == after_id) {
                         // Successfully fetched the whole range
-                        var ret = new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
-                        send_messages_back_into_pipeline(account, query_id);
-                        return ret;
+                        yield send_messages_back_into_pipeline(account, query_id, cancellable);
+                        if (cancellable != null && cancellable.is_cancelled()) {
+                            return new PageRequestResult(PageResult.Cancelled, query_result, stanzas[query_id]);
+                        }
+                        return new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
                     }
                 }
             }
             if (hitted_range.has_key(query_id) && hitted_range[query_id] == -2) {
-                // Message got filtered out by xmpp-vala, but succesfull range fetch nevertheless
-                var ret = new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
-                send_messages_back_into_pipeline(account, query_id);
-                return ret;
+                // Message got filtered out by xmpp-vala, but succesful range fetch nevertheless
+                yield send_messages_back_into_pipeline(account, query_id);
+                if (cancellable != null && cancellable.is_cancelled()) {
+                    return new PageRequestResult(PageResult.Cancelled, query_result, stanzas[query_id]);
+                }
+                return new PageRequestResult(PageResult.TargetReached, query_result, stanzas[query_id]);
             }
 
             // Check for duplicates. Go through all messages and build a db query.
@@ -444,16 +457,19 @@ public class Dino.HistorySync {
             }
         }
 
-        var res = new PageRequestResult(page_result, query_result, stanzas.has_key(query_id) ? stanzas[query_id] : null);
-        send_messages_back_into_pipeline(account, query_id);
-        return res;
+        yield send_messages_back_into_pipeline(account, query_id);
+        if (cancellable != null && cancellable.is_cancelled()) {
+            page_result = PageResult.Cancelled;
+        }
+        return new PageRequestResult(page_result, query_result, stanzas.has_key(query_id) ? stanzas[query_id] : null);
     }
 
-    private void send_messages_back_into_pipeline(Account account, string query_id) {
+    private async void send_messages_back_into_pipeline(Account account, string query_id, Cancellable? cancellable = null) {
         if (!stanzas.has_key(query_id)) return;
 
         foreach (Xmpp.MessageStanza message in stanzas[query_id]) {
-            stream_interactor.get_module(MessageProcessor.IDENTITY).run_pipeline_announce.begin(account, message);
+            if (cancellable != null && cancellable.is_cancelled()) break;
+            yield stream_interactor.get_module(MessageProcessor.IDENTITY).run_pipeline_announce(account, message);
         }
         stanzas.unset(query_id);
     }
@@ -463,18 +479,38 @@ public class Dino.HistorySync {
 
         mam_times[account] = new HashMap<string, DateTime>();
 
-        XmppStream? stream_bak = null;
-        stream_interactor.module_manager.get_module(account, Xmpp.MessageArchiveManagement.Module.IDENTITY).feature_available.connect( (stream) => {
-            if (stream == stream_bak) return;
+        stream_interactor.connection_manager.stream_attached_modules.connect((account, stream) => {
+            if (!current_catchup_id.has_key(account)) {
+                current_catchup_id[account] = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
+            } else {
+                current_catchup_id[account].clear();
+            }
+        });
 
-            current_catchup_id[account] = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
-            stream_bak = stream;
-            debug("[%s] MAM available", account.bare_jid.to_string());
-            fetch_everything.begin(account, account.bare_jid);
+        stream_interactor.module_manager.get_module(account, Xmpp.MessageArchiveManagement.Module.IDENTITY).feature_available.connect((stream) => {
+            consider_fetch_everything(account, stream);
         });
 
         stream_interactor.module_manager.get_module(account, Xmpp.MessageModule.IDENTITY).received_message_unprocessed.connect((stream, message) => {
             on_unprocessed_message(account, stream, message);
+        });
+    }
+
+    private void consider_fetch_everything(Account account, XmppStream stream) {
+        if (sync_streams.has(account, stream)) return;
+
+        debug("[%s] MAM available", account.bare_jid.to_string());
+        sync_streams[account] = stream;
+        if (!cancellables.has_key(account)) {
+            cancellables[account] = new HashMap<Jid, Cancellable>();
+        }
+        if (cancellables[account].has_key(account.bare_jid)) {
+            cancellables[account][account.bare_jid].cancel();
+        }
+        cancellables[account][account.bare_jid] = new Cancellable();
+        fetch_everything.begin(account, account.bare_jid, cancellables[account][account.bare_jid], new DateTime.from_unix_utc(0), (_, res) => {
+            fetch_everything.end(res);
+            cancellables[account].unset(account.bare_jid);
         });
     }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"POT-Creation-Date: 2023-02-07 21:31+0100\n"
 "PO-Revision-Date: 2020-11-24 05:28+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hant/>\n"
@@ -35,50 +35,50 @@ msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr "%s 不信任這部裝置。這意味著您可能會遺漏訊息。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+#: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
 msgstr "管理金鑰"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr "將指紋與顯示在聯絡人裝置上的指紋逐個字元地進行比較。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
 msgstr "指紋不同"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints match"
 msgstr "指紋吻合"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:39
-#: plugins/omemo/src/ui/manage_key_dialog.vala:82
-#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+#: plugins/omemo/src/ui/manage_key_dialog.vala:81
+#: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
 msgstr "取消"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
 msgstr "確定"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
 msgstr "核驗金鑰"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:61
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr "未來由 %s 從使用了此金鑰的裝置所傳送的訊息都將會在對話視窗內加亮顯示。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+#: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
 msgstr "指紋不吻合"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:72
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
@@ -88,76 +88,76 @@ msgstr ""
 "請確定您正在比較正確的指紋。如果指紋不吻合，%s 的帳號可能不安全，同時您應該考"
 "虑拒絕此金鑰。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
 msgstr "核驗金鑰指紋"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr "將此金鑰的指紋與顯示在聯絡人裝置上的指紋進行比較。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
-#: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:256
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
 msgstr "拒絕金鑰"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr "封鎖與該聯絡人使用此金鑰的裝置之間的加密通訊。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
-#: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:251
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+#: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
 msgstr "接收金鑰"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr "允許與該聯絡人使用此金鑰的裝置之間的加密通訊。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
 msgstr "此金鑰目前%s。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
 msgstr "已接收"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr "這表示 %s 可以使用它來傳送及收受加密訊息。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
 msgstr "已核驗"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr "此外，已經核驗它與聯絡人裝置上的金鑰吻合。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
 msgstr "已拒絕"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr "這表示 %s 無法使用它來解密您的訊息，同時您不會看到使用它加密的訊息。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:153
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
 msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
@@ -166,14 +166,14 @@ msgstr ""
 "您不會看到從 %s 使用此金鑰的裝置所傳送的加密訊息。同時，該裝置亦無法再解密您"
 "的訊息。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:161
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr "您將能夠與 %s 所使用此金鑰的裝置互相傳送加密訊息。"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:167
+#: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
 msgstr "返回"
 
@@ -185,15 +185,6 @@ msgstr "管理"
 msgid "This contact has new devices"
 msgstr "此連絡人有新的裝置"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "本裝置指紋"
-
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "將會在第一次連線時產生"
-
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
 msgstr "需要 OMEMO 信任決策"
@@ -202,6 +193,15 @@ msgstr "需要 OMEMO 信任決策"
 #, c-format
 msgid "Did you add a new device for account %s?"
 msgstr "您是否有爲帳號 %s 增加新裝置？"
+
+#: plugins/omemo/src/ui/account_settings_entry.vala:47
+#: plugins/omemo/src/ui/account_settings_entry.vala:50
+msgid "Own fingerprint"
+msgstr "本裝置指紋"
+
+#: plugins/omemo/src/ui/account_settings_entry.vala:47
+msgid "Will be generated on first connection"
+msgstr "將會在第一次連線時產生"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
@@ -213,52 +213,52 @@ msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d 個 OMEMO 裝置"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "OMEMO Key Management"
 msgstr "OMEMO 金鑰管理"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
+#: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"
 msgstr "自動接收新金鑰"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+#: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New encryption keys from this contact will be accepted automatically."
 msgstr "新的來自此聯絡人的加密金鑰將會被自動接收。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
+#: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Own key"
 msgstr "本裝置金鑰"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr "新金鑰"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
+#: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
 msgstr "其它裝置上的金鑰"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/contact_details_dialog.vala:54
 msgid "Inactive keys"
 msgstr "長時間未用過的金鑰"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+#: plugins/omemo/src/ui/contact_details_dialog.vala:86
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr "來自您其它裝置的新加密金鑰將會被自動接收。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+#: plugins/omemo/src/ui/contact_details_dialog.vala:335
 msgid "Accepted"
 msgstr "已接收"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+#: plugins/omemo/src/ui/contact_details_dialog.vala:340
 msgid "Rejected"
 msgstr "已拒絕"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+#: plugins/omemo/src/ui/contact_details_dialog.vala:345
 msgid "Verified"
 msgstr "已核驗"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:336
+#: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
 msgstr "不再使用"
 

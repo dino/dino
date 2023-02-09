@@ -63,10 +63,7 @@ public interface Application : GLib.Application {
 
         startup.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
-            Idle.add(() => {
-                restore();
-                return false;
-            });
+            restore();
         });
         shutdown.connect(() => {
             stream_interactor.connection_manager.make_offline_all();

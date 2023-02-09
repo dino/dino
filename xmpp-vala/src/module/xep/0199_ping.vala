@@ -9,7 +9,7 @@ namespace Xmpp.Xep.Ping {
         public async Iq.Stanza send_ping(XmppStream stream, Jid jid) {
             StanzaNode ping_node = new StanzaNode.build("ping", NS_URI).add_self_xmlns();
             Iq.Stanza iq = new Iq.Stanza.get(ping_node) { to=jid };
-            return yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+            return yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.HIGH);
         }
 
         public override void attach(XmppStream stream) {
@@ -23,7 +23,7 @@ namespace Xmpp.Xep.Ping {
         }
 
         public async void on_iq_get(XmppStream stream, Iq.Stanza iq) {
-            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq));
+            stream.get_module(Iq.Module.IDENTITY).send_iq(stream, new Iq.Stanza.result(iq), null, Priority.HIGH);
         }
 
         public override string get_ns() { return NS_URI; }

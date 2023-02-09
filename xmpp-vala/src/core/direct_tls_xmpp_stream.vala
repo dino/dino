@@ -13,7 +13,7 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
         this.on_invalid_cert = on_invalid_cert;
     }
 
-    public override async void connect() throws IOStreamError {
+    public override async void connect() throws IOError {
         SocketClient client = new SocketClient();
         try {
             debug("Connecting to %s:%i (tls)", host, port);
@@ -29,8 +29,10 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
             yield setup();
 
             attach_negotation_modules();
+        } catch (IOError e) {
+            throw e;
         } catch (Error e) {
-            throw new IOStreamError.CONNECT("Failed connecting to %s:%i (tls): %s", host, port, e.message);
+            throw new IOError.CONNECTION_REFUSED("Failed connecting to %s:%i (tls): %s", host, port, e.message);
         }
     }
 }

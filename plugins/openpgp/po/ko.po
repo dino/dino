@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"PO-Revision-Date: 2022-10-17 11:49+0000\n"
+"Language-Team: none\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15-dev\n"
+
+#: plugins/openpgp/src/account_settings_entry.vala:68
+#: plugins/openpgp/src/account_settings_entry.vala:72
+#: plugins/openpgp/src/account_settings_entry.vala:101
+#, fuzzy
+msgid "Key publishing disabled"
+msgstr "키 게재 비활성화됨"
+
+#: plugins/openpgp/src/account_settings_entry.vala:68
+msgid "Error in GnuPG"
+msgstr "GnuPG에 에러가 있음"
+
+#: plugins/openpgp/src/account_settings_entry.vala:72
+msgid "No keys available. Generate one!"
+msgstr "사용 가능한 키 없음. 하나 생성하세요!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:101
+msgid "Select key"
+msgstr "키 선택"
+
+#: plugins/openpgp/src/account_settings_entry.vala:114
+msgid "Loading…"
+msgstr "로딩중…"
+
+#: plugins/openpgp/src/account_settings_entry.vala:114
+msgid "Querying GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "키가 키체인에 있지 않음"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "암호화"

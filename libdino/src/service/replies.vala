@@ -51,8 +51,6 @@ public class Dino.Replies : StreamInteractionModule, Object {
 
     private void on_incoming_message(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
         // Check if a previous message was in reply to this one
-        string relevant_id = conversation.type_ == Conversation.Type.GROUPCHAT ? message.server_id : message.stanza_id;
-
         var reply_qry = db.reply.select();
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             reply_qry.with(db.reply.quoted_message_stanza_id, "=", message.server_id);

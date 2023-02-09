@@ -15,13 +15,9 @@ namespace Xmpp {
         public signal void received_error(XmppStream stream, MessageStanza message, ErrorStanza error);
         public signal void received_message_unprocessed(XmppStream stream, MessageStanza message);
 
-        public async void send_message(XmppStream stream, MessageStanza message) throws IOStreamError {
+        public async void send_message(XmppStream stream, MessageStanza message) throws IOError {
             yield send_pipeline.run(stream, message);
-            try {
-                yield stream.write_async(message.stanza);
-            } catch (IOStreamError e) {
-                throw new SendError.IO(e.message);
-            }
+            yield stream.write_async(message.stanza);
         }
 
         public async void received_message_stanza_async(XmppStream stream, StanzaNode node) {

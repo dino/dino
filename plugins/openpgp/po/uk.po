@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-12 22:06+0100\n"
+"POT-Creation-Date: 2023-02-07 21:31+0100\n"
 "PO-Revision-Date: 2020-12-31 17:29+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
@@ -18,31 +18,31 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.4.1-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
+#: plugins/openpgp/src/account_settings_entry.vala:68
+#: plugins/openpgp/src/account_settings_entry.vala:72
+#: plugins/openpgp/src/account_settings_entry.vala:101
 #, fuzzy
 msgid "Key publishing disabled"
 msgstr "Публікація ключа відключена"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
+#: plugins/openpgp/src/account_settings_entry.vala:68
 #, fuzzy
 msgid "Error in GnuPG"
 msgstr "Помилка у GnuPG"
 
-#: plugins/openpgp/src/account_settings_widget.vala:64
+#: plugins/openpgp/src/account_settings_entry.vala:72
 msgid "No keys available. Generate one!"
 msgstr ""
 
-#: plugins/openpgp/src/account_settings_widget.vala:93
+#: plugins/openpgp/src/account_settings_entry.vala:101
 msgid "Select key"
 msgstr "Вибрати ключ"
 
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/account_settings_entry.vala:114
 msgid "Loading…"
 msgstr "Завантаження…"
 
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/account_settings_entry.vala:114
 msgid "Querying GnuPG"
 msgstr ""
 

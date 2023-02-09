@@ -79,22 +79,34 @@ public class EntityInfo : StreamInteractionModule, Object {
     }
 
     public async bool has_feature(Account account, Jid jid, string feature) {
+        int has_feature_cached = has_feature_cached_int(account, jid, feature);
+        if (has_feature_cached != -1) {
+            return has_feature_cached == 1;
+        }
+
+        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, entity_caps_hashes[jid]);
+        if (info_result == null) return false;
+
+        return info_result.features.contains(feature);
+    }
+
+    public bool has_feature_cached(Account account, Jid jid, string feature) {
+        return has_feature_cached_int(account, jid, feature) == 1;
+    }
+
+    private int has_feature_cached_int(Account account, Jid jid, string feature) {
         if (jid_features.has_key(jid)) {
-            return jid_features[jid].contains(feature);
+            return jid_features[jid].contains(feature) ? 1 : 0;
         }
 
         string? hash = entity_caps_hashes[jid];
         if (hash != null) {
             Gee.List<string>? features = get_stored_features(hash);
             if (features != null) {
-                return features.contains(feature);
+                return features.contains(feature) ? 1 : 0;
             }
         }
-
-        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
-        if (info_result == null) return false;
-
-        return info_result.features.contains(feature);
+        return -1;
     }
 
     private void on_received_available_presence(Account account, Presence.Stanza presence) {
