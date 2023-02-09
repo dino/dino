@@ -254,7 +254,6 @@ public class ConversationSelectorRow : ListBoxRow {
             change_label_attribute(nick_label, attr_weight_new(Weight.BOLD));
             change_label_attribute(message_label, attr_weight_new(Weight.BOLD));
         }
-<<<<<<< HEAD
 
         name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
         time_label.label = time_label.label;
@@ -272,8 +271,6 @@ public class ConversationSelectorRow : ListBoxRow {
             Application app = GLib.Application.get_default() as Application;
             app.set_unread(all_unread);
         }
-=======
->>>>>>> master
     }
 
     public override void state_flags_changed(StateFlags flags) {

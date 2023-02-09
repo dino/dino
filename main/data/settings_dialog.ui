@@ -2,7 +2,7 @@
 <interface>
     <template class="DinoUiSettingsDialog" parent="AdwPreferencesWindow">
         <property name="default-width">500</property>
-        <property name="default-height">360</property>
+        <property name="default-height">500</property>
         <property name="modal">True</property>
         <property name="search-enabled">False</property>
         <child>
@@ -66,22 +66,32 @@
                                 </child>
                             </object>
                         </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
                         <child>
-                            <object class="GtkCheckButton" id="unread_count_checkbutton">
-                                <property name="label" translatable="yes">Count unread messages</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">5</property>
-                                </layout>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Count unread messages</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">unread_count</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="unread_count">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                         <child>
-                            <object class="GtkCheckButton" id="unread_count_notifications_checkbutton">
-                                <property name="label" translatable="yes">Include without notifications chats in unread count</property>
-                                <layout>
-                                    <property name="column">0</property>
-                                    <property name="row">6</property>
-                                </layout>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Include without notifications chats in unread count</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">unread_count_notifications</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="unread_count_notifications">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>
