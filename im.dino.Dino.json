@@ -1,0 +1,75 @@
+{
+    "id": "im.dino.Dino",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "44",
+    "sdk": "org.gnome.Sdk",
+    "command": "dino",
+    "finish-args": [
+        "--share=ipc",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--socket=gpg-agent",
+        "--share=network",
+        "--device=all",
+        "--talk-name=org.freedesktop.Notifications"
+    ],
+    "modules": [
+        {
+            "name": "libsignal-protocol-c",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_C_FLAGS=-fPIC"
+            ],
+            "cleanup": [
+                "/include",
+                "/lib"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/mar-v-in/libsignal-protocol-c.git",
+                    "tag": "v2.3.3.1"
+                }
+            ]
+        },
+        {
+            "name": "qrencode",
+            "buildsystem": "cmake-ninja",
+            "cleanup": [
+                "/bin",
+                "/include",
+                "/lib",
+                "/share/man"
+            ],
+            "config-opts": [
+                "-DCMAKE_C_FLAGS=-fPIC"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://fukuchi.org/works/qrencode/qrencode-4.1.1.tar.gz",
+                    "sha512": "209bb656ae3f391b03c7b3ceb03e34f7320b0105babf48b619e7a299528b8828449e0e7696f0b5db0d99170a81709d0518e34835229a748701e7df784e58a9ce"
+                }
+            ]
+        },
+        {
+            "name": "dino",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "config-opts": [
+                "-DSOUP_VERSION=3"
+            ],
+            "cleanup": [
+                "/include",
+                "/share/vala"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                }
+            ]
+        }
+    ]
+}
