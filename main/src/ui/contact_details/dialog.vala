@@ -41,13 +41,10 @@ public class Dialog : Gtk.Window {
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
         Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
         var title_label = new Label(title);
-        title_label.attributes = new AttrList();
-        title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
+        title_label.add_css_class("title");
         titles_box.append(title_label);
         var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
-        subtitle_label.attributes = new AttrList();
-        subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
-        subtitle_label.add_css_class("dim-label");
+        subtitle_label.add_css_class("subtitle");
         titles_box.append(subtitle_label);
 
         ((Gtk.HeaderBar) titlebar).set_title_widget(titles_box);
