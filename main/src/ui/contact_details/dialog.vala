@@ -25,8 +25,11 @@ public class Dialog : Gtk.Dialog {
     private Util.LabelHybridGroup hybrid_group = new Util.LabelHybridGroup();
 
     construct {
-        name_hybrid.label.attributes = new AttrList();
-        name_hybrid.label.attributes.insert(attr_weight_new(Weight.BOLD));
+        name_hybrid.label.add_css_class("title-1");
+        name_hybrid.label.wrap = true;
+        name_hybrid.label.wrap_mode = Pango.WrapMode.WORD_CHAR;
+        name_hybrid.label.ellipsize = Pango.EllipsizeMode.NONE;
+        name_hybrid.label.justify = Gtk.Justification.CENTER;
     }
 
     public Dialog(StreamInteractor stream_interactor, Conversation conversation) {

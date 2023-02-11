@@ -15,6 +15,7 @@
                 <child>
                     <object class="GtkScrolledWindow">
                         <property name="propagate_natural_height">1</property>
+                        <property name="propagate_natural_width">1</property>
                         <property name="max_content_height">500</property>
                         <property name="hscrollbar_policy">never</property>
                         <property name="hexpand">1</property>
@@ -22,82 +23,64 @@
                         <property name="child">
                             <object class="GtkBox">
                                 <property name="orientation">vertical</property>
+                                <property name="margin-top">36</property>
+                                <property name="margin-bottom">36</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
                                 <child>
-                                    <object class="GtkGrid">
-                                        <property name="margin-top">20</property>
-                                        <property name="margin-bottom">12</property>
-                                        <property name="margin-end">100</property>
-                                        <property name="margin-start">100</property>
-                                        <property name="column-spacing">10</property>
+                                    <object class="GtkBox">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">12</property>
+                                        <property name="margin-bottom">24</property>
                                         <child>
                                             <object class="DinoUiAvatarPicture" id="avatar">
-                                                <property name="height-request">50</property>
-                                                <property name="width-request">50</property>
-                                                <property name="valign">center</property>
-                                                <layout>
-                                                    <property name="column">0</property>
-                                                    <property name="row">0</property>
-                                                    <property name="row-span">2</property>
-                                                </layout>
+                                                <property name="halign">center</property>
+                                                <property name="height-request">128</property>
+                                                <property name="width-request">128</property>
                                             </object>
                                         </child>
                                         <child>
                                             <object class="DinoUiUtilEntryLabelHybrid" id="name_hybrid">
-                                                <property name="xalign">0</property>
                                                 <property name="hexpand">True</property>
-                                                <layout>
-                                                    <property name="column">1</property>
-                                                    <property name="row">0</property>
-                                                </layout>
                                             </object>
                                         </child>
                                         <child>
                                             <object class="GtkLabel" id="name_label">
-                                                <property name="xalign">0</property>
                                                 <property name="hexpand">1</property>
-                                                <attributes>
-                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
-                                                </attributes>
-                                                <layout>
-                                                    <property name="column">1</property>
-                                                    <property name="row">0</property>
-                                                </layout>
+                                                <property name="wrap">True</property>
+                                                <property name="wrap-mode">word-char</property>
+                                                <property name="justify">center</property>
+                                                <style>
+                                                    <class name="title-1"/>
+                                                </style>
                                             </object>
                                         </child>
                                         <child>
                                             <object class="GtkLabel" id="jid_label">
-                                                <property name="xalign">0</property>
-                                                <property name="yalign">0</property>
                                                 <property name="selectable">1</property>
                                                 <property name="hexpand">1</property>
-                                                <layout>
-                                                    <property name="column">1</property>
-                                                    <property name="row">1</property>
-                                                </layout>
+                                                <property name="wrap">True</property>
+                                                <property name="wrap-mode">word-char</property>
+                                                <property name="justify">center</property>
                                             </object>
                                         </child>
                                         <child>
                                             <object class="GtkLabel" id="account_label">
-                                                <property name="xalign">1</property>
-                                                <property name="yalign">1</property>
-                                                <property name="margin-start">5</property>
-                                                <property name="margin-end">5</property>
-                                                <property name="margin-top">5</property>
-                                                <property name="margin-bottom">5</property>
                                                 <property name="hexpand">1</property>
-                                                <layout>
-                                                    <property name="column">2</property>
-                                                    <property name="row">1</property>
-                                                </layout>
+                                                <property name="wrap">True</property>
+                                                <property name="wrap-mode">word-char</property>
+                                                <property name="justify">center</property>
                                             </object>
                                         </child>
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="GtkBox" id="main_box">
-                                        <property name="orientation">vertical</property>
-                                        <property name="margin-end">100</property>
-                                        <property name="margin-start">100</property>
+                                    <object class="AdwClamp">
+                                        <property name="child">
+                                            <object class="GtkBox" id="main_box">
+                                                <property name="orientation">vertical</property>
+                                            </object>
+                                        </property>
                                     </object>
                                 </child>
                             </object>
