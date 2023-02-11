@@ -8,7 +8,7 @@ using Dino.Entities;
 namespace Dino.Ui.ContactDetails {
 
 [GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
-public class Dialog : Gtk.Dialog {
+public class Dialog : Gtk.Window {
 
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Util.EntryLabelHybrid name_hybrid;
@@ -33,26 +33,24 @@ public class Dialog : Gtk.Dialog {
     }
 
     public Dialog(StreamInteractor stream_interactor, Conversation conversation) {
-        Object(use_header_bar : Util.use_csd() ? 1 : 0);
+        Object();
+
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
         title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
-        if (Util.use_csd()) {
-            // TODO get_header_bar directly returns a HeaderBar in vala > 0.48
-            Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
-            var title_label = new Label(title);
-            title_label.attributes = new AttrList();
-            title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
-            titles_box.append(title_label);
-            var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
-            subtitle_label.attributes = new AttrList();
-            subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
-            subtitle_label.add_css_class("dim-label");
-            titles_box.append(subtitle_label);
+        Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
+        var title_label = new Label(title);
+        title_label.attributes = new AttrList();
+        title_label.attributes.insert(Pango.attr_weight_new(Weight.BOLD));
+        titles_box.append(title_label);
+        var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
+        subtitle_label.attributes = new AttrList();
+        subtitle_label.attributes.insert(Pango.attr_scale_new(Pango.Scale.SMALL));
+        subtitle_label.add_css_class("dim-label");
+        titles_box.append(subtitle_label);
 
-            get_header_bar().set_title_widget(titles_box);
-        }
+        ((Gtk.HeaderBar) titlebar).set_title_widget(titles_box);
         setup_top();
 
         contact_details.add.connect(add_entry);
@@ -130,11 +128,6 @@ public class Dialog : Gtk.Dialog {
 
         row.append(widget);
         categories[category].append(list_row);
-
-        int width = get_content_area().get_width();
-        int pref_height, pref_width;
-        get_content_area().measure(Orientation.VERTICAL, width, null, out pref_height, null, null);
-        default_height = pref_height + 48;
     }
 
     private void add_category(string category) {
