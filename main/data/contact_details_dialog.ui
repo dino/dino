@@ -10,76 +10,80 @@
             <object class="GtkHeaderBar"/>
         </property>
         <property name="child">
-            <object class="GtkScrolledWindow">
-                <property name="propagate_natural_height">1</property>
-                <property name="propagate_natural_width">1</property>
-                <property name="max_content_height">500</property>
-                <property name="hscrollbar_policy">never</property>
-                <property name="hexpand">1</property>
-                <property name="vexpand">1</property>
+            <object class="AdwToastOverlay" id="toast_overlay">
                 <property name="child">
-                    <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <property name="margin-top">36</property>
-                        <property name="margin-bottom">36</property>
-                        <property name="margin-start">12</property>
-                        <property name="margin-end">12</property>
-                        <child>
+                    <object class="GtkScrolledWindow">
+                        <property name="propagate_natural_height">1</property>
+                        <property name="propagate_natural_width">1</property>
+                        <property name="max_content_height">500</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="hexpand">1</property>
+                        <property name="vexpand">1</property>
+                        <property name="child">
                             <object class="GtkBox">
                                 <property name="orientation">vertical</property>
-                                <property name="spacing">12</property>
-                                <property name="margin-bottom">24</property>
+                                <property name="margin-top">36</property>
+                                <property name="margin-bottom">36</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-end">12</property>
                                 <child>
-                                    <object class="DinoUiAvatarPicture" id="avatar">
-                                        <property name="halign">center</property>
-                                        <property name="height-request">128</property>
-                                        <property name="width-request">128</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="DinoUiUtilEntryLabelHybrid" id="name_hybrid">
-                                        <property name="hexpand">True</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="name_label">
-                                        <property name="hexpand">1</property>
-                                        <property name="wrap">True</property>
-                                        <property name="wrap-mode">word-char</property>
-                                        <property name="justify">center</property>
-                                        <style>
-                                            <class name="title-1"/>
-                                        </style>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="jid_label">
-                                        <property name="selectable">1</property>
-                                        <property name="hexpand">1</property>
-                                        <property name="wrap">True</property>
-                                        <property name="wrap-mode">word-char</property>
-                                        <property name="justify">center</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkLabel" id="account_label">
-                                        <property name="hexpand">1</property>
-                                        <property name="wrap">True</property>
-                                        <property name="wrap-mode">word-char</property>
-                                        <property name="justify">center</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="AdwClamp">
-                                <property name="child">
-                                    <object class="GtkBox" id="main_box">
+                                    <object class="GtkBox">
                                         <property name="orientation">vertical</property>
+                                        <property name="spacing">12</property>
+                                        <property name="margin-bottom">24</property>
+                                        <child>
+                                            <object class="DinoUiAvatarPicture" id="avatar">
+                                                <property name="halign">center</property>
+                                                <property name="height-request">128</property>
+                                                <property name="width-request">128</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="DinoUiUtilEntryLabelHybrid" id="name_hybrid">
+                                                <property name="hexpand">True</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="name_label">
+                                                <property name="hexpand">1</property>
+                                                <property name="wrap">True</property>
+                                                <property name="wrap-mode">word-char</property>
+                                                <property name="justify">center</property>
+                                                <style>
+                                                    <class name="title-1"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="jid_button">
+                                                <property name="halign">center</property>
+                                                <property name="action-name">details.copy-jid</property>
+                                                <style>
+                                                    <class name="jid-button"/>
+                                                </style>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel" id="account_label">
+                                                <property name="hexpand">1</property>
+                                                <property name="wrap">True</property>
+                                                <property name="wrap-mode">word-char</property>
+                                                <property name="justify">center</property>
+                                            </object>
+                                        </child>
                                     </object>
-                                </property>
+                                </child>
+                                <child>
+                                    <object class="AdwClamp">
+                                        <property name="child">
+                                            <object class="GtkBox" id="main_box">
+                                                <property name="orientation">vertical</property>
+                                            </object>
+                                        </property>
+                                    </object>
+                                </child>
                             </object>
-                        </child>
+                        </property>
                     </object>
                 </property>
             </object>

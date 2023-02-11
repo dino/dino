@@ -13,9 +13,10 @@ public class Dialog : Gtk.Window {
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Util.EntryLabelHybrid name_hybrid;
     [GtkChild] public unowned Label name_label;
-    [GtkChild] public unowned Label jid_label;
+    [GtkChild] public unowned Button jid_button;
     [GtkChild] public unowned Label account_label;
     [GtkChild] public unowned Box main_box;
+    [GtkChild] public unowned Adw.ToastOverlay toast_overlay;
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;
@@ -66,6 +67,20 @@ public class Dialog : Gtk.Window {
             contact_details.save();
             return false;
         });
+
+        var action = new SimpleAction("copy-jid", null);
+        action.activate.connect(() => {
+            var clipboard = get_clipboard();
+            clipboard.set_text(jid_button.label);
+
+            var toast = new Adw.Toast(_("Copied to clipboard"));
+            toast_overlay.add_toast (toast);
+        });
+
+        var details_group = new SimpleActionGroup();
+        details_group.add_action(action);
+
+        insert_action_group("details", details_group);
     }
 
     private void setup_top() {
@@ -82,7 +97,7 @@ public class Dialog : Gtk.Window {
             name_hybrid.visible = false;
             name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
         }
-        jid_label.label = conversation.counterpart.to_string();
+        jid_button.label = conversation.counterpart.to_string();
         account_label.label = "via " + conversation.account.bare_jid.to_string();
         avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
     }

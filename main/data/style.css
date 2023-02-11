@@ -449,3 +449,9 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
 .qrcode-container > contents {
     background: white;  /* Color of the quiet zone. MUST have the same "reflectance" as light modules of the QR code. */
 }
+
+.jid-button {
+    padding: 3px 18px;
+    color: @accent_color;
+    border-radius: 999px;
+}
