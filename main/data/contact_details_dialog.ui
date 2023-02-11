@@ -4,6 +4,8 @@
     <template class="DinoUiContactDetailsDialog" parent="GtkWindow">
         <property name="title">Conversation Details</property>
         <property name="modal">True</property>
+        <property name="width-request">360</property>
+        <property name="height-request">294</property>
         <property name="titlebar">
             <object class="GtkHeaderBar"/>
         </property>
