@@ -17,6 +17,7 @@ public class Dialog : Gtk.Window {
     [GtkChild] public unowned Label account_label;
     [GtkChild] public unowned Box main_box;
     [GtkChild] public unowned Adw.ToastOverlay toast_overlay;
+    [GtkChild] public unowned Adw.WindowTitle window_title;
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;
@@ -39,16 +40,9 @@ public class Dialog : Gtk.Window {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
 
-        title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
-        Box titles_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER };
-        var title_label = new Label(title);
-        title_label.add_css_class("title");
-        titles_box.append(title_label);
-        var subtitle_label = new Label(Util.get_conversation_display_name(stream_interactor, conversation));
-        subtitle_label.add_css_class("subtitle");
-        titles_box.append(subtitle_label);
+        window_title.title = conversation.type_ == Conversation.Type.GROUPCHAT ? _("Conference Details") : _("Contact Details");
+        window_title.subtitle = Util.get_conversation_display_name(stream_interactor, conversation);
 
-        ((Gtk.HeaderBar) titlebar).set_title_widget(titles_box);
         setup_top();
 
         contact_details.add.connect(add_entry);

@@ -7,7 +7,11 @@
         <property name="width-request">360</property>
         <property name="height-request">294</property>
         <property name="titlebar">
-            <object class="GtkHeaderBar"/>
+            <object class="GtkHeaderBar">
+                <property name="title-widget">
+                    <object class="AdwWindowTitle" id="window_title"/>
+                </property>
+            </object>
         </property>
         <property name="child">
             <object class="AdwToastOverlay" id="toast_overlay">
