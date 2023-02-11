@@ -71,7 +71,6 @@ public class Dialog : Gtk.Window {
     private void setup_top() {
         if (conversation.type_ == Conversation.Type.CHAT) {
             name_label.visible = false;
-            jid_label.margin_start = new Button().get_style_context().get_padding().left + 1;
             name_hybrid.text = Util.get_conversation_display_name(stream_interactor, conversation);
             close_request.connect(() => {
                 if (name_hybrid.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
