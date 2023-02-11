@@ -21,7 +21,7 @@ public class Dialog : Gtk.Window {
     private Conversation conversation;
 
     private Plugins.ContactDetails contact_details = new Plugins.ContactDetails();
-    private HashMap<string, ListBox> categories = new HashMap<string, ListBox>();
+    private HashMap<string, Adw.PreferencesGroup> categories = new HashMap<string, Adw.PreferencesGroup>();
     private Util.LabelHybridGroup hybrid_group = new Util.LabelHybridGroup();
 
     construct {
@@ -92,21 +92,7 @@ public class Dialog : Gtk.Window {
         Widget w = (Widget) wo;
         add_category(category);
 
-        ListBoxRow list_row = new ListBoxRow() { activatable=false };
-        Box row = new Box(Orientation.HORIZONTAL, 20) { margin_start=15, margin_end=15, margin_top=3, margin_bottom=3 };
-        list_row.set_child(row);
-        Label label_label = new Label(label) { xalign=0, yalign=0.5f, hexpand=true };
-        if (description != null && description != "") {
-            Box box = new Box(Orientation.VERTICAL, 0);
-            box.append(label_label);
-            Label desc_label = new Label("") { xalign=0, yalign=0.5f, hexpand=true };
-            desc_label.set_markup("<span size='small'>%s</span>".printf(Markup.escape_text(description)));
-            desc_label.add_css_class("dim-label");
-            box.append(desc_label);
-            row.append(box);
-        } else {
-            row.append(label_label);
-        }
+        var row = new Adw.ActionRow() { title=label, subtitle=description };
 
         Widget widget = w;
         if (widget.get_type().is_a(typeof(Entry))) {
@@ -118,31 +104,19 @@ public class Dialog : Gtk.Window {
             hybrid_group.add(hybrid);
             widget = hybrid;
         }
-        widget.margin_bottom = 5;
-        widget.margin_top = 5;
+        widget.valign = Align.CENTER;
 
+        row.add_suffix(widget);
+        row.activatable_widget = widget;
 
-        row.append(widget);
-        categories[category].append(list_row);
+        categories[category].add(row);
     }
 
     private void add_category(string category) {
         if (!categories.has_key(category)) {
-            ListBox list_box = new ListBox() { selection_mode=SelectionMode.NONE };
-            categories[category] = list_box;
-            list_box.set_header_func((row, before_row) => {
-                if (row.get_header() == null && before_row != null) {
-                    row.set_header(new Separator(Orientation.HORIZONTAL));
-                }
-            });
-            Box box = new Box(Orientation.VERTICAL, 5) { margin_top=12, margin_bottom=12 };
-            Label category_label = new Label("") { xalign=0 };
-            category_label.set_markup(@"<b>$(Markup.escape_text(category))</b>");
-            box.append(category_label);
-            Frame frame = new Frame(null);
-            frame.set_child(list_box);
-            box.append(frame);
-            main_box.append(box);
+            var prefs_group = new Adw.PreferencesGroup() { title=category };
+            categories[category] = prefs_group;
+            main_box.append(prefs_group);
         }
     }
 }
