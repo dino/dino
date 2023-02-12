@@ -377,7 +377,7 @@ public class StanzaNode : StanzaEntry {
         }
     }
 
-    public string to_xml(NamespaceState? state = null) throws XmlError {
+    public string to_xml(NamespaceState? state = null) throws IOError {
         NamespaceState my_state = state ?? new NamespaceState.for_stanza();
         if (name == "#text") return val == null ? "" : (!)encoded_val;
         my_state = my_state.push();

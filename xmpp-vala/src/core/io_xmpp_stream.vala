@@ -1,7 +1,7 @@
 using Gee;
 
 public interface Xmpp.WriteNodeFunc : Object {
-    public abstract async void write_stanza(XmppStream stream, StanzaNode node) throws IOStreamError;
+    public abstract async void write_stanza(XmppStream stream, StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError;
 }
 
 public abstract class Xmpp.IoXmppStream : XmppStream {
@@ -15,10 +15,10 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
         base(remote_name);
     }
 
-    public override async void disconnect() throws IOStreamError, XmlError, IOError {
+    public override async void disconnect() throws IOError {
         disconnected = true;
         if (writer == null || reader == null || stream == null) {
-            throw new IOStreamError.DISCONNECT("trying to disconnect, but no stream open");
+            throw new IOError.CLOSED("trying to disconnect, but no stream open");
         }
         log.str("OUT", "</stream:stream>", this);
         yield writer.write("</stream:stream>");
@@ -35,39 +35,31 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
         require_setup();
     }
 
-    public override async StanzaNode read() throws IOStreamError {
+    public override async StanzaNode read() throws IOError {
         StanzaReader? reader = this.reader;
-        if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
-        try {
-            StanzaNode node = yield ((!)reader).read_node();
-            log.node("IN", node, this);
-            return node;
-        } catch (XmlError e) {
-            throw new IOStreamError.READ(e.message);
-        }
+        if (reader == null) throw new IOError.NOT_CONNECTED("trying to read, but no stream open");
+        StanzaNode node = yield ((!)reader).read_node();
+        log.node("IN", node, this);
+        return node;
     }
 
     [Version (deprecated = true, deprecated_since = "0.1", replacement = "write_async")]
-    public override void write(StanzaNode node) {
-        write_async.begin(node, (obj, res) => {
+    public override void write(StanzaNode node, int io_priority = Priority.DEFAULT) {
+        write_async.begin(node, io_priority, null, (obj, res) => {
             try {
                 write_async.end(res);
             } catch (Error e) { }
         });
     }
 
-    public override async void write_async(StanzaNode node) throws IOStreamError {
+    public override async void write_async(StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         if (write_obj != null) {
-            yield write_obj.write_stanza(this, node);
+            yield write_obj.write_stanza(this, node, io_priority, cancellable);
         } else {
             StanzaWriter? writer = this.writer;
-            if (writer == null) throw new IOStreamError.WRITE("trying to write, but no stream open");
-            try {
-                log.node("OUT", node, this);
-                yield ((!)writer).write_node(node);
-            } catch (XmlError e) {
-                throw new IOStreamError.WRITE(e.message);
-            }
+            if (writer == null) throw new IOError.NOT_CONNECTED("trying to write, but no stream open");
+            log.node("OUT", node, this);
+            yield ((!)writer).write_node(node, io_priority, cancellable);
         }
     }
 
@@ -75,7 +67,7 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
         return stream;
     }
 
-    public override async void setup() throws IOStreamError {
+    public override async void setup() throws IOError {
         StanzaNode outs = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
                 .put_attribute("to", remote_name.to_string())
                 .put_attribute("version", "1.0")
@@ -89,17 +81,11 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
         setup_needed = false;
     }
 
-    private async StanzaNode read_root() throws IOStreamError {
+    private async StanzaNode read_root() throws IOError {
         StanzaReader? reader = this.reader;
-        if (reader == null) throw new IOStreamError.READ("trying to read, but no stream open");
-        try {
-            StanzaNode node = yield ((!)reader).read_root_node();
-            log.node("IN ROOT", node, this);
-            return node;
-        } catch (XmlError.TLS e) {
-            throw new IOStreamError.TLS(e.message);
-        } catch (Error e) {
-            throw new IOStreamError.READ(e.message);
-        }
+        if (reader == null) throw new IOError.NOT_CONNECTED("trying to read, but no stream open");
+        StanzaNode node = yield ((!)reader).read_root_node();
+        log.node("IN ROOT", node, this);
+        return node;
     }
 }

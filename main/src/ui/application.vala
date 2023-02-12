@@ -264,14 +264,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         string? version = Dino.get_version().strip().length == 0 ? null : Dino.get_version();
         if (version != null && !version.contains("git")) {
             switch (version.substring(0, 3)) {
-                case "0.2": version = @"$version - <span font_style='italic'>Mexican Caribbean Coral Reefs</span>"; break;
-                case "0.3": version = @"$version - <span font_style='italic'>Theikenmeer</span>"; break;
+                case "0.2": version = @"$version - Mexican Caribbean Coral Reefs"; break;
+                case "0.3": version = @"$version - Theikenmeer"; break;
+                case "0.4": version = @"$version - Ilulissat"; break;
             }
         }
 #if Adw_1_2
         Adw.AboutWindow about_window = new Adw.AboutWindow();
         about_window.application_icon = "im.dino.Dino";
         about_window.application_name = "Dino";
+        about_window.issue_url = "https://github.com/dino/dino/issues";
 #else
         Gtk.AboutDialog about_window = new Gtk.AboutDialog();
         about_window.logo_icon_name = "im.dino.Dino";
@@ -283,9 +285,8 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         about_window.modal = true;
         about_window.title = _("About Dino");
         about_window.version = version;
-        about_window.comments = "Dino. Communicating happiness.";
         about_window.website = "https://dino.im/";
-        about_window.copyright = "Copyright © 2016-2022 - Dino Team";
+        about_window.copyright = "Copyright © 2016-2023 - Dino Team";
         about_window.license_type = License.GPL_3_0;
 
         if (!use_csd()) {

@@ -203,23 +203,22 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             message_menu_box.visible = true;
 
             // Configure as many buttons as we need with the actions for the current meta item
-            for (int i = 0; i < message_actions.size; i++) {
-                if (message_actions[i].popover != null) {
+            foreach (var message_action in message_actions) {
+                if (message_action.popover != null) {
                     MenuButton button = new MenuButton();
-                    button.icon_name = message_actions[i].icon_name;
-                    button.set_popover(message_actions[i].popover as Popover);
-                    button.tooltip_text = Util.string_if_tooltips_active(message_actions[i].tooltip);
+                    button.sensitive = message_action.sensitive;
+                    button.icon_name = message_action.icon_name;
+                    button.set_popover(message_action.popover as Popover);
+                    button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
                     action_buttons.add(button);
-                }
-
-                if (message_actions[i].callback != null) {
-                    var message_action = message_actions[i];
+                } else if (message_action.callback != null) {
                     Button button = new Button();
+                    button.sensitive = message_action.sensitive;
                     button.icon_name = message_action.icon_name;
                     button.clicked.connect(() => {
                         message_action.callback(button, current_meta_item, currently_highlighted);
                     });
-                    button.tooltip_text = Util.string_if_tooltips_active(message_actions[i].tooltip);
+                    button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
                     action_buttons.add(button);
                 }
             }

@@ -26,6 +26,15 @@ public class Flag : XmppStreamFlag {
 
     public Jid? get_real_jid(Jid full_jid) { return occupant_real_jids[full_jid]; }
 
+    public Jid? get_occupant_jid(Jid real_jid, Jid room) {
+        foreach (Map.Entry<Jid, Jid> entry in occupant_real_jids) {
+            if (entry.value.equals_bare(real_jid) && entry.key.equals_bare(room)) {
+                return entry.key;
+            }
+        }
+        return null;
+    }
+
     public Gee.List<Jid> get_offline_members(Jid muc_jid) {
         Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
         HashMap<Jid, Affiliation>? muc_affiliations = affiliations[muc_jid.bare_jid];

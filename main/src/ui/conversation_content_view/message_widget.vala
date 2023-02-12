@@ -22,7 +22,6 @@ public class MessageMetaItem : ContentMetaItem {
 
     MessageItemEditMode? edit_mode = null;
     ChatTextViewController? controller = null;
-    private bool supports_reaction = false;
     AdditionalInfo additional_info = AdditionalInfo.NONE;
 
     ulong realize_id = -1;
@@ -35,8 +34,6 @@ public class MessageMetaItem : ContentMetaItem {
         base(content_item);
         message_item = content_item as MessageItem;
         this.stream_interactor = stream_interactor;
-
-        init.begin();
 
         label.activate_link.connect(on_label_activate_link);
 
@@ -69,10 +66,6 @@ public class MessageMetaItem : ContentMetaItem {
         }
 
         update_label();
-    }
-
-    private async void init() {
-        supports_reaction = yield stream_interactor.get_module(Reactions.IDENTITY).conversation_supports_reactions(message_item.conversation);
     }
 
     private string generate_markup_text(ContentItem item) {
@@ -224,25 +217,9 @@ public class MessageMetaItem : ContentMetaItem {
             actions.add(action1);
         }
 
-        Plugins.MessageAction reply_action = new Plugins.MessageAction();
-        reply_action.icon_name = "mail-reply-sender-symbolic";
-        reply_action.tooltip = _("Reply");
-        reply_action.callback = (button, content_meta_item_activated, widget) => {
-            GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(message_item.conversation.id), new GLib.Variant.int32(content_item.id) }));
-        };
-        actions.add(reply_action);
+        actions.add(get_reply_action(content_item, message_item.conversation, stream_interactor));
+        actions.add(get_reaction_action(content_item, message_item.conversation, stream_interactor));
 
-        if (supports_reaction) {
-            Plugins.MessageAction action2 = new Plugins.MessageAction();
-            action2.icon_name = "dino-emoticon-add-symbolic";
-            action2.tooltip = _("Add reaction");
-            EmojiChooser chooser = new EmojiChooser();
-            chooser.emoji_picked.connect((emoji) => {
-                stream_interactor.get_module(Reactions.IDENTITY).add_reaction(message_item.conversation, message_item, emoji);
-            });
-            action2.popover = chooser;
-            actions.add(action2);
-        }
         return actions;
     }
 

@@ -67,6 +67,7 @@ public class Settings : Object {
         }
     }
 
+    // There is currently no spell checking for GTK4, thus there is currently no UI for this setting.
     private bool check_spelling_;
     public bool check_spelling {
         get { return check_spelling_; }

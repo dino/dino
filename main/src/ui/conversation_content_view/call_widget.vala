@@ -175,7 +175,7 @@ namespace Dino.Ui {
                 case Call.State.ENDED:
                     image.set_from_icon_name("dino-phone-hangup-symbolic");
                     title_label.label = _("Call ended");
-                    string formated_end = Util.format_time(call.end_time, _("%H∶%M"), _("%l∶%M %p"));
+                    string formated_end = Util.format_time(call.end_time.to_local(), _("%H∶%M"), _("%l∶%M %p"));
                     string duration = get_duration_string(call.end_time.difference(call.local_time));
                     subtitle_label.label = _("Ended at %s").printf(formated_end) +
                             " · " +

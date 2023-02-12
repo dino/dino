@@ -37,7 +37,6 @@ public class ConversationSelector : Widget {
     }
 
     construct {
-        add_css_class("sidebar");
         list_box.set_sort_func(sort);
 
         realize.connect(() => {

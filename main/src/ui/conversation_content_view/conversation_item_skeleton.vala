@@ -173,7 +173,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     private void update_time() {
         time_label.label = get_relative_time(item.time.to_local()).to_string();
 
-        time_update_timeout = Timeout.add_seconds((int) get_next_time_change(), () => {
+        time_update_timeout = Timeout.add_seconds((int) get_next_time_change(item.time), () => {
             if (this.main_grid.parent == null) return false;
             update_time();
             return false;
@@ -181,13 +181,19 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_name_label() {
-        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
+        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid, true);
     }
 
     private void update_received_mark() {
         switch (content_meta_item.mark) {
-            case Message.Marked.RECEIVED: received_image.icon_name = "dino-tick-symbolic"; break;
-            case Message.Marked.READ: received_image.icon_name = "dino-double-tick-symbolic"; break;
+            case Message.Marked.RECEIVED: 
+                received_image.icon_name = "dino-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Delivered"));
+                break;
+            case Message.Marked.READ:
+                received_image.icon_name = "dino-double-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Read"));
+                break;
             case Message.Marked.WONTSEND:
                 received_image.icon_name = "dialog-warning-symbolic";
                 Util.force_error_color(received_image);
@@ -200,16 +206,15 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         }
     }
 
-    private int get_next_time_change() {
+    public static int get_next_time_change(DateTime datetime) {
         DateTime now = new DateTime.now_local();
-        DateTime item_time = item.time;
-        TimeSpan timespan = now.difference(item_time);
+        TimeSpan timespan = now.difference(datetime);
 
         if (timespan < 10 * TimeSpan.MINUTE) {
-            if (now.get_second() < item_time.get_second()) {
-                return item_time.get_second() - now.get_second();
+            if (now.get_second() < datetime.get_second()) {
+                return datetime.get_second() - now.get_second();
             } else {
-                return 60 - (now.get_second() - item_time.get_second());
+                return 60 - (now.get_second() - datetime.get_second());
             }
         } else {
             return (23 - now.get_hour()) * 3600 + (59 - now.get_minute()) * 60 + (59 - now.get_second());

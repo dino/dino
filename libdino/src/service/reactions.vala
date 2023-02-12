@@ -37,7 +37,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         try {
             send_reactions(conversation, content_item, reactions);
             reaction_added(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
-        } catch (SendError e) {}
+        } catch (IOError e) {}
     }
 
     public void remove_reaction(Conversation conversation, ContentItem content_item, string reaction) {
@@ -46,7 +46,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         try {
             send_reactions(conversation, content_item, reactions);
             reaction_removed(conversation.account, content_item.id, conversation.account.bare_jid, reaction);
-        } catch (SendError e) {}
+        } catch (IOError e) {}
     }
 
     public Gee.List<ReactionUsers> get_item_reactions(Conversation conversation, ContentItem content_item) {
@@ -57,38 +57,29 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    public async bool conversation_supports_reactions(Conversation conversation) {
+    public bool conversation_supports_reactions(Conversation conversation) {
         if (conversation.type_ == Conversation.Type.CHAT) {
-            Gee.List<Jid>? resources = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
-            if (resources == null) return false;
-
-            foreach (Jid full_jid in resources) {
-                bool? has_feature = yield stream_interactor.get_module(EntityInfo.IDENTITY).has_feature(conversation.account, full_jid, Xep.Reactions.NS_URI);
-                if (has_feature == true) {
-                    return true;
-                }
-            }
+            return true;
         } else {
             // The MUC server needs to 1) support stable stanza ids 2) either support occupant ids or be a private room (where we know real jids)
             var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-            bool server_supports_sid = (yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
+            bool server_supports_sid = (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
+                    (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
             if (!server_supports_sid) return false;
 
-            bool? supports_occupant_ids = yield entity_info.has_feature(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
+            bool? supports_occupant_ids = entity_info.has_feature_cached(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
             if (supports_occupant_ids) return true;
 
             return stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
         }
-        return false;
     }
 
-    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws SendError {
+    private void send_reactions(Conversation conversation, ContentItem content_item, Gee.List<string> reactions) throws IOError {
         string? message_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
-        if (message_id == null) throw new SendError.Misc("No message for content_item");
+        if (message_id == null) throw new IOError.FAILED("No message for content_item");
 
         XmppStream? stream = stream_interactor.get_stream(conversation.account);
-        if (stream == null) throw new SendError.NoStream("");
+        if (stream == null) throw new IOError.NOT_CONNECTED("No stream");
 
         var reactions_module = stream.get_module(Xmpp.Xep.Reactions.Module.IDENTITY);
 
@@ -96,14 +87,14 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             reactions_module.send_reaction.begin(stream, conversation.counterpart, "groupchat", message_id, reactions);
             // We save the reaction when it gets reflected back to us
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-            reactions_module.send_reaction(stream, conversation.counterpart, "chat", message_id, reactions);
+            reactions_module.send_reaction.begin(stream, conversation.counterpart, "chat", message_id, reactions);
         } else if (conversation.type_ == Conversation.Type.CHAT) {
             int64 now_millis = GLib.get_real_time () / 1000;
             reactions_module.send_reaction.begin(stream, conversation.counterpart, "chat", message_id, reactions, (_, res) => {
                 try {
                     reactions_module.send_reaction.end(res);
                     save_chat_reactions(conversation.account, conversation.account.bare_jid, content_item.id, now_millis, reactions);
-                } catch (SendError e) {}
+                } catch (IOError e) {}
             });
         }
     }
@@ -145,12 +136,19 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         return ret;
     }
 
-    private ReactionsTime get_muc_user_reactions(Account account, int content_item_id, string? occupantid, Jid? real_jid) {
+    private ReactionsTime get_muc_user_reactions(Account account, int content_item_id, string? occupant_id, Jid? real_jid) {
+        if (occupant_id == null && real_jid == null) critical("Need occupant id or real jid of a reaction");
+
         QueryBuilder query = db.reaction.select()
                 .with(db.reaction.account_id, "=", account.id)
                 .with(db.reaction.content_item_id, "=", content_item_id)
-                .join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
-                .with(db.occupantid.occupant_id, "=", occupantid);
+                .outer_join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id);
+
+        if (occupant_id != null) {
+            query.with(db.occupantid.occupant_id, "=", occupant_id);
+        } else if (real_jid != null) {
+            query.with(db.reaction.jid_id, "=", db.get_jid_id(real_jid));
+        }
 
         RowOption row = query.single().row();
         ReactionsTime ret = new ReactionsTime();
@@ -200,7 +198,8 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         QueryBuilder select = db.reaction.select()
                 .with(db.reaction.account_id, "=", account.id)
                 .with(db.reaction.content_item_id, "=", content_item.id)
-                .join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
+                .outer_join_with(db.occupantid, db.occupantid.id, db.reaction.occupant_id)
+                .outer_join_with(db.jid, db.jid.id, db.reaction.jid_id)
                 .order_by(db.reaction.time, "DESC");
 
         string? own_occupant_id = stream_interactor.get_module(MucManager.IDENTITY).get_own_occupant_id(account, content_item.jid);
@@ -211,11 +210,17 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             string emoji_str = row[db.reaction.emojis];
 
             Jid jid = null;
-            if (row[db.occupantid.occupant_id] == own_occupant_id) {
-                jid = account.bare_jid;
+            if (!db.jid.bare_jid.is_null(row)) {
+                jid = new Jid(row[db.jid.bare_jid]);
+            } else if (!db.occupantid.occupant_id.is_null(row)) {
+                if (row[db.occupantid.occupant_id] == own_occupant_id) {
+                    jid = account.bare_jid;
+                } else {
+                    string nick = row[db.occupantid.last_nick];
+                    jid = content_item.jid.with_resource(nick);
+                }
             } else {
-                string nick = row[db.occupantid.last_nick];
-                jid = content_item.jid.with_resource(nick);
+                warning("Reaction with neither JID nor occupant id");
             }
 
             foreach (string emoji in emoji_str.split(",")) {
@@ -240,7 +245,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         if (stanza.type_ == MessageStanza.TYPE_GROUPCHAT) {
             // Apply the same restrictions for incoming reactions as we do on sending them
             Conversation muc_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, account.bare_jid, account, MessageStanza.TYPE_GROUPCHAT);
-            bool muc_supports_reactions = yield conversation_supports_reactions(muc_conversation);
+            bool muc_supports_reactions = conversation_supports_reactions(muc_conversation);
             if (!muc_supports_reactions) return;
         }
 

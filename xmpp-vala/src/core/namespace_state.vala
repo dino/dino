@@ -52,18 +52,18 @@ public class NamespaceState {
         this.current_ns_uri = current_ns_uri;
     }
 
-    public string find_name(string ns_uri) throws XmlError {
+    public string find_name(string ns_uri) throws IOError {
         if (uri_to_name.has_key(ns_uri)) {
             return uri_to_name[ns_uri];
         }
-        throw new XmlError.NS_DICT_ERROR(@"NS URI $ns_uri not found.");
+        throw new IOError.INVALID_DATA(@"XML: NS URI $ns_uri not found.");
     }
 
-    public string find_uri(string name) throws XmlError {
+    public string find_uri(string name) throws IOError {
         if (name_to_uri.has_key(name)) {
             return name_to_uri[name];
         }
-        throw new XmlError.NS_DICT_ERROR(@"NS name $name not found.");
+        throw new IOError.INVALID_DATA(@"XML: NS name $name not found.");
     }
 
     public NamespaceState push() {

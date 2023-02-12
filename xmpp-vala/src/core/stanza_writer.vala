@@ -12,11 +12,11 @@ public class StanzaWriter {
         this.output = output;
     }
 
-    public async void write_node(StanzaNode node) throws XmlError {
-        yield write_data(node.to_xml().data);
+    public async void write_node(StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+        yield write_data(node.to_xml().data, io_priority, cancellable);
     }
 
-    public async void write_nodes(StanzaNode node1, StanzaNode node2) throws XmlError {
+    public async void write_nodes(StanzaNode node1, StanzaNode node2, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         var data1 = node1.to_xml().data;
         var data2 = node2.to_xml().data;
 
@@ -29,24 +29,27 @@ public class StanzaWriter {
             concat[i++] = datum;
         }
 
-        yield write_data(concat);
+        yield write_data(concat, io_priority, cancellable);
     }
 
-    public async void write(string s) throws XmlError {
-        yield write_data(s.data);
+    public async void write(string s, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
+        yield write_data(s.data, io_priority, cancellable);
     }
 
-    private async void write_data(owned uint8[] data) throws XmlError {
+    private async void write_data(owned uint8[] data, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
         if (running) {
             queue.push_tail(new SourceFuncWrapper(write_data.callback));
             yield;
         }
         running = true;
         try {
-            yield output.write_all_async(data, 0, null, null);
+            yield output.write_all_async(data, io_priority, cancellable, null);
+        } catch (IOError e) {
+            cancel();
+            throw e;
         } catch (GLib.Error e) {
             cancel();
-            throw new XmlError.IO(@"IOError in GLib: $(e.message)");
+            throw new IOError.FAILED("Error in GLib: %s".printf(e.message));
         } finally {
             SourceFuncWrapper? sfw = queue.pop_head();
             if (sfw != null) {
