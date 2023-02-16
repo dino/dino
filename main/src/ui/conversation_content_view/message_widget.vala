@@ -209,9 +209,10 @@ public class MessageMetaItem : ContentMetaItem {
         bool correction_allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
         if (correction_allowed) {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
+            action1.name = "correction";
             action1.icon_name = "document-edit-symbolic";
             action1.tooltip = _("Edit message");
-            action1.callback = (button, content_meta_item_activated, widget) => {
+            action1.callback = () => {
                 this.in_edit_mode = true;
             };
             actions.add(action1);
