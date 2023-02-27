@@ -426,6 +426,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 content_items.remove((ContentMetaItem)item);
             }
             meta_items.remove(item);
+            skeleton.dispose();
         }
 
         removed_item(item);
@@ -591,12 +592,19 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private void clear() {
         was_upper = null;
         was_page_size = null;
+        foreach (var item in content_items) {
+            item.dispose();
+        }
         content_items.clear();
         meta_items.clear();
         widget_order.clear();
+        foreach (var skeleton in item_item_skeletons.values) {
+            skeleton.dispose();
+        }
         item_item_skeletons.clear();
         foreach (Widget widget in widgets.values) {
-            main.remove(widget);
+            widget.unparent();
+            widget.dispose();
         }
         widgets.clear();
     }

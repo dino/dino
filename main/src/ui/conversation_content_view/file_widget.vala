@@ -135,6 +135,17 @@ public class FileWidget : SizeRequestBox {
         }
         return false;
     }
+
+    public override void dispose() {
+        if (default_widget_controller != null) default_widget_controller.dispose();
+        default_widget_controller = null;
+        if (content != null) {
+            content.unparent();
+            content.dispose();
+            content = null;
+        }
+        base.dispose();
+    }
 }
 
 public class FileWidgetController : Object {

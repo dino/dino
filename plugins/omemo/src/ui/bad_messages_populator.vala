@@ -94,6 +94,7 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
         foreach (BadMessageItem bad_item in bad_items) {
             item_collection.remove_item(bad_item);
         }
+        bad_items.clear();
     }
 
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection, Plugins.WidgetType type) {
@@ -103,7 +104,9 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
         init_state();
     }
 
-    public void close(Conversation conversation) { }
+    public void close(Conversation conversation) {
+        clear_state();
+    }
 
     public void populate_timespan(Conversation conversation, DateTime after, DateTime before) { }
 }
@@ -131,9 +134,17 @@ public class BadMessageItem : Plugins.MetaConversationItem {
 }
 
 public class BadMessagesWidget : Box {
+    private Plugin plugin;
+    private Conversation conversation;
+    private Jid jid;
+    private Label label;
+
     public BadMessagesWidget(Plugin plugin, Conversation conversation, Jid jid, BadnessType badness_type) {
         Object(orientation:Orientation.HORIZONTAL, spacing:5);
 
+        this.plugin = plugin;
+        this.conversation = conversation;
+        this.jid = jid;
         this.halign = Align.CENTER;
         this.visible = true;
 
@@ -159,19 +170,29 @@ public class BadMessagesWidget : Box {
         } else {
             warning_text += _("%s does not trust this device. That means, you might be missing messages.").printf(who);
         }
-        Label label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
+        label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
         label.add_css_class("dim-label");
         this.append(label);
 
-        label.activate_link.connect(() => {
-            if (badness_type == BadnessType.UNTRUSTED) {
-                ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
-                dialog.set_transient_for((Window) get_root());
-                dialog.present();
-            }
+        if (badness_type == BadnessType.UNTRUSTED) {
+            label.activate_link.connect(on_label_activate_link);
+        }
+    }
 
-            return false;
-        });
+    private bool on_label_activate_link() {
+        ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
+        dialog.set_transient_for((Window) get_root());
+        dialog.present();
+        return false;
+    }
+
+    public override void dispose() {
+        if (label != null) {
+            label.unparent();
+            label.dispose();
+            label = null;
+        }
+        base.dispose();
     }
 }
 
