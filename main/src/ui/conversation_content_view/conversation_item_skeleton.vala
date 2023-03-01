@@ -150,7 +150,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (item.encryption != Encryption.NONE && item.encryption != Encryption.UNKNOWN && ci != null) {
             string? icon_name = null;
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
-            icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
+            if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
             encryption_image.visible = true;
         }
