@@ -451,6 +451,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
             }
         }
 
+        if (conversation.get_send_typing_setting(stream_interactor) == Conversation.Setting.ON) {
+            ChatStateNotifications.add_state_to_message(new_message, ChatStateNotifications.STATE_ACTIVE);
+        }
+
         stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, new_message, (_, res) => {
             try {
                 stream.get_module(MessageModule.IDENTITY).send_message.end(res);
