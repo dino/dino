@@ -66,7 +66,7 @@ public class FileProvider : Dino.FileProvider, Object {
 
         public bool is_readable() {
             if (!can_poll()) throw new IOError.NOT_SUPPORTED("Stream is not pollable");
-            return ((PollableInputStream)inner).is_readable();
+            return remaining_size <= 0 || ((PollableInputStream)inner).is_readable();
         }
 
         private ssize_t check_limit(ssize_t read) throws IOError {
