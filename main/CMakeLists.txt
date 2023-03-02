@@ -232,6 +232,7 @@ add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
+set_target_properties(dino PROPERTIES ENABLE_EXPORTS TRUE)
 
 if(WIN32)
     target_link_libraries(dino -mwindows)
