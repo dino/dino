@@ -4,14 +4,14 @@ using Gtk;
 namespace Dino.Ui {
     public Plugins.MessageAction get_reaction_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
         Plugins.MessageAction action = new Plugins.MessageAction();
+        action.name = "reaction";
         action.icon_name = "dino-emoticon-add-symbolic";
         action.tooltip = _("Add reaction");
 
-        EmojiChooser chooser = new EmojiChooser();
-        chooser.emoji_picked.connect((emoji) => {
+        action.callback = (variant) => {
+            string emoji = variant.get_string();
             stream_interactor.get_module(Reactions.IDENTITY).add_reaction(conversation, content_item, emoji);
-        });
-        action.popover = chooser;
+        };
 
         // Disable the button if reaction aren't possible.
         bool supports_reactions = stream_interactor.get_module(Reactions.IDENTITY).conversation_supports_reactions(conversation);
@@ -29,9 +29,10 @@ namespace Dino.Ui {
 
     public Plugins.MessageAction get_reply_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
         Plugins.MessageAction action = new Plugins.MessageAction();
+        action.name = "reply";
         action.icon_name = "mail-reply-sender-symbolic";
         action.tooltip = _("Reply");
-        action.callback = (button, content_meta_item_activated, widget) => {
+        action.callback = () => {
             GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(conversation.id), new GLib.Variant.int32(content_item.id) }));
         };
 

@@ -19,6 +19,7 @@ public class MessageMetaItem : ContentMetaItem {
     private StreamInteractor stream_interactor;
     private MessageItem message_item;
     public Message.Marked marked { get; set; }
+    public Plugins.ConversationItemWidgetInterface outer = null;
 
     MessageItemEditMode? edit_mode = null;
     ChatTextViewController? controller = null;
@@ -34,6 +35,8 @@ public class MessageMetaItem : ContentMetaItem {
         base(content_item);
         message_item = content_item as MessageItem;
         this.stream_interactor = stream_interactor;
+
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_received_correction);
 
         label.activate_link.connect(on_label_activate_link);
 
@@ -146,43 +149,9 @@ public class MessageMetaItem : ContentMetaItem {
     }
 
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
+        this.outer = outer;
 
-        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_received_correction);
-
-        this.notify["in-edit-mode"].connect(() => {
-            if (in_edit_mode == false) return;
-            bool allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
-            if (allowed) {
-                MessageItem message_item = content_item as MessageItem;
-                Message message = message_item.message;
-
-                edit_mode = new MessageItemEditMode();
-                controller = new ChatTextViewController(edit_mode.chat_text_view, stream_interactor);
-                Conversation conversation = message_item.conversation;
-                controller.initialize_for_conversation(conversation);
-
-                edit_mode.cancelled.connect(() => {
-                    in_edit_mode = false;
-                    outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
-                });
-                edit_mode.send.connect(() => {
-                    if (((MessageItem) content_item).message.body != edit_mode.chat_text_view.text_view.buffer.text) {
-                        on_edit_send(edit_mode.chat_text_view.text_view.buffer.text);
-                    } else {
-//                        edit_cancelled();
-                    }
-                    in_edit_mode = false;
-                    outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
-                });
-
-                edit_mode.chat_text_view.text_view.buffer.text = message.body;
-
-                outer.set_widget(edit_mode, Plugins.WidgetType.GTK4, 2);
-                edit_mode.chat_text_view.text_view.grab_focus();
-            } else {
-                this.in_edit_mode = false;
-            }
-        });
+        this.notify["in-edit-mode"].connect(on_in_edit_mode_changed);
 
         outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
 
@@ -201,7 +170,6 @@ public class MessageMetaItem : ContentMetaItem {
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) {
-        if (content_item as FileItem != null || this.in_edit_mode) return null;
         if (in_edit_mode) return null;
 
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
@@ -209,9 +177,10 @@ public class MessageMetaItem : ContentMetaItem {
         bool correction_allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
         if (correction_allowed) {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
+            action1.name = "correction";
             action1.icon_name = "document-edit-symbolic";
             action1.tooltip = _("Edit message");
-            action1.callback = (button, content_meta_item_activated, widget) => {
+            action1.callback = () => {
                 this.in_edit_mode = true;
             };
             actions.add(action1);
@@ -221,6 +190,41 @@ public class MessageMetaItem : ContentMetaItem {
         actions.add(get_reaction_action(content_item, message_item.conversation, stream_interactor));
 
         return actions;
+    }
+
+    private void on_in_edit_mode_changed() {
+        if (in_edit_mode == false) return;
+        bool allowed = stream_interactor.get_module(MessageCorrection.IDENTITY).is_own_correction_allowed(message_item.conversation, message_item.message);
+        if (allowed) {
+            MessageItem message_item = content_item as MessageItem;
+            Message message = message_item.message;
+
+            edit_mode = new MessageItemEditMode();
+            controller = new ChatTextViewController(edit_mode.chat_text_view, stream_interactor);
+            Conversation conversation = message_item.conversation;
+            controller.initialize_for_conversation(conversation);
+
+            edit_mode.cancelled.connect(() => {
+                in_edit_mode = false;
+                outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
+            });
+            edit_mode.send.connect(() => {
+                if (((MessageItem) content_item).message.body != edit_mode.chat_text_view.text_view.buffer.text) {
+                    on_edit_send(edit_mode.chat_text_view.text_view.buffer.text);
+                } else {
+//                        edit_cancelled();
+                }
+                in_edit_mode = false;
+                outer.set_widget(label, Plugins.WidgetType.GTK4, 2);
+            });
+
+            edit_mode.chat_text_view.text_view.buffer.text = message.body;
+
+            outer.set_widget(edit_mode, Plugins.WidgetType.GTK4, 2);
+            edit_mode.chat_text_view.text_view.grab_focus();
+        } else {
+            this.in_edit_mode = false;
+        }
     }
 
     private void on_edit_send(string text) {
@@ -242,6 +246,17 @@ public class MessageMetaItem : ContentMetaItem {
         File file = File.new_for_uri(uri);
         Dino.Application.get_default().open(new File[]{file}, "");
         return true;
+    }
+
+    public override void dispose() {
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.disconnect(on_received_correction);
+        this.notify["in-edit-mode"].disconnect(on_in_edit_mode_changed);
+        if (label != null) {
+            label.unparent();
+            label.dispose();
+            label = null;
+        }
+        base.dispose();
     }
 }
 

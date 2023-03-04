@@ -71,9 +71,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         ContentMetaItem? content_meta_item = item as ContentMetaItem;
         if (content_meta_item != null) {
             reactions_controller = new ReactionsController(conversation, content_meta_item.content_item, stream_interactor);
-            reactions_controller.box_activated.connect((widget) => {
-                set_widget(widget, Plugins.WidgetType.GTK4, 3);
-            });
+            reactions_controller.box_activated.connect(on_reaction_box_activated);
             reactions_controller.init();
         }
 
@@ -152,7 +150,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (item.encryption != Encryption.NONE && item.encryption != Encryption.UNKNOWN && ci != null) {
             string? icon_name = null;
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
-            icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
+            if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
             encryption_image.visible = true;
         }
@@ -168,6 +166,10 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                 encryption_image.visible = false;
             }
         }
+    }
+
+    private void on_reaction_box_activated(Widget widget) {
+        set_widget(widget, Plugins.WidgetType.GTK4, 3);
     }
 
     private void update_time() {
@@ -270,6 +272,34 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (updated_roster_handler_id != 0){
             stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
             updated_roster_handler_id = 0;
+        }
+        reactions_controller = null;
+
+        // Children won't be disposed automatically
+        if (name_label != null) {
+            name_label.unparent();
+            name_label.dispose();
+            name_label = null;
+        }
+        if (time_label != null) {
+            time_label.unparent();
+            time_label.dispose();
+            time_label = null;
+        }
+        if (avatar_image != null) {
+            avatar_image.unparent();
+            avatar_image.dispose();
+            avatar_image = null;
+        }
+        if (encryption_image != null) {
+            encryption_image.unparent();
+            encryption_image.dispose();
+            encryption_image = null;
+        }
+        if (received_image != null) {
+            received_image.unparent();
+            received_image.dispose();
+            received_image = null;
         }
         base.dispose();
     }
