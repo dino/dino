@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libgspell-1-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libadwaita-1-dev
+      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libadwaita-1-dev
       - run: ./configure --with-tests --with-libsignal-in-tree
       - run: make
       - run: build/xmpp-vala-test
