@@ -94,6 +94,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.received");
         string[] actions = new string[] {"default", "Open conversation"};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", replace_id, "", conversation_display_name, body, actions, hash_table, -1);
@@ -120,6 +121,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         hash_table["sound-name"] = new Variant.string("phone-incoming-call");
         hash_table["urgency"] = new Variant.byte(2);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
@@ -158,6 +160,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "Open conversation", "accept", _("Accept"), "deny", _("Deny")};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, -1);
@@ -197,6 +200,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
 
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.error");
         try {
             yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, new string[]{}, hash_table, -1);
         } catch (Error e) {
@@ -217,6 +221,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(direct_conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "", "reject", _("Reject"), "accept", _("Accept")};
 
         try {
@@ -250,6 +255,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"deny", _("Deny"), "accept", _("Accept")};
 
         try {
