@@ -3,14 +3,14 @@ using Gee;
 namespace Dino.Plugins {
 
 public class Registry {
-    internal HashMap<Entities.Encryption, EncryptionListEntry> encryption_list_entries = new HashMap<Entities.Encryption, EncryptionListEntry>();
-    internal HashMap<string, CallEncryptionEntry> call_encryption_entries = new HashMap<string, CallEncryptionEntry>();
-    internal ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
-    internal ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
-    internal Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
-    internal Gee.List<ConversationAdditionPopulator> conversation_addition_populators = new ArrayList<ConversationAdditionPopulator>();
-    internal Gee.List<NotificationPopulator> notification_populators = new ArrayList<NotificationPopulator>();
-    internal Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
+    public HashMap<Entities.Encryption, EncryptionListEntry> encryption_list_entries = new HashMap<Entities.Encryption, EncryptionListEntry>();
+    public HashMap<string, CallEncryptionEntry> call_encryption_entries = new HashMap<string, CallEncryptionEntry>();
+    public ArrayList<AccountSettingsEntry> account_settings_entries = new ArrayList<AccountSettingsEntry>();
+    public ArrayList<ContactDetailsProvider> contact_details_entries = new ArrayList<ContactDetailsProvider>();
+    public Map<string, TextCommand> text_commands = new HashMap<string, TextCommand>();
+    public Gee.List<ConversationAdditionPopulator> conversation_addition_populators = new ArrayList<ConversationAdditionPopulator>();
+    public Gee.List<NotificationPopulator> notification_populators = new ArrayList<NotificationPopulator>();
+    public Gee.Collection<ConversationTitlebarEntry> conversation_titlebar_entries = new Gee.TreeSet<ConversationTitlebarEntry>((a, b) => {
         return (int)(a.order - b.order);
     });
     public VideoCallPlugin? video_call_plugin;
