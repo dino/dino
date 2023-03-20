@@ -453,3 +453,9 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
 .qrcode-container > contents {
     background: white;  /* Color of the quiet zone. MUST have the same "reflectance" as light modules of the QR code. */
 }
+
+/* Account Setting -> Remove avatar*/
+
+.image_remove_button{
+    background: #e15358;
+}

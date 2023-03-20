@@ -108,6 +108,17 @@
                                                     </object>
                                                 </child>
                                                 <child>
+                                                    <object class="GtkButton" id="image_remove_button">
+                                                        <property name="label">Remove</property>
+                                                        <layout>
+                                                            <property name="column">1</property>
+                                                            <property name="column-span">1</property>
+                                                            <property name="row">-1</property>
+                                                            <property name="row-span">1</property>
+                                                        </layout>
+                                                    </object>
+                                                </child>
+                                                <child>
                                                     <object class="GtkLabel" id="jid_label">
                                                         <property name="xalign">0</property>
                                                         <property name="yalign">1</property>

@@ -79,6 +79,11 @@ public class Account : Object {
         db = null;
     }
 
+    public void remove_avatar(Jid jid) {
+        db.avatar.delete().with(db.avatar.jid_id, "=", db.get_jid_id(jid)).perform();
+        //  notify.disconnect(on_update);
+    }
+
     public bool equals(Account acc) {
         return equals_func(this, acc);
     }

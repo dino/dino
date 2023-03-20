@@ -21,6 +21,7 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public unowned Button remove_account_button;
     [GtkChild] public unowned AvatarPicture picture;
     [GtkChild] public unowned Button image_button;
+    [GtkChild] public unowned Button image_remove_button;
     [GtkChild] public unowned Label jid_label;
     [GtkChild] public unowned Label state_label;
     [GtkChild] public unowned Switch active_switch;
@@ -37,6 +38,15 @@ public class Dialog : Gtk.Dialog {
         account_list.row_selected.connect(on_account_list_row_selected);
         add_account_button.clicked.connect(show_add_account_dialog);
         no_accounts_add.clicked.connect(show_add_account_dialog);
+
+        image_remove_button.get_style_context().add_class(_("image_remove_button"));
+        image_remove_button.set_halign(Gtk.Align.START);
+        //  image_remove_button.set_sensitive(false);
+        image_remove_button.clicked.connect(() => {
+            AccountRow? account_row = account_list.get_selected_row() as AccountRow;
+            if (selected_account != null) image_remove(account_row);
+        });
+
         remove_account_button.clicked.connect(() => {
             AccountRow? account_row = account_list.get_selected_row() as AccountRow;
             if (selected_account != null) remove_account(account_row);
@@ -107,6 +117,25 @@ public class Dialog : Gtk.Dialog {
             account_list.queue_draw();
         });
         add_account_dialog.present();
+    }
+
+    private void image_remove(AccountRow account_item) {
+        Gtk.MessageDialog msg = new Gtk.MessageDialog (
+                    this,  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
+                    Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
+                    _("Remove Background Image?"), null);
+        Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
+        ok_button.label = _("Remove");
+        ok_button.add_css_class("destructive-action");
+        msg.response.connect((response) => {
+            if (response == ResponseType.OK) {
+                account_item.account.remove_avatar(account_item.account.bare_jid);
+                picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add(account_item.jid_label.get_text());
+                //  image_remove_button.set_sensitive(false);
+            }
+            msg.close();
+        });
+        msg.present();
     }
 
     private void remove_account(AccountRow account_item) {
