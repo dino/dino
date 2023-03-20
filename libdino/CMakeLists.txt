@@ -9,6 +9,7 @@ find_packages(LIBDINO_PACKAGES REQUIRED
 vala_precompile(LIBDINO_VALA_C
 SOURCES
     src/application.vala
+    src/version.vala
 
     src/dbus/login1.vala
     src/dbus/notifications.vala
