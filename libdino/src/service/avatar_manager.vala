@@ -59,6 +59,12 @@ public class AvatarManager : StreamInteractionModule, Object {
         }
     }
 
+    public void remove_avatar_manager(Account account, Jid jid_) {
+        Jid jid = jid_;
+        user_avatars[jid] = null;
+        vcard_avatars[jid] = null;
+    }
+
     private string? get_avatar_hash(Account account, Jid jid_) {
         Jid jid = jid_;
         if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {

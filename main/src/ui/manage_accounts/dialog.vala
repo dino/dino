@@ -129,8 +129,7 @@ public class Dialog : Gtk.Dialog {
         ok_button.add_css_class("destructive-action");
         msg.response.connect((response) => {
             if (response == ResponseType.OK) {
-                account_item.account.remove_avatar(account_item.account.bare_jid);
-                picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add(account_item.jid_label.get_text());
+                picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).remove_participant_avatar(new Conversation(account_item.account.bare_jid, account_item.account, Conversation.Type.CHAT), account_item.account.bare_jid);
                 //  image_remove_button.set_sensitive(false);
             }
             msg.close();

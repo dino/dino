@@ -12,6 +12,7 @@ public class Dino.Ui.ViewModel.AvatarPictureModel : Object {
     public ListModel tiles { get; set; }
 }
 
+
 public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : AvatarPictureTileModel {
     private StreamInteractor stream_interactor;
     private AvatarManager? avatar_manager { owned get { return stream_interactor == null ? null : stream_interactor.get_module(AvatarManager.IDENTITY); } }
@@ -20,13 +21,13 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
     private Jid? primary_avatar_jid;
     private Jid? secondary_avatar_jid;
     private Jid? display_name_jid;
-
-    public ConversationParticipantAvatarPictureTileModel(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
+    
+    private void get_participant_default_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.primary_avatar_jid = jid;
         this.display_name_jid = jid;
-
+    
         string color_id = jid.to_string();
         if (conversation.type_ != Conversation.Type.CHAT && primary_avatar_jid.equals_bare(conversation.counterpart)) {
             Jid? real_jid = muc_manager.get_real_jid(primary_avatar_jid, conversation.account);
@@ -44,15 +45,27 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
         string display = Util.get_participant_display_name(stream_interactor, conversation, display_name_jid);
         display_text = display.get_char(0).toupper().to_string();
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
-
+    
         float[] rgbf = color_id != null ? Xep.ConsistentColor.string_to_rgbf(color_id) : new float[] {0.5f, 0.5f, 0.5f};
         background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f};
+    }
+    
+    public ConversationParticipantAvatarPictureTileModel(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
+        get_participant_default_display_name(stream_interactor, conversation, jid);
 
         update_image_file();
         avatar_manager.received_avatar.connect(on_received_avatar);
         avatar_manager.fetched_avatar.connect(on_received_avatar);
     }
+    
+    public ConversationParticipantAvatarPictureTileModel.remove_avatar_picture(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
+        get_participant_default_display_name(stream_interactor, conversation, jid);
+        avatar_manager.remove_avatar_manager(conversation.account, primary_avatar_jid);
+        this.image_file = null;
 
+        update_image_file();
+    }
+    
     private void update_image_file() {
         File image_file = avatar_manager.get_avatar_file(conversation.account, primary_avatar_jid);
         if (image_file == null && secondary_avatar_jid != null) {
@@ -179,6 +192,16 @@ public class Dino.Ui.ViewModel.CompatAvatarPictureModel : AvatarPictureModel {
         } else {
             add_participant(conversation, conversation.counterpart);
         }
+        return this;
+    }
+
+    public CompatAvatarPictureModel remove_participant_avatar(Conversation conversation, Jid jid) {
+        if (stream_interactor == null) {
+            critical("Remove_participant() used on CompatAvatarPictureModel without stream_interactor");
+            return this;
+        }
+
+        (tiles as GLib.ListStore).append(new ConversationParticipantAvatarPictureTileModel.remove_avatar_picture(stream_interactor, conversation, jid));
         return this;
     }
 
