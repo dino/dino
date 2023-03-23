@@ -68,6 +68,11 @@ public class Module : BookmarksProvider, XmppStreamModule {
     }
 
     private void on_pupsub_item(XmppStream stream, Jid jid, string id, StanzaNode? node) {
+        if (!jid.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
+            warning("Received alleged bookmarks:1 item from %s, ignoring", jid.to_string());
+            return;
+        }
+
         Conference conference = parse_item_node(node, id);
         Flag? flag = stream.get_flag(Flag.IDENTITY);
         if (flag != null) {
@@ -77,6 +82,11 @@ public class Module : BookmarksProvider, XmppStreamModule {
     }
 
     private void on_pupsub_retract(XmppStream stream, Jid jid, string id) {
+        if (!jid.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
+            warning("Received alleged bookmarks:1 retract from %s, ignoring", jid.to_string());
+            return;
+        }
+
         try {
             Jid jid_parsed = new Jid(id);
             Flag? flag = stream.get_flag(Flag.IDENTITY);
