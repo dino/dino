@@ -186,7 +186,8 @@ public class MessageFlag : Xmpp.MessageFlag {
 }
 
 private static string NS_VER(XmppStream stream) {
-    return stream.get_flag(Flag.IDENTITY).ns_ver;
+    Flag? identity = stream.get_flag(Flag.IDENTITY);
+    return identity == null ? "" : identity.ns_ver;
 }
 
 }
