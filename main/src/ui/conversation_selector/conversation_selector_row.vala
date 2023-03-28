@@ -225,7 +225,21 @@ public class ConversationSelectorRow : ListBoxRow {
         label.attributes = copy;
     }
 
+    private bool update_read_pending = false;
+    private bool update_read_pending_force = false;
     protected void update_read(bool force_update = false) {
+        if (force_update) update_read_pending_force = true;
+        if (update_read_pending) return;
+        update_read_pending = true;
+        Idle.add(() => {
+            update_read_pending = false;
+            update_read_pending_force = false;
+            update_read_idle(update_read_pending_force);
+            return Source.REMOVE;
+        }, Priority.LOW);
+    }
+
+    private void update_read_idle(bool force_update = false) {
         int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
         if (num_unread == current_num_unread && !force_update) return;
         num_unread = current_num_unread;

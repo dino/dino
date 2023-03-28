@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 25;
+    private const int VERSION = 26;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -93,6 +93,11 @@ public class Database : Qlite.Database {
 
             // deduplication
             index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
+            index("message_account_counterpart_serverid_idx", {account_id, counterpart_id, server_id});
+
+            // message by marked
+            index("message_account_marked_idx", {account_id, marked});
+
             fts({body});
         }
     }
