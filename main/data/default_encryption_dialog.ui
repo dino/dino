@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.6"/>
+  <object class="GtkDialog" id="dialog">
+    <property name="can_focus">True</property>
+    <property name="modal">True</property>
+    <property name="default_width">320</property>
+    <property name="default_height">260</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="default_encryption_warning_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">You are opening a new conversation without having set end-to-end encryption by default.
+
+It is strongly recommended to enable it to prevent your messages from being read by third parties.
+
+Please select an option to start this conversation with. Choosing one of the encryption methods will also set it as default in the global settings.
+</property>
+                <property name="wrap">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="omemo">
+                <property name="label" translatable="yes">OMEMO (automatic setup)</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">False</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="openpgp">
+                <property name="label" translatable="yes">OpenPGP (external setup required)</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">False</property>
+                <property name="group">omemo</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="none">
+                <property name="label" translatable="yes">Unencrypted</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">False</property>
+                <property name="group">omemo</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="accept_button">
+                <property name="label" translatable="yes">Apply</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
