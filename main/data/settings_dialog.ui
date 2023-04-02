@@ -68,6 +68,35 @@
                         </child>
                     </object>
                 </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">_Display send button</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">send_button_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="send_button_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">_Use Enter key to start a new line</property>
+                                <property name="subtitle" translatable="yes">If disabled, use Shift+Enter to start a new line</property>
+                                <property name="use-underline">True</property>
+                                <property name="activatable-widget">enter_newline_switch</property>
+                                <child type="suffix">
+                                    <object class="GtkSwitch" id="enter_newline_switch">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
             </object>
         </child>
     </template>

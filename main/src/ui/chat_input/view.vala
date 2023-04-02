@@ -27,6 +27,7 @@ public class View : Box {
     [GtkChild] public unowned MenuButton encryption_button;
     [GtkChild] public unowned Separator file_separator;
     [GtkChild] public unowned Label chat_input_status;
+    [GtkChild] public unowned Button send_button;
 
     public EncryptionButton encryption_widget;
 
@@ -44,6 +45,27 @@ public class View : Box {
         file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
 
         Util.force_css(frame, "* { border-radius: 3px; }");
+
+        Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
+        chat_text_view.text_view.buffer.changed.connect(() => {
+            if (chat_text_view.text_view.buffer.text != "") {
+                send_button.sensitive = true;
+            }
+            else {
+                send_button.sensitive = false;
+            }
+        });
+
+        send_button.visible = settings.send_button;
+
+        settings.send_button_update.connect((visible) => {
+            send_button.visible = visible;
+        });
+
+        send_button.clicked.connect(() => {
+            chat_text_view.send_text();
+        });
 
         return this;
     }
