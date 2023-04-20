@@ -25,3 +25,15 @@ jobs:
       - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libgee-0.8-dev libgtk-4-dev libsqlite3-dev meson valac
       - run: meson setup build
       - run: meson compile -C build
+  build-flatpak:
+    runs-on: ubuntu-22.04
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-44
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
+        with:
+          manifest-path: im.dino.Dino.json
