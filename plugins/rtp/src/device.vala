@@ -215,7 +215,12 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         }
         if (new_width == active_caps_width) return;
         int new_height = device_caps_height * new_width / device_caps_width;
-        Gst.Caps new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
+        Gst.Caps new_caps;
+        if (device_caps_framerate_den != 0) {
+            new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
+        } else {
+            new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, null);
+        }
         double required_bitrate = get_target_bitrate(new_caps);
         debug("Changing resolution width from %d to %d (requires bitrate %f, current target is %u)", active_caps_width, new_width, required_bitrate, bitrate);
         if (bitrate < required_bitrate && new_width > active_caps_width) return;
@@ -392,8 +397,8 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             }
             Gst.Caps res = caps_copy_nth(device.caps, best_index);
             unowned Gst.Structure? that = res.get_structure(0);
-            Value framerate = that.get_value("framerate");
-            if (framerate.type() == typeof(Gst.ValueList)) {
+            Value? framerate = that.get_value("framerate");
+            if (framerate != null && framerate.type() == typeof(Gst.ValueList)) {
                 that.set_value("framerate", best_fraction);
             }
             debug("Selected caps %s", res.to_string());

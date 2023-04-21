@@ -102,6 +102,9 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtp.drop = true;
         send_rtp.wait_on_eos = false;
         send_rtp.new_sample.connect(on_new_sample);
+#if GST_1_20
+        send_rtp.new_serialized_event.connect(on_new_event);
+#endif
         send_rtp.connect("signal::eos", on_eos_static, this);
         pipe.add(send_rtp);
 
@@ -294,6 +297,60 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
     }
 
+    bool flip = false;
+    uint8 rotation = 0;
+#if GST_1_20
+    private bool on_new_event(Gst.App.Sink sink) {
+        if (sink == null || sink != send_rtp) {
+            return false;
+        }
+        Gst.MiniObject obj = sink.try_pull_object(0);
+        if (obj.type == typeof(Gst.Event)) {
+            unowned Gst.TagList tags;
+            if (((Gst.Event)obj).type == Gst.EventType.TAG) {
+                ((Gst.Event)obj).parse_tag(out tags);
+                Gst.Video.OrientationMethod orientation_method;
+                Gst.Video.Orientation.from_tag(tags, out orientation_method);
+                switch (orientation_method) {
+                    case Gst.Video.OrientationMethod.IDENTITY:
+                    case Gst.Video.OrientationMethod.VERT:
+                    default:
+                        rotation = 0;
+                        break;
+                    case Gst.Video.OrientationMethod.@90R:
+                    case Gst.Video.OrientationMethod.UL_LR:
+                        rotation = 1;
+                        break;
+                    case Gst.Video.OrientationMethod.@180:
+                    case Gst.Video.OrientationMethod.HORIZ:
+                        rotation = 2;
+                        break;
+                    case Gst.Video.OrientationMethod.@90L:
+                    case Gst.Video.OrientationMethod.UR_LL:
+                        rotation = 3;
+                        break;
+                }
+                switch (orientation_method) {
+                    case Gst.Video.OrientationMethod.IDENTITY:
+                    case Gst.Video.OrientationMethod.@90R:
+                    case Gst.Video.OrientationMethod.@180:
+                    case Gst.Video.OrientationMethod.@90L:
+                    default:
+                        flip = false;
+                        break;
+                    case Gst.Video.OrientationMethod.VERT:
+                    case Gst.Video.OrientationMethod.UL_LR:
+                    case Gst.Video.OrientationMethod.HORIZ:
+                    case Gst.Video.OrientationMethod.UR_LL:
+                        flip = true;
+                        break;
+                }
+            }
+        }
+        return false;
+    }
+#endif
+
     private Gst.FlowReturn on_new_sample(Gst.App.Sink sink) {
         if (sink == null) {
             debug("Sink is null");
@@ -322,6 +379,24 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             }
 #endif
         }
+
+#if GST_1_20
+        if (sink == send_rtp) {
+            Xmpp.Xep.JingleRtp.HeaderExtension? ext = header_extensions.first_match((it) => it.uri == "urn:3gpp:video-orientation");
+            if (ext != null) {
+                buffer = (Gst.Buffer) buffer.make_writable();
+                Gst.RTP.Buffer rtp_buffer;
+                if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.WRITE, out rtp_buffer)) {
+                    uint8[] extension_data = new uint8[1];
+                    bool camera = false;
+                    extension_data[0] = extension_data[0] | (rotation & 0x3);
+                    if (flip) extension_data[0] = extension_data[0] | 0x4;
+                    if (camera) extension_data[0] = extension_data[0] | 0x8;
+                    rtp_buffer.add_extension_onebyte_header(ext.id, extension_data);
+                }
+            }
+        }
+#endif
 
         prepare_local_crypto();
 
@@ -489,8 +564,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
     }
 
-    private uint16 previous_video_orientation_degree = uint16.MAX;
-    public signal void video_orientation_changed(uint16 degree);
+    private uint16 previous_incoming_video_orientation_degree = uint16.MAX;
+    public signal void incoming_video_orientation_changed(uint16 degree);
 
     public override void on_recv_rtp_data(Bytes bytes) {
         if (rtcp_mux && bytes.length >= 2 && bytes.get(1) >= 192 && bytes.get(1) < 224) {
@@ -545,9 +620,9 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                                 case 2: rotation_degree = 180; break;
                                 case 3: rotation_degree = 270; break;
                             }
-                            if (rotation_degree != previous_video_orientation_degree) {
-                                video_orientation_changed(rotation_degree);
-                                previous_video_orientation_degree = rotation_degree;
+                            if (rotation_degree != previous_incoming_video_orientation_degree) {
+                                incoming_video_orientation_changed(rotation_degree);
+                                previous_incoming_video_orientation_degree = rotation_degree;
                             }
                         }
                     }
@@ -723,7 +798,7 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
     private Gee.List<Gst.Element> outputs = new ArrayList<Gst.Element>();
     private Gst.Element output_tee;
     private Gst.Element rotate;
-    private ulong video_orientation_changed_handler;
+    private ulong incoming_video_orientation_changed_handler;
 
     public VideoStream(Plugin plugin, Xmpp.Xep.Jingle.Content content) {
         base(plugin, content);
@@ -731,7 +806,7 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
     }
 
     public override void create() {
-        video_orientation_changed_handler = video_orientation_changed.connect(on_video_orientation_changed);
+        incoming_video_orientation_changed_handler = incoming_video_orientation_changed.connect(on_video_orientation_changed);
         plugin.pause();
         rotate = Gst.ElementFactory.make("videoflip", @"video_rotate_$rtpid");
         pipe.add(rotate);
@@ -780,7 +855,7 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
         output_tee.set_state(Gst.State.NULL);
         pipe.remove(output_tee);
         output_tee = null;
-        disconnect(video_orientation_changed_handler);
+        disconnect(incoming_video_orientation_changed_handler);
     }
 
     public override void add_output(Gst.Element element, Xmpp.Jid? participant) {
