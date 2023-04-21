@@ -22,7 +22,12 @@ namespace Dino.Ui {
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
 
+        private EventControllerFocus this_focus_events = new EventControllerFocus();
+        private GestureClick this_gesture_events = new GestureClick() { touch_only=true, propagation_phase=Gtk.PropagationPhase.CAPTURE };
         private EventControllerMotion this_motion_events = new EventControllerMotion();
+        private double latest_motion_x = -1;
+        private double latest_motion_y = -1;
+        private const double MOTION_RELEVANCE_THRESHOLD = 2;
 
         private int own_video_width = 150;
         private int own_video_height = 100;
@@ -54,9 +59,20 @@ namespace Dino.Ui {
             this.bind_property("controls-active", bottom_bar_revealer, "reveal-child", BindingFlags.SYNC_CREATE);
 
             ((Widget) this).add_controller(this_motion_events);
-            this_motion_events.motion.connect(reveal_control_elements);
-            this_motion_events.enter.connect(reveal_control_elements);
-            this_motion_events.leave.connect(reveal_control_elements);
+            this_motion_events.motion.connect((x, y) => {
+                if ((latest_motion_x - x).abs() <= MOTION_RELEVANCE_THRESHOLD && (latest_motion_y - y).abs() <= MOTION_RELEVANCE_THRESHOLD) return;
+
+                latest_motion_x = x;
+                latest_motion_y = y;
+                reveal_control_elements();
+            });
+
+            ((Widget) this).add_controller(this_focus_events);
+            this_focus_events.enter.connect(reveal_control_elements);
+            this_focus_events.leave.connect(reveal_control_elements);
+
+            ((Widget) this).add_controller(this_gesture_events);
+            this_gesture_events.pressed.connect_after(reveal_control_elements);
 
             this.notify["default-width"].connect(reveal_control_elements);
             this.notify["default-height"].connect(reveal_control_elements);
