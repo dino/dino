@@ -96,11 +96,11 @@ namespace Dino.Ui {
             shows_video = false;
             Box box = new Box(Orientation.HORIZONTAL, 0);
             box.add_css_class("video-placeholder-box");
-            AvatarImage avatar = new AvatarImage() { allow_gray=false, hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height=100, width=100 };
+            AvatarPicture avatar = new AvatarPicture() { hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height_request=100, width_request=100 };
             if (conversation != null) {
-                avatar.set_conversation(stream_interactor, conversation);
+                avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
             } else {
-                avatar.set_text("?", false);
+                avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add("?");
             }
             box.append(avatar);
 

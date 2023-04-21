@@ -12,7 +12,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public Grid main_grid { get; set; }
     public Label name_label { get; set; }
     public Label time_label { get; set; }
-    public AvatarImage avatar_image { get; set; }
+    public AvatarPicture avatar_picture { get; set; }
     public Image encryption_image { get; set; }
     public Image received_image { get; set; }
 
@@ -51,7 +51,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         main_grid.add_css_class("message-box");
         name_label = (Label) builder.get_object("name_label");
         time_label = (Label) builder.get_object("time_label");
-        avatar_image = (AvatarImage) builder.get_object("avatar_image");
+        avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
         encryption_image = (Image) builder.get_object("encrypted_image");
         received_image = (Image) builder.get_object("marked_image");
 
@@ -62,7 +62,8 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         }
 
         if (item.requires_header) {
-            avatar_image.set_conversation_participant(stream_interactor, conversation, item.jid);
+            // TODO: For MUC messags, use real jid from message if known
+            avatar_picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(conversation, item.jid);
         }
 
         this.notify["show-skeleton"].connect(update_margin);
@@ -71,9 +72,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         ContentMetaItem? content_meta_item = item as ContentMetaItem;
         if (content_meta_item != null) {
             reactions_controller = new ReactionsController(conversation, content_meta_item.content_item, stream_interactor);
-            reactions_controller.box_activated.connect((widget) => {
-                set_widget(widget, Plugins.WidgetType.GTK4, 3);
-            });
+            reactions_controller.box_activated.connect(on_reaction_box_activated);
             reactions_controller.init();
         }
 
@@ -118,7 +117,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_margin() {
-        avatar_image.visible = show_skeleton;
+        avatar_picture.visible = show_skeleton;
         name_label.visible = show_skeleton;
         time_label.visible = show_skeleton;
         encryption_image.visible = show_skeleton;
@@ -152,7 +151,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (item.encryption != Encryption.NONE && item.encryption != Encryption.UNKNOWN && ci != null) {
             string? icon_name = null;
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
-            icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
+            if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
             encryption_image.visible = true;
         }
@@ -168,6 +167,10 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                 encryption_image.visible = false;
             }
         }
+    }
+
+    private void on_reaction_box_activated(Widget widget) {
+        set_widget(widget, Plugins.WidgetType.GTK4, 3);
     }
 
     private void update_time() {
@@ -270,6 +273,34 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         if (updated_roster_handler_id != 0){
             stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
             updated_roster_handler_id = 0;
+        }
+        reactions_controller = null;
+
+        // Children won't be disposed automatically
+        if (name_label != null) {
+            name_label.unparent();
+            name_label.dispose();
+            name_label = null;
+        }
+        if (time_label != null) {
+            time_label.unparent();
+            time_label.dispose();
+            time_label = null;
+        }
+        if (avatar_picture != null) {
+            avatar_picture.unparent();
+            avatar_picture.dispose();
+            avatar_picture = null;
+        }
+        if (encryption_image != null) {
+            encryption_image.unparent();
+            encryption_image.dispose();
+            encryption_image = null;
+        }
+        if (received_image != null) {
+            received_image.unparent();
+            received_image.dispose();
+            received_image = null;
         }
         base.dispose();
     }

@@ -108,7 +108,7 @@ public class FileWidget : SizeRequestBox {
             } catch (Error e) { }
         }
 
-        if (state != State.DEFAULT) {
+        if (!show_image() && state != State.DEFAULT) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
@@ -121,8 +121,12 @@ public class FileWidget : SizeRequestBox {
 
     private bool show_image() {
         if (file_transfer.mime_type == null) return false;
-        if (file_transfer.state != FileTransfer.State.COMPLETE &&
-                !(file_transfer.direction == FileTransfer.DIRECTION_SENT && file_transfer.state == FileTransfer.State.IN_PROGRESS)) {
+
+        // If the image is being sent by this client, we already have the file
+        bool in_progress_from_us = file_transfer.direction == FileTransfer.DIRECTION_SENT &&
+                file_transfer.ourpart.equals(file_transfer.account.full_jid) &&
+                file_transfer.state == FileTransfer.State.IN_PROGRESS;
+        if (file_transfer.state != FileTransfer.State.COMPLETE && !in_progress_from_us) {
             return false;
         }
 
@@ -134,6 +138,17 @@ public class FileWidget : SizeRequestBox {
             }
         }
         return false;
+    }
+
+    public override void dispose() {
+        if (default_widget_controller != null) default_widget_controller.dispose();
+        default_widget_controller = null;
+        if (content != null) {
+            content.unparent();
+            content.dispose();
+            content = null;
+        }
+        base.dispose();
     }
 }
 

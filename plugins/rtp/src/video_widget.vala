@@ -1,4 +1,5 @@
 private static extern unowned Gst.Video.Info gst_video_frame_get_video_info(Gst.Video.Frame frame);
+[CCode (array_length_type = "size_t", type = "void*")]
 private static extern unowned uint8[] gst_video_frame_get_data(Gst.Video.Frame frame);
 
 public class Dino.Plugins.Rtp.Paintable : Gdk.Paintable, Object {

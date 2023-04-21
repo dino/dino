@@ -132,7 +132,7 @@ public class SelectJidFragment : Gtk.Box {
             } else {
                 via_label.visible = false;
             }
-            image.set_text("?");
+            picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add("+");
         }
     }
 }

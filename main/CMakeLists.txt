@@ -124,8 +124,6 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
-    src/ui/avatar_drawer.vala
-    src/ui/avatar_image.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_view.vala
     src/ui/conversation_view_controller.vala
@@ -209,6 +207,7 @@ SOURCES
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
 
+    src/ui/widgets/avatar_picture.vala
     src/ui/widgets/date_separator.vala
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
@@ -238,6 +237,7 @@ endif(WIN32)
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
+set_target_properties(dino PROPERTIES ENABLE_EXPORTS TRUE)
 
 if(WIN32)
     target_link_libraries(dino -mwindows)

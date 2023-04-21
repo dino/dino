@@ -30,10 +30,10 @@
                                         <property name="margin-start">100</property>
                                         <property name="column-spacing">10</property>
                                         <child>
-                                            <object class="DinoUiAvatarImage" id="avatar">
-                                                <property name="height">50</property>
-                                                <property name="width">50</property>
-                                                <property name="allow_gray">False</property>
+                                            <object class="DinoUiAvatarPicture" id="avatar">
+                                                <property name="height-request">50</property>
+                                                <property name="width-request">50</property>
+                                                <property name="valign">center</property>
                                                 <layout>
                                                     <property name="column">0</property>
                                                     <property name="row">0</property>

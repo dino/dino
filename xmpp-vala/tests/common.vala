@@ -6,6 +6,7 @@ int main(string[] args) {
     TestSuite.get_root().add_suite(new Xmpp.Test.StanzaTest().get_suite());
     TestSuite.get_root().add_suite(new Xmpp.Test.UtilTest().get_suite());
     TestSuite.get_root().add_suite(new Xmpp.Test.JidTest().get_suite());
+    TestSuite.get_root().add_suite(new Xmpp.Test.ColorTest().get_suite());
     return GLib.Test.run();
 }
 
@@ -66,6 +67,22 @@ bool fail_if_not_eq_attr(StanzaAttribute left, StanzaAttribute right, string? re
 
 bool fail_if_not_eq_int(int left, int right, string? reason = null) {
     return fail_if_not(left == right, @"$(reason + ": " ?? "")$left != $right");
+}
+
+private float float_to_accuracy(float f, float accuracy) {
+    return (float) (Math.round(f * Math.pow(10, accuracy)) / Math.pow(10, accuracy));
+}
+
+private float double_to_accuracy(double f, float accuracy) {
+    return (float) (Math.round(f * Math.pow(10, accuracy)) / Math.pow(10, accuracy));
+}
+
+bool fail_if_not_eq_float(float left, float right, float accuracy = 3, string? reason = null) {
+    return fail_if_not(float_to_accuracy(left, accuracy) == float_to_accuracy(right, accuracy), @"$(reason + ": " ?? "")$left != $right");
+}
+
+bool fail_if_not_eq_double(double left, double right, float accuracy = 3, string? reason = null) {
+    return fail_if_not(double_to_accuracy(left, accuracy) == double_to_accuracy(right, accuracy), @"$(reason + ": " ?? "")$left != $right");
 }
 
 bool fail_if_not_eq_str(string? left, string? right, string? reason = null) {

@@ -58,6 +58,10 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                     warning("Received alleged carbon message from %s, ignoring", message.from.to_string());
                     return true;
                 }
+                if (message_node == null) {
+                    warning("Received a carbon message with no message subnode in jabber:client namespace from %s, ignoring", message.from.to_string());
+                    return true;
+                }
                 if (received_node != null) {
                     message.add_flag(new MessageFlag(MessageFlag.TYPE_RECEIVED));
                 } else if (sent_node != null) {

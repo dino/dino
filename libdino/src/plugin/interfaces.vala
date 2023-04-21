@@ -151,8 +151,9 @@ public interface ConversationItemWidgetInterface: Object {
     public abstract void set_widget(Object object, WidgetType type, int priority);
 }
 
-public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);
+public delegate void MessageActionEvoked(Variant? variant);
 public class MessageAction : Object {
+    public string name;
     public bool sensitive = true;
     public string icon_name;
     public string? tooltip;

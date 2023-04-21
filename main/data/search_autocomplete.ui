@@ -3,14 +3,13 @@
     <object class="GtkBox" id="root">
         <property name="orientation">horizontal</property>
         <child>
-            <object class="DinoUiAvatarImage" id="image">
+            <object class="DinoUiAvatarPicture" id="picture">
                 <property name="margin-top">4</property>
                 <property name="margin-bottom">4</property>
                 <property name="margin-start">6</property>
                 <property name="margin-end">6</property>
-                <property name="height">24</property>
-                <property name="width">24</property>
-                <property name="allow_gray">False</property>
+                <property name="height-request">24</property>
+                <property name="width-request">24</property>
             </object>
         </child>
         <child>

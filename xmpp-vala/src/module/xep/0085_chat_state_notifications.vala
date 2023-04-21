@@ -16,14 +16,12 @@ public class Module : XmppStreamModule {
 
     public signal void chat_state_received(XmppStream stream, Jid jid, string state, MessageStanza stanza);
 
-    private SendPipelineListener send_pipeline_listener = new SendPipelineListener();
-
     /**
     * "A message stanza that does not contain standard messaging content [...] SHOULD be a state other than <active/>" (0085, 5.6)
     */
     public void send_state(XmppStream stream, Jid jid, string message_type, string state) {
         MessageStanza message = new MessageStanza() { to=jid, type_=message_type };
-        message.stanza.put_node(new StanzaNode.build(state, NS_URI).add_self_xmlns());
+        add_state_to_message(message, state);
 
         MessageProcessingHints.set_message_hint(message, MessageProcessingHints.HINT_NO_STORE);
 
@@ -32,14 +30,12 @@ public class Module : XmppStreamModule {
 
     public override void attach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
-        stream.get_module(MessageModule.IDENTITY).send_pipeline.connect(send_pipeline_listener);
         stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
     }
 
     public override void detach(XmppStream stream) {
         stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
         stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
-        stream.get_module(MessageModule.IDENTITY).send_pipeline.disconnect(send_pipeline_listener);
     }
 
     public override string get_ns() { return NS_URI; }
@@ -57,19 +53,8 @@ public class Module : XmppStreamModule {
     }
 }
 
-public class SendPipelineListener : StanzaListener<MessageStanza> {
-
-    private string[] after_actions_const = {"MODIFY_BODY"};
-
-    public override string action_group { get { return "ADD_NODES"; } }
-    public override string[] after_actions { get { return after_actions_const; } }
-
-    public override async bool run(XmppStream stream, MessageStanza message) {
-        if (message.body == null) return false;
-        if (message.type_ != MessageStanza.TYPE_CHAT) return false;
-        message.stanza.put_node(new StanzaNode.build(STATE_ACTIVE, NS_URI).add_self_xmlns());
-        return false;
-    }
+public static void add_state_to_message(MessageStanza message, string state) {
+    message.stanza.put_node(new StanzaNode.build(state, NS_URI).add_self_xmlns());
 }
 
 }

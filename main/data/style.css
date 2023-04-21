@@ -31,8 +31,8 @@ window.dino-main .dino-conversation viewport /* Some themes set this */ {
 }
 
 @keyframes highlight {
-    from { background: alpha(@warning_color, 0.5); }
-    to { background: transparent; }
+    from { background-color: alpha(@accent_color, 0.5); }
+    to { background-color: transparent; }
 }
 
 window.dino-main .dino-conversation .highlight-once {
@@ -42,7 +42,7 @@ window.dino-main .dino-conversation .highlight-once {
     animation-name: highlight;
 }
 
-window.dino-main .dino-conversation .message-box.highlight {
+window.dino-main .dino-conversation .message-box.highlight:not(.highlight-once) {
     background: @window_bg_color;
 }
 
@@ -117,6 +117,10 @@ window.dino-main .dino-quote {
 
 window.dino-main .dino-quote:hover {
     background: alpha(@theme_fg_color, 0.08);
+}
+
+picture.avatar {
+    border-radius: 3px;
 }
 
 /* Overlay Toolbar */

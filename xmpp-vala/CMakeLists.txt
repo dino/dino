@@ -106,6 +106,9 @@ SOURCES
     "src/module/xep/0384_omemo/omemo_encryptor.vala"
     "src/module/xep/0384_omemo/omemo_decryptor.vala"
 
+    "src/module/xep/0392_consistent_color/consistent_color.vala"
+    "src/module/xep/0392_consistent_color/hsluv.vala"
+
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"
@@ -160,7 +163,7 @@ DEPENDS
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="xmpp-vala")
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
 add_dependencies(xmpp-vala xmpp-vala-vapi)
-target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
+target_link_libraries(xmpp-vala ${ENGINE_PACKAGES} m)
 set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
 
 install(TARGETS xmpp-vala ${TARGET_INSTALL})
@@ -175,6 +178,7 @@ if(BUILD_TESTS)
 
         "tests/jid.vala"
         "tests/stanza.vala"
+        "tests/color.vala"
         "tests/util.vala"
     CUSTOM_VAPIS
         ${CMAKE_BINARY_DIR}/exports/xmpp-vala_internal.vapi

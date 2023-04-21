@@ -5,9 +5,9 @@
     <property name="column-spacing">7</property>
     <property name="row-spacing">2</property>
     <child>
-      <object class="DinoUiAvatarImage" id="avatar_image">
-        <property name="height">35</property>
-        <property name="width">35</property>
+      <object class="DinoUiAvatarPicture" id="avatar_picture">
+        <property name="height-request">35</property>
+        <property name="width-request">35</property>
         <property name="valign">start</property>
         <property name="margin-top">2</property>
         <layout>

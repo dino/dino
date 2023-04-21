@@ -12,7 +12,7 @@ namespace Dino.Ui {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_row.ui")]
 public class ConversationSelectorRow : ListBoxRow {
 
-    [GtkChild] protected unowned AvatarImage image;
+    [GtkChild] protected unowned AvatarPicture picture;
     [GtkChild] protected unowned Label name_label;
     [GtkChild] protected unowned Label time_label;
     [GtkChild] protected unowned Label nick_label;
@@ -101,7 +101,7 @@ public class ConversationSelectorRow : ListBoxRow {
         x_button.clicked.connect(() => {
             stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
         });
-        image.set_conversation(stream_interactor, conversation);
+        picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
         conversation.notify["read-up-to-item"].connect(() => update_read());
         conversation.notify["pinned"].connect(() => { update_pinned_icon(); });
 
@@ -225,7 +225,21 @@ public class ConversationSelectorRow : ListBoxRow {
         label.attributes = copy;
     }
 
+    private bool update_read_pending = false;
+    private bool update_read_pending_force = false;
     protected void update_read(bool force_update = false) {
+        if (force_update) update_read_pending_force = true;
+        if (update_read_pending) return;
+        update_read_pending = true;
+        Idle.add(() => {
+            update_read_pending = false;
+            update_read_pending_force = false;
+            update_read_idle(update_read_pending_force);
+            return Source.REMOVE;
+        }, Priority.LOW);
+    }
+
+    private void update_read_idle(bool force_update = false) {
         int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
         if (num_unread == current_num_unread && !force_update) return;
         num_unread = current_num_unread;

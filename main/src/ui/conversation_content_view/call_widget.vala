@@ -94,15 +94,15 @@ namespace Dino.Ui {
             }
 
             foreach (Jid counterpart in call.counterparts) {
-                AvatarImage image = new AvatarImage() { force_gray=true, margin_top=2 };
-                image.set_conversation_participant(stream_interactor, conversation, counterpart.bare_jid);
-                multiparty_peer_box.append(image);
-                multiparty_peer_widgets.add(image);
+                AvatarPicture picture = new AvatarPicture() { margin_top=2 };
+                picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(conversation, counterpart.bare_jid);
+                multiparty_peer_box.append(picture);
+                multiparty_peer_widgets.add(picture);
             }
-            AvatarImage image2 = new AvatarImage() { force_gray=true, margin_top=2 };
-            image2.set_conversation_participant(stream_interactor, conversation, call.account.bare_jid);
-            multiparty_peer_box.append(image2);
-            multiparty_peer_widgets.add(image2);
+            AvatarPicture picture2 = new AvatarPicture() { margin_top=2 };
+            picture2.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(conversation, call.account.bare_jid);
+            multiparty_peer_box.append(picture2);
+            multiparty_peer_widgets.add(picture2);
 
             outer_additional_box.add_css_class("multiparty-participants");
 

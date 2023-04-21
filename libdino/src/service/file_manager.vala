@@ -283,8 +283,13 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             file_transfer.direction = from.equals(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
         } else {
-            file_transfer.ourpart = conversation.account.full_jid;
-            file_transfer.direction = from.equals_bare(file_transfer.ourpart) ? FileTransfer.DIRECTION_SENT : FileTransfer.DIRECTION_RECEIVED;
+            if (from.equals_bare(conversation.account.bare_jid)) {
+                file_transfer.ourpart = from;
+                file_transfer.direction = FileTransfer.DIRECTION_SENT;
+            } else {
+                file_transfer.ourpart = conversation.account.full_jid;
+                file_transfer.direction = FileTransfer.DIRECTION_RECEIVED;
+            }
         }
         file_transfer.time = time;
         file_transfer.local_time = local_time;

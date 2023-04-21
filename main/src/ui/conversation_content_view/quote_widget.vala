@@ -61,13 +61,13 @@ namespace Dino.Ui.Quote {
 
     public Widget get_widget(Model model) {
         Builder builder = new Builder.from_resource("/im/dino/Dino/quote.ui");
-        AvatarImage avatar = (AvatarImage) builder.get_object("avatar");
+        AvatarPicture avatar = (AvatarPicture) builder.get_object("avatar");
         Label author = (Label) builder.get_object("author");
         Label time = (Label) builder.get_object("time");
         Label message = (Label) builder.get_object("message");
         Button abort_button = (Button) builder.get_object("abort-button");
 
-        avatar.set_conversation_participant(model.stream_interactor, model.conversation, model.author_jid);
+        avatar.model = new ViewModel.CompatAvatarPictureModel(model.stream_interactor).add_participant(model.conversation, model.author_jid);
         model.bind_property("display-name", author, "label", BindingFlags.SYNC_CREATE);
         model.bind_property("display-time", time, "label", BindingFlags.SYNC_CREATE);
         model.bind_property("message", message, "label", BindingFlags.SYNC_CREATE);

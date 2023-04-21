@@ -10,7 +10,7 @@ namespace Dino.Ui.ContactDetails {
 [GtkTemplate (ui = "/im/dino/Dino/contact_details_dialog.ui")]
 public class Dialog : Gtk.Dialog {
 
-    [GtkChild] public unowned AvatarImage avatar;
+    [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Util.EntryLabelHybrid name_hybrid;
     [GtkChild] public unowned Label name_label;
     [GtkChild] public unowned Label jid_label;
@@ -87,7 +87,7 @@ public class Dialog : Gtk.Dialog {
         }
         jid_label.label = conversation.counterpart.to_string();
         account_label.label = "via " + conversation.account.bare_jid.to_string();
-        avatar.set_conversation(stream_interactor, conversation);
+        avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
     }
 
     private void add_entry(string category, string label, string? description, Object wo) {
