@@ -392,17 +392,13 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
     text-shadow: 0 0 2px black;
 }
 
-.dino-call-window .call-header-background {
+.dino-call-window .participant-header-bar {
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0));
     border: 0;
     border-radius: 0;
 }
 
-.dino-call-window .participant-header-bar button {
-    background: none;
-}
-
-.dino-call-window .participant-header-bar button:hover {
+.dino-call-window .participant-header-bar button:hover:not(.close) {
     background: rgba(255,255,255,0.15);
     border-color: rgba(255,255,255,0);
     box-shadow: none;

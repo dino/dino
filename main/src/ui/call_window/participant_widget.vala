@@ -74,14 +74,11 @@ namespace Dino.Ui {
 
             header_bar.show_title_buttons = is_highest_row;
             if (is_highest_row) {
-                header_bar.add_css_class("call-header-background");
                 Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
                 if (gtk_settings != null) {
                     string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
                     header_bar.decoration_layout = (is_start ? buttons[0] : "") + ":" + (is_end && buttons.length == 2 ? buttons[1] : "");
                 }
-            } else {
-                header_bar.remove_css_class("call-header-background");
             }
             reveal_or_hide_controls();
         }
