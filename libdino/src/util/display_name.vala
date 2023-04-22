@@ -34,6 +34,7 @@ namespace Dino {
             if (self_word != null && (account.alias == null || account.alias.length == 0)) {
                 return self_word;
             }
+            if (account.alias != null && account.alias.length == 0) return null;
             return account.alias;
         }
         Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
