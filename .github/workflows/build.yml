@@ -37,3 +37,4 @@ jobs:
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
         with:
           manifest-path: im.dino.Dino.json
+          build-bundle: false
