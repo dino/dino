@@ -39,6 +39,8 @@ public class View : Box {
         chooser.emoji_picked.connect((emoji) => {
             chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
         });
+        chooser.closed.connect(do_focus);
+
         emoji_button.set_popover(chooser);
 
         file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
