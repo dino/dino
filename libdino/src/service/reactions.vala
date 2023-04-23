@@ -64,7 +64,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
             // The MUC server needs to 1) support stable stanza ids 2) either support occupant ids or be a private room (where we know real jids)
             var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
             bool server_supports_sid = (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
+                    (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
             if (!server_supports_sid) return false;
 
             bool? supports_occupant_ids = entity_info.has_feature_cached(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
