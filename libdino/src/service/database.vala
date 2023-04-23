@@ -17,6 +17,7 @@ public class Database : Qlite.Database {
         public Column<string> alias = new Column.Text("alias");
         public Column<bool> enabled = new Column.BoolInt("enabled");
         public Column<string> roster_version = new Column.Text("roster_version") { min_version=2 };
+        // no longer used. all usages already removed. remove db column at some point.
         public Column<long> mam_earliest_synced = new Column.Long("mam_earliest_synced") { min_version=4 };
 
         internal AccountTable(Database db) {
