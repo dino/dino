@@ -7,7 +7,7 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         public bool use_ns2_extended = false;
 
         public string query_id = Xmpp.random_uuid();
-        public Jid mam_server { get; set; }
+        public Jid? mam_server { get; set; }
         public Jid? with { get; set; }
         // "The 'start' field is used to filter out messages before a certain date/time."
         public DateTime? start { get; set; }
@@ -16,13 +16,13 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         public string? start_id { get; set; }
         public string? end_id { get; set; }
 
-        public MamQueryParams.query_latest(Jid mam_server, DateTime? latest_known_time, string? latest_known_id) {
+        public MamQueryParams.query_latest(Jid? mam_server, DateTime? latest_known_time, string? latest_known_id) {
             this.mam_server = mam_server;
             this.start = latest_known_time;
             this.start_id = latest_known_id;
         }
 
-        public MamQueryParams.query_between(Jid mam_server,
+        public MamQueryParams.query_between(Jid? mam_server,
                                             DateTime? earliest_time, string? earliest_id,
                                             DateTime? latest_time, string? latest_id) {
             this.mam_server = mam_server;
@@ -32,7 +32,7 @@ namespace Xmpp.MessageArchiveManagement.V2 {
             this.end_id = latest_id;
         }
 
-        public MamQueryParams.query_before(Jid mam_server, DateTime? earliest_time, string? earliest_id) {
+        public MamQueryParams.query_before(Jid? mam_server, DateTime? earliest_time, string? earliest_id) {
             this.mam_server = mam_server;
             this.end = earliest_time;
             this.end_id = earliest_id;

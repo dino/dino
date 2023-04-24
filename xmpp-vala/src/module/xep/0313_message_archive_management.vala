@@ -78,7 +78,10 @@ public class Module : XmppStreamModule {
         flag.active_query_ids.add(query_id);
 
         // Build and send query
-        Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=mam_server };
+        Iq.Stanza iq = new Iq.Stanza.set(query_node);
+        if (mam_server != null) {
+            iq.to = mam_server;
+        }
 
         Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
 

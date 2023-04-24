@@ -106,7 +106,7 @@ public class MucManager : StreamInteractionModule, Object {
                 var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
                 if (conversation == null) {
                     // We never joined the conversation before, just fetch the latest MAM page
-                    yield history_sync.fetch_latest_page(account, jid.bare_jid, null, new DateTime.from_unix_utc(0), cancellable);
+                    yield history_sync.fetch_latest_page(account, jid.bare_jid, null, null, new DateTime.from_unix_utc(0), cancellable);
                 } else {
                     // Fetch everything up to the last time the user actively joined
                     if (!mucs_sync_cancellables.has_key(account)) {
@@ -114,7 +114,7 @@ public class MucManager : StreamInteractionModule, Object {
                     }
                     if (!mucs_sync_cancellables[account].has_key(jid.bare_jid)) {
                         mucs_sync_cancellables[account][jid.bare_jid] = new Cancellable();
-                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], conversation.active_last_changed, (_, res) => {
+                        history_sync.fetch_everything.begin(account, jid.bare_jid, null, mucs_sync_cancellables[account][jid.bare_jid], conversation.active_last_changed, false, (_, res) => {
                             history_sync.fetch_everything.end(res);
                             mucs_sync_cancellables[account].unset(jid.bare_jid);
                         });

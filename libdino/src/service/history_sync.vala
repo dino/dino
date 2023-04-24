@@ -10,7 +10,7 @@ public class Dino.HistorySync {
     private StreamInteractor stream_interactor;
     private Database db;
 
-    public HashMap<Account, HashMap<Jid, int>> current_catchup_id = new HashMap<Account, HashMap<Jid, int>>(Account.hash_func, Account.equals_func);
+    public HashMap<Account, HashMap<string, int>> current_catchup_id = new HashMap<Account, HashMap<string, int>>(Account.hash_func, Account.equals_func);
     public WeakMap<Account, XmppStream> sync_streams = new WeakMap<Account, XmppStream>(Account.hash_func, Account.equals_func);
     public HashMap<Account, HashMap<Jid, Cancellable>> cancellables = new HashMap<Account, HashMap<Jid, Cancellable>>(Account.hash_func, Account.equals_func);
     public HashMap<Account, HashMap<string, DateTime>> mam_times = new HashMap<Account, HashMap<string, DateTime>>();
@@ -52,13 +52,13 @@ public class Dino.HistorySync {
     public void update_latest_db_range(Account account, Xmpp.MessageStanza message_stanza) {
         Jid mam_server = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(message_stanza.from.bare_jid, account) ? message_stanza.from.bare_jid : account.bare_jid;
 
-        if (!current_catchup_id.has_key(account) || !current_catchup_id[account].has_key(mam_server)) return;
+        if (!current_catchup_id.has_key(account) || !current_catchup_id[account].has_key(mam_server.to_string())) return;
 
         string? stanza_id = UniqueStableStanzaIDs.get_stanza_id(message_stanza, mam_server);
         if (stanza_id == null) return;
 
         db.mam_catchup.update()
-                .with(db.mam_catchup.id, "=", current_catchup_id[account][mam_server])
+                .with(db.mam_catchup.id, "=", current_catchup_id[account][mam_server.to_string()])
                 .set(db.mam_catchup.to_time, (long)new DateTime.now_utc().to_unix())
                 .set(db.mam_catchup.to_id, stanza_id)
                 .perform();
@@ -122,22 +122,43 @@ public class Dino.HistorySync {
         }
     }
 
-    public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
-        debug("Fetch everything for %s %s", mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
-        RowOption latest_row_opt = db.mam_catchup.select()
-                .with(db.mam_catchup.account_id, "=", account.id)
-                .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
-                .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
-                .order_by(db.mam_catchup.to_time, "DESC")
-                .single().row();
-        Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
+    private string jids_to_string(Jid? mam_server, Jid? with) {
+        if (mam_server == null) {
+            assert(with != null);
+            return with.to_string();
+        } else {
+            return mam_server.to_string();
+        }
+    }
 
-        Row? new_row = yield fetch_latest_page(account, mam_server, latest_row, until_earliest_time, cancellable);
+    public async void fetch_everything(Account account, Jid? mam_server, Jid? with, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0), bool force = false) {
+        string target_jid = jids_to_string(mam_server, with);
+
+        debug("Fetch everything for %s %s", target_jid, until_earliest_time != null ? @"(until $until_earliest_time)" : "");
+        Row? latest_row = null;
+        if (!force) {
+            RowOption latest_row_opt = db.mam_catchup.select()
+                    .with(db.mam_catchup.account_id, "=", account.id)
+                    .with(db.mam_catchup.server_jid, "=", target_jid)
+                    .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
+                    .order_by(db.mam_catchup.to_time, "DESC")
+                    .single().row();
+            latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
+        }
+
+        Row? new_row = yield fetch_latest_page(account, mam_server, with, latest_row, until_earliest_time, cancellable);
+
+        if (force) {
+            if (new_row != null) {
+                yield fetch_before_range(account, mam_server, with, new_row, until_earliest_time);
+            }
+            return;
+        }
 
         if (new_row != null) {
-            current_catchup_id[account][mam_server] = new_row[db.mam_catchup.id];
+            current_catchup_id[account][target_jid] = new_row[db.mam_catchup.id];
         } else if (latest_row != null) {
-            current_catchup_id[account][mam_server] = latest_row[db.mam_catchup.id];
+            current_catchup_id[account][target_jid] = latest_row[db.mam_catchup.id];
         }
 
         // Set the previous and current row
@@ -150,7 +171,7 @@ public class Dino.HistorySync {
             current_row = latest_row;
             RowOption previous_row_opt = db.mam_catchup.select()
                     .with(db.mam_catchup.account_id, "=", account.id)
-                    .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
+                    .with(db.mam_catchup.server_jid, "=", target_jid)
                     .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
                     .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
                     .order_by(db.mam_catchup.to_time, "DESC")
@@ -159,16 +180,16 @@ public class Dino.HistorySync {
         }
 
         // Fetch messages between two db ranges and merge them
-        while (current_row != null && previous_row != null) {
+        while (current_row != null && (force || previous_row != null)) {
             if (current_row[db.mam_catchup.from_end]) return;
 
-            debug("[%s] Fetching between ranges %s - %s", mam_server.to_string(), previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
-            current_row = yield fetch_between_ranges(account, mam_server, previous_row, current_row, cancellable);
+            debug("[%s] Fetching between ranges %s - %s", target_jid, previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
+            current_row = yield fetch_between_ranges(account, mam_server, with, previous_row, current_row, cancellable);
             if (current_row == null) return;
 
             RowOption previous_row_opt = db.mam_catchup.select()
                     .with(db.mam_catchup.account_id, "=", account.id)
-                    .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
+                    .with(db.mam_catchup.server_jid, "=", target_jid)
                     .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
                     .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
                     .order_by(db.mam_catchup.to_time, "DESC")
@@ -182,12 +203,14 @@ public class Dino.HistorySync {
         // For now, don't query if we are within a week of until_earliest_time
         if (until_earliest_time != null &&
                 current_row[db.mam_catchup.from_time] > until_earliest_time.add(-TimeSpan.DAY * 7).to_unix()) return;
-        yield fetch_before_range(account, mam_server, current_row, until_earliest_time);
+        yield fetch_before_range(account, mam_server, with, current_row, until_earliest_time);
     }
 
     // Fetches the latest page (up to previous db row). Extends the previous db row if it was reached, creates a new row otherwise.
-    public async Row? fetch_latest_page(Account account, Jid mam_server, Row? latest_row, DateTime? until_earliest_time, Cancellable? cancellable = null) {
-        debug("[%s | %s] Fetching latest page", account.bare_jid.to_string(), mam_server.to_string());
+    public async Row? fetch_latest_page(Account account, Jid? mam_server, Jid? with, Row? latest_row, DateTime? until_earliest_time, Cancellable? cancellable = null) {
+        string target_jid = jids_to_string(mam_server, with);
+
+        debug("[%s | %s] Fetching latest page", account.bare_jid.to_string(), target_jid);
 
         int latest_row_id = -1;
         DateTime latest_message_time = until_earliest_time;
@@ -206,9 +229,12 @@ public class Dino.HistorySync {
         }
 
         var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, latest_message_time, latest_message_id);
+        if (with != null) {
+            query_params.with = with;
+        }
 
         PageRequestResult page_result = yield get_mam_page(account, query_params, null, cancellable);
-        debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
+        debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), target_jid, page_result.page_result.to_string());
 
         if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) {
             return null;
@@ -241,7 +267,7 @@ public class Dino.HistorySync {
         }
 
         // Either we need to fetch more pages or this is the first db entry ever
-        debug("[%s | %s] Creating new db range for latest page", account.bare_jid.to_string(), mam_server.to_string());
+        debug("[%s | %s] Creating new db range for latest page", account.bare_jid.to_string(), target_jid);
 
         string from_id = page_result.query_result.first;
         string to_id = page_result.query_result.last;
@@ -256,7 +282,7 @@ public class Dino.HistorySync {
 
         int new_row_id = (int) db.mam_catchup.insert()
                 .value(db.mam_catchup.account_id, account.id)
-                .value(db.mam_catchup.server_jid, mam_server.to_string())
+                .value(db.mam_catchup.server_jid, target_jid)
                 .value(db.mam_catchup.from_id, from_id)
                 .value(db.mam_catchup.from_time, from_time)
                 .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages)
@@ -270,20 +296,25 @@ public class Dino.HistorySync {
      ** Merges the `earlier_range` db row into the `later_range` db row.
      ** @return The resulting range comprising `earlier_range`, `later_rage`, and everything in between. null if fetching/merge failed.
      **/
-    private async Row? fetch_between_ranges(Account account, Jid mam_server, Row earlier_range, Row later_range, Cancellable? cancellable = null) {
+    private async Row? fetch_between_ranges(Account account, Jid? mam_server, Jid? with, Row earlier_range, Row later_range, Cancellable? cancellable = null) {
+        string target_jid = jids_to_string(mam_server, with);
+
         int later_range_id = (int) later_range[db.mam_catchup.id];
         DateTime earliest_time = new DateTime.from_unix_utc(earlier_range[db.mam_catchup.to_time]);
         DateTime latest_time = new DateTime.from_unix_utc(later_range[db.mam_catchup.from_time]);
-        debug("[%s | %s] Fetching between %s (%s) and %s (%s)", account.bare_jid.to_string(), mam_server.to_string(), earliest_time.to_string(), earlier_range[db.mam_catchup.to_id], latest_time.to_string(), later_range[db.mam_catchup.from_id]);
+        debug("[%s | %s] Fetching between %s (%s) and %s (%s)", account.bare_jid.to_string(), target_jid, earliest_time.to_string(), earlier_range[db.mam_catchup.to_id], latest_time.to_string(), later_range[db.mam_catchup.from_id]);
 
         var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_between(mam_server,
             earliest_time, earlier_range[db.mam_catchup.to_id],
             latest_time, later_range[db.mam_catchup.from_id]);
+        if (with != null) {
+            query_params.with = with;
+        }
 
         PageRequestResult page_result = yield fetch_query(account, query_params, later_range_id, cancellable);
 
         if (page_result.page_result == PageResult.TargetReached || page_result.page_result == PageResult.NoMoreMessages) {
-            debug("[%s | %s] Merging range %i into %i", account.bare_jid.to_string(), mam_server.to_string(), earlier_range[db.mam_catchup.id], later_range_id);
+            debug("[%s | %s] Merging range %i into %i", account.bare_jid.to_string(), target_jid, earlier_range[db.mam_catchup.id], later_range_id);
             // Merge earlier range into later one.
             db.mam_catchup.update()
                 .with(db.mam_catchup.id, "=", later_range_id)
@@ -301,10 +332,12 @@ public class Dino.HistorySync {
         return null;
     }
 
-    private async void fetch_before_range(Account account, Jid mam_server, Row range, DateTime? until_earliest_time, Cancellable? cancellable = null) {
+    private async void fetch_before_range(Account account, Jid? mam_server, Jid? with, Row range, DateTime? until_earliest_time, Cancellable? cancellable = null) {
+        string target_jid = jids_to_string(mam_server, with);
+
         DateTime latest_time = new DateTime.from_unix_utc(range[db.mam_catchup.from_time]);
         string latest_id = range[db.mam_catchup.from_id];
-        debug("[%s | %s] Fetching before range < %s, %s", account.bare_jid.to_string(), mam_server.to_string(), latest_time.to_string(), latest_id);
+        debug("[%s | %s] Fetching before range < %s, %s", account.bare_jid.to_string(), target_jid, latest_time.to_string(), latest_id);
 
         Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params;
         if (until_earliest_time == null) {
@@ -315,6 +348,9 @@ public class Dino.HistorySync {
                     until_earliest_time, null,
                     latest_time, latest_id
             );
+        }
+        if (with != null) {
+            query_params.with = with;
         }
         yield fetch_query(account, query_params, range[db.mam_catchup.id], cancellable);
     }
@@ -452,7 +488,7 @@ public class Dino.HistorySync {
 
         stream_interactor.connection_manager.stream_attached_modules.connect((account, stream) => {
             if (!current_catchup_id.has_key(account)) {
-                current_catchup_id[account] = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
+                current_catchup_id[account] = new HashMap<string, int>();
             } else {
                 current_catchup_id[account].clear();
             }
@@ -479,7 +515,7 @@ public class Dino.HistorySync {
             cancellables[account][account.bare_jid].cancel();
         }
         cancellables[account][account.bare_jid] = new Cancellable();
-        fetch_everything.begin(account, account.bare_jid, cancellables[account][account.bare_jid], new DateTime.from_unix_utc(0), (_, res) => {
+        fetch_everything.begin(account, account.bare_jid, null, cancellables[account][account.bare_jid], new DateTime.from_unix_utc(0), false, (_, res) => {
             fetch_everything.end(res);
             cancellables[account].unset(account.bare_jid);
         });
