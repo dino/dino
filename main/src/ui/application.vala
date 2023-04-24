@@ -10,6 +10,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+    private const string[] KEY_COMBINATION_SHOW_KEYBOARD_SHORTCUTS = {"<Ctrl>question", null};
 
     private MainWindow window;
     public MainWindowController controller;
@@ -206,6 +207,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             dialog.present();
         });
         add_action(open_shortcuts_action);
+        set_accels_for_action("app.open_shortcuts", KEY_COMBINATION_SHOW_KEYBOARD_SHORTCUTS);
 
         SimpleAction accept_call_action = new SimpleAction("accept-call", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
         accept_call_action.activate.connect((variant) => {
