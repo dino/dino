@@ -10,8 +10,9 @@
         "--socket=wayland",
         "--socket=pulseaudio",
         "--socket=gpg-agent",
+        "--filesystem=xdg-run/pipewire-0",
         "--share=network",
-        "--device=all",
+        "--device=dri",
         "--talk-name=org.freedesktop.Notifications"
     ],
     "modules": [

@@ -428,11 +428,11 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 
         if (media == "video") {
             // Pick best FPS
-            int max_fps = 0;
+            int max_fps = -1;
             Device? max_fps_device = null;
             foreach (Device device in devices) {
                 int fps = get_max_fps(device);
-                if (fps > max_fps) {
+                if (fps > max_fps || max_fps_device == null) {
                     max_fps = fps;
                     max_fps_device = device;
                 }
