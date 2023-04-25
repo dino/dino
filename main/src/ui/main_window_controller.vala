@@ -13,6 +13,7 @@ public class MainWindowController : Object {
     private Application app;
     private Database db;
     private MainWindow window;
+    private const string[] KEY_COMBINATION_CLOSE_CONVERSATION = {"<Ctrl>W", null};
 
     private ConversationViewController conversation_view_controller;
 
@@ -37,6 +38,14 @@ public class MainWindowController : Object {
             window.conversation_view.conversation_frame.initialize_around_message(conversation, content_item);
         });
         app.add_action(jump_to_conversatio_message_action);
+
+        SimpleAction close_conv_action = new SimpleAction("close_conv", null);
+        close_conv_action.activate.connect(() => { 
+          stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+        });
+        app.add_action(close_conv_action);
+        app.set_accels_for_action("app.close_conv", KEY_COMBINATION_CLOSE_CONVERSATION);
+
 
     }
 
