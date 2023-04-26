@@ -27,7 +27,7 @@ public class HistoryProvider : Plugins.ContactDetailsProvider, Object {
 
         string FORCE_RESYNC_LABEL = _("Force resync");
         string FORCE_RESYNC_DESC_LABEL = _("Fetch a complete MAM history for this chat");
-        entity_info.has_feature.begin(conversation.account, conversation.counterpart, Xmpp.MessageArchiveManagement.NS_URI_2, (_, res) => {
+        entity_info.has_feature.begin(conversation.account, conversation.counterpart, Xmpp.MessageArchiveManagement.NS_URI, (_, res) => {
             bool can_do_mam = entity_info.has_feature.end(res);
             if (can_do_mam) {
                 Button force_resync_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
