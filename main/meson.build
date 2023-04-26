@@ -38,6 +38,7 @@ sources = files(
     'src/ui/chat_input/view.vala',
     'src/ui/contact_details/blocking_provider.vala',
     'src/ui/contact_details/dialog.vala',
+    'src/ui/contact_details/history_provider.vala',
     'src/ui/contact_details/muc_config_form_provider.vala',
     'src/ui/contact_details/permissions_provider.vala',
     'src/ui/contact_details/settings_provider.vala',
