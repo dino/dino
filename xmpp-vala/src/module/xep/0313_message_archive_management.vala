@@ -4,8 +4,6 @@ using Xmpp.Xep;
 namespace Xmpp.MessageArchiveManagement {
 
 public const string NS_URI = "urn:xmpp:mam:2";
-public const string NS_URI_2 = "urn:xmpp:mam:2";
-public const string NS_URI_1 = "urn:xmpp:mam:1";
 
 public class QueryResult {
     public bool error { get; set; default=false; }
@@ -36,43 +34,33 @@ public class Module : XmppStreamModule {
 
     private async void query_availability(XmppStream stream) {
         Jid own_jid = stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid;
-
-        bool ver_2_available = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, own_jid, NS_URI);
-        if (ver_2_available) {
-            stream.add_flag(new Flag(NS_URI));
+        bool mam_available = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, own_jid, NS_URI);
+        if (mam_available) {
             feature_available(stream);
-            return;
-        }
-
-        bool ver_1_available = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, own_jid, NS_URI_1);
-        if (ver_1_available) {
-            stream.add_flag(new Flag(NS_URI_1));
-            feature_available(stream);
-            return;
         }
     }
 }
 
-    internal StanzaNode create_base_query(XmppStream stream, string ns, string? queryid, Gee.List<DataForms.DataForm.Field> fields) {
+    internal StanzaNode create_base_query(XmppStream stream, string? queryid, Gee.List<DataForms.DataForm.Field> fields) {
         DataForms.DataForm data_form = new DataForms.DataForm();
 
         DataForms.DataForm.HiddenField form_type_field = new DataForms.DataForm.HiddenField() { var="FORM_TYPE" };
-        form_type_field.set_value_string(NS_VER(stream));
+        form_type_field.set_value_string(NS_URI);
         data_form.add_field(form_type_field);
 
         foreach (var field in fields) {
             data_form.add_field(field);
         }
 
-        StanzaNode query_node = new StanzaNode.build("query", NS_VER(stream)).add_self_xmlns().put_node(data_form.get_submit_node());
+        StanzaNode query_node = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(data_form.get_submit_node());
         query_node.put_attribute("queryid", queryid);
         return query_node;
     }
 
-    internal async QueryResult query_archive(XmppStream stream, string ns, Jid? mam_server, StanzaNode query_node, Cancellable? cancellable = null) {
+    internal async QueryResult query_archive(XmppStream stream, Jid? mam_server, StanzaNode query_node, Cancellable? cancellable = null) {
 
         var res = new QueryResult();
-        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        Flag flag = Flag.get_flag(stream);
         string? query_id = query_node.get_attribute("queryid");
         if (flag == null || query_id == null) { res.error = true; return res; }
         flag.active_query_ids.add(query_id);
@@ -86,7 +74,7 @@ public class Module : XmppStreamModule {
         Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
 
         // Parse the response IQ into a QueryResult.
-        StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", ns);
+        StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", NS_URI);
         if (fin_node == null) { res.malformed = true; return res; }
 
         StanzaNode? rsm_node = fin_node.get_subnode("set", Xmpp.ResultSetManagement.NS_URI);
@@ -95,7 +83,7 @@ public class Module : XmppStreamModule {
         res.first = rsm_node.get_deep_string_content("first");
         res.last = rsm_node.get_deep_string_content("last");
         if ((res.first == null) != (res.last == null)) { res.malformed = true; return res; }
-        res.complete = fin_node.get_attribute_bool("complete", false, ns);
+        res.complete = fin_node.get_attribute_bool("complete", false, NS_URI);
 
         Idle.add(() => {
             flag.active_query_ids.remove(query_id);
@@ -113,15 +101,14 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(XmppStream stream, MessageStanza message) {
-        Flag? flag = stream.get_flag(Flag.IDENTITY);
-        if (flag == null) return false;
+        Flag flag = Flag.get_flag(stream);
 
-        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", StanzaForwarding.NS_URI + ":forwarded", Xmpp.NS_URI + ":message");
+        StanzaNode? message_node = message.stanza.get_deep_subnode(NS_URI + ":result", StanzaForwarding.NS_URI + ":forwarded", Xmpp.NS_URI + ":message");
         if (message_node != null) {
-            StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_VER(stream) + ":result", StanzaForwarding.NS_URI + ":forwarded", DelayedDelivery.NS_URI + ":delay");
+            StanzaNode? forward_node = message.stanza.get_deep_subnode(NS_URI + ":result", StanzaForwarding.NS_URI + ":forwarded", DelayedDelivery.NS_URI + ":delay");
             DateTime? datetime = DelayedDelivery.get_time_for_node(forward_node);
-            string? mam_id = message.stanza.get_deep_attribute(NS_VER(stream) + ":result", NS_VER(stream) + ":id");
-            string? query_id = message.stanza.get_deep_attribute(NS_VER(stream) + ":result", NS_VER(stream) + ":queryid");
+            string? mam_id = message.stanza.get_deep_attribute(NS_URI + ":result", NS_URI + ":id");
+            string? query_id = message.stanza.get_deep_attribute(NS_URI + ":result", NS_URI + ":queryid");
 
             if (query_id == null) {
                 warning("Received MAM message without queryid from %s, ignoring", message.from.to_string());
@@ -157,10 +144,14 @@ public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "message_archive_management");
     public bool cought_up { get; set; default=false; }
     public Gee.Set<string> active_query_ids { get; set; default = new HashSet<string>(); }
-    public string ns_ver;
 
-    public Flag(string ns_ver) {
-        this.ns_ver = ns_ver;
+    public static Flag get_flag(XmppStream stream) {
+        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        if (flag == null) {
+            flag = new Flag();
+            stream.add_flag(flag);
+        }
+        return flag;
     }
 
     public override string get_ns() { return NS_URI; }
@@ -186,10 +177,6 @@ public class MessageFlag : Xmpp.MessageFlag {
 
     public override string get_ns() { return NS_URI; }
     public override string get_id() { return ID; }
-}
-
-private static string NS_VER(XmppStream stream) {
-    return stream.get_flag(Flag.IDENTITY).ns_ver;
 }
 
 }

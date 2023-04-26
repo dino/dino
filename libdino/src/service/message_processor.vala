@@ -38,7 +38,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         received_pipeline.connect(new FilterMessageListener());
         received_pipeline.connect(new StoreMessageListener(this, stream_interactor));
         received_pipeline.connect(new StoreContentItemListener(stream_interactor));
-        received_pipeline.connect(new MamMessageListener(stream_interactor));
 
         stream_interactor.account_added.connect(on_account_added);
 
@@ -170,19 +169,21 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         XmppStream? stream = stream_interactor.get_stream(account);
         Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
-        Xmpp.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xmpp.MessageArchiveManagement.Flag.IDENTITY) : null;
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-        if (mam_message_flag != null && mam_flag != null && mam_flag.ns_ver == Xmpp.MessageArchiveManagement.NS_URI_2 && mam_message_flag.mam_id != null) {
-            new_message.server_id = mam_message_flag.mam_id;
+        if (mam_message_flag != null && mam_message_flag.mam_id != null) {
+            bool server_does_mam = entity_info.has_feature_cached(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI);
+            if (server_does_mam) {
+                new_message.server_id = mam_message_flag.mam_id;
+            }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
             bool server_supports_sid = (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
+                    (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, new_message.counterpart.bare_jid);
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
             bool server_supports_sid = (yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI_2));
+                    (yield entity_info.has_feature(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, account.bare_jid);
             }
@@ -359,29 +360,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
             if (message.body == null) return true;
             stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
-            return false;
-        }
-    }
-
-    private class MamMessageListener : MessageListener {
-
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE" };
-        public override string action_group { get { return "MAM_NODE"; } }
-        public override string[] after_actions { get { return after_actions_const; } }
-
-        private StreamInteractor stream_interactor;
-
-        public MamMessageListener(StreamInteractor stream_interactor) {
-            this.stream_interactor = stream_interactor;
-        }
-
-        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            bool is_mam_message = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
-            XmppStream? stream = stream_interactor.get_stream(conversation.account);
-            Xmpp.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xmpp.MessageArchiveManagement.Flag.IDENTITY) : null;
-            if (is_mam_message || (mam_flag != null && mam_flag.cought_up == true)) {
-                conversation.account.mam_earliest_synced = message.local_time;
-            }
             return false;
         }
     }

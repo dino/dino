@@ -90,11 +90,9 @@ public class Dino.HistorySync {
         if (!is_muc_mam && !from_our_server) return;
 
         // Get the server time of the message and store it in `mam_times`
-        Xmpp.MessageArchiveManagement.Flag? mam_flag = stream != null ? stream.get_flag(Xmpp.MessageArchiveManagement.Flag.IDENTITY) : null;
-        if (mam_flag == null) return;
-        string? id = message.stanza.get_deep_attribute(mam_flag.ns_ver + ":result", "id");
+        string? id = message.stanza.get_deep_attribute(Xmpp.MessageArchiveManagement.NS_URI + ":result", "id");
         if (id == null) return;
-        StanzaNode? delay_node = message.stanza.get_deep_subnode(mam_flag.ns_ver + ":result", StanzaForwarding.NS_URI + ":forwarded", DelayedDelivery.NS_URI + ":delay");
+        StanzaNode? delay_node = message.stanza.get_deep_subnode(Xmpp.MessageArchiveManagement.NS_URI + ":result", StanzaForwarding.NS_URI + ":forwarded", DelayedDelivery.NS_URI + ":delay");
         if (delay_node == null) {
             warning("MAM result did not contain delayed time %s", message.stanza.to_string());
             return;
@@ -104,7 +102,7 @@ public class Dino.HistorySync {
         mam_times[account][id] = time;
 
         // Check if this is the target message
-        string? query_id = message.stanza.get_deep_attribute(mam_flag.ns_ver + ":result", mam_flag.ns_ver + ":queryid");
+        string? query_id = message.stanza.get_deep_attribute(Xmpp.MessageArchiveManagement.NS_URI + ":result", Xmpp.MessageArchiveManagement.NS_URI + ":queryid");
         if (query_id != null && id == catchup_until_id[account]) {
             debug("[%s] Hitted range (id) %s", account.bare_jid.to_string(), id);
             hitted_range[query_id] = -2;

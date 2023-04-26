@@ -227,9 +227,21 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         if (connected_device == null) return;
         plugin.pause();
         pipe.add(sink);
+#if GST_1_20
+        prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+#else
         prepare = Gst.parse_bin_from_description(@"videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+#endif
         prepare.name = @"video_widget_$(id)_prepare";
-        prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
+#if GST_1_20
+        if (prepare is Gst.Bin) {
+            ((Gst.Bin) prepare).get_by_name(@"video_widget_$(id)_flip").get_static_pad("sink").notify["caps"].connect(input_caps_changed);
+        } else {
+#endif
+            prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
+#if GST_1_20
+        }
+#endif
         pipe.add(prepare);
         connected_device_element = connected_device.link_source();
         connected_device_element.link(prepare);
