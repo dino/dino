@@ -105,7 +105,8 @@ namespace Dino {
         string body = message.body;
         foreach (var fallback in message.get_fallbacks()) {
             if (fallback.ns_uri == Xep.Replies.NS_URI && message.quoted_item_id > 0) {
-                body = body[0:fallback.locations[0].from_char] + body[fallback.locations[0].to_char:body.length];
+                body = body[0:body.index_of_nth_char(fallback.locations[0].from_char)] +
+                        body[body.index_of_nth_char(fallback.locations[0].to_char):body.length];
             }
         }
         return body;
