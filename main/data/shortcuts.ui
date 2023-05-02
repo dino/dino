@@ -20,6 +20,13 @@
                                 <property name="title" translatable="yes">Join Channel</property>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="accelerator">&lt;shift&gt;Enter</property>
+                                <property name="title" translatable="yes">New line</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>
