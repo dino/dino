@@ -51,6 +51,7 @@ protected class AddContactDialog : Gtk.Dialog {
 
     private void on_jid_entry_changed() {
         try {
+            jid_entry.text = jid_entry.text.strip();
             Jid parsed_jid = new Jid(jid_entry.text);
             ok_button. sensitive = parsed_jid != null && parsed_jid.resourcepart == null &&
                     stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, parsed_jid) == null;

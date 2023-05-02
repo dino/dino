@@ -49,6 +49,7 @@ protected class AddGroupchatDialog : Gtk.Dialog {
 
     private void check_ok() {
         try {
+	    jid_entry.text = jid_entry.text.strip();
             Jid parsed_jid = new Jid(jid_entry.text);
             ok_button.sensitive = parsed_jid != null && parsed_jid.localpart != null && parsed_jid.resourcepart == null;
         } catch (InvalidJidError e) {
