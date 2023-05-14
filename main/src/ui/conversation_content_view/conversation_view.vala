@@ -95,7 +95,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         EventControllerMotion main_wrap_motion_events = new EventControllerMotion();
         main_wrap_box.add_controller(main_wrap_motion_events);
         main_wrap_motion_events.leave.connect(on_leave_notify_event);
-        main_wrap_motion_events.enter.connect(update_highlight);
         // The buttons of the overlaying message_menu_box may partially overlap the adjacent
         // conversation items. We connect to the main_event_box directly to avoid emitting
         // the pointer motion events as long as the pointer is above the message menu.
