@@ -17,8 +17,8 @@ namespace Dino.Ui {
         public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true };
         public MenuButton encryption_button = new MenuButton() { opacity=0, has_frame=false, height_request=30, width_request=30, margin_end=5 };
         public CallEncryptionButtonController encryption_button_controller;
-        public MenuButton menu_button = new MenuButton() { icon_name="open-menu-symbolic", has_frame=false };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { has_frame=false };
+        public MenuButton menu_button = new MenuButton() { icon_name="view-more-symbolic", has_frame=false };
+        public Button invite_button = new Button.from_icon_name("contact-new") { has_frame=false };
         public bool shows_video = false;
         public string? participant_name;
 

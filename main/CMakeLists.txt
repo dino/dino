@@ -17,9 +17,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 set(RESOURCE_LIST
     dino-conversation-list-placeholder-arrow.svg
 
-    icons/scalable/actions/dino-account-plus-symbolic.svg
     icons/scalable/actions/dino-emoticon-add-symbolic.svg
-    icons/scalable/actions/dino-emoticon-symbolic.svg
     icons/scalable/actions/dino-qr-code-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino.svg
@@ -42,8 +40,6 @@ set(RESOURCE_LIST
     icons/scalable/mimetypes/dino-file-video-symbolic.svg
 
     icons/scalable/status/dino-double-tick-symbolic.svg
-    icons/scalable/status/dino-microphone-off-symbolic.svg
-    icons/scalable/status/dino-microphone-symbolic.svg
     icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
     icons/scalable/status/dino-status-away.svg
