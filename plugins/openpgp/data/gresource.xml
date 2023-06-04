@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/im/dino/Dino/openpgp">
+    <file>account_settings_item.ui</file>
+  </gresource>
+</gresources>
