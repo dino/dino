@@ -441,11 +441,5 @@ namespace GPGError {
 		public Error.from_errno (ErrorSource source, int err);
 		public ErrorCode code { [CCode (cname = "gpg_err_code")] get; }
 		public ErrorSource source { [CCode (cname = "gpg_err_source")] get; }
-
-		[CCode (cname = "gpg_strerror")]
-		public unowned string to_string ();
-
-		[CCode (cname = "gpg_strsource")]
-		public unowned string source_to_string ();
 	}
 }
