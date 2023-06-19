@@ -13,7 +13,7 @@ jobs:
       - run: ./configure --with-tests --with-libsignal-in-tree
       - run: make
       - run: build/xmpp-vala-test
-      - run: build/signal-protocol-vala-test
+      - run: build/omemo-test
   build-meson:
     runs-on: ubuntu-22.04
     steps:

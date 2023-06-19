@@ -12,6 +12,11 @@ find_packages(OMEMO_PACKAGES REQUIRED
     GTK4
 )
 
+# libsignal-protocol-c has a history of breaking compatibility on the patch level
+# we'll have to check compatibility for every new release
+# distro maintainers may update this dependency after compatibility tests
+find_package(SignalProtocol 2.3.2 REQUIRED)
+
 set(RESOURCE_LIST
     contact_details_dialog.ui
     manage_key_dialog.ui
@@ -52,6 +57,14 @@ SOURCES
     src/protocol/message_flag.vala
     src/protocol/stream_module.vala
 
+    src/signal/context.vala
+    src/signal/simple_iks.vala
+    src/signal/simple_ss.vala
+    src/signal/simple_pks.vala
+    src/signal/simple_spks.vala
+    src/signal/store.vala
+    src/signal/util.vala
+
     src/ui/account_settings_entry.vala
     src/ui/bad_messages_populator.vala
     src/ui/call_encryption_entry.vala
@@ -64,22 +77,52 @@ SOURCES
     src/ui/util.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/crypto-vala.vapi
-    ${CMAKE_BINARY_DIR}/exports/signal-protocol.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
     ${CMAKE_CURRENT_SOURCE_DIR}/vapi/libqrencode.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/libsignal-protocol-c.vapi
 PACKAGES
     ${OMEMO_PACKAGES}
 GRESOURCES
     ${OMEMO_GRESOURCES_XML}
+GENERATE_VAPI
+    omemo
+GENERATE_HEADER
+    omemo
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\"  -DG_LOG_DOMAIN="OMEMO")
-add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET})
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DG_LOG_DOMAIN="OMEMO")
+add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal/signal_helper.c)
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
-target_link_libraries(omemo libdino signal-protocol-vala crypto-vala ${OMEMO_PACKAGES} libqrencode)
+target_include_directories(omemo PUBLIC src)
+target_link_libraries(omemo libdino crypto-vala gcrypt ${OMEMO_PACKAGES} libqrencode signal-protocol-c)
 set_target_properties(omemo PROPERTIES PREFIX "")
 set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 
 install(TARGETS omemo ${PLUGIN_INSTALL})
+
+if(BUILD_TESTS)
+    vala_precompile(OMEMO_TEST_VALA_C
+    SOURCES
+        "tests/signal/common.vala"
+        "tests/signal/testcase.vala"
+
+        "tests/signal/curve25519.vala"
+        "tests/signal/hkdf.vala"
+        "tests/signal/session_builder.vala"
+    CUSTOM_VAPIS
+        ${CMAKE_BINARY_DIR}/exports/omemo_internal.vapi
+        ${CMAKE_BINARY_DIR}/exports/qlite.vapi
+        ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
+        ${CMAKE_BINARY_DIR}/exports/dino.vapi
+        ${CMAKE_CURRENT_SOURCE_DIR}/vapi/libsignal-protocol-c.vapi
+    PACKAGES
+        ${OMEMO_PACKAGES}
+    )
+
+    set(CFLAGS ${VALA_CFLAGS})
+    add_executable(omemo-test ${OMEMO_TEST_VALA_C})
+    add_dependencies(omemo-test omemo)
+    target_link_libraries(omemo-test omemo ${OMEMO_PACKAGES})
+endif(BUILD_TESTS)

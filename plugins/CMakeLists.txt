@@ -1,6 +1,3 @@
 foreach(plugin ${PLUGINS})
-  if ("omemo" STREQUAL ${plugin})
-    add_subdirectory(signal-protocol)
-  endif ()
   add_subdirectory(${plugin})
 endforeach(plugin)
