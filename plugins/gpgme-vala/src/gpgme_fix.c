@@ -1,6 +1,6 @@
 #include <gpgme_fix.h>
 
-static GRecMutex gpgme_global_mutex = {0};
+GRecMutex gpgme_global_mutex = {0};
 
 gpgme_key_t gpgme_key_ref_vapi (gpgme_key_t key) {
     gpgme_key_ref(key);
