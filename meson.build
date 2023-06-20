@@ -17,7 +17,12 @@ dep_icu_uc = dependency('icu-uc')
 dep_libadwaita = dependency('libadwaita-1')
 dep_libcanberra = dependency('libcanberra')
 dep_libgcrypt = dependency('libgcrypt')
+dep_libqrencode = dependency('libqrencode')
 dep_libsrtp2 = dependency('libsrtp2')
+# libsignal-protocol-c has a history of breaking compatibility on the patch level
+# we'll have to check compatibility for every new release
+# distro maintainers may update this dependency after compatibility tests
+dep_libsignal_protocol_c = dependency('libsignal-protocol-c', version: ['>=2.3.2', '<2.3.4'])
 dep_libsoup = dependency('libsoup-3.0')
 dep_nice = dependency('nice', version: '>=0.1.15')
 dep_m = meson.get_compiler('c').find_library('m', required: false)
