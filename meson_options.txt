@@ -1,1 +1,1 @@
-option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Plugin directory for Dino plugins')
+option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')

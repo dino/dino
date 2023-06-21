@@ -1,6 +1,8 @@
 project('xmpp-vala', 'vala')
 
 fs = import('fs')
+gnome = import('gnome')
+i18n = import('i18n')
 python = import('python')
 
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
