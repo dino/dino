@@ -1,3 +1,4 @@
+subdir('po')
 dependencies = [
     dep_dino,
     dep_gee,
@@ -91,8 +92,8 @@ sources = files(
     'src/view_model/preferences_row.vala',
     'src/windows/conversation_details.vala',
 )
-sources += import('gnome').compile_resources(
-    'dino-resources',
+sources += gnome.compile_resources(
+    'resources',
     'data/gresource.xml',
     source_dir: 'data',
 )
@@ -102,4 +103,13 @@ c_args = [
     '-DGETTEXT_PACKAGE="dino"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
-exe_dino = executable('dino', sources, c_args: c_args, vala_args: ['--vapidir', meson.current_source_dir() / 'vapi'], dependencies: dependencies)
+vala_args = [
+    '--vapidir', meson.current_source_dir() / 'vapi',
+]
+exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true)
+
+install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'hicolor/symbolic/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'hicolor/scalable/apps')
+install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
+install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
+install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/servces')

@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libgee-0.8-dev libgtk-4-dev libsqlite3-dev meson valac
+      - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
       - run: meson setup build
       - run: meson compile -C build
   build-flatpak:
