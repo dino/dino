@@ -270,12 +270,33 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     }
 
     if (parse_text_markup) {
-        string[] markup_string = new string[]{"`", "_", "*", "~"};
-        string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
+        string[] markup_string = new string[]{"```","`", "_", "*", "~"};
+        string[] convenience_tag = new string[]{"tt","tt", "i", "b", "s"};
 
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
+                if(markup_string[i].contains("```")){
+                    Regex regex = new Regex("(("+ markup_esc +")(\\R*?)([\\s\\S]*?)(\\R*?)("+ markup_esc +")){1}");
+                    MatchInfo match_info;
+                    regex.match(s.down(), 0, out match_info);
+                    if(match_info.matches()){
+                        int start, end;
+                        match_info.fetch_pos(0, out start, out end);
+                        string codeblock_markup = "<span color='#9E9E9E'>```</span>" +                                
+                                        @"<$(convenience_tag[i])>" + s[start:end].replace("```","") + @"</$(convenience_tag[i])>" +  
+                                        "<span color='#9E9E9E'>```</span>";
+                        if( s[0:start].strip() == ""){
+                            return codeblock_markup;
+                        } 
+                        else{
+                            return parse_add_markup_theme(s[0:start-1], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
+                            "\n" + codeblock_markup +
+                            parse_add_markup_theme(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
+                        }
+                    }
+                }
+
                 Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
                 MatchInfo match_info;
                 regex.match(s.down(), 0, out match_info);
