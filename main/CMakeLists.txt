@@ -82,7 +82,7 @@ set(RESOURCE_LIST
     quote.ui
     search_autocomplete.ui
     settings_dialog.ui
-    shortcuts.ui
+    gtk/help-overlay.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 
