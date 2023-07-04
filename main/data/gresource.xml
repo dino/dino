@@ -61,11 +61,10 @@
     <file>quote.ui</file>
     <file>search_autocomplete.ui</file>
     <file>settings_dialog.ui</file>
-    <file>shortcuts.ui</file>
+    <file>gtk/help-overlay.ui</file>
     <file>style-dark.css</file>
     <file>style.css</file>
     <file>unified_main_content.ui</file>
     <file>unified_window_placeholder.ui</file>
   </gresource>
 </gresources>
-

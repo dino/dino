@@ -195,20 +195,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_action(loop_conversations_bw_action);
         set_accels_for_action("app.loop_conversations_bw", KEY_COMBINATION_LOOP_CONVERSATIONS_REV);
 
-        SimpleAction open_shortcuts_action = new SimpleAction("open_shortcuts", null);
-        open_shortcuts_action.activate.connect((variant) => {
-            Builder builder = new Builder.from_resource("/im/dino/Dino/shortcuts.ui");
-            ShortcutsWindow dialog = (ShortcutsWindow) builder.get_object("shortcuts-window");
-            if (!use_csd()) {
-                dialog.set_titlebar(null);
-            }
-            dialog.title = _("Keyboard Shortcuts");
-            dialog.set_transient_for(get_active_window());
-            dialog.present();
-        });
-        add_action(open_shortcuts_action);
-        set_accels_for_action("app.open_shortcuts", KEY_COMBINATION_SHOW_KEYBOARD_SHORTCUTS);
-
         SimpleAction accept_call_action = new SimpleAction("accept-call", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
         accept_call_action.activate.connect((variant) => {
             int conversation_id = variant.get_child_value(0).get_int32();
