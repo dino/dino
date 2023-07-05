@@ -46,7 +46,7 @@ public class Handler {
                 return srtp_session.decrypt_rtp(data);
             }
             if (component_id == 2) return srtp_session.decrypt_rtcp(data);
-        } else if (component_id == 1) {
+        } else if (component_id == 1 && (data[0] >= 20 && data[0] <= 63)) {
             on_data_rec(data);
         }
         return null;
