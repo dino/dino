@@ -10,7 +10,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
-    private const string[] KEY_COMBINATION_SHOW_KEYBOARD_SHORTCUTS = {"<Ctrl>question", null};
 
     private MainWindow window;
     public MainWindowController controller;
