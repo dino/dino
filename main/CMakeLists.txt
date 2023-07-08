@@ -67,6 +67,7 @@ set(RESOURCE_LIST
     file_default_widget.ui
     file_send_overlay.ui
     global_search.ui
+    gtk/help-overlay.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
     manage_accounts/account_row.ui
@@ -82,7 +83,6 @@ set(RESOURCE_LIST
     quote.ui
     search_autocomplete.ui
     settings_dialog.ui
-    gtk/help-overlay.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 
