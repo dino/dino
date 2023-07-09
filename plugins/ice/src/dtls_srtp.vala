@@ -86,7 +86,7 @@ public class Handler {
         err = private_key.generate(PKAlgorithm.ECDSA, 256);
         throw_if_error(err);
 
-        var start_time = new DateTime.now_local().add_days(1);
+        var start_time = new DateTime.now_local().add_days(-1);
         var end_time = start_time.add_days(2);
 
         X509.Certificate cert = X509.Certificate.create();
