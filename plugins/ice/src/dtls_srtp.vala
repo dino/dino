@@ -38,7 +38,11 @@ public class Handler {
     }
 
     public uint8[]? process_incoming_data(uint component_id, uint8[] data) throws Crypto.Error {
-        if (srtp_session.has_decrypt) {
+        if (data[0] >= 128) {
+            if (!srtp_session.has_decrypt) {
+                debug("Received data before SRTP session is ready, dropping.");
+                return null;
+            }
             if (component_id == 1) {
                 if (data.length >= 2 && data[1] >= 192 && data[1] < 224) {
                     return srtp_session.decrypt_rtcp(data);
@@ -46,9 +50,12 @@ public class Handler {
                 return srtp_session.decrypt_rtp(data);
             }
             if (component_id == 2) return srtp_session.decrypt_rtcp(data);
-        } else if (component_id == 1 && (data[0] >= 20 && data[0] <= 63)) {
-            on_data_rec(data);
         }
+        if (component_id == 1 && data.length >= 1 && (data[0] >= 20 && data[0] < 64)) {
+            on_data_rec(data);
+            return null;
+        }
+        debug("Dropping unknown data from component %u", component_id);
         return null;
     }
 
