@@ -54,6 +54,11 @@ public enum Feature {
     UNSECURED
 }
 
+public static void add_muc_pm_message_stanza_x_node(MessageStanza message_stanza) {
+    StanzaNode x_node = new StanzaNode.build("x", "http://jabber.org/protocol/muc#user").add_self_xmlns();
+    message_stanza.stanza.put_node(x_node);        
+}
+
 public class JoinResult {
     public MucEnterError? muc_error;
     public string? stanza_error;
