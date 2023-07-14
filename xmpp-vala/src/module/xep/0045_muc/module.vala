@@ -203,6 +203,8 @@ public class Module : XmppStreamModule {
                 case Affiliation.ADMIN:
                     if (other_affiliation == Affiliation.OWNER) return false;
                     break;
+                case Affiliation.OWNER:
+                    return true;
                 default:
                     return false;
             }
