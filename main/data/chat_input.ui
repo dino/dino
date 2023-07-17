@@ -51,7 +51,7 @@
                         </child>
                         <child>
                             <object class="GtkMenuButton" id="emoji_button">
-                                <property name="icon-name">dino-emoticon-symbolic</property>
+                                <property name="icon-name">emoji-people-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="margin-top">2</property>
                                 <property name="valign">start</property>
@@ -85,6 +85,7 @@
                 <property name="margin_bottom">3</property>
                 <property name="margin_start">14</property>
                 <property name="margin_end">14</property>
+                <property name="wrap">True</property>
                 <attributes>
                     <attribute name="scale" value="0.8"></attribute>
                 </attributes>

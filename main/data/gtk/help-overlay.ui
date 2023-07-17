@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <object class="GtkShortcutsWindow" id="shortcuts-window">
+    <object class="GtkShortcutsWindow" id="help_overlay">
         <property name="modal">True</property>
         <child>
             <object class="GtkShortcutsSection">
@@ -18,6 +18,12 @@
                             <object class="GtkShortcutsShortcut">
                                 <property name="accelerator">&lt;ctrl&gt;G</property>
                                 <property name="title" translatable="yes">Join Channel</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;question</property>
+                                <property name="title" translatable="yes">Keyboard shortcuts</property>
                             </object>
                         </child>
                     </object>

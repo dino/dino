@@ -20,9 +20,8 @@
     <file>file_default_widget.ui</file>
     <file>file_send_overlay.ui</file>
     <file>global_search.ui</file>
-    <file>icons/scalable/actions/dino-account-plus-symbolic.svg</file>
+    <file>gtk/help-overlay.ui</file>
     <file>icons/scalable/actions/dino-emoticon-add-symbolic.svg</file>
-    <file>icons/scalable/actions/dino-emoticon-symbolic.svg</file>
     <file>icons/scalable/actions/dino-qr-code-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino.svg</file>
@@ -41,8 +40,6 @@
     <file>icons/scalable/mimetypes/dino-file-table-symbolic.svg</file>
     <file>icons/scalable/mimetypes/dino-file-video-symbolic.svg</file>
     <file>icons/scalable/status/dino-double-tick-symbolic.svg</file>
-    <file>icons/scalable/status/dino-microphone-off-symbolic.svg</file>
-    <file>icons/scalable/status/dino-microphone-symbolic.svg</file>
     <file>icons/scalable/status/dino-party-popper-symbolic.svg</file>
     <file>icons/scalable/status/dino-security-high-symbolic.svg</file>
     <file>icons/scalable/status/dino-status-away.svg</file>
@@ -65,7 +62,6 @@
     <file>quote.ui</file>
     <file>search_autocomplete.ui</file>
     <file>settings_dialog.ui</file>
-    <file>shortcuts.ui</file>
     <file>style-dark.css</file>
     <file>style.css</file>
     <file>unified_main_content.ui</file>

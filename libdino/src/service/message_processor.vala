@@ -472,8 +472,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         string fallback = FallbackBody.get_quoted_fallback_body(content_item);
 
-        long fallback_length = fallback.length;
-        var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback_length);
+        var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback.char_count());
         Xep.FallbackIndication.set_fallback(new_stanza, new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
 
         return fallback;
