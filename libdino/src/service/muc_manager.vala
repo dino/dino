@@ -653,7 +653,7 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (conversation.type_ == GROUPCHAT_PM) {
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
             Xmpp.Xep.Muc.add_muc_pm_message_stanza_x_node(message_stanza);            
         }
     }
