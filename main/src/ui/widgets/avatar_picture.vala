@@ -454,7 +454,7 @@ public class Dino.Ui.AvatarPicture : Gtk.Widget {
             label.insert_after(this, null);
             label.attributes = new Pango.AttrList();
             label.attributes.insert(Pango.attr_foreground_new(uint16.MAX, uint16.MAX, uint16.MAX));
-#if GTK_4_8 && VALA_0_58
+#if GTK_4_8 && (VALA_0_56_GREATER_5 || VALA_0_58)
             picture.content_fit = Gtk.ContentFit.COVER;
 #elif GTK_4_8
             picture.@set("content-fit", 2);
