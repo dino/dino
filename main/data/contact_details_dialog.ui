@@ -100,6 +100,18 @@
                                         <property name="margin-start">100</property>
                                     </object>
                                 </child>
+                                <child>
+                                  <object class="GtkButton" id="close_conversation">
+                                    <property name="margin-end">100</property>
+                                    <property name="margin-start">100</property>
+                                    <property name="margin-top">18</property>
+                                    <property name="margin-bottom">18</property>
+                                    <property name="label" translatable="yes">Close Conversation</property>
+                                    <style>
+                                      <class name="destructive-action"/>
+                                    </style>
+                                  </object>
+                                </child>
                             </object>
                         </property>
                     </object>

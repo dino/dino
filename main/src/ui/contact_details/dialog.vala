@@ -16,6 +16,7 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public unowned Label jid_label;
     [GtkChild] public unowned Label account_label;
     [GtkChild] public unowned Box main_box;
+    [GtkChild] public unowned Button close_conversation;
 
     private StreamInteractor stream_interactor;
     private Conversation conversation;
@@ -67,6 +68,11 @@ public class Dialog : Gtk.Dialog {
         close_request.connect(() => {
             contact_details.save();
             return false;
+        });
+		
+        close_conversation.clicked.connect(() => {
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+            close();
         });
     }
 
