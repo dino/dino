@@ -267,23 +267,28 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     }
 
     public async void retract_content_item_notifications() {
-        if (content_notifications != null) {
-            foreach (uint32 id in content_notifications.values) {
-                try {
-                    dbus_notifications.close_notification.begin(id);
-                } catch (Error e) { }
-            }
-            content_notifications.clear();
+        foreach (uint32 id in content_notifications.values) {
+            try {
+                dbus_notifications.close_notification.begin(id);
+            } catch (Error e) { }
         }
+        content_notifications.clear();
     }
 
     public async void retract_conversation_notifications(Conversation conversation) {
-        if (content_notifications.has_key(conversation)) {
-            try {
+        try {
+            if (content_notifications.has_key(conversation)) {
                 dbus_notifications.close_notification.begin(content_notifications[conversation]);
-            } catch (Error e) { }
-        }
-        content_notifications.unset(conversation);
+                content_notifications.unset(conversation);
+            }
+
+            if (conversation_notifications.has_key(conversation)) {
+                foreach (var notification_id in conversation_notifications[conversation]) {
+                    dbus_notifications.close_notification.begin(notification_id);
+                }
+                conversation_notifications.unset(conversation);
+            }
+        } catch (Error e) { }
     }
 
     private async Variant get_conversation_icon(Conversation conversation) {
