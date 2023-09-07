@@ -606,6 +606,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             widget.dispose();
         }
         widgets.clear();
+
+        Widget? notification = notifications.get_first_child();
+        while (notification != null) {
+            notifications.remove(notification);
+            notification = notifications.get_first_child();
+        }
     }
 
     private void clear_notifications() {
