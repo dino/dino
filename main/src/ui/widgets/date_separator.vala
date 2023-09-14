@@ -38,18 +38,13 @@ public class Dino.Ui.ViewModel.CompatDateSeparatorModel : DateSeparatorModel {
         }
     }
 
-    private void update_time_label() {
-        date_label = get_relative_time(date);
-        time_update_timeout = set_update_time_label_timeout((int) get_next_time_change(), this);
+    private static void on_time_update_timeout(CompatDateSeparatorModel self) {
+        if (self.time_update_timeout != 0) self.update_time_label();
     }
 
-    private static uint set_update_time_label_timeout(int interval, CompatDateSeparatorModel model_) {
-        WeakRef model_weak = WeakRef(model_);
-        return Timeout.add_seconds(interval, () => {
-            CompatDateSeparatorModel? model = (CompatDateSeparatorModel) model_weak.get();
-            if (model != null && model.time_update_timeout != 0) model.update_time_label();
-            return false;
-        });
+    private void update_time_label() {
+        date_label = get_relative_time(date);
+        time_update_timeout = Dino.WeakTimeout.add_seconds_once(get_next_time_change(), this, on_time_update_timeout);
     }
 
     private int get_next_time_change() {

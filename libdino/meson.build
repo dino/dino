@@ -76,6 +76,7 @@ sources = files(
     'src/util/display_name.vala',
     'src/util/util.vala',
     'src/util/weak_map.vala',
+    'src/util/weak_timeout.vala',
 )
 sources += [version_vala]
 c_args = [
