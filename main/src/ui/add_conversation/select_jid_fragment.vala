@@ -28,11 +28,15 @@ public class SelectJidFragment : Gtk.Box {
     private ListBox list;
     private string[]? filter_values;
 
-    public SelectJidFragment(StreamInteractor stream_interactor, ListBox list, Gee.List<Account> accounts) {
+    public SelectJidFragment(StreamInteractor stream_interactor, ListBox list, Gee.List<Account> accounts, bool notes_mode = false) {
         this.stream_interactor = stream_interactor;
         this.list = list;
         this.accounts = accounts;
 
+        if (notes_mode) {
+            add_button.visible = false;
+            remove_button.visible = false;
+        }
         list.activate_on_single_click = false;
         list.vexpand = true;
         box.append(list);

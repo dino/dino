@@ -128,7 +128,12 @@ public class ConversationSelectorRow : ListBoxRow {
     }
 
     protected void update_name_label() {
-        name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        if (conversation.counterpart.bare_jid.to_string() == conversation.account.bare_jid.to_string()){ //talking to yourself
+            name_label.set_markup("<u>// Notes to self (" + conversation.account.bare_jid.to_string() + ")</u>");
+        }
+        else {
+            name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
+        }
     }
 
     private void update_pinned_icon() {
