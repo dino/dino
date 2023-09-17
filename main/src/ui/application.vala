@@ -8,6 +8,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_QUIT = {"<Ctrl>Q", null};
     private const string[] KEY_COMBINATION_ADD_CHAT = {"<Ctrl>T", null};
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
+    private const string[] KEY_COMBINATION_OPEN_NOTES = {"<Ctrl>M", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
 
@@ -164,6 +165,27 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
         add_action(conference_action);
         set_accels_for_action("app.add_conference", KEY_COMBINATION_ADD_CONFERENCE);
+
+        SimpleAction opennotes_action = new SimpleAction("opennotes", null);
+        opennotes_action.activate.connect(() => {
+            Gee.List<Account> accounts = stream_interactor.get_accounts();
+            if (accounts.size == 1){
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(accounts[0].bare_jid, accounts[0], Conversation.Type.CHAT);
+                stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);    
+                conversation.pinned = 1;
+                return;
+            }
+            if (accounts.size > 1){
+               for (int i = 0; i < accounts.size; i++){
+                    Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(accounts[i].bare_jid, accounts[i], Conversation.Type.CHAT);
+                    conversation.pinned = 1;
+                    stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+               }
+               return;
+            }
+        });
+        add_action(opennotes_action);
+        set_accels_for_action("app.opennotes", KEY_COMBINATION_OPEN_NOTES);
 
         SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
         accept_muc_invite_action.activate.connect((variant) => {
