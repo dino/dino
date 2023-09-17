@@ -165,6 +165,25 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_action(conference_action);
         set_accels_for_action("app.add_conference", KEY_COMBINATION_ADD_CONFERENCE);
 
+        SimpleAction opennotes_action = new SimpleAction("opennotes", null);
+        opennotes_action.activate.connect(() => {
+            Gee.List<Account> accounts = stream_interactor.get_accounts();
+            if (accounts.size == 1){
+                Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(accounts[0].bare_jid, accounts[0], Conversation.Type.CHAT);
+                conversation.pinned = 1;
+                stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+                return;
+            }
+            if (accounts.size > 1){
+                AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, accounts, true);
+                add_chat_dialog.set_transient_for(window);
+                add_chat_dialog.added.connect((conversation) => controller.select_conversation(conversation));
+                add_chat_dialog.present();
+                return;
+            }
+        });
+        add_action(opennotes_action);
+
         SimpleAction accept_muc_invite_action = new SimpleAction("open-muc-join", VariantType.INT32);
         accept_muc_invite_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
