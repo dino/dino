@@ -6,7 +6,7 @@ class Dino.Ui.FixedRatioPicture : Gtk.Widget {
     public int max_width { get; set; default = int.MAX; }
     public int min_height { get; set; default = -1; }
     public int max_height { get; set; default = int.MAX; }
-    public File file { get { return inner.file; } set { inner.file = value; } }
+    public File file { get { return inner.file; } set { inner.paintable = new AnimationPaintable.from_file(value); } }
     public Gdk.Paintable paintable { get { return inner.paintable; } set { inner.paintable = value; } }
 #if GTK_4_8 && VALA_0_58
     public Gtk.ContentFit content_fit { get { return inner.content_fit; } set { inner.content_fit = value; } }
