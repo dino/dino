@@ -402,6 +402,8 @@ public class FileItem : ContentItem {
                 return Entities.Message.Marked.UNSENT;
             case FileTransfer.State.COMPLETE:
                 return Entities.Message.Marked.NONE;
+            case FileTransfer.State.COLLAPSED:
+                return Entities.Message.Marked.NONE;
             case FileTransfer.State.NOT_STARTED:
                 return Entities.Message.Marked.UNSENT;
             case FileTransfer.State.FAILED:
