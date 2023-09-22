@@ -57,6 +57,7 @@ public interface Application : GLib.Application {
         Reactions.start(stream_interactor, db);
         Replies.start(stream_interactor, db);
         FallbackBody.start(stream_interactor, db);
+        ContactModels.start(stream_interactor);
 
         create_actions();
 
