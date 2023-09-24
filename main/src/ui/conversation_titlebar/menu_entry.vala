@@ -34,9 +34,8 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     }
 
     private void on_clicked() {
-        ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
-        contact_details_dialog.set_transient_for((Window) button.get_root());
-        contact_details_dialog.present();
+        var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, (Window)button.get_root());
+        conversation_details.present();
     }
 
     public Object? get_widget(Plugins.WidgetType type) {

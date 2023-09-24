@@ -40,6 +40,7 @@ SOURCES
     src/service/calls.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
+    src/service/contact_model.vala
     src/service/content_item_store.vala
     src/service/conversation_manager.vala
     src/service/counterpart_interaction_manager.vala
