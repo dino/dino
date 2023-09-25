@@ -99,7 +99,6 @@
                                   <object class="AdwButtonContent" id="notification_button_menu_content">
                                     <property name="icon-name">notification-symbolic</property>
                                     <property name="label">Mute</property>
-                                    <property name="can-shrink">True</property>
                                   </object>
                                 </child>
                                 <child>

@@ -46,6 +46,11 @@ namespace Dino.Ui.ConversationDetails {
             model.encryption_rows.items_changed.connect(create_preferences_rows);
             model.settings_rows.items_changed.connect(create_preferences_rows);
             model.notify["room-configuration-rows"].connect(create_preferences_rows);
+
+#if Adw_1_4
+            // TODO: replace with putting buttons in new line on small screens
+            notification_button_menu_content.can_shrink = true;
+#endif
         }
 
         private void update_pinned_button() {
