@@ -12,6 +12,7 @@ public class ConversationViewController : Object {
     private MainWindow main_window;
     private ConversationView view;
     private Widget? overlay_dialog;
+    private FileSendOverlay overlay;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
     public ListView list_view = new ListView(null, null);
     private DropTarget drop_event_controller = new DropTarget(typeof(File), DragAction.COPY );
@@ -218,7 +219,7 @@ public class ConversationViewController : Object {
             return;
         }
 
-        FileSendOverlay overlay = new FileSendOverlay(file, file_info);
+        overlay = new FileSendOverlay(file, file_info);
         overlay.send_file.connect(() => send_file(file));
 
         stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
@@ -240,6 +241,7 @@ public class ConversationViewController : Object {
             // We don't want drag'n'drop to be active while the overlay is active
             overlay_dialog = null;
             update_file_upload_status.begin();
+            GLib.Idle.add(() => { overlay = null; return false; });
         });
 
         view.add_overlay_dialog(overlay.get_widget());
