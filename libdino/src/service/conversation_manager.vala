@@ -29,6 +29,7 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.account_removed.connect(on_account_removed);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_sent_message);
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(handle_call_incoming);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
@@ -192,6 +193,10 @@ public class ConversationManager : StreamInteractionModule, Object {
         if (is_recent) {
             start_conversation(conversation);
         }
+    }
+
+    private void handle_call_incoming(Call call, CallState state, Conversation conversation) {
+        start_conversation(conversation);
     }
 
     private void add_conversation(Conversation conversation) {
