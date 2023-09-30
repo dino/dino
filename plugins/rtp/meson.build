@@ -26,9 +26,6 @@ sources = files(
     'src/video_widget.vala',
 )
 c_args = [
-    '-DGST_1_16',
-    '-DGST_1_18',
-    '-DGST_1_20',
     '-DG_LOG_DOMAIN="rtp"',
 ]
 vala_args = [
@@ -41,6 +38,15 @@ if dep_webrtc_audio_processing.found()
         'src/voice_processor_native.cpp',
     )
     vala_args += ['-D', 'WITH_VOICE_PROCESSOR']
+endif
+if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.16')
+    vala_args += ['-D', 'GST_1_16']
+endif
+if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.18')
+    vala_args += ['-D', 'GST_1_18']
+endif
+if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.20')
+    vala_args += ['-D', 'GST_1_20']
 endif
 if get_option('plugin-rtp-h264').allowed()
     vala_args += ['-D', 'ENABLE_H264']
