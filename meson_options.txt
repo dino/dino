@@ -1,1 +1,8 @@
 option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
+
+option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
+option('plugin-ice', type: 'feature', description: '')
+option('plugin-notification-sound', type: 'feature', description: 'Sound for chat notifications')
+option('plugin-omemo', type: 'feature', description: 'End-to-end encryption')
+option('plugin-openpgp', type: 'feature', description: 'End-to-end encryption using PGP')
+option('plugin-rtp', type: 'feature', description: 'Voice/video calls')
