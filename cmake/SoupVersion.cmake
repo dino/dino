@@ -34,7 +34,7 @@ elseif (NOT SOUP_VERSION)
     find_package(Soup2 QUIET)
     find_package(Soup3 QUIET)
     # Only use libsoup 3 if specifically requested or when libsoup 2 is not available
-    if (Soup3_FOUND AND NOT Soup2_FOUND OR USE_SOUP3)
+    if (Soup3_FOUND AND NOT Soup2_FOUND)
         set(SOUP_VERSION 3)
     else ()
         set(SOUP_VERSION 2)

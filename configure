@@ -20,7 +20,7 @@ BUILD_TYPE=Debug
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
 NO_DEBUG=
-USE_SOUP3=
+SOUP_VERSION=2
 
 EXEC_PREFIX=
 BINDIR=
@@ -108,7 +108,7 @@ while true; do
         --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
         --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
         --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
-        --with-libsoup3 ) USE_SOUP3=yes; shift ;;
+        --with-libsoup3 ) SOUP_VERSION=3; shift ;;
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;
         --no-debug ) NO_DEBUG=yes; shift ;;
         --release ) BUILD_TYPE=RelWithDebInfo; shift ;;
@@ -208,7 +208,7 @@ cmake -G "$cmake_type" \
     -DENABLED_PLUGINS="$ENABLED_PLUGINS" \
     -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
     -DBUILD_TESTS="$BUILD_TESTS" \
-    -DUSE_SOUP3="$USE_SOUP3" \
+    -DSOUP_VERSION="$SOUP_VERSION" \
     -DVALA_EXECUTABLE="$VALAC" \
     -DCMAKE_VALA_FLAGS="$VALACFLAGS" \
     -DDISABLE_FAST_VAPI="$DISABLE_FAST_VAPI" \
