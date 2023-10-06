@@ -71,6 +71,7 @@ public class FileTransfer : Object {
     public int provider { get; set; }
     public string info { get; set; }
     public Cancellable cancellable { get; default=new Cancellable(); }
+    public uint64 transferred_bytes { get; set; }
 
     private Database? db;
     private string storage_dir;
