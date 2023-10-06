@@ -8,6 +8,7 @@ private const string NS_URI = "urn:xmpp:jingle:apps:file-transfer:5";
 
 public class Module : Jingle.ContentType, XmppStreamModule {
 
+    public signal void transferred_bytes(size_t bytes);
     public signal void file_incoming(XmppStream stream, FileTransfer file_transfer);
 
     public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0234_jingle_file_transfer");
@@ -42,7 +43,10 @@ public class Module : Jingle.ContentType, XmppStreamModule {
         return yield stream.get_module(Jingle.Module.IDENTITY).is_available(stream, required_transport_type, required_components, full_jid);
     }
 
-    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size, string? precondition_name = null, Object? precondition_options = null) throws Jingle.Error {
+    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid,
+        Cancellable cancellable, InputStream input_stream, string basename,
+        int64 size, string? precondition_name = null,
+        Object? precondition_options = null) throws Jingle.Error {
         StanzaNode file_node;
         StanzaNode description = new StanzaNode.build("description", NS_URI)
             .add_self_xmlns()
@@ -107,7 +111,18 @@ public class Module : Jingle.ContentType, XmppStreamModule {
             }
             IOStream io_stream = yield connection.stream.wait_async();
             yield io_stream.input_stream.close_async();
-            yield io_stream.output_stream.splice_async(input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
+
+            ssize_t read;
+            var buffer = new uint8[1024];
+            while ((read = yield input_stream.read_async(buffer, Priority.LOW, cancellable)) > 0) {
+                buffer.length = (int) read;
+                transferred_bytes((size_t)read);
+                yield io_stream.output_stream.write_async(buffer, Priority.LOW, cancellable);
+                buffer.length = 1024;
+            }
+
+            yield input_stream.close_async();
+            yield io_stream.output_stream.close_async();
             yield connection.terminate(true);
         } catch (Error e) {
             if (session != null) {

@@ -89,7 +89,8 @@ public class FileWidget : SizeRequestBox {
     }
 
     private async void update_widget() {
-        if (show_image() && state != State.IMAGE) {
+        if (show_image() && state != State.IMAGE
+            && file_transfer.state == FileTransfer.State.COMPLETE) {
             var content_bak = content;
 
             FileImageWidget file_image_widget = null;
@@ -108,7 +109,7 @@ public class FileWidget : SizeRequestBox {
             } catch (Error e) { }
         }
 
-        if (!show_image() && state != State.DEFAULT) {
+        if (state != State.DEFAULT) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
@@ -215,6 +216,7 @@ public class FileDefaultWidgetController : Object {
     private FileTransfer? file_transfer;
     public string file_transfer_state { get; set; }
     public string file_transfer_mime_type { get; set; }
+    public uint64 file_transfer_transferred_bytes { get; set; }
 
     private FileTransfer.State state;
 
@@ -225,6 +227,7 @@ public class FileDefaultWidgetController : Object {
 
         this.notify["file-transfer-state"].connect(update_file_info);
         this.notify["file-transfer-mime-type"].connect(update_file_info);
+        this.notify["file-transfer-transferred-bytes"].connect(update_file_info);
     }
 
     public void set_file_transfer(FileTransfer file_transfer) {
@@ -234,13 +237,15 @@ public class FileDefaultWidgetController : Object {
 
         file_transfer.bind_property("state", this, "file-transfer-state");
         file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+        file_transfer.bind_property("transferred-bytes", this, "file-transfer-transferred-bytes");
 
         update_file_info();
     }
 
     private void update_file_info() {
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
+        widget.update_file_info(file_transfer.mime_type, file_transfer.transferred_bytes,
+            file_transfer.direction, file_transfer.state, file_transfer.size);
     }
 
     private void on_clicked() {
