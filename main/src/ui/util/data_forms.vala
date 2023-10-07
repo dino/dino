@@ -75,7 +75,6 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
                 if (option.value == list_single_field.value) combobox_model.active_item = i;
             }
             combobox_model.bind_property("active-item", list_single_field, "value", BindingFlags.DEFAULT, (binding, from, ref to) => {
-                var src_field = (DataForms.DataForm.ListSingleField) binding.dup_target();
                 var active_item = (int) from;
                 to = list_single_field.options[active_item].value;
                 return true;

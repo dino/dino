@@ -26,15 +26,18 @@ namespace Dino.Ui.ConversationDetails {
         model.display_name.bind_property("display-name", view_model, "name", BindingFlags.SYNC_CREATE);
         model.conversation.bind_property("notify-setting", view_model, "notification", BindingFlags.SYNC_CREATE, (_, from, ref to) => {
             switch (model.conversation.get_notification_setting(stream_interactor)) {
-                case Conversation.NotifySetting.ON:
+                case ON:
                     to = ViewModel.ConversationDetails.NotificationSetting.ON;
                     break;
-                case Conversation.NotifySetting.OFF:
+                case OFF:
                     to = ViewModel.ConversationDetails.NotificationSetting.OFF;
                     break;
-                case Conversation.NotifySetting.HIGHLIGHT:
+                case HIGHLIGHT:
                     to = ViewModel.ConversationDetails.NotificationSetting.HIGHLIGHT;
                     break;
+                case DEFAULT:
+                    // A "default" setting should have been resolved to the actual default value
+                    assert_not_reached();
             }
             return true;
         });

@@ -45,7 +45,6 @@ public class FileImageWidget : Box {
         image.add_controller(gesture_click_controller);
 
         FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        string? mime_type = file_info.get_content_type();
 
         MenuButton button = new MenuButton();
         button.icon_name = "view-more";

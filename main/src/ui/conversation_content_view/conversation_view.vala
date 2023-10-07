@@ -329,7 +329,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             do_insert_item(item);
         }
         ContentMetaItem meta_item = content_populator.get_content_meta_item(content_item);
-        Widget w = insert_new(meta_item);
+        insert_new(meta_item);
         content_items.add(meta_item);
         meta_items.add(meta_item);
 

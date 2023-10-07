@@ -109,6 +109,8 @@ namespace Dino.Ui {
                 case ConnectionManager.ConnectionError.Source.TLS:
                     notification.set_body("Invalid TLS certificate");
                     break;
+                default:
+                    break;
             }
             GLib.Application.get_default().send_notification(account.id.to_string() + "-connection-error", notification);
         }

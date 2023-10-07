@@ -153,7 +153,6 @@ public class List : Box {
         if (affiliation1 < affiliation2) return -1;
         else if (affiliation1 > affiliation2) return 1;
         else return row_wrapper1.name_label.label.collate(row_wrapper2.name_label.label);
-        return 0;
     }
 
     private int get_affiliation_ranking(Xmpp.Xep.Muc.Affiliation affiliation) {
