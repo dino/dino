@@ -38,7 +38,7 @@ namespace GPG {
     }
 
     [Compact]
-    [CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref", ref_function_void = true, unref_function = "gpgme_key_unref", free_function = "gpgme_key_release")]
+    [CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref_vapi", unref_function = "gpgme_key_unref_vapi", free_function = "gpgme_key_release")]
     public class Key {
         public bool revoked;
         public bool expired;
