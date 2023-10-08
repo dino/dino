@@ -9,7 +9,8 @@ namespace Dino.Ui.ConversationDetails {
     public void populate_dialog(Model.ConversationDetails model, Conversation conversation, StreamInteractor stream_interactor) {
         model.conversation = conversation;
         model.display_name = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
-        model.blocked = stream_interactor.get_module(BlockingManager.IDENTITY).is_blocked(model.conversation.account, model.conversation.counterpart);
+        model.blocked = stream_interactor.get_module(BlockingManager.IDENTITY).is_blocked(model.conversation.account, model.conversation.counterpart, false);
+        model.domain_blocked = stream_interactor.get_module(BlockingManager.IDENTITY).is_blocked(model.conversation.account, model.conversation.counterpart, true);
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             stream_interactor.get_module(MucManager.IDENTITY).get_config_form.begin(conversation.account, conversation.counterpart, (_, res) => {
@@ -54,6 +55,7 @@ namespace Dino.Ui.ConversationDetails {
             return true;
         });
         model.bind_property("blocked", view_model, "blocked", BindingFlags.SYNC_CREATE);
+        model.bind_property("domain_blocked", view_model, "domain_blocked", BindingFlags.SYNC_CREATE);
         model.bind_property("data-form", view_model, "room-configuration-rows", BindingFlags.SYNC_CREATE, (_, from, ref to) => {
             var data_form = (DataForms.DataForm) from;
             if (data_form == null) return true;
@@ -75,11 +77,19 @@ namespace Dino.Ui.ConversationDetails {
         });
         view_model.block_changed.connect(() => {
             if (view_model.blocked) {
-                stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart);
+                stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart, false);
             } else {
-                stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart);
+                stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart, false);
             }
             view_model.blocked = !view_model.blocked;
+        });
+        view_model.domain_block_changed.connect(() => {
+            if (view_model.domain_blocked) {
+                stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart, true);
+            } else {
+                stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart, true);
+            }
+            view_model.domain_blocked = !view_model.domain_blocked;
         });
         view_model.notification_changed.connect((setting) => {
             switch (setting) {
