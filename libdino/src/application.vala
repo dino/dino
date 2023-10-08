@@ -39,12 +39,12 @@ public interface Application : GLib.Application {
         PresenceManager.start(stream_interactor);
         CounterpartInteractionManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
+        Calls.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
         MucManager.start(stream_interactor);
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
-        Calls.start(stream_interactor, db);
         CallStore.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);

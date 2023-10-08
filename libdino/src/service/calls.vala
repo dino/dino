@@ -61,8 +61,6 @@ namespace Dino {
                 call_state.initiate_groupchat_call.begin(conversation.counterpart);
             }
 
-            conversation.last_active = call.time;
-
             call_outgoing(call, call_state, conversation);
 
             return call_state;
@@ -221,7 +219,6 @@ namespace Dino {
 
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(call.counterpart.bare_jid, account, Conversation.Type.CHAT);
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
-            conversation.last_active = call.time;
 
             var call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
@@ -294,7 +291,6 @@ namespace Dino {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(inviter_jid.bare_jid, account);
             if (conversation == null) return null;
             stream_interactor.get_module(CallStore.IDENTITY).add_call(call, conversation);
-            conversation.last_active = call.time;
 
             CallState call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
@@ -465,7 +461,6 @@ namespace Dino {
 
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, to_jid, account, message_stanza.type_);
                 if (conversation == null) return;
-                conversation.last_active = call_state.call.time;
 
                 if (call_state.call.direction == Call.DIRECTION_INCOMING) {
                     call_incoming(call_state.call, call_state, conversation, video_requested, multiparty);
