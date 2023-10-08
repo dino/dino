@@ -10,6 +10,12 @@
                         <property name="title" translatable="yes">General</property>
                         <child>
                             <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;comma</property>
+                                <property name="title" translatable="yes">Show preferences</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
                                 <property name="accelerator">&lt;ctrl&gt;T</property>
                                 <property name="title" translatable="yes">Start Conversation</property>
                             </object>

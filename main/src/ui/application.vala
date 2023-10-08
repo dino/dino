@@ -10,6 +10,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+    private const string[] KEY_COMBINATION_SHOW_SETTINGS = {"<Ctrl>comma", null};
 
     private MainWindow window;
     public MainWindowController controller;
@@ -120,6 +121,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         SimpleAction settings_action = new SimpleAction("settings", null);
         settings_action.activate.connect(show_settings_window);
         add_action(settings_action);
+        set_accels_for_action("app.settings", KEY_COMBINATION_SHOW_SETTINGS);
 
         SimpleAction about_action = new SimpleAction("about", null);
         about_action.activate.connect(show_about_window);
