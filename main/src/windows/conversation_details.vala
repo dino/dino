@@ -11,7 +11,7 @@ namespace Dino.Ui.ConversationDetails {
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;
         [GtkChild] public unowned Adw.ButtonContent pin_button_content;
-        [GtkChild] public unowned Button block_button;
+        [GtkChild] public unowned Adw.SplitButton block_button;
         [GtkChild] public unowned Adw.ButtonContent block_button_content;
         [GtkChild] public unowned Button notification_button_toggle;
         [GtkChild] public unowned Adw.ButtonContent notification_button_toggle_content;
@@ -27,16 +27,20 @@ namespace Dino.Ui.ConversationDetails {
             install_action("notification.off", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.OFF); } );
             install_action("notification.highlight", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.HIGHLIGHT); } );
             install_action("notification.default", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.DEFAULT); } );
+            install_action("do.block", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.USER); } );
+            install_action("do.block_domain", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.DOMAIN); } );
+            install_action("do.unblock", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.UNBLOCK); } );
         }
 
         construct {
             pin_button.clicked.connect(() => { model.pin_changed(); });
-            block_button.clicked.connect(() => { model.block_changed(); });
+            block_button.clicked.connect(() => { model.block_changed(ViewModel.ConversationDetails.BlockActions.TOGGLE); });
             notification_button_toggle.clicked.connect(() => { model.notification_flipped(); });
             notification_button_split.clicked.connect(() => { model.notification_flipped(); });
 
             model.notify["pinned"].connect(update_pinned_button);
             model.notify["blocked"].connect(update_blocked_button);
+            model.notify["domain-blocked"].connect(update_blocked_button);
             model.notify["notification"].connect(update_notification_button);
             model.notify["notification"].connect(update_notification_button_state);
             model.notify["notification-options"].connect(update_notification_button_visibility);
@@ -64,12 +68,17 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void update_blocked_button() {
-            block_button_content.icon_name = "dino-block-symbolic";
-            block_button_content.label = model.blocked ? _("Blocked") : _("Block");
             if (model.blocked) {
+                block_button_content.label = _("Blocked");
                 block_button.add_css_class("error");
             } else {
+                block_button_content.label = _("Block");
                 block_button.remove_css_class("error");
+            }
+
+            if (model.domain_blocked) {
+                block_button_content.label = _("Domain blocked");
+                block_button.add_css_class("error");
             }
         }
 
