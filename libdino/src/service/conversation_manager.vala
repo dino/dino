@@ -29,7 +29,8 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.account_removed.connect(on_account_removed);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_sent_message);
-        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(handle_call_incoming);
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(handle_new_call);
+        stream_interactor.get_module(Calls.IDENTITY).call_outgoing.connect(handle_new_call);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
@@ -195,7 +196,8 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
     }
 
-    private void handle_call_incoming(Call call, CallState state, Conversation conversation) {
+    private void handle_new_call(Call call, CallState state, Conversation conversation) {
+        conversation.last_active = call.time;
         start_conversation(conversation);
     }
 
