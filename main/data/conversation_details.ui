@@ -122,11 +122,12 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="block_button">
+                          <object class="AdwSplitButton" id="block_button">
+                            <property name="menu_model">block_menu_model</property>
                             <property name="visible" bind-source="model" bind-property="show-blocked" bind-flags="sync-create"/>
                             <child>
                               <object class="AdwButtonContent" id="block_button_content">
-                                <property name="icon-name">action-unavailable-symbolic</property>
+                                <property name="icon-name">dino-block-symbolic</property>
                                 <property name="label">Block</property>
                               </object>
                             </child>
@@ -200,6 +201,22 @@
       <item>
         <attribute name="label">Reset to default</attribute>
         <attribute name="action">notification.default</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="block_menu_model">
+    <section>
+      <item>
+        <attribute name="label" translatable="1">Block user</attribute>
+        <attribute name="action">do.block</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="1">Block entire domain</attribute>
+        <attribute name="action">do.block_domain</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="1">Unblock</attribute>
+        <attribute name="action">do.unblock</attribute>
       </item>
     </section>
   </menu>
