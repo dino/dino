@@ -1,3 +1,5 @@
+find_package(GPGME REQUIRED)
+
 set(GETTEXT_PACKAGE "dino-openpgp")
 find_package(Gettext)
 include(${GETTEXT_USE_FILE})
@@ -28,6 +30,8 @@ compile_gresources(
 
 vala_precompile(OPENPGP_VALA_C
 SOURCES
+    src/gpgme_helper.vala
+
     src/file_transfer/file_decryptor.vala
     src/file_transfer/file_encryptor.vala
 
@@ -42,7 +46,8 @@ SOURCES
     src/stream_module.vala
     src/util.vala
 CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/exports/gpgme.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpgme.vapi
+    ${CMAKE_CURRENT_SOURCE_DIR}/vapi/gpg-error.vapi
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
@@ -53,9 +58,10 @@ GRESOURCES
 )
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="OpenPGP" -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
-add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET})
+add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET} src/gpgme_fix.c)
 add_dependencies(openpgp ${GETTEXT_PACKAGE}-translations)
-target_link_libraries(openpgp libdino gpgme-vala ${OPENPGP_PACKAGES})
+target_include_directories(openpgp PRIVATE src)
+target_link_libraries(openpgp libdino gpgme ${OPENPGP_PACKAGES})
 set_target_properties(openpgp PROPERTIES PREFIX "")
 set_target_properties(openpgp PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
 

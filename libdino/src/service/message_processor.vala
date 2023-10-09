@@ -167,7 +167,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
 
-        XmppStream? stream = stream_interactor.get_stream(account);
         Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         if (mam_message_flag != null && mam_message_flag.mam_id != null) {

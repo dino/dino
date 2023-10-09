@@ -47,6 +47,7 @@ sources = files(
     'src/service/calls.vala',
     'src/service/chat_interaction.vala',
     'src/service/connection_manager.vala',
+    'src/service/contact_model.vala',
     'src/service/content_item_store.vala',
     'src/service/conversation_manager.vala',
     'src/service/counterpart_interaction_manager.vala',
@@ -82,5 +83,8 @@ c_args = [
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
-lib_dino = library('dino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies)
+lib_dino = library('dino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true])
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
+
+install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
+install_headers('src/dino_i18n.h')

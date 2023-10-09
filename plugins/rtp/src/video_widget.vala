@@ -16,7 +16,7 @@ public class Dino.Plugins.Rtp.Paintable : Gdk.Paintable, Object {
 
     public override Gdk.Paintable get_current_image() {
         if (image != null) return image;
-        return Gdk.Paintable.new_empty(0, 0);
+        return Gdk.Paintable.empty(0, 0);
     }
 
     public override int get_intrinsic_width() {

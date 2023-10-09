@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <gpgme.h>
 
-static GRecMutex gpgme_global_mutex;
+extern GRecMutex gpgme_global_mutex;
 
 gpgme_key_t gpgme_key_ref_vapi (gpgme_key_t key);
 gpgme_key_t gpgme_key_unref_vapi (gpgme_key_t key);

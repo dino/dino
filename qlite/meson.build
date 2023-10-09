@@ -18,5 +18,10 @@ sources = files(
 c_args = [
     '-DG_LOG_DOMAIN="qlite"',
 ]
-lib_qlite = library('qlite', sources, c_args: c_args, vala_args: ['--vapidir', meson.current_source_dir() / 'vapi'], dependencies: dependencies)
+vala_args = [
+    '--vapidir', meson.current_source_dir() / 'vapi',
+]
+lib_qlite = library('qlite', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.1', install: true, install_dir: [true, true, true])
 dep_qlite = declare_dependency(link_with: lib_qlite, include_directories: include_directories('.'))
+
+install_data('qlite.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756

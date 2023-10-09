@@ -117,6 +117,7 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
         } catch (Error e) {
             if (e.code != GPGError.ErrorCode.EOF) throw e;
         }
+        context.op_keylist_end();
         return keys;
     } finally {
         global_mutex.unlock();

@@ -1,3 +1,4 @@
+subdir('po')
 dependencies = [
     dep_dino,
     dep_gee,
@@ -36,9 +37,6 @@ sources = files(
     'src/ui/chat_input/occupants_tab_completer.vala',
     'src/ui/chat_input/smiley_converter.vala',
     'src/ui/chat_input/view.vala',
-    'src/ui/contact_details/blocking_provider.vala',
-    'src/ui/contact_details/dialog.vala',
-    'src/ui/contact_details/muc_config_form_provider.vala',
     'src/ui/contact_details/permissions_provider.vala',
     'src/ui/contact_details/settings_provider.vala',
     'src/ui/conversation_content_view/call_widget.vala',
@@ -55,6 +53,7 @@ sources = files(
     'src/ui/conversation_content_view/quote_widget.vala',
     'src/ui/conversation_content_view/reactions_widget.vala',
     'src/ui/conversation_content_view/subscription_notification.vala',
+    'src/ui/conversation_details.vala',
     'src/ui/conversation_list_titlebar.vala',
     'src/ui/conversation_selector/conversation_selector.vala',
     'src/ui/conversation_selector/conversation_selector_row.vala',
@@ -89,9 +88,12 @@ sources = files(
     'src/ui/widgets/date_separator.vala',
     'src/ui/widgets/fixed_ratio_picture.vala',
     'src/ui/widgets/natural_size_increase.vala',
+    'src/view_model/conversation_details.vala',
+    'src/view_model/preferences_row.vala',
+    'src/windows/conversation_details.vala',
 )
-sources += import('gnome').compile_resources(
-    'dino-resources',
+sources += gnome.compile_resources(
+    'resources',
     'data/gresource.xml',
     source_dir: 'data',
 )
@@ -101,4 +103,22 @@ c_args = [
     '-DGETTEXT_PACKAGE="dino"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
-exe_dino = executable('dino', sources, c_args: c_args, vala_args: ['--vapidir', meson.current_source_dir() / 'vapi'], dependencies: dependencies)
+vala_args = [
+    '--vapidir', meson.current_source_dir() / 'vapi',
+]
+if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.2')
+    vala_args += ['-D', 'Adw_1_2']
+endif
+if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.6')
+    vala_args += ['-D', 'GTK_4_6']
+endif
+if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.8')
+    vala_args += ['-D', 'GTK_4_8']
+endif
+exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true)
+
+install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'hicolor/symbolic/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'hicolor/scalable/apps')
+install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
+install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
+install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/servces')

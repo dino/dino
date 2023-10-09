@@ -9,6 +9,11 @@ find_packages(ENGINE_PACKAGES REQUIRED
 
 set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 
+set(ENGINE_DEFINITIONS)
+if(VALA_VERSION VERSION_EQUAL "0.56.11")
+    set(ENGINE_DEFINITIONS ${ENGINE_DEFINITIONS} VALA_0_56_11)
+endif()
+
 vala_precompile(ENGINE_VALA_C
 SOURCES
     "src/core/direct_tls_xmpp_stream.vala"
@@ -152,6 +157,8 @@ CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/glib_fixes.vapi"
 OPTIONS
     ${ENGINE_EXTRA_OPTIONS}
+DEFINITIONS
+    ${ENGINE_DEFINITIONS}
 )
 
 add_custom_target(xmpp-vala-vapi

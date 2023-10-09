@@ -52,7 +52,7 @@ public class AvatarManager : StreamInteractionModule, Object {
         if (hash == null) return null;
         File file = File.new_for_path(Path.build_filename(folder, hash));
         if (!file.query_exists()) {
-            fetch_and_store_for_jid(account, jid_);
+            fetch_and_store_for_jid.begin(account, jid_);
             return null;
         } else {
             return file;
@@ -169,7 +169,7 @@ public class AvatarManager : StreamInteractionModule, Object {
         );
 
         foreach (var entry in get_avatar_hashes(account, Source.USER_AVATARS).entries) {
-            on_user_avatar_received(account, entry.key, entry.value);
+            on_user_avatar_received.begin(account, entry.key, entry.value);
         }
         foreach (var entry in get_avatar_hashes(account, Source.VCARD).entries) {
 
@@ -179,7 +179,7 @@ public class AvatarManager : StreamInteractionModule, Object {
                 continue;
             }
 
-            on_vcard_avatar_received(account, entry.key, entry.value);
+            on_vcard_avatar_received.begin(account, entry.key, entry.value);
         }
     }
 
