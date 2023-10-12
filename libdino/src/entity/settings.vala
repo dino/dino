@@ -12,11 +12,30 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        zoom_level = col_to_int_or_default("zoom_level", 100);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
         string? val = db.settings.select({db.settings.value}).with(db.settings.key, "=", key)[db.settings.value];
         return val != null ? bool.parse(val) : def;
+    }
+
+    private int col_to_int_or_default(string key, int def) {
+        string? val = db.settings.select({db.settings.value}).with(db.settings.key, "=", key)[db.settings.value];
+        return val != null ? int.parse(val) : def;
+    }
+     
+    public int zoom_level_;
+    public int zoom_level {
+        get { return zoom_level_; }
+        set {
+            if (value == zoom_level_) return;
+            db.settings.upsert()
+                    .value(db.settings.key, "zoom_level", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
+            zoom_level_ = value;
+        }
     }
 
     private bool send_typing_;

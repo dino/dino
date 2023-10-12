@@ -10,6 +10,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+    private const string[] KEY_COMBINATION_ZOOM_IN = {"<Ctrl>KP_Add", "<Ctrl>plus", null};
+    private const string[] KEY_COMBINATION_ZOOM_OUT = {"<Ctrl>KP_Subtract","<Ctrl>minus", null};
+    private const string[] KEY_COMBINATION_ZOOM_RESET = {"<Ctrl>0", "<Ctrl>KP_0", null};
 
     private MainWindow window;
     public MainWindowController controller;
@@ -32,10 +35,8 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         init();
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("im.dino.Dino");
-
         create_actions();
         add_main_option_entries(options);
-
         startup.connect(() => {
             if (print_version) {
                 print(@"Dino $(Dino.get_version())\n");
@@ -79,6 +80,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
             window.present();
+            Util.force_css(window, "* { font-size: " + settings.zoom_level.to_string() + "% ;} " ); 
         });
     }
 
@@ -111,7 +113,12 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 break;
         }
     }
-
+    
+    private void set_zoom(int step){
+       if (step == 0) settings.zoom_level = 100; else settings.zoom_level += step;
+       Util.force_css(window, "* { font-size: " + settings.zoom_level.to_string() + "% ;} " ); 
+    }
+    
     private void create_actions() {
         SimpleAction accounts_action = new SimpleAction("accounts", null);
         accounts_action.activate.connect(show_accounts_window);
@@ -145,6 +152,23 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             stream_interactor.get_module(PresenceManager.IDENTITY).deny_subscription(conversation.account, conversation.counterpart);
         });
         add_action(deny_subscription_action);
+
+        
+        SimpleAction zoom_in_action = new SimpleAction("zoom_in", null);
+        zoom_in_action.activate.connect(() => { set_zoom(+5); } );
+        add_action(zoom_in_action);
+        set_accels_for_action("app.zoom_in", KEY_COMBINATION_ZOOM_IN);
+        
+        SimpleAction zoom_out_action = new SimpleAction("zoom_out", null);
+        zoom_out_action.activate.connect(() => { set_zoom(-5); } );
+        add_action(zoom_out_action);
+        set_accels_for_action("app.zoom_out", KEY_COMBINATION_ZOOM_OUT);
+        
+        SimpleAction zoom_reset_action = new SimpleAction("zoom_reset", null);
+        zoom_reset_action.activate.connect(() => { set_zoom(0); } );
+        add_action(zoom_reset_action);
+        set_accels_for_action("app.zoom_reset", KEY_COMBINATION_ZOOM_RESET);
+
 
         SimpleAction contacts_action = new SimpleAction("add_chat", null);
         contacts_action.activate.connect(() => {
@@ -244,6 +268,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private void show_settings_window() {
         SettingsDialog dialog = new SettingsDialog();
         dialog.set_transient_for(get_active_window());
+        dialog.zoom_spinbutton_config.value_changed.connect( () => {
+            Util.force_css(window, "* { font-size: " + settings.zoom_level.to_string() + "% ;} " ); 
+        });
         dialog.present();
     }
 

@@ -26,6 +26,24 @@
                                 <property name="title" translatable="yes">Keyboard shortcuts</property>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;plus</property>
+                                <property name="title" translatable="yes">Increase text size</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;minus</property>
+                                <property name="title" translatable="yes">Lower text size</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;0</property>
+                                <property name="title" translatable="yes">Resets text size to default</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>
