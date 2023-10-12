@@ -136,7 +136,7 @@ public class ConversationSelectorRow : ListBoxRow {
 
     protected void update_name_label() {
         if (conversation.counterpart.bare_jid.to_string() == conversation.account.bare_jid.to_string()){ //talking to yourself
-            name_label.label = "Notes";
+            name_label.label = "Notes to self (" + conversation.account.bare_jid.to_string() + ")";
             change_label_attribute(name_label, attr_weight_new(Weight.BOLD));
         }
         else {
