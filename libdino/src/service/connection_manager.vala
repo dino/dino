@@ -381,14 +381,19 @@ public class ConnectionManager : Object {
         connection_error(account, error);
     }
 
+    string[] tld_exceptions = {".onion", ".i2p", ".loki", ".ygg"};
     public static bool on_invalid_certificate(string domain, TlsCertificate peer_cert, TlsCertificateFlags errors) {
-        if ((domain.has_suffix(".onion") || domain.has_suffix(".i2p") || domain.has_suffix(".loki")) && errors == TlsCertificateFlags.UNKNOWN_CA) {
-            // It's barely possible for .onion servers to provide a non-self-signed cert.
-            // But that's fine because encryption is provided independently though Tor.
-            // Same for .i2p servers on I2P, and .loki servers on Lokinet.
-            // Although maintaining exceptions for mixnet TLDs could become overwhelming soon.
-            warning("Accepting TLS certificate from unknown CA from .onion address %s", domain);
-            return true;
+        if (errors == TlsCertificateFlags.UNKNOWN_CA) {
+            foreach (string whitelisted_tld in tld_exceptions) {
+                if (domain.has_suffix(whitelisted_tld)) {
+                    // It's barely possible for .onion servers to provide a non-self-signed cert.
+                    // But that's fine because encryption is provided independently though Tor.
+                    // Same for .i2p servers on I2P, and .loki servers on Lokinet.
+                    // Although maintaining exceptions for mixnet TLDs could become overwhelming soon.
+                    warning("Accepting TLS certificate from unknown CA from %s address %s", whitelisted_tld, domain);
+                    return true;
+                }
+            }
         }
         return false;
     }
