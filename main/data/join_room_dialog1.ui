@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiJoinChannelChannelSelectionPage">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar" id="header_bar">
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkSearchEntry" id="search_entry">
+                <property name="placeholder-text" translatable="true">Search for channels or enter an XMPP address</property>
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+<!--                <signal name="search-changed" object="list" handler="dino_ui_join_room_dialog_view_model_on_search_changed" />-->
+              </object>
+            </child>
+            <child>
+              <object class="GtkStack">
+                <binding name="visible-child-name">
+                  <lookup name="stack_page">
+                    <lookup name="model">DinoUiJoinChannelChannelSelectionPage</lookup>
+                  </lookup>
+                </binding>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">channels</property>
+                    <property name="child">
+                      <object class="GtkScrolledWindow">
+                        <property name="vexpand">True</property>
+                        <style>
+                          <class name="undershoot-top"/>
+                        </style>
+                        <child>
+<!--                  We put a box around this such that the card isn't rounded at the bottom but continues, because of interactions between ScrolledWindow and ListView-->
+<!--                          <object class="GtkBox">-->
+<!--                            <property name="orientation">vertical</property>-->
+<!--                            <child>-->
+                              <object class="GtkListView" id="bookmarks_list">
+                                <property name="margin-start">16</property>
+                                <property name="margin-end">16</property>
+                                <property name="margin-top">8</property>
+                                <property name="margin-bottom">16</property>
+                                <binding name="model">
+                                  <lookup name="bookmarks">
+                                    <lookup name="model">DinoUiJoinChannelChannelSelectionPage</lookup>
+                                  </lookup>
+                                </binding>
+                                <property name="single-click-activate">True</property>
+                                <property name="show-separators">True</property>
+                                <property name="valign">start</property>
+                                <style>
+                                  <class name="card"/>
+                                </style>
+                                <property name="factory">
+                                  <object class="GtkBuilderListItemFactory">
+                                    <property name="resource">/im/dino/Dino/room_list_row.ui</property>
+                                  </object>
+                                </property>
+                              </object>
+<!--                            </child>-->
+<!--                          </object>-->
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">direct-match</property>
+                    <property name="child">
+                      <object class="GtkListView" id="direct_match_list">
+                        <binding name="model">
+                          <lookup name="direct-match">
+                            <lookup name="model">DinoUiJoinChannelChannelSelectionPage</lookup>
+                          </lookup>
+                        </binding>
+                        <property name="single-click-activate">True</property>
+                        <property name="show-separators">True</property>
+                        <property name="valign">start</property>
+                        <property name="margin-start">16</property>
+                        <property name="margin-end">16</property>
+                        <property name="margin-top">8</property>
+                        <property name="margin-bottom">16</property>
+                        <style>
+                          <class name="card"/>
+                        </style>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/im/dino/Dino/room_list_row.ui</property>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">loading</property>
+                    <property name="child">
+                      <object class="GtkSpinner">
+                        <property name="spinning">True</property>
+                        <property name="valign">center</property>
+                        <property name="halign">center</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">no-results</property>
+                    <property name="child">
+                      <object class="AdwStatusPage">
+                        <property name="icon-name">face-uncertain-symbolic</property>
+                        <property name="title" translatable="yes">No channels found</property>
+                        <property name="description" translatable="yes">None of your bookmarks matches your search and the XMPP address could not be resolved.</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">no-channels</property>
+                    <property name="child">
+                      <object class="AdwStatusPage">
+                        <property name="icon-name">im.dino.Dino-symbolic</property>
+                        <property name="title" translatable="yes">No known channels</property>
+                        <property name="description" translatable="yes">Discover new channels or enter an XMPP address!</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">offline</property>
+                    <property name="child">
+                      <object class="AdwStatusPage">
+                        <property name="icon-name">im.dino.Dino-symbolic</property>
+                        <property name="title" translatable="yes">You are offline</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

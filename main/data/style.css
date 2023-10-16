@@ -3,6 +3,8 @@
  * It provides sane defaults for things that are very Dino-specific.
  */
 
+@import url("conversation_details.css");
+
 statuspage {
     opacity: 0.5;
 }

@@ -13,7 +13,7 @@
                 <attribute name="label" translatable="yes">Preferences</attribute>
             </item>
             <item>
-                <attribute name="action">app.open_shortcuts</attribute>
+                <attribute name="action">win.show-help-overlay</attribute>
                 <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
             </item>
             <item>

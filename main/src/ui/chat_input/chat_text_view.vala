@@ -94,8 +94,13 @@ public class ChatTextView : Box {
         }
     }
 
-    private bool on_text_input_key_press(uint keyval, uint keycode, Gdk.ModifierType state) {
+    private bool on_text_input_key_press(EventControllerKey controller, uint keyval, uint keycode, Gdk.ModifierType state) {
         if (keyval in new uint[]{ Key.Return, Key.KP_Enter }) {
+            // Allow the text view to process the event. Needed for IME.
+            if (text_view.im_context_filter_keypress(controller.get_current_event())) {
+                return true;
+            }
+
             if ((state & ModifierType.SHIFT_MASK) > 0) {
                 text_view.buffer.insert_at_cursor("\n", 1);
             } else if (text_view.buffer.text.strip() != "") {

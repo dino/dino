@@ -30,9 +30,9 @@ public abstract class Xmpp.XmppStream : Object {
         this.remote_name = remote_name;
     }
 
-    public abstract async void connect() throws IOError;
+    public abstract new async void connect() throws IOError;
 
-    public abstract async void disconnect() throws IOError;
+    public abstract new async void disconnect() throws IOError;
 
     public abstract async StanzaNode read() throws IOError;
 

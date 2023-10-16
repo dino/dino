@@ -54,6 +54,7 @@ public class MucManager : StreamInteractionModule, Object {
             }
             return true;
         });
+        stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(on_build_message_stanza);
     }
 
     // already_autojoin: Without this flag we'd be retrieving bookmarks (to check for autojoin) from the sender on every join
@@ -649,6 +650,12 @@ public class MucManager : StreamInteractionModule, Object {
             part(account, jid);
         }
         conference_removed(account, jid);
+    }
+
+    private void on_build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
+        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            Xmpp.Xep.Muc.add_muc_pm_message_stanza_x_node(message_stanza);            
+        }
     }
 
     private void self_ping(Account account) {

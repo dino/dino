@@ -16,7 +16,7 @@ public class Dino.Plugins.Rtp.Paintable : Gdk.Paintable, Object {
 
     public override Gdk.Paintable get_current_image() {
         if (image != null) return image;
-        return Gdk.Paintable.new_empty(0, 0);
+        return Gdk.Paintable.empty(0, 0);
     }
 
     public override int get_intrinsic_width() {
@@ -197,7 +197,11 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         caps.get_structure(0).get_int("width", out width);
         caps.get_structure(0).get_int("height", out height);
         debug("Input resolution changed: %ix%i", width, height);
-        resolution_changed(width, height);
+        // Invoke signal on GTK main loop as recipients are likely to use it for doing GTK operations
+        Idle.add(() => {
+            resolution_changed(width, height);
+            return Source.REMOVE;
+        });
         last_input_caps = caps;
     }
 

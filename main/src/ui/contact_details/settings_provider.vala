@@ -9,8 +9,8 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
 
     private StreamInteractor stream_interactor;
 
-    private string DETAILS_HEADLINE_CHAT = _("Settings");
-    private string DETAILS_HEADLINE_ROOM = _("Local Settings");
+    private string DETAILS_HEADLINE_CHAT = "Settings";
+    private string DETAILS_HEADLINE_ROOM = "Local Settings";
 
     public SettingsProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -33,28 +33,7 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
             contact_details.add(DETAILS_HEADLINE_CHAT, _("Send read receipts"), "", combobox_marker);
             combobox_marker.active_id = get_setting_id(conversation.send_marker);
             combobox_marker.changed.connect(() => { conversation.send_marker = get_setting(combobox_marker.active_id); } );
-
-            ComboBoxText combobox_notifications = get_combobox(Dino.Application.get_default().settings.notifications);
-            contact_details.add(DETAILS_HEADLINE_CHAT, _("Notifications"), "", combobox_notifications);
-            combobox_notifications.active_id = get_notify_setting_id(conversation.notify_setting);
-            combobox_notifications.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox_notifications.active_id); } );
-        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            ComboBoxText combobox = new ComboBoxText();
-            combobox.append("default", get_notify_setting_string(Conversation.NotifySetting.DEFAULT, conversation.get_notification_default_setting(stream_interactor)));
-            combobox.append("highlight", get_notify_setting_string(Conversation.NotifySetting.HIGHLIGHT));
-            combobox.append("on", get_notify_setting_string(Conversation.NotifySetting.ON));
-            combobox.append("off", get_notify_setting_string(Conversation.NotifySetting.OFF));
-            contact_details.add(DETAILS_HEADLINE_ROOM, _("Notifications"), "", combobox);
-
-            combobox.active_id = get_notify_setting_id(conversation.notify_setting);
-            combobox.changed.connect(() => { conversation.notify_setting = get_notify_setting(combobox.active_id); } );
         }
-
-        Switch pinned_switch = new Switch() { valign=Align.CENTER };
-        string category = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;
-        contact_details.add(category, _("Pin conversation"), _("Pins the conversation to the top of the conversation list"), pinned_switch);
-        pinned_switch.state = conversation.pinned != 0;
-        pinned_switch.state_set.connect((state) => { conversation.pinned = state ? 1 : 0; return false; });
     }
 
     private Conversation.Setting get_setting(string id) {
@@ -69,34 +48,6 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
         assert_not_reached();
     }
 
-    private Conversation.NotifySetting get_notify_setting(string id) {
-        switch (id) {
-            case "default":
-                return Conversation.NotifySetting.DEFAULT;
-            case "on":
-                return Conversation.NotifySetting.ON;
-            case "off":
-                return Conversation.NotifySetting.OFF;
-            case "highlight":
-                return Conversation.NotifySetting.HIGHLIGHT;
-        }
-        assert_not_reached();
-    }
-
-    private string get_notify_setting_string(Conversation.NotifySetting setting, Conversation.NotifySetting? default_setting = null) {
-        switch (setting) {
-            case Conversation.NotifySetting.ON:
-                return _("On");
-            case Conversation.NotifySetting.OFF:
-                return _("Off");
-            case Conversation.NotifySetting.HIGHLIGHT:
-                return _("Only when mentioned");
-            case Conversation.NotifySetting.DEFAULT:
-                return _("Default: %s").printf(get_notify_setting_string(default_setting));
-        }
-        assert_not_reached();
-    }
-
     private string get_setting_id(Conversation.Setting setting) {
         switch (setting) {
             case Conversation.Setting.DEFAULT:
@@ -105,20 +56,6 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
                 return "on";
             case Conversation.Setting.OFF:
                 return "off";
-        }
-        assert_not_reached();
-    }
-
-    private string get_notify_setting_id(Conversation.NotifySetting setting) {
-        switch (setting) {
-            case Conversation.NotifySetting.DEFAULT:
-                return "default";
-            case Conversation.NotifySetting.ON:
-                return "on";
-            case Conversation.NotifySetting.OFF:
-                return "off";
-            case Conversation.NotifySetting.HIGHLIGHT:
-                return "highlight";
         }
         assert_not_reached();
     }

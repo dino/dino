@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiJoinChannelConfirmationPage">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar" id="header_bar">
+            <child>
+              <object class="GtkButton" id="back_button">
+                <property name="icon-name">go-previous-symbolic</property>
+              </object>
+            </child>
+            <style>
+              <class name="flat"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="AdwToastOverlay" id="toast_overlay">
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="valign">center</property>
+                <property name="vexpand">True</property>
+                <property name="spacing">6</property>
+                <property name="margin-top">20</property>
+                <property name="margin-start">20</property>
+                <property name="margin-end">20</property>
+                <property name="margin-bottom">20</property>
+                <child>
+                  <object class="DinoUiAvatarPicture" id="picture">
+                    <property name="height-request">100</property>
+                    <property name="width-request">100</property>
+                    <property name="margin-bottom">20</property>
+                    <property name="halign">center</property>
+                    <binding name="model">
+                      <lookup name="avatar">
+                        <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <binding name="label">
+                      <lookup name="name">
+                        <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                      </lookup>
+                    </binding>
+                    <attributes>
+                      <attribute name="scale" value="1.4"/>
+                    </attributes>
+                    <property name="ellipsize">end</property>
+                    <property name="hexpand">True</property>
+                    <property name="halign">center</property>
+                    <binding name="visible">
+                      <closure type="gboolean" function="dino_ui_view_model_join_channel_is_not_null">
+                        <lookup name="name">
+                          <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                        </lookup>
+                      </closure>
+                    </binding>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <binding name="label">
+                      <lookup name="jid">
+                        <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                      </lookup>
+                    </binding>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <property name="ellipsize">end</property>
+                    <property name="hexpand">True</property>
+                    <property name="halign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <binding name="label">
+                      <lookup name="description">
+                        <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                      </lookup>
+                    </binding>
+                    <property name="wrap">True</property>
+                    <property name="halign">center</property>
+                    <binding name="visible">
+                      <closure type="gboolean" function="dino_ui_view_model_join_channel_is_not_null">
+                        <lookup name="description">
+                          <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                        </lookup>
+                      </closure>
+                    </binding>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="halign">center</property>
+                    <property name="orientation">horizontal</property>
+                    <binding name="visible">
+                      <closure type="gboolean" function="dino_ui_view_model_join_channel_is_not_null">
+                        <lookup name="members">
+                          <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                        </lookup>
+                      </closure>
+                    </binding>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">system-users-symbolic</property>
+                        <property name="pixel-size">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <binding name="label">
+                          <lookup name="members">
+                            <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                          </lookup>
+                        </binding>
+                        <property name="ellipsize">end</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="spacing">2</property>
+                    <property name="margin-top">20</property>
+                    <property name="halign">center</property>
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Joining as</property>
+                        <property name="ellipsize">end</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <style>
+                          <class name="flat"/>
+                          <class name="dino-joining-as"/>
+                        </style>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="spacing">4</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <binding name="label">
+                                  <lookup name="nick">
+                                    <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                                  </lookup>
+                                </binding>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">document-edit-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="action-name">win.join</property>
+                    <!--                <binding name="sensitive">-->
+                    <!--                  <lookup name="spinner-active">-->
+                    <!--                    <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>-->
+                    <!--                  </lookup>-->
+                    <!--                </binding>-->
+                    <property name="margin-top">20</property>
+                    <property name="margin-bottom">26</property>
+                    <property name="halign">center</property>
+                    <style>
+                      <class name="pill"/>
+                      <class name="suggested-action"/>
+                    </style>
+                    <child>
+                      <object class="GtkBox">
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label" translatable="1">Join</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkRevealer">
+                            <property name="transition-type">slide-left</property>
+                            <property name="transition-duration">200</property>
+                            <binding name="reveal-child">
+                              <lookup name="spinner-active">
+                                <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                              </lookup>
+                            </binding>
+                            <child>
+                              <object class="GtkSpinner">
+                                <binding name="visible">
+                                  <lookup name="spinner-active">
+                                    <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                                  </lookup>
+                                </binding>
+                                <binding name="spinning">
+                                  <lookup name="spinner-active">
+                                    <lookup name="model">DinoUiJoinChannelConfirmationPage</lookup>
+                                  </lookup>
+                                </binding>
+                                <property name="margin-start">10</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

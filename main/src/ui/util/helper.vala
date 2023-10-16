@@ -103,7 +103,13 @@ private const string force_color_css = "%s { color: %s; }";
 public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
+#if GTK_4_12 && (VALA_0_56_GREATER_11 || VALA_0_58)
+        p.load_from_string(css);
+#elif (VALA_0_56_11 || VALA_0_56_12)
+        p.load_from_data(css, css.length);
+#else
         p.load_from_data(css.data);
+#endif
         widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     } catch (GLib.Error err) {
         // handle err

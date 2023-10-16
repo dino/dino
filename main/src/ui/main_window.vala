@@ -6,7 +6,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class MainWindow : Adw.Window {
+public class MainWindow : Adw.ApplicationWindow {
 
     public signal void conversation_selected(Conversation conversation);
 

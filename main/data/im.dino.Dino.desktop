@@ -11,3 +11,4 @@ Type=Application
 Categories=GTK;Network;Chat;InstantMessaging;
 X-GNOME-UsesNotifications=true
 MimeType=x-scheme-handler/xmpp;
+X-Purism-FormFactor=Workstation;Mobile;

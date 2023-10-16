@@ -253,11 +253,12 @@ namespace Dino.Ui {
         }
 
         private bool on_get_child_position(Widget widget, out Gdk.Rectangle allocation) {
+            allocation = Gdk.Rectangle();
+
             if (widget == own_video_box) {
                 int width = get_size(Orientation.HORIZONTAL);
                 int height = get_size(Orientation.VERTICAL);
 
-                allocation = Gdk.Rectangle();
                 allocation.width = own_video_width;
                 allocation.height = own_video_height;
                 allocation.x = width - own_video_width - 20;

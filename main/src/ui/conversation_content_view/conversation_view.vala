@@ -95,7 +95,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         EventControllerMotion main_wrap_motion_events = new EventControllerMotion();
         main_wrap_box.add_controller(main_wrap_motion_events);
         main_wrap_motion_events.leave.connect(on_leave_notify_event);
-        main_wrap_motion_events.enter.connect(update_highlight);
         // The buttons of the overlaying message_menu_box may partially overlap the adjacent
         // conversation items. We connect to the main_event_box directly to avoid emitting
         // the pointer motion events as long as the pointer is above the message menu.
@@ -330,7 +329,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             do_insert_item(item);
         }
         ContentMetaItem meta_item = content_populator.get_content_meta_item(content_item);
-        Widget w = insert_new(meta_item);
+        insert_new(meta_item);
         content_items.add(meta_item);
         meta_items.add(meta_item);
 
@@ -607,6 +606,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             widget.dispose();
         }
         widgets.clear();
+
+        Widget? notification = notifications.get_first_child();
+        while (notification != null) {
+            notifications.remove(notification);
+            notification = notifications.get_first_child();
+        }
     }
 
     private void clear_notifications() {

@@ -54,9 +54,8 @@ public class ChatInputController : Object {
 
         status_description_label.activate_link.connect((uri) => {
             if (uri == OPEN_CONVERSATION_DETAILS_URI){
-                ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
-                contact_details_dialog.set_transient_for((Gtk.Window) chat_input.get_root());
-                contact_details_dialog.present();
+                var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, (Window)chat_input.get_root());
+                conversation_details.present();
             }
             return true;
         });
