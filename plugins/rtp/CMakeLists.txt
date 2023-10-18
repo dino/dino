@@ -4,7 +4,6 @@ find_packages(RTP_PACKAGES REQUIRED
     Gee
     GLib
     GModule
-    GnuTLS
     GObject
     GTK4
     Gst
