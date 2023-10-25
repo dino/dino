@@ -382,7 +382,7 @@ public class ConnectionManager : Object {
     }
 
     public static bool on_invalid_certificate(string domain, TlsCertificate peer_cert, TlsCertificateFlags errors) {
-    string[] tld_exceptions = {".onion", ".i2p", ".loki", ".ygg"};
+        string[] tld_exceptions = {".onion", ".i2p", ".loki", ".ygg"};
         if (errors == TlsCertificateFlags.UNKNOWN_CA) {
             foreach (string whitelisted_tld in tld_exceptions) {
                 if (domain.has_suffix(whitelisted_tld)) {
