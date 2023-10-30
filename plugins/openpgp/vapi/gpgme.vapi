@@ -1,6 +1,7 @@
 /* libgpgme.vapi
  *
  * Copyright (C) 2009 Sebastian Reichel <sre@ring0.de>
+ * Copyright (C) 2022 Itay Grudev <itay+git2022@grudev.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +35,100 @@ namespace GPG {
         string version;
         string req_version;
         string? home_dir;
+    }
+
+    [Compact]
+    [CCode (cname = "struct _gpgme_key", ref_function = "gpgme_key_ref_vapi", unref_function = "gpgme_key_unref_vapi", free_function = "gpgme_key_release")]
+    public class Key {
+        public bool revoked;
+        public bool expired;
+        public bool disabled;
+        public bool invalid;
+        public bool can_encrypt;
+        public bool can_sign;
+        public bool can_certify;
+        public bool secret;
+        public bool can_authenticate;
+        public bool is_qualified;
+        public Protocol protocol;
+        public string issuer_serial;
+        public string issuer_name;
+        public string chain_id;
+        public Validity owner_trust;
+        [CCode(array_null_terminated = true)]
+        public SubKey[] subkeys;
+        [CCode(array_null_terminated = true)]
+        public UserID[] uids;
+        public KeylistMode keylist_mode;
+        public string fpr { get { return subkeys[0].fpr; } }
+    }
+
+    [CCode (cname = "struct _gpgme_sig_notation")]
+    public struct SigNotation {
+        SigNotation* next;
+        string? name;
+        string value;
+        int name_len;
+        int value_len;
+        SigNotationFlags flags;
+        bool human_readable;
+        bool critical;
+    }
+
+    [CCode (cname = "struct _gpgme_subkey")]
+    public struct SubKey {
+        SubKey* next;
+        bool revoked;
+        bool expired;
+        bool disabled;
+        bool invalid;
+        bool can_encrypt;
+        bool can_sign;
+        bool can_certify;
+        bool secret;
+        bool can_authenticate;
+        bool is_qualified;
+        bool is_cardkey;
+        PublicKeyAlgorithm algo;
+        uint length;
+        string keyid;
+        string fpr;
+        long timestamp;
+        long expires;
+        string? card_number;
+    }
+
+    [CCode (cname = "struct _gpgme_key_sig")]
+    public struct KeySig {
+        KeySig* next;
+        bool revoked;
+        bool expired;
+        bool invalid;
+        bool exportable;
+        PublicKeyAlgorithm algo;
+        string keyid;
+        long timestamp;
+        long expires;
+        GPGError.Error status;
+        string uid;
+        string name;
+        string email;
+        string comment;
+        uint sig_class;
+        SigNotation notations;
+    }
+
+    [CCode (cname = "struct _gpgme_user_id")]
+    public struct UserID {
+        UserID* next;
+        bool revoked;
+        bool invalid;
+        Validity validity;
+        string uid;
+        string name;
+        string email;
+        string comment;
+        KeySig signatures;
     }
 
     [CCode (cname = "struct _gpgme_op_verify_result")]
@@ -92,7 +187,7 @@ namespace GPG {
         GPGError.Error validity_reason;
         PublicKeyAlgorithm pubkey_algo;
         HashAlgorithm hash_algo;
-        string? pka_adress;
+        string? pka_address;
     }
 
     public enum PKAStatus {
@@ -128,6 +223,16 @@ namespace GPG {
         URL0
     }
 
+    [CCode (cname = "gpgme_pubkey_algo_t", cprefix = "GPGME_PK_")]
+    public enum PublicKeyAlgorithm {
+        RSA,
+        RSA_E,
+        RSA_S,
+        ELG_E,
+        DSA,
+        ELG
+    }
+
     [CCode (cname = "gpgme_hash_algo_t", cprefix = "GPGME_MD_")]
     public enum HashAlgorithm {
         NONE,
@@ -141,9 +246,45 @@ namespace GPG {
         SHA384,
         SHA512,
         MD4,
-        MD_CRC32,
-        MD_CRC32_RFC1510,
-        MD_CRC24_RFC2440
+        CRC32,
+        CRC32_RFC1510,
+        CRC24_RFC2440
+    }
+
+    [CCode (cname = "gpgme_sig_mode_t", cprefix = "GPGME_SIG_MODE_")]
+    public enum SigMode {
+        NORMAL,
+        DETACH,
+        CLEAR
+    }
+
+    [CCode (cname = "gpgme_validity_t", cprefix = "GPGME_VALIDITY_")]
+    public enum Validity {
+        UNKNOWN,
+        UNDEFINED,
+        NEVER,
+        MARGINAL,
+        FULL,
+        ULTIMATE
+    }
+
+    [CCode (cname = "gpgme_protocol_t", cprefix = "GPGME_PROTOCOL_")]
+    public enum Protocol {
+        OpenPGP,
+        CMS,
+        GPGCONF,
+        ASSUAN,
+        UNKNOWN
+    }
+
+    [CCode (cname = "gpgme_keylist_mode_t", cprefix = "GPGME_KEYLIST_MODE_")]
+    public enum KeylistMode {
+        LOCAL,
+        EXTERN,
+        SIGS,
+        SIG_NOTATIONS,
+        EPHEMERAL,
+        VALIDATE
     }
 
     [CCode (cname = "gpgme_export_mode_t", cprefix = "GPGME_EXPORT_MODE_")]
@@ -155,6 +296,18 @@ namespace GPG {
     public enum AuditLogFlag {
         HTML,
         WITH_HELP
+    }
+
+    [CCode (cname = "gpgme_sig_notation_flags_t", cprefix = "GPGME_SIG_NOTATION_")]
+    public enum SigNotationFlags {
+        HUMAN_READABLE,
+        CRITICAL
+    }
+
+    [CCode (cname = "gpgme_encrypt_flags_t", cprefix = "GPGME_ENCRYPT_")]
+    public enum EncryptFlags {
+        ALWAYS_TRUST,
+        NO_ENCRYPT_TO
     }
 
     [CCode (cname = "gpgme_status_code_t", cprefix = "GPGME_STATUS_")]
@@ -244,21 +397,6 @@ namespace GPG {
         PLAINTEXT
     }
 
-    [Flags]
-    [CCode (cname="unsigned int")]
-    public enum ImportStatusFlags {
-        [CCode (cname = "GPGME_IMPORT_NEW")]
-        NEW,
-        [CCode (cname = "GPGME_IMPORT_UID")]
-        UID,
-        [CCode (cname = "GPGME_IMPORT_SIG")]
-        SIG,
-        [CCode (cname = "GPGME_IMPORT_SUBKEY")]
-        SUBKEY,
-        [CCode (cname = "GPGME_IMPORT_SECRET")]
-        SECRET
-    }
-
     [Compact]
     [CCode (cname = "struct gpgme_context", free_function = "gpgme_release", cprefix = "gpgme_")]
     public class Context {
@@ -305,11 +443,11 @@ namespace GPG {
         public Key* signers_enum(int n);
 
         public void sig_notation_clear();
-        
+
         public GPGError.Error sig_notation_add(string name, string val, SigNotationFlags flags);
 
         public SigNotation* sig_notation_get();
-        
+
         [CCode (cname = "gpgme_get_key")]
         private GPGError.Error get_key_(string fpr, out Key key, bool secret);
 
@@ -319,7 +457,7 @@ namespace GPG {
             throw_if_error(get_key_(fpr, out key, secret));
             return key;
         }
-        
+
         public Context* wait(out GPGError.Error status, bool hang);
 
         public SignResult* op_sign_result();
@@ -405,10 +543,24 @@ namespace GPG {
         public KeylistResult op_keylist_result();
     }
 
+    [Flags]
+    [CCode (cname="unsigned int")]
+    public enum ImportStatusFlags {
+        [CCode (cname = "GPGME_IMPORT_NEW")]
+        NEW,
+        [CCode (cname = "GPGME_IMPORT_UID")]
+        UID,
+        [CCode (cname = "GPGME_IMPORT_SIG")]
+        SIG,
+        [CCode (cname = "GPGME_IMPORT_SUBKEY")]
+        SUBKEY,
+        [CCode (cname = "GPGME_IMPORT_SECRET")]
+        SECRET
+    }
+
     [Compact]
     [CCode (cname = "struct _gpgme_import_status")]
     public class ImportStatus {
-        
         public ImportStatus? next;
         public string fpr;
         public GPGError.Error result;
@@ -443,7 +595,7 @@ namespace GPG {
     [Compact]
     [CCode (cname = "struct gpgme_data", free_function = "gpgme_data_release", cprefix = "gpgme_data_")]
     public class Data {
-        
+
         public static GPGError.Error new(out Data d);
 
         public static Data create() throws GLib.Error {
@@ -452,7 +604,6 @@ namespace GPG {
             return data;
         }
 
-        
         [CCode (cname = "gpgme_data_new_from_mem")]
         public static GPGError.Error new_from_memory(out Data d, char[] buffer, bool copy);
 
@@ -482,7 +633,7 @@ namespace GPG {
 
         public GPGError.Error set_file_name(string file_name);
 
-        public DataEncoding* get_encoding();
+        public DataEncoding *get_encoding();
 
         public GPGError.Error set_encoding(DataEncoding enc);
     }
@@ -499,11 +650,14 @@ namespace GPG {
     [CCode (cname = "gpgme_passphrase_cb_t", has_target = false)]
     public delegate GPGError.Error passphrase_callback(void* hook, string uid_hint, string passphrase_info, bool prev_was_bad, int fd);
 
+    [CCode (cname = "gpgme_check_version")]
+    public unowned string check_version(string? required_version = null);
+
     [CCode (cname = "gpgme_engine_check_version")]
     public GPGError.Error engine_check_version(Protocol proto);
 
-    [CCode (cname = "gpgme_get_engine_information")]
-    public GPGError.Error get_engine_information(out EngineInfo engine_info);
+    [CCode (cname = "gpgme_get_engine_info")]
+    public GPGError.Error get_engine_info(out EngineInfo? engine_info);
 
     [CCode (cname = "gpgme_strerror_r")]
     public int strerror_r(GPGError.Error err, uint8[] buf);

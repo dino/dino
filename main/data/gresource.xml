@@ -8,9 +8,9 @@
     <file>add_conversation/select_jid_fragment.ui</file>
     <file>call_widget.ui</file>
     <file>chat_input.ui</file>
-    <file>contact_details_dialog.ui</file>
     <file>conversation_content_view/item_metadata_header.ui</file>
     <file>conversation_content_view/view.ui</file>
+    <file>conversation_details.ui</file>
     <file>conversation_item_widget.ui</file>
     <file>conversation_list_titlebar.ui</file>
     <file>conversation_list_titlebar_csd.ui</file>
@@ -49,6 +49,9 @@
     <file>icons/scalable/status/dino-tick-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-off-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-symbolic.svg</file>
+    <file>join_room_dialog.ui</file>
+    <file>join_room_dialog1.ui</file>
+    <file>join_room_dialog2.ui</file>
     <file>manage_accounts/account_row.ui</file>
     <file>manage_accounts/add_account_dialog.ui</file>
     <file>manage_accounts/dialog.ui</file>

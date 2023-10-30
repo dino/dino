@@ -116,8 +116,10 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         SourceFunc callback = fetch_keys.callback;
         new Thread<void*> (null, () => { // Querying GnuPG might take some time
             try {
-            keys = GPGHelper.get_keylist(null, true);
-        } catch (Error e) { }
+                keys = GPGHelper.get_keylist(null, true);
+            } catch (Error e) {
+                warning(e.message);
+            }
             Idle.add((owned)callback);
             return null;
         });

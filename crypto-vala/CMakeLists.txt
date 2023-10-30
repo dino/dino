@@ -14,7 +14,7 @@ SOURCES
     "src/random.vala"
     "src/srtp.vala"
 CUSTOM_VAPIS
-    "${CMAKE_CURRENT_SOURCE_DIR}/vapi/gcrypt.vapi"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vapi/libgcrypt.vapi"
     "${CMAKE_CURRENT_SOURCE_DIR}/vapi/libsrtp2.vapi"
 PACKAGES
     ${CRYPTO_VALA_PACKAGES}
