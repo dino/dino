@@ -113,6 +113,11 @@ namespace Dino.Ui.ConversationDetails {
         bind_dialog(model, dialog.model, stream_interactor);
 
         dialog.model.about_rows.append(new ViewModel.PreferencesRow.Text() {
+            title = _("Account used for this conversation"),
+            text  = conversation.account.bare_jid.to_string()
+        });
+
+        dialog.model.about_rows.append(new ViewModel.PreferencesRow.Text() {
             title = _("XMPP Address"),
             text = conversation.counterpart.to_string()
         });
