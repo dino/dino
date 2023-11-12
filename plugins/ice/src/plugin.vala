@@ -54,6 +54,21 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
             ice_udp_module.stun_ip = ip.to_string();
             ice_udp_module.stun_port = 7886;
         }
+
+        if (ice_udp_module.turn_service != null) {
+            int64? expires = ice_udp_module.turn_service.expires;
+            if (expires != null) {
+                uint delay = (uint) (expires - new DateTime.now_utc().to_unix()) / 2;
+
+                debug("Next server external service discovery in %us (because of TURN credentials' expiring time)", delay);
+
+                Timeout.add_seconds(delay, () => {
+                    if (app.stream_interactor.connection_manager.get_state(account) != ConnectionManager.ConnectionState.CONNECTED) return false;
+                    on_stream_negotiated.begin(account, stream);
+                    return false;
+                });
+            }
+        }
     }
 
     public void shutdown() {
