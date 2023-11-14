@@ -181,7 +181,7 @@ public class Module : XmppStreamModule {
             }
         }
         if (max_file_size_str != null) return long.parse(max_file_size_str);
-        return -1;
+        return long.MAX; //for ejabberd max_size:infinity
     }
 }
 
