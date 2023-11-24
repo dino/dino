@@ -181,7 +181,9 @@ public class Module : XmppStreamModule {
             }
         }
         if (max_file_size_str != null) return long.parse(max_file_size_str);
-        return -1;
+
+        // If there is no max-file-size node, there is no file size limit
+        return long.MAX;
     }
 }
 
