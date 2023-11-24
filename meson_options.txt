@@ -1,5 +1,7 @@
 option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
 
+option('crypto-backend', type: 'combo', choices: ['auto', 'openssl', 'gnutls'], value: 'auto', description: 'Preferred crypto backend')
+
 option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
 option('plugin-ice', type: 'feature', description: '')
 option('plugin-notification-sound', type: 'feature', description: 'Sound for chat notifications')

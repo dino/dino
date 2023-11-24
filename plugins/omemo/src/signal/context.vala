@@ -1,7 +1,7 @@
 namespace Signal {
 
 public class Context {
-    internal NativeContext native_context;
+    public NativeContext native_context;
     private RecMutex mutex = RecMutex();
 
     static void locking_function_lock(void* user_data) {

@@ -12,7 +12,7 @@ public class Bundle {
         assert(Plugin.ensure_context());
     }
 
-    public int32 signed_pre_key_id { owned get {
+    public int32 signed_pre_key_id { get {
         if (node == null) return -1;
         string? id = ((!)node).get_deep_attribute("signedPreKeyPublic", "signedPreKeyId");
         if (id == null) return -1;
@@ -69,7 +69,7 @@ public class Bundle {
             this.node = node;
         }
 
-        public int32 key_id { owned get {
+        public int32 key_id { get {
             return int.parse(node.get_attribute("preKeyId") ?? "-1");
         }}
 

@@ -59,7 +59,7 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
             file_transfer.encryption = Encryption.OMEMO;
             debug("Decrypting file %s from %s", file_transfer.file_name, file_transfer.server_file_name);
 
-            SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+            SymmetricCipher cipher = new SymmetricCipher.decryption("AES-GCM");
             cipher.set_key(key);
             cipher.set_iv(iv);
             return new ConverterInputStream(encrypted_stream, new SymmetricCipherDecrypter((owned) cipher, 16));
