@@ -689,6 +689,4 @@ namespace Omemo {
 
     [CCode (cname = "setup_signal_vala_crypto_provider", cheader_filename = "native/helper.h")]
     public static void setup_crypto_provider(NativeContext context);
-    [CCode (cname = "signal_vala_randomize", cheader_filename = "native/helper.h")]
-    public static int native_random(uint8[] data);
 }

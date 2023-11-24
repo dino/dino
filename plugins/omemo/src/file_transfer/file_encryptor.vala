@@ -27,11 +27,11 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
         try {
             //Create a key and use it to encrypt the file
             uint8[] iv = new uint8[IV_SIZE];
-            Plugin.get_context().randomize(iv);
+            Crypto.randomize(iv);
             uint8[] key = new uint8[KEY_SIZE];
-            Plugin.get_context().randomize(key);
+            Crypto.randomize(key);
 
-            SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+            SymmetricCipherEncryption cipher = create_symmetric_cipher_encryption("AES-GCM");
             cipher.set_key(key);
             cipher.set_iv(iv);
 

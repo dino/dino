@@ -5,7 +5,6 @@ dependencies = [
     dep_gio,
     dep_glib,
     dep_gmodule,
-    dep_gnutls,
     dep_nice,
     dep_qlite,
     dep_xmpp_vala,
@@ -24,6 +23,18 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-lib_ice = shared_library('ice', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir') / get_option('plugindir'), install_rpath: default_install_rpath)
+if crypto_backend == 'gnutls'
+    dependencies += [ dep_gnutls ]
+    sources += files(
+        'src/dtls_srtp_gnutls.vala'
+    )
+else # openssl
+    dependencies += [ dep_openssl ]
+    sources += files(
+        'src/dtls_srtp_openssl.vala',
+        'src/openssl_utils.c',
+    )
+endif
+lib_ice = shared_library('ice', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / get_option('plugindir'), install_rpath: default_install_rpath)
 dep_ice = declare_dependency(link_with: lib_ice, include_directories: include_directories('.'))
 summary('Peer-to-peer communication (ice)', dep_ice.found(), bool_yn: true, section: 'Plugins')

@@ -17,7 +17,6 @@ gchar* signal_protocol_address_get_name(signal_protocol_address* self);
 void signal_protocol_address_set_device_id(signal_protocol_address* self, int32_t device_id);
 int32_t signal_protocol_address_get_device_id(signal_protocol_address* self);
 
-int signal_vala_randomize(uint8_t *data, size_t len);
 int signal_vala_random_generator(uint8_t *data, size_t len, void *user_data);
 int signal_vala_hmac_sha256_init(void **hmac_context, const uint8_t *key, size_t key_len, void *user_data);
 int signal_vala_hmac_sha256_update(void *hmac_context, const uint8_t *data, size_t data_len, void *user_data);

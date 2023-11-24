@@ -1,7 +1,7 @@
 namespace Omemo {
 
 public class Context {
-    internal NativeContext native_context;
+    public NativeContext native_context;
     private RecMutex mutex = RecMutex();
 
     static void locking_function_lock(void* user_data) {
@@ -27,10 +27,6 @@ public class Context {
 
     public Store create_store() {
         return new Store(this);
-    }
-
-    public void randomize(uint8[] data) throws Error {
-        throw_by_code(native_random(data));
     }
 
     public SignedPreKeyRecord generate_signed_pre_key(IdentityKeyPair identity_key_pair, int32 id, uint64 timestamp = 0) throws Error {

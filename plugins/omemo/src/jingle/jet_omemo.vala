@@ -93,19 +93,19 @@ public class AesGcmCipher : Jet.Cipher, Object {
     }
     public Jet.TransportSecret generate_random_secret() {
         uint8[] iv = new uint8[default_iv_size];
-        Omemo.Plugin.get_context().randomize(iv);
+        Crypto.randomize(iv);
         uint8[] key = new uint8[key_size];
-        Omemo.Plugin.get_context().randomize(key);
+        Crypto.randomize(key);
         return new Jet.TransportSecret(key, iv);
     }
     public InputStream wrap_input_stream(InputStream input, Jet.TransportSecret secret) requires (secret.transport_key.length == key_size) {
-        SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+        SymmetricCipherDecryption cipher = create_symmetric_cipher_decryption("AES-GCM");
         cipher.set_key(secret.transport_key);
         cipher.set_iv(secret.initialization_vector);
         return new ConverterInputStream(input, new SymmetricCipherDecrypter((owned) cipher, 16));
     }
     public OutputStream wrap_output_stream(OutputStream output, Jet.TransportSecret secret) requires (secret.transport_key.length == key_size) {
-        Crypto.SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+        SymmetricCipherEncryption cipher = create_symmetric_cipher_encryption("AES-GCM");
         cipher.set_key(secret.transport_key);
         cipher.set_iv(secret.initialization_vector);
         return new ConverterOutputStream(output, new SymmetricCipherEncrypter((owned) cipher, 16));

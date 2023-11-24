@@ -7,7 +7,6 @@ dependencies = [
     dep_glib,
     dep_gmodule,
     dep_gtk4,
-    dep_libgcrypt,
     dep_libqrencode,
     dep_libomemo_c,
     dep_m,
@@ -62,6 +61,13 @@ c_args = vala_c_args + [
     '-DGETTEXT_PACKAGE="dino-omemo"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
+if crypto_backend == 'gnutls'
+    dependencies += [ dep_libgcrypt ]
+    sources += files('src/native/helper_gcrypt.c')
+else
+    dependencies += [ dep_openssl ]
+    sources += files('src/native/helper_openssl.c')
+endif
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
     # This is to build internal vapi for tests

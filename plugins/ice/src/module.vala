@@ -42,7 +42,7 @@ public class Dino.Plugins.Ice.Module : JingleIceUdp.Module {
     private DtlsSrtp.CredentialsCapsule? get_create_credentials(Jid local_full_jid, Jid peer_full_jid) {
         string from_to_id = local_full_jid.to_string() + peer_full_jid.to_string();
         try {
-            if (!cerds.has_key(from_to_id)) cerds[from_to_id] = DtlsSrtp.Handler.generate_credentials();
+            if (!cerds.has_key(from_to_id)) cerds[from_to_id] = DtlsSrtp.generate_credentials();
         } catch (Error e) {
             warning("Error creating dtls credentials: %s", e.message);
         }

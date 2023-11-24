@@ -1,18 +1,14 @@
 using GLib;
 
 namespace Crypto {
-public abstract class SymmetricCipherConverter : Converter, Object {
-    internal SymmetricCipher cipher;
-    internal size_t attached_taglen;
 
-    public abstract ConverterResult convert(uint8[] inbuf, uint8[] outbuf, ConverterFlags flags, out size_t bytes_read, out size_t bytes_written) throws IOError;
+public class SymmetricCipherEncrypter : Converter, Object {
+    private SymmetricCipherEncryption cipher;
+    private size_t attached_taglen;
 
-    public uint8[] get_tag(size_t taglen) throws Error {
-        return cipher.get_tag(taglen);
-    }
-
-    public void check_tag(uint8[] tag) throws Error {
-        cipher.check_tag(tag);
+    public SymmetricCipherEncrypter(owned SymmetricCipherEncryption cipher, size_t attached_taglen = 0) {
+        this.cipher = (owned) cipher;
+        this.attached_taglen = attached_taglen;
     }
 
     public void reset() {
@@ -22,15 +18,12 @@ public abstract class SymmetricCipherConverter : Converter, Object {
             warning(@"$(e.domain) error while resetting cipher: $(e.message)");
         }
     }
-}
 
-public class SymmetricCipherEncrypter : SymmetricCipherConverter {
-    public SymmetricCipherEncrypter(owned SymmetricCipher cipher, size_t attached_taglen = 0) {
-        this.cipher = (owned) cipher;
-        this.attached_taglen = attached_taglen;
+    public uint8[] get_tag(size_t taglen) throws Error {
+        return ((SymmetricCipherEncryption)cipher).get_tag(taglen);
     }
 
-    public override ConverterResult convert(uint8[] inbuf, uint8[] outbuf, ConverterFlags flags, out size_t bytes_read, out size_t bytes_written) throws IOError {
+    public ConverterResult convert(uint8[] inbuf, uint8[] outbuf, ConverterFlags flags, out size_t bytes_read, out size_t bytes_written) throws IOError {
         if (inbuf.length > outbuf.length) {
             throw new IOError.NO_SPACE("CipherConverter needs at least the size of input as output space");
         }
@@ -39,7 +32,7 @@ public class SymmetricCipherEncrypter : SymmetricCipherConverter {
         }
         try {
             if (inbuf.length > 0) {
-                cipher.encrypt(outbuf, inbuf);
+                ((SymmetricCipherEncryption)cipher).encrypt(outbuf, inbuf);
             }
             bytes_read = inbuf.length;
             bytes_written = inbuf.length;
@@ -60,13 +53,28 @@ public class SymmetricCipherEncrypter : SymmetricCipherConverter {
     }
 }
 
-public class SymmetricCipherDecrypter : SymmetricCipherConverter {
-    public SymmetricCipherDecrypter(owned SymmetricCipher cipher, size_t attached_taglen = 0) {
+public class SymmetricCipherDecrypter : Converter, Object {
+    private SymmetricCipherDecryption cipher;
+    private size_t attached_taglen;
+
+    public SymmetricCipherDecrypter(owned SymmetricCipherDecryption cipher, size_t attached_taglen = 0) {
         this.cipher = (owned) cipher;
         this.attached_taglen = attached_taglen;
     }
 
-    public override ConverterResult convert(uint8[] inbuf, uint8[] outbuf, ConverterFlags flags, out size_t bytes_read, out size_t bytes_written) throws IOError {
+    public void reset() {
+        try {
+            cipher.reset();
+        } catch (Crypto.Error e) {
+            warning(@"$(e.domain) error while resetting cipher: $(e.message)");
+        }
+    }
+
+    public void check_tag(uint8[] tag) throws Error {
+        ((SymmetricCipherDecryption)cipher).check_tag(tag);
+    }
+
+    public ConverterResult convert(uint8[] inbuf, uint8[] outbuf, ConverterFlags flags, out size_t bytes_read, out size_t bytes_written) throws IOError {
         if (inbuf.length > outbuf.length + attached_taglen) {
             throw new IOError.NO_SPACE("CipherConverter needs at least the size of input as output space");
         }
@@ -78,7 +86,7 @@ public class SymmetricCipherDecrypter : SymmetricCipherConverter {
         try {
             inbuf.length -= (int) attached_taglen;
             if (inbuf.length > 0) {
-                cipher.decrypt(outbuf, inbuf);
+                ((SymmetricCipherDecryption)cipher).decrypt(outbuf, inbuf);
             }
             bytes_read = inbuf.length;
             bytes_written = inbuf.length;

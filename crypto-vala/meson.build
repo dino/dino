@@ -1,14 +1,12 @@
 dependencies = [
     dep_gio,
     dep_glib,
-    dep_libgcrypt,
     dep_libsrtp2,
 ]
 sources = files(
     'src/cipher.vala',
     'src/cipher_converter.vala',
     'src/error.vala',
-    'src/random.vala',
     'src/srtp.vala',
 )
 c_args = vala_c_args + [
@@ -17,6 +15,19 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+if crypto_backend == 'gnutls'
+    dependencies += [ dep_libgcrypt ]
+    sources += files(
+        'src/gcrypt.vala',
+        'src/cipher_gcrypt.vala',
+    )
+else # openssl
+    dependencies += [ dep_openssl ]
+    sources += files(
+        'src/openssl.vala',
+        'src/cipher_openssl.vala',
+    )
+endif
 lib_crypto_vala = library('crypto-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_crypto_vala = declare_dependency(link_with: lib_crypto_vala, include_directories: include_directories('.'))
 

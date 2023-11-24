@@ -26,9 +26,9 @@ namespace Dino.Plugins.Omemo {
 
             //Create a key and use it to encrypt the message
             uint8[] key = new uint8[KEY_SIZE];
-            Plugin.get_context().randomize(key);
+            Crypto.randomize(key);
             uint8[] iv = new uint8[IV_SIZE];
-            Plugin.get_context().randomize(iv);
+            Crypto.randomize(iv);
 
             uint8[] aes_encrypt_result = aes_encrypt(Cipher.AES_GCM_NOPADDING, key, iv, plaintext.data);
             uint8[] ciphertext = aes_encrypt_result[0:aes_encrypt_result.length - 16];

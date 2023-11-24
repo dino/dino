@@ -107,7 +107,7 @@ public class Store : Object {
     public PreKeyStore pre_key_store { get; set; default = new SimplePreKeyStore(); }
     public SignedPreKeyStore signed_pre_key_store { get; set; default = new SimpleSignedPreKeyStore(); }
     public uint32 local_registration_id { get { return identity_key_store.local_registration_id; } }
-    internal NativeStoreContext native_context {get { return native_store_context_; }}
+    public NativeStoreContext native_context {get { return native_store_context_; }}
     private NativeStoreContext native_store_context_;
 
     static int iks_get_identity_key_pair(out Buffer public_data, out Buffer private_data, void* user_data) {

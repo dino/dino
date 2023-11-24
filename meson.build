@@ -47,9 +47,6 @@ vala_c_args = cc.get_supported_arguments([
     '-Wno-unused-variable',
 ])
 
-# plugin_crypto is enabled if any of the crypto plugins is enabled, auto if
-# none of them are explicitly enabled but at least one is set to auto, or
-# disabled if all of them are disabled.
 plugin_crypto = get_option('plugin-ice')
 foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
     if get_option(plugin).enabled() and not plugin_crypto.enabled()
@@ -59,11 +56,30 @@ foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
     endif
 endforeach
 
+if get_option('crypto-backend') == 'auto'
+    # Prefer libgcrypt/gnutls over openssl because glib-networking is usually
+    # built with gnutls anyway.
+    dep_libgcrypt = dependency('libgcrypt', required: false)
+    dep_gnutls = dependency('gnutls', required: false)
+    if dep_libgcrypt.found() and dep_gnutls.found()
+        crypto_backend = 'gnutls'
+    else
+        dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
+        crypto_backend = 'openssl'
+    endif
+elif get_option('crypto-backend') == 'openssl'
+    dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
+    crypto_backend = 'openssl'
+elif get_option('crypto-backend') == 'gnutls'
+    dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
+    dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
+    crypto_backend = 'gnutls'
+endif
+
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
 dep_glib = dependency('glib-2.0')
-dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
 dep_gmodule = dependency('gmodule-2.0')
 dep_gpgme = dependency('gpgme', disabler: true, required: get_option('plugin-openpgp'))
 dep_gstreamer = dependency('gstreamer-1.0', disabler: true, required: get_option('plugin-rtp'))
@@ -75,7 +91,6 @@ dep_gtk4 = dependency('gtk4')
 dep_icu_uc = dependency('icu-uc')
 dep_libadwaita = dependency('libadwaita-1', version: '>=1.5')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
-dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
 dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
 dep_libomemo_c = dependency('libomemo-c', disabler: true, required: get_option('plugin-omemo'))
