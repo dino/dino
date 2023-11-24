@@ -22,6 +22,8 @@ GENERATE_VAPI
     crypto-vala
 GENERATE_HEADER
     crypto-vala
+DEFINITIONS
+    GCRYPT
 )
 
 add_custom_target(crypto-vala-vapi

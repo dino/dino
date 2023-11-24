@@ -669,7 +669,7 @@ namespace OpenSSL
 			public int set_padding (int pad);
 
 			[CCode (cname = "EVP_EncryptInit_ex")]
-			public int encrypt_init (Cipher cipher, Engine? engine, [CCode (array_length = false)] uchar[] key, [CCode (array_length = false)] uchar[] iv);
+			public int encrypt_init (Cipher? cipher, Engine? engine, [CCode (array_length = false)] uchar[]? key, [CCode (array_length = false)] uchar[]? iv);
 
 			[CCode (cname = "EVP_EncryptUpdate")]
 			public int encrypt_update ([CCode (array_length = false)] uchar[] ciphertext, out int ciphertext_len, uchar[] plaintext);
@@ -678,13 +678,16 @@ namespace OpenSSL
 			public int encrypt_final ([CCode (array_length = false)] uchar[] ciphertext, out int ciphertext_len);
 
 			[CCode (cname = "EVP_DecryptInit_ex")]
-			public int decrypt_init (Cipher cipher, Engine? engine, [CCode (array_length = false)] uchar[] key, [CCode (array_length = false)] uchar[] iv);
+			public int decrypt_init (Cipher? cipher, Engine? engine, [CCode (array_length = false)] uchar[]? key, [CCode (array_length = false)] uchar[]? iv);
 
 			[CCode (cname = "EVP_DecryptUpdate")]
 			public int decrypt_update ([CCode (array_length = false)] uchar[] plaintext, out int plaintext_len, uchar[] ciphertext);
 
 			[CCode (cname = "EVP_DecryptFinal_ex")]
 			public int decrypt_final ([CCode (array_length = false)] uchar[] plaintext, out int plaintext_len);
+
+			[CCode (simple_generics = true)]
+			public int ctrl<T>(int type, int arg, T? ptr);
 		}
 	}
 
@@ -802,4 +805,18 @@ namespace OpenSSL
 	public int i2d_RSA_PUBKEY (RSA rsa, [CCode (array_length = false)] out uint8[] ppout);
 	public int i2d_RSA_PUBKEY_fp (GLib.FileStream fp, RSA a);
 	public int i2d_RSA_PUBKEY_bio (BIO bp, RSA a);
+
+	[CCode (cprefix = "ERR_", lower_case_cprefix = "ERR_", cheader_filename = "openssl/err.h")]
+	namespace ERR
+	{
+		public ulong get_error();
+		public unowned string? reason_error_string(ulong e);
+	}
+
+	[CCode (cprefix = "RAND_", lower_case_cprefix = "RAND_", cheader_filename = "openssl/rand.h")]
+	namespace RAND
+	{
+		public int bytes(uint8[] buf);
+	}
+
 }

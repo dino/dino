@@ -31,7 +31,7 @@ public class OmemoFileEncryptor : Dino.FileEncryptor, Object {
             uint8[] key = new uint8[KEY_SIZE];
             Plugin.get_context().randomize(key);
 
-            SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
+            SymmetricCipher cipher = new SymmetricCipher.encryption("AES-GCM");
             cipher.set_key(key);
             cipher.set_iv(iv);
 
