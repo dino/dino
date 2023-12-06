@@ -34,7 +34,13 @@ protected class RosterList {
             foreach (ulong handler_id in handler_ids) stream_interactor.get_module(RosterManager.IDENTITY).disconnect(handler_id);
         });
 
-        foreach (Account a in accounts) fetch_roster_items(a);
+        foreach (Account a in accounts) {
+            ListRow own_account_row = new ListRow.from_jid(stream_interactor, a.bare_jid, a, accounts.size > 1);
+            ListBoxRow own_account_lbrow = new ListBoxRow() { child = own_account_row };
+            list_box.append(own_account_lbrow);
+
+            fetch_roster_items(a);
+        }
     }
 
     private void on_removed_roster_item(Account account, Jid jid, Roster.Item roster_item) {
@@ -47,7 +53,7 @@ protected class RosterList {
     private void on_updated_roster_item(Account account, Jid jid, Roster.Item roster_item) {
         on_removed_roster_item(account, jid, roster_item);
         ListRow row = new ListRow.from_jid(stream_interactor, roster_item.jid, account, accounts.size > 1);
-        ListBoxRow list_box_row = new ListBoxRow() { child=row };
+        ListBoxRow list_box_row = new ListBoxRow() { child = row };
         rows[account][jid] = list_box_row;
         list_box.append(list_box_row);
         list_box.invalidate_sort();
