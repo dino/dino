@@ -64,7 +64,7 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void update_blocked_button() {
-            block_button_content.icon_name = "action-unavailable-symbolic";
+            block_button_content.icon_name = "dino-block-symbolic";
             block_button_content.label = model.blocked ? _("Blocked") : _("Block");
             if (model.blocked) {
                 block_button.add_css_class("error");
@@ -75,7 +75,7 @@ namespace Dino.Ui.ConversationDetails {
 
         private void update_notification_button() {
             string icon_name = model.notification == OFF ?
-                    "notifications-disabled-symbolic" : "notification-symbolic";
+                    "dino-bell-large-none-symbolic" : "dino-bell-large-symbolic";
             notification_button_toggle_content.icon_name = icon_name;
             notification_button_split_content.icon_name = icon_name;
             notification_button_menu_content.icon_name = icon_name;
