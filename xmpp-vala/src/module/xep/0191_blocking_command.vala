@@ -12,7 +12,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     public signal void unblock_all_received(XmppStream stream);
 
     public bool is_blocked(XmppStream stream, string jid) {
-        if (is_supported(stream)){
+        if (is_supported(stream)) {
             return stream.get_flag(Flag.IDENTITY).blocklist.contains(jid);
         } else {
             return false;
