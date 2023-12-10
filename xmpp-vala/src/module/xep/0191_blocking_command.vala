@@ -14,8 +14,7 @@ public class Module : XmppStreamModule, Iq.Handler {
     public bool is_blocked(XmppStream stream, string jid) {
         if (is_supported(stream)){
             return stream.get_flag(Flag.IDENTITY).blocklist.contains(jid);
-        }
-        else {
+        } else {
             return false;
         }
     }
