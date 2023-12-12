@@ -90,7 +90,7 @@ public class ConversationTitlebarCsd : ConversationTitlebar, Object {
 
     public Adw.HeaderBar header_bar = new Adw.HeaderBar();
     private Label title_label = new Label("") { ellipsize=EllipsizeMode.END };
-    private Label subtitle_label = new Label("") { ellipsize=EllipsizeMode.END, visible=false };
+    private Label subtitle_label = new Label("") { use_markup=true, ellipsize=EllipsizeMode.END, visible=false };
     private Revealer back_revealer;
 
     public ConversationTitlebarCsd() {

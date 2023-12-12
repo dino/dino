@@ -176,12 +176,17 @@ public class ConversationViewController : Object {
     }
 
     private void update_conversation_topic(string? subtitle = null) {
+        string topic_markup;
         if (subtitle != null) {
             conversation_topic = Util.summarize_whitespaces_to_space(subtitle);
+            topic_markup = Util.parse_add_markup(conversation_topic, null, true, true);
+            conversation_topic = topic_markup;
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
             if (subject != null) {
                 conversation_topic = Util.summarize_whitespaces_to_space(subject);
+                topic_markup = Util.parse_add_markup(conversation_topic, null, true, true);
+                conversation_topic = topic_markup;
             } else {
                 conversation_topic = null;
             }
