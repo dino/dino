@@ -6,9 +6,15 @@ find_packages(LIBDINO_PACKAGES REQUIRED
     GObject
 )
 
+set(LIBDINO_DEFINITIONS)
+if(LIBDINO_VERSION VERSION_EQUAL "0.56.11")
+    set(LIBDINO_DEFINITIONS ${LIBDINO_DEFINITIONS} VALA_0_56_11)
+endif()
+
 vala_precompile(LIBDINO_VALA_C
 SOURCES
     src/application.vala
+    src/version.vala
 
     src/dbus/login1.vala
     src/dbus/notifications.vala
@@ -34,6 +40,7 @@ SOURCES
     src/service/calls.vala
     src/service/chat_interaction.vala
     src/service/connection_manager.vala
+    src/service/contact_model.vala
     src/service/content_item_store.vala
     src/service/conversation_manager.vala
     src/service/counterpart_interaction_manager.vala
@@ -75,6 +82,8 @@ GENERATE_VAPI
     dino
 GENERATE_HEADER
     dino
+DEFINITIONS
+    ${LIBDINO_DEFINITIONS}
 )
 
 add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/exports/dino_i18n.h"

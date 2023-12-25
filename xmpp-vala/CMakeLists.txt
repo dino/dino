@@ -9,6 +9,11 @@ find_packages(ENGINE_PACKAGES REQUIRED
 
 set(ENGINE_EXTRA_OPTIONS ${MAIN_EXTRA_OPTIONS} --vapidir=${CMAKE_CURRENT_SOURCE_DIR}/vapi)
 
+set(ENGINE_DEFINITIONS)
+if(VALA_VERSION VERSION_EQUAL "0.56.11")
+    set(ENGINE_DEFINITIONS ${ENGINE_DEFINITIONS} VALA_0_56_11)
+endif()
+
 vala_precompile(ENGINE_VALA_C
 SOURCES
     "src/core/direct_tls_xmpp_stream.vala"
@@ -106,6 +111,9 @@ SOURCES
     "src/module/xep/0384_omemo/omemo_encryptor.vala"
     "src/module/xep/0384_omemo/omemo_decryptor.vala"
 
+    "src/module/xep/0392_consistent_color/consistent_color.vala"
+    "src/module/xep/0392_consistent_color/hsluv.vala"
+
     "src/module/xep/0184_message_delivery_receipts.vala"
     "src/module/xep/0191_blocking_command.vala"
     "src/module/xep/0198_stream_management.vala"
@@ -149,6 +157,8 @@ CUSTOM_VAPIS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/glib_fixes.vapi"
 OPTIONS
     ${ENGINE_EXTRA_OPTIONS}
+DEFINITIONS
+    ${ENGINE_DEFINITIONS}
 )
 
 add_custom_target(xmpp-vala-vapi
@@ -160,7 +170,7 @@ DEPENDS
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="xmpp-vala")
 add_library(xmpp-vala SHARED ${ENGINE_VALA_C})
 add_dependencies(xmpp-vala xmpp-vala-vapi)
-target_link_libraries(xmpp-vala ${ENGINE_PACKAGES})
+target_link_libraries(xmpp-vala ${ENGINE_PACKAGES} m)
 set_target_properties(xmpp-vala PROPERTIES VERSION 0.1 SOVERSION 0)
 
 install(TARGETS xmpp-vala ${TARGET_INSTALL})
@@ -175,6 +185,7 @@ if(BUILD_TESTS)
 
         "tests/jid.vala"
         "tests/stanza.vala"
+        "tests/color.vala"
         "tests/util.vala"
     CUSTOM_VAPIS
         ${CMAKE_BINARY_DIR}/exports/xmpp-vala_internal.vapi

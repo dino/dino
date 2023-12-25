@@ -336,7 +336,7 @@ public class StanzaNode : StanzaEntry {
             if (((!)val).length > 1000) {
                 return indent + "[... retracted for brevity ...]\n";
             }
-            return indent + ((!)val).replace("\n", indent + "\n") + "\n";
+            return indent + ((!)val).replace("\n",  "\n" + indent) + "\n";
         }
         var sb = new StringBuilder();
         if (no_ns) {

@@ -10,13 +10,16 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private StreamInteractor stream_interactor;
     private Dino.Database dino_db;
+    private Soup.Session session;
     private static Regex http_url_regex = /^https?:\/\/([^\s#]*)$/; // Spaces are invalid in URLs and we can't use fragments for downloads
     private static Regex omemo_url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
+        this.session = new Soup.Session();
 
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
     }
 
@@ -114,8 +117,6 @@ public class FileProvider : Dino.FileProvider, Object {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) return file_meta;
 
-        var session = new Soup.Session();
-        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         var head_message = new Soup.Message("HEAD", http_receive_data.url);
         head_message.request_headers.append("Accept-Encoding", "identity");
 
@@ -150,8 +151,6 @@ public class FileProvider : Dino.FileProvider, Object {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
 
-        var session = new Soup.Session();
-        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         var get_message = new Soup.Message("GET", http_receive_data.url);
 
         try {

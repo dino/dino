@@ -12,7 +12,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public Grid main_grid { get; set; }
     public Label name_label { get; set; }
     public Label time_label { get; set; }
-    public AvatarImage avatar_image { get; set; }
+    public AvatarPicture avatar_picture { get; set; }
     public Image encryption_image { get; set; }
     public Image received_image { get; set; }
 
@@ -51,7 +51,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         main_grid.add_css_class("message-box");
         name_label = (Label) builder.get_object("name_label");
         time_label = (Label) builder.get_object("time_label");
-        avatar_image = (AvatarImage) builder.get_object("avatar_image");
+        avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
         encryption_image = (Image) builder.get_object("encrypted_image");
         received_image = (Image) builder.get_object("marked_image");
 
@@ -62,7 +62,8 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         }
 
         if (item.requires_header) {
-            avatar_image.set_conversation_participant(stream_interactor, conversation, item.jid);
+            // TODO: For MUC messags, use real jid from message if known
+            avatar_picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(conversation, item.jid);
         }
 
         this.notify["show-skeleton"].connect(update_margin);
@@ -116,7 +117,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_margin() {
-        avatar_image.visible = show_skeleton;
+        avatar_picture.visible = show_skeleton;
         name_label.visible = show_skeleton;
         time_label.visible = show_skeleton;
         encryption_image.visible = show_skeleton;
@@ -286,10 +287,10 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             time_label.dispose();
             time_label = null;
         }
-        if (avatar_image != null) {
-            avatar_image.unparent();
-            avatar_image.dispose();
-            avatar_image = null;
+        if (avatar_picture != null) {
+            avatar_picture.unparent();
+            avatar_picture.dispose();
+            avatar_picture = null;
         }
         if (encryption_image != null) {
             encryption_image.unparent();

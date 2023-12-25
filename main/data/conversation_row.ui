@@ -14,9 +14,9 @@
                         <property name="margin-start">7</property>
                         <property name="margin-end">14</property>
                         <child>
-                            <object class="DinoUiAvatarImage" id="image">
-                                <property name="height">35</property>
-                                <property name="width">35</property>
+                            <object class="DinoUiAvatarPicture" id="picture">
+                                <property name="height-request">35</property>
+                                <property name="width-request">35</property>
                                 <property name="valign">center</property>
                             </object>
                         </child>

@@ -17,8 +17,8 @@ namespace Dino.Ui {
         public Box title_box = new Box(Orientation.VERTICAL, 0) { valign=Align.CENTER, hexpand=true };
         public MenuButton encryption_button = new MenuButton() { opacity=0, has_frame=false, height_request=30, width_request=30, margin_end=5 };
         public CallEncryptionButtonController encryption_button_controller;
-        public MenuButton menu_button = new MenuButton() { icon_name="open-menu-symbolic", has_frame=false };
-        public Button invite_button = new Button.from_icon_name("dino-account-plus") { has_frame=false };
+        public MenuButton menu_button = new MenuButton() { icon_name="view-more-symbolic", has_frame=false };
+        public Button invite_button = new Button.from_icon_name("contact-new-symbolic") { has_frame=false };
         public bool shows_video = false;
         public string? participant_name;
 
@@ -74,14 +74,11 @@ namespace Dino.Ui {
 
             header_bar.show_title_buttons = is_highest_row;
             if (is_highest_row) {
-                header_bar.add_css_class("call-header-background");
                 Gtk.Settings? gtk_settings = Gtk.Settings.get_default();
                 if (gtk_settings != null) {
                     string[] buttons = gtk_settings.gtk_decoration_layout.split(":");
                     header_bar.decoration_layout = (is_start ? buttons[0] : "") + ":" + (is_end && buttons.length == 2 ? buttons[1] : "");
                 }
-            } else {
-                header_bar.remove_css_class("call-header-background");
             }
             reveal_or_hide_controls();
         }
@@ -96,11 +93,11 @@ namespace Dino.Ui {
             shows_video = false;
             Box box = new Box(Orientation.HORIZONTAL, 0);
             box.add_css_class("video-placeholder-box");
-            AvatarImage avatar = new AvatarImage() { allow_gray=false, hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height=100, width=100 };
+            AvatarPicture avatar = new AvatarPicture() { hexpand=true, vexpand=true, halign=Align.CENTER, valign=Align.CENTER, height_request=100, width_request=100 };
             if (conversation != null) {
-                avatar.set_conversation(stream_interactor, conversation);
+                avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
             } else {
-                avatar.set_text("?", false);
+                avatar.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add("?");
             }
             box.append(avatar);
 

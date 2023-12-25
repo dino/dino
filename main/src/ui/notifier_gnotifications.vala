@@ -109,6 +109,8 @@ namespace Dino.Ui {
                 case ConnectionManager.ConnectionError.Source.TLS:
                     notification.set_body("Invalid TLS certificate");
                     break;
+                default:
+                    break;
             }
             GLib.Application.get_default().send_notification(account.id.to_string() + "-connection-error", notification);
         }
@@ -171,8 +173,12 @@ namespace Dino.Ui {
         }
 
         private async Icon get_conversation_icon(Conversation conversation) throws Error {
-            AvatarDrawer drawer = yield Util.get_conversation_avatar_drawer(stream_interactor, conversation);
-            Cairo.ImageSurface surface = drawer.size(40, 40).draw_image_surface();
+            CompatAvatarDrawer drawer = new CompatAvatarDrawer() {
+                model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation),
+                width_request = 40,
+                height_request = 40
+            };
+            Cairo.ImageSurface surface = drawer.draw_image_surface();
             Gdk.Pixbuf avatar = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height());
             uint8[] buffer;
             avatar.save_to_buffer(out buffer, "png");

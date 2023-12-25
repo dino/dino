@@ -89,7 +89,12 @@ public class ModuleIdentity<T> : Object {
     }
 
     public T? cast(StreamInteractionModule module) {
+#if VALA_0_56_11
+        // We can't typecheck due to compiler bug
+        return (T) module;
+#else
         return module.get_type().is_a(typeof(T)) ? (T?) module : null;
+#endif
     }
 
     public bool matches(StreamInteractionModule module) {

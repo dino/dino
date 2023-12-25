@@ -17,9 +17,7 @@ find_packages(MAIN_PACKAGES REQUIRED
 set(RESOURCE_LIST
     dino-conversation-list-placeholder-arrow.svg
 
-    icons/scalable/actions/dino-account-plus-symbolic.svg
     icons/scalable/actions/dino-emoticon-add-symbolic.svg
-    icons/scalable/actions/dino-emoticon-symbolic.svg
     icons/scalable/actions/dino-qr-code-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino.svg
@@ -41,9 +39,10 @@ set(RESOURCE_LIST
     icons/scalable/mimetypes/dino-file-table-symbolic.svg
     icons/scalable/mimetypes/dino-file-video-symbolic.svg
 
+    icons/scalable/status/dino-bell-large-none-symbolic.svg
+    icons/scalable/status/dino-bell-large-symbolic.svg
+    icons/scalable/status/dino-block-symbolic.svg
     icons/scalable/status/dino-double-tick-symbolic.svg
-    icons/scalable/status/dino-microphone-off-symbolic.svg
-    icons/scalable/status/dino-microphone-symbolic.svg
     icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
     icons/scalable/status/dino-status-away.svg
@@ -62,7 +61,7 @@ set(RESOURCE_LIST
 
     call_widget.ui
     chat_input.ui
-    contact_details_dialog.ui
+    conversation_details.ui
     conversation_item_widget.ui
     conversation_list_titlebar.ui
     conversation_list_titlebar_csd.ui
@@ -71,6 +70,10 @@ set(RESOURCE_LIST
     file_default_widget.ui
     file_send_overlay.ui
     global_search.ui
+    gtk/help-overlay.ui
+    join_room_dialog.ui
+    join_room_dialog1.ui
+    join_room_dialog2.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
     manage_accounts/account_row.ui
@@ -86,10 +89,10 @@ set(RESOURCE_LIST
     quote.ui
     search_autocomplete.ui
     settings_dialog.ui
-    shortcuts.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 
+    conversation_details.css
     style.css
     style-dark.css
 )
@@ -115,8 +118,29 @@ endif()
 if(GTK4_VERSION VERSION_GREATER_EQUAL "4.8")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_8)
 endif()
+if(GTK4_VERSION VERSION_GREATER_EQUAL "4.12")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_12)
+endif()
 if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_2)
+endif()
+if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.3")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_3)
+endif()
+if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.4")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_4)
+endif()
+if(VALA_VERSION VERSION_GREATER_EQUAL "0.56.5" AND VALA_VERSION VERSION_LESS "0.58")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} VALA_0_56_GREATER_5)
+endif()
+if(VALA_VERSION VERSION_GREATER_EQUAL "0.56.11" AND VALA_VERSION VERSION_LESS "0.58")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} VALA_0_56_GREATER_11)
+endif()
+if(VALA_VERSION VERSION_EQUAL "0.56.11")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} VALA_0_56_11)
+endif()
+if(VALA_VERSION VERSION_EQUAL "0.56.12")
+    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} VALA_0_56_12)
 endif()
 
 vala_precompile(MAIN_VALA_C
@@ -124,8 +148,6 @@ SOURCES
     src/main.vala
 
     src/ui/application.vala
-    src/ui/avatar_drawer.vala
-    src/ui/avatar_image.vala
     src/ui/conversation_list_titlebar.vala
     src/ui/conversation_view.vala
     src/ui/conversation_view_controller.vala
@@ -178,11 +200,10 @@ SOURCES
     src/ui/chat_input/smiley_converter.vala
     src/ui/chat_input/view.vala
 
-    src/ui/contact_details/blocking_provider.vala
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/permissions_provider.vala
-    src/ui/contact_details/dialog.vala
-    src/ui/contact_details/muc_config_form_provider.vala
+
+    src/ui/conversation_details.vala
 
     src/ui/conversation_selector/conversation_selector.vala
     src/ui/conversation_selector/conversation_selector_row.vala
@@ -209,9 +230,15 @@ SOURCES
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
 
+    src/ui/widgets/avatar_picture.vala
     src/ui/widgets/date_separator.vala
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
+
+    src/view_model/conversation_details.vala
+    src/view_model/preferences_row.vala
+
+    src/windows/conversation_details.vala
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi
@@ -232,6 +259,7 @@ add_executable(dino ${MAIN_VALA_C} ${MAIN_GRESOURCES_TARGET})
 add_dependencies(dino ${GETTEXT_PACKAGE}-translations)
 target_include_directories(dino PRIVATE src)
 target_link_libraries(dino libdino ${MAIN_PACKAGES})
+set_target_properties(dino PROPERTIES ENABLE_EXPORTS TRUE)
 
 if(WIN32)
     target_link_libraries(dino -mwindows)

@@ -8,10 +8,9 @@
         <property name="margin-bottom">3</property>
         <property name="column-spacing">10</property>
         <child>
-            <object class="DinoUiAvatarImage" id="image">
-                <property name="allow_gray">False</property>
-                <property name="height">30</property>
-                <property name="width">30</property>
+            <object class="DinoUiAvatarPicture" id="picture">
+                <property name="height-request">30</property>
+                <property name="width-request">30</property>
                 <property name="valign">center</property>
             </object>
         </child>

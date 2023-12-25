@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 25;
+    private const int VERSION = 26;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -17,6 +17,7 @@ public class Database : Qlite.Database {
         public Column<string> alias = new Column.Text("alias");
         public Column<bool> enabled = new Column.BoolInt("enabled");
         public Column<string> roster_version = new Column.Text("roster_version") { min_version=2 };
+        // no longer used. all usages already removed. remove db column at some point.
         public Column<long> mam_earliest_synced = new Column.Long("mam_earliest_synced") { min_version=4 };
 
         internal AccountTable(Database db) {
@@ -93,6 +94,11 @@ public class Database : Qlite.Database {
 
             // deduplication
             index("message_account_counterpart_stanzaid_idx", {account_id, counterpart_id, stanza_id});
+            index("message_account_counterpart_serverid_idx", {account_id, counterpart_id, server_id});
+
+            // message by marked
+            index("message_account_marked_idx", {account_id, marked});
+
             fts({body});
         }
     }

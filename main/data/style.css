@@ -3,6 +3,8 @@
  * It provides sane defaults for things that are very Dino-specific.
  */
 
+@import url("conversation_details.css");
+
 statuspage {
     opacity: 0.5;
 }
@@ -31,8 +33,8 @@ window.dino-main .dino-conversation viewport /* Some themes set this */ {
 }
 
 @keyframes highlight {
-    from { background: alpha(@warning_color, 0.5); }
-    to { background: transparent; }
+    from { background-color: alpha(@accent_color, 0.5); }
+    to { background-color: transparent; }
 }
 
 window.dino-main .dino-conversation .highlight-once {
@@ -42,7 +44,7 @@ window.dino-main .dino-conversation .highlight-once {
     animation-name: highlight;
 }
 
-window.dino-main .dino-conversation .message-box.highlight {
+window.dino-main .dino-conversation .message-box.highlight:not(.highlight-once) {
     background: @window_bg_color;
 }
 
@@ -117,6 +119,10 @@ window.dino-main .dino-quote {
 
 window.dino-main .dino-quote:hover {
     background: alpha(@theme_fg_color, 0.08);
+}
+
+picture.avatar {
+    border-radius: 3px;
 }
 
 /* Overlay Toolbar */
@@ -392,17 +398,13 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
     text-shadow: 0 0 2px black;
 }
 
-.dino-call-window .call-header-background {
+.dino-call-window .participant-header-bar {
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0));
     border: 0;
     border-radius: 0;
 }
 
-.dino-call-window .participant-header-bar button {
-    background: none;
-}
-
-.dino-call-window .participant-header-bar button:hover {
+.dino-call-window .participant-header-bar button:hover:not(.close) {
     background: rgba(255,255,255,0.15);
     border-color: rgba(255,255,255,0);
     box-shadow: none;

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="DinoUiViewModelConversationDetails" id="model"/>
+  <template class="DinoUiConversationDetailsDialog">
+    <property name="default-width">600</property>
+<!--    <property name="default-height">400</property>-->
+    <property name="modal">True</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar">
+            <style>
+              <class name="flat"/>
+              <class name="extended-headerbar"/>
+            </style>
+            <property name="title_widget">
+              <object class="GtkBox"/>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwClamp">
+                <style>
+                  <class name="extended-headerbar"/>
+                  <class name="extended-headerbar-end"/>
+                </style>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">18</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">18</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <child>
+                          <object class="DinoUiAvatarPicture" id="picture">
+                            <property name="height-request">72</property>
+                            <property name="width-request">72</property>
+                            <property name="halign">center</property>
+                            <property name="model" bind-source="model" bind-property="avatar"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="label" bind-source="model" bind-property="name"/>
+                            <property name="ellipsize">end</property>
+                            <property name="hexpand">True</property>
+                            <property name="valign">center</property>
+                            <property name="xalign">0</property>
+                            <attributes>
+                              <attribute name="scale" value="1.4"/>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <child>
+                          <object class="GtkButton" id="pin_button">
+                            <child>
+                              <object class="AdwButtonContent" id="pin_button_content">
+                                <property name="icon-name">view-pin-symbolic</property>
+                                <property name="label">Pin</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="notification_button_toggle">
+                            <child>
+                              <object class="AdwButtonContent" id="notification_button_toggle_content">
+                                <property name="icon-name">notification-symbolic</property>
+                                <property name="label">Mute</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkMenuButton" id="notification_button_menu">
+                            <property name="menu_model">notification_menu_button_menu_model</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                  <object class="AdwButtonContent" id="notification_button_menu_content">
+                                    <property name="icon-name">notification-symbolic</property>
+                                    <property name="label">Mute</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">pan-down-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwSplitButton" id="notification_button_split">
+                            <property name="menu_model">notification_split_button_menu_model</property>
+                            <child>
+                              <object class="AdwButtonContent" id="notification_button_split_content">
+                                <property name="icon-name">notification-symbolic</property>
+                                <property name="label">Mute</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="block_button">
+                            <property name="visible" bind-source="model" bind-property="show-blocked" bind-flags="sync-create"/>
+                            <child>
+                              <object class="AdwButtonContent" id="block_button_content">
+                                <property name="icon-name">action-unavailable-symbolic</property>
+                                <property name="label">Block</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="propagate-natural-height">True</property>
+                <child>
+                  <object class="AdwClamp">
+                    <child>
+                      <object class="GtkBox" id="about_box">
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">12</property>
+                        <property name="margin-end">12</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-top">12</property>
+                        <property name="margin-bottom">40</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+
+  <menu id="notification_split_button_menu_model">
+    <section>
+      <item>
+        <attribute name="label">Enable notifications</attribute>
+        <attribute name="action">notification.on</attribute>
+      </item>
+      <item>
+        <attribute name="label">Disable notifications</attribute>
+        <attribute name="action">notification.off</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Reset to default</attribute>
+        <attribute name="action">notification.default</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="notification_menu_button_menu_model">
+    <section>
+      <item>
+        <attribute name="label">Notify for all messages</attribute>
+        <attribute name="action">notification.on</attribute>
+      </item>
+      <item>
+        <attribute name="label">Notify only for mentions</attribute>
+        <attribute name="action">notification.highlight</attribute>
+      </item>
+      <item>
+        <attribute name="label">Disable notifications</attribute>
+        <attribute name="action">notification.off</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Reset to default</attribute>
+        <attribute name="action">notification.default</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

@@ -94,6 +94,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.received");
         string[] actions = new string[] {"default", "Open conversation"};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", replace_id, "", conversation_display_name, body, actions, hash_table, -1);
@@ -120,6 +121,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         hash_table["sound-name"] = new Variant.string("phone-incoming-call");
         hash_table["urgency"] = new Variant.byte(2);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
@@ -158,6 +160,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "Open conversation", "accept", _("Accept"), "deny", _("Deny")};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, -1);
@@ -197,6 +200,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
 
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.error");
         try {
             yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, new string[]{}, hash_table, -1);
         } catch (Error e) {
@@ -217,6 +221,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(direct_conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"default", "", "reject", _("Reject"), "accept", _("Accept")};
 
         try {
@@ -250,6 +255,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
         string[] actions = new string[] {"deny", _("Deny"), "accept", _("Accept")};
 
         try {
@@ -267,28 +273,37 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
     }
 
     public async void retract_content_item_notifications() {
-        if (content_notifications != null) {
-            foreach (uint32 id in content_notifications.values) {
-                try {
-                    dbus_notifications.close_notification.begin(id);
-                } catch (Error e) { }
-            }
-            content_notifications.clear();
+        foreach (uint32 id in content_notifications.values) {
+            try {
+                dbus_notifications.close_notification.begin(id);
+            } catch (Error e) { }
         }
+        content_notifications.clear();
     }
 
     public async void retract_conversation_notifications(Conversation conversation) {
-        if (content_notifications.has_key(conversation)) {
-            try {
+        try {
+            if (content_notifications.has_key(conversation)) {
                 dbus_notifications.close_notification.begin(content_notifications[conversation]);
-            } catch (Error e) { }
-        }
-        content_notifications.unset(conversation);
+                content_notifications.unset(conversation);
+            }
+
+            if (conversation_notifications.has_key(conversation)) {
+                foreach (var notification_id in conversation_notifications[conversation]) {
+                    dbus_notifications.close_notification.begin(notification_id);
+                }
+                conversation_notifications.unset(conversation);
+            }
+        } catch (Error e) { }
     }
 
     private async Variant get_conversation_icon(Conversation conversation) {
-        AvatarDrawer drawer = yield Util.get_conversation_avatar_drawer(stream_interactor, conversation);
-        Cairo.ImageSurface surface = drawer.size(40, 40).draw_image_surface();
+        CompatAvatarDrawer drawer = new CompatAvatarDrawer() {
+            model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation),
+            width_request = 40,
+            height_request = 40
+        };
+        Cairo.ImageSurface surface = drawer.draw_image_surface();
         Gdk.Pixbuf avatar = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height());
         var bytes = avatar.pixel_bytes;
         var image_bytes = Variant.new_from_data<Bytes>(new VariantType("ay"), bytes.get_data(), true, bytes);

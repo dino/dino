@@ -72,27 +72,27 @@ namespace Xmpp.Xep.Omemo {
     }
 
     public class EncryptionResult {
-        public int lost { get; internal set; }
-        public int success { get; internal set; }
-        public int unknown { get; internal set; }
-        public int failure { get; internal set; }
+        public int lost { get; set; }
+        public int success { get; set; }
+        public int unknown { get; set; }
+        public int failure { get; set; }
     }
 
     public class EncryptState {
-        public bool encrypted { get; internal set; }
-        public int other_devices { get; internal set; }
-        public int other_success { get; internal set; }
-        public int other_lost { get; internal set; }
-        public int other_unknown { get; internal set; }
-        public int other_failure { get; internal set; }
-        public int other_waiting_lists { get; internal set; }
+        public bool encrypted { get; set; }
+        public int other_devices { get; set; }
+        public int other_success { get; set; }
+        public int other_lost { get; set; }
+        public int other_unknown { get; set; }
+        public int other_failure { get; set; }
+        public int other_waiting_lists { get; set; }
 
-        public int own_devices { get; internal set; }
-        public int own_success { get; internal set; }
-        public int own_lost { get; internal set; }
-        public int own_unknown { get; internal set; }
-        public int own_failure { get; internal set; }
-        public bool own_list { get; internal set; }
+        public int own_devices { get; set; }
+        public int own_success { get; set; }
+        public int own_lost { get; set; }
+        public int own_unknown { get; set; }
+        public int own_failure { get; set; }
+        public bool own_list { get; set; }
 
         public void add_result(EncryptionResult enc_res, bool own) {
             if (own) {

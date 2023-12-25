@@ -2,7 +2,6 @@ using Dino.Entities;
 
 namespace Dino {
 
-extern const string VERSION;
 public string get_version() { return VERSION; }
 public string get_short_version() {
     if (!VERSION.contains("~")) return VERSION;
@@ -40,12 +39,12 @@ public interface Application : GLib.Application {
         PresenceManager.start(stream_interactor);
         CounterpartInteractionManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
+        Calls.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
         MucManager.start(stream_interactor);
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
-        Calls.start(stream_interactor, db);
         CallStore.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
@@ -58,6 +57,7 @@ public interface Application : GLib.Application {
         Reactions.start(stream_interactor, db);
         Replies.start(stream_interactor, db);
         FallbackBody.start(stream_interactor, db);
+        ContactModels.start(stream_interactor);
 
         create_actions();
 
