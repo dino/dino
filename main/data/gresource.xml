@@ -58,6 +58,7 @@
     <file>manage_accounts/account_row.ui</file>
     <file>manage_accounts/add_account_dialog.ui</file>
     <file>manage_accounts/dialog.ui</file>
+    <file>manage_accounts/change_password_dialog.ui</file>
     <file>menu_add.ui</file>
     <file>menu_app.ui</file>
     <file>menu_conversation.ui</file>

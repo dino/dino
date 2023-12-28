@@ -70,6 +70,7 @@ sources = files(
     'src/ui/main_window_controller.vala',
     'src/ui/manage_accounts/account_row.vala',
     'src/ui/manage_accounts/add_account_dialog.vala',
+    'src/ui/manage_accounts/change_password_dialog.vala',
     'src/ui/manage_accounts/dialog.vala',
     'src/ui/notifier_freedesktop.vala',
     'src/ui/notifier_gnotifications.vala',
