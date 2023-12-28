@@ -165,7 +165,17 @@
                                                         <layout>
                                                             <property name="column">1</property>
                                                             <property name="row">2</property>
-                                                            <property name="column-span">2</property>
+                                                            <property name="column-span">1</property>
+                                                        </layout>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkButton" id="password_change_btn">
+                                                        <property name="label">⚙️</property>
+                                                        <layout>
+                                                            <property name="column">2</property>
+                                                            <property name="row">2</property>
+                                                            <property name="column-span">1</property>
                                                         </layout>
                                                     </object>
                                                 </child>
