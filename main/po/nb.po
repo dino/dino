@@ -53,7 +53,7 @@ msgstr "Ukryptert"
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:201
 msgid "Unable to send message"
-msgstr "Kunneikke sende melding"
+msgstr "Kunne ikke sende melding"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:238
@@ -182,7 +182,7 @@ msgstr "I går"
 #: main/src/ui/add_conversation/select_contact_dialog.vala:99
 #: main/data/menu_add.ui:7 main/data/shortcuts.ui:14
 msgid "Start Conversation"
-msgstr "Start samtale"
+msgstr "Start konversasjon"
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
@@ -208,7 +208,7 @@ msgstr "Inviter"
 
 #: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
-msgstr "Start privat samtale"
+msgstr "Start privat konversasjon"
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
@@ -275,7 +275,7 @@ msgstr "Lydsamtale"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr "Videoanrop"
+msgstr "Videosamtale"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
 #: main/data/shortcuts.ui:31
@@ -288,12 +288,12 @@ msgstr "Medlemmer"
 
 #: main/src/ui/call_window/participant_widget.vala:118
 msgid "Debug information"
-msgstr ""
+msgstr "Feilsøkingsinformasjon"
 
 #: main/src/ui/call_window/participant_widget.vala:127
 #: main/src/ui/conversation_content_view/call_widget.vala:148
 msgid "Calling…"
-msgstr "Ringer …"
+msgstr "Anroper …"
 
 #: main/src/ui/call_window/participant_widget.vala:129
 msgid "Ringing…"
@@ -320,7 +320,7 @@ msgstr "Kamera"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr ""
+msgstr "Intet kamera funnet."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
@@ -328,7 +328,7 @@ msgstr "Mikrofoner"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr ""
+msgstr "Ingen mikrofon funnet."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
@@ -336,7 +336,7 @@ msgstr "Høyttalere"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr ""
+msgstr "Ingen høytaler funnet."
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 #, fuzzy
@@ -548,7 +548,7 @@ msgstr "Lokale innstillinger"
 #: main/src/ui/contact_details/settings_provider.vala:28
 #: main/data/settings_dialog.ui:23
 msgid "Send typing notifications"
-msgstr "Send skrivevarsling"
+msgstr "Send skrivevarslinger"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
 #: main/data/settings_dialog.ui:32
@@ -558,15 +558,15 @@ msgstr "Send meldingskvitteringer"
 #: main/src/ui/contact_details/settings_provider.vala:38
 #: main/src/ui/contact_details/settings_provider.vala:47
 msgid "Notifications"
-msgstr "Merknader"
+msgstr "Varslinger"
 
 #: main/src/ui/contact_details/settings_provider.vala:55
 msgid "Pin conversation"
-msgstr ""
+msgstr "Marker samtale"
 
 #: main/src/ui/contact_details/settings_provider.vala:55
 msgid "Pins the conversation to the top of the conversation list"
-msgstr ""
+msgstr "Markerer samtalen på toppen av samtalelisten"
 
 #: main/src/ui/contact_details/settings_provider.vala:89
 #: main/src/ui/contact_details/settings_provider.vala:129
@@ -825,16 +825,16 @@ msgstr "Se %s for å lære hvordan du registrerer deg"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:213
 msgid "Edit message"
-msgstr ""
+msgstr "Rediger melding"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr ""
+msgstr "Du"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:8
 msgid "Add reaction"
-msgstr ""
+msgstr "Legg til reaksjon"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:53
 #: main/src/ui/conversation_content_view/file_default_widget.vala:57
@@ -944,11 +944,11 @@ msgstr "et par sekunder"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:191
 msgid "Delivered"
-msgstr ""
+msgstr "Levert"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:195
 msgid "Read"
-msgstr ""
+msgstr "Lest"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -956,15 +956,15 @@ msgstr "Denne kontakten ønsker å legge deg til på kontaktlisten sin"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
-msgstr ""
+msgstr "Denne samtalen støtter ikke reaksjoner."
 
 #: main/src/ui/conversation_content_view/item_actions.vala:33
 msgid "Reply"
-msgstr ""
+msgstr "Svar"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:43
 msgid "This conversation does not support replies."
-msgstr ""
+msgstr "Denne samtalen støtter ikke svar."
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:64
 #, c-format
@@ -999,11 +999,11 @@ msgstr "Oppdater melding"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
-msgstr "Du har ingen åpne sludringer"
+msgstr "Du har ingen åpne meldingssamtaler"
 
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
-msgstr ""
+msgstr "Trykk på + for å starte en samtale eller for å ta del i en kanal"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
@@ -1040,7 +1040,7 @@ msgstr "Stavekontroll"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
-msgstr "Moderne XMPP-sludreklient"
+msgstr "Moderne XMPP-samtaleklient"
 
 #: main/data/im.dino.Dino.appdata.xml.in:9
 msgid ""
@@ -1048,7 +1048,7 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino er en moderne friporg-sludringsklient for skrivebordet. Det fokuserer "
+"Dino er en moderne friporg-samtaleklient for skrivebordet. Det fokuserer "
 "på rask og pålitelig XMPP-opplevelse, samtidig som det hegner om "
 "personvernet."
 
@@ -1058,7 +1058,7 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"Det støtter ende-til-ende -kryptering med OMEMO og OpenPGP, og tillater "
+"Det støtter ende-til-ende-kryptering med OMEMO og OpenPGP, og tillater "
 "oppsett av personvernsrelaterte funksjoner som meldingskvitteringer og "
 "skrivevarsling."
 
@@ -1072,7 +1072,7 @@ msgstr ""
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr "Inget aktivt søk"
+msgstr "Intet aktivt søk"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
@@ -1161,14 +1161,14 @@ msgstr "Velg en annen tjener"
 
 #: main/data/manage_accounts/add_account_dialog.ui:476
 msgid "All set up!"
-msgstr "Ferdig oppsatt."
+msgstr "Alt ferdig oppsatt."
 
 #: main/data/manage_accounts/add_account_dialog.ui:506
 msgid "Finish"
 msgstr "Fullfør"
 
 #~ msgid "Click here to start a conversation or join a channel."
-#~ msgstr "Klikk her for å starte en samtale, eller ta del i en kanal."
+#~ msgstr "Klikk her for å starte en konversasjon, eller ta del i en kanal."
 
 #~ msgid "No active conversations"
 #~ msgstr "Ingen kontoer aktive"
@@ -1248,16 +1248,16 @@ msgstr "Fullfør"
 #~ msgstr "Send meldingsmarkør"
 
 #~ msgid "Start Chat"
-#~ msgstr "Start sludring"
+#~ msgstr "Start samtale"
 
 #~ msgid "Request presence updates"
 #~ msgstr "Forespør tilstedeværelsesoppdateringer"
 
 #~ msgid "This is an app-notification. Click the button to dismiss"
-#~ msgstr "Dette er en merknad i programmet. Klikk på knappen for å avvise"
+#~ msgstr "Dette er en varsling i programmet. Klikk på knappen for å avvise"
 
 #~ msgid "Join on startup"
 #~ msgstr "Ta del ved oppstart"
 
 #~ msgid "Add Chat"
-#~ msgstr "Legg til sludring"
+#~ msgstr "Legg til samtale"
