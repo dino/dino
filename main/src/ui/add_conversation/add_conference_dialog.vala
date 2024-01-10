@@ -101,6 +101,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         });
         select_fragment.remove_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;
+            if (conference_row == null) return;
             stream_interactor.get_module(MucManager.IDENTITY).remove_bookmark(conference_row.account, conference_row.bookmark);
         });
 
