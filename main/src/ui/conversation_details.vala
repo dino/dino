@@ -14,6 +14,7 @@ namespace Dino.Ui.ConversationDetails {
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             stream_interactor.get_module(MucManager.IDENTITY).get_config_form.begin(conversation.account, conversation.counterpart, (_, res) => {
                 model.data_form = stream_interactor.get_module(MucManager.IDENTITY).get_config_form.end(res);
+                if (model.data_form == null) return;
                 model.data_form_bak = model.data_form.stanza_node.to_string();
             });
         }
