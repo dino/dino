@@ -111,6 +111,10 @@ namespace Dino.Ui {
             incoming_call_revealer.reveal_child = true;
         }
 
+        private static void update_call_state_lambda(CallWidget self) {
+            if (self.time_update_handler_id != 0) self.update_call_state();
+        }
+
         private void update_call_state() {
             incoming_call_revealer.reveal_child = false;
             incoming_call_revealer.remove_css_class("incoming");
@@ -156,14 +160,7 @@ namespace Dino.Ui {
                     string duration = get_duration_string((new DateTime.now_utc()).difference(call.local_time));
                     subtitle_label.label = _("Started %s ago").printf(duration);
 
-                    time_update_handler_id = Timeout.add_seconds(get_next_time_change() + 1, () => {
-                        if (time_update_handler_id != 0) {
-                            Source.remove(time_update_handler_id);
-                            time_update_handler_id = 0;
-                            update_call_state();
-                        }
-                        return true;
-                    });
+                    time_update_handler_id = Dino.WeakTimeout.add_seconds_once(get_next_time_change() + 1, this, update_call_state_lambda);
 
                     break;
                 case Call.State.OTHER_DEVICE:
