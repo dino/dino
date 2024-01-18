@@ -26,7 +26,7 @@ namespace Xmpp.Xep.ExternalServiceDiscovery {
             service.username = service_node.get_attribute("username", NS_URI);
             service.password = service_node.get_attribute("password", NS_URI);
             string? expires_str = service_node.get_attribute("expires", NS_URI);
-            if (expires_str != null) service.expires = DateTimeProfiles.parse_string(expires_str).to_unix();
+            if (expires_str != null) service.expires = DateTimeProfiles.parse_string(expires_str);
 
             service.transport = service_node.get_attribute("transport", NS_URI);
             service.name = service_node.get_attribute("name", NS_URI);
@@ -44,7 +44,7 @@ namespace Xmpp.Xep.ExternalServiceDiscovery {
 
         public string username { get; set; }
         public string password { get; set; }
-        public int64? expires { get; set; }
+        public DateTime? expires { get; set; }
 
         public string transport { get; set; }
         public string name { get; set; }

@@ -6,6 +6,21 @@ using Xmpp.Xep;
 private extern const size_t NICE_ADDRESS_STRING_LEN;
 
 public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
+    private const int64 delay_min = 300; // 10mn
+    private const int64 delay_max = (int64) uint.MAX;
+
+    private class TimerPayload {
+        public Account account { get; set; }
+        public uint timeout_handle_id;
+
+        public TimerPayload(Account account, uint timeout_handle_id) {
+            this.account = account;
+            this.timeout_handle_id = timeout_handle_id;
+        }
+    }
+
+    private HashMap<XmppStream, TimerPayload> timeouts = new HashMap<XmppStream, TimerPayload>(XmppStream.hash_func, XmppStream.equals_func);
+
     public Dino.Application app;
 
     public void registered(Dino.Application app) {
@@ -22,10 +37,11 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
                 stream.get_module(JingleRawUdp.Module.IDENTITY).set_local_ip_address_handler(get_local_ip_addresses);
             }
         });
-        app.stream_interactor.stream_negotiated.connect(on_stream_negotiated);
+        app.stream_interactor.stream_negotiated.connect(external_discovery_refresh_services);
+        app.stream_interactor.connection_manager.connection_state_changed.connect(on_connection_state_changed);
     }
 
-    private async void on_stream_negotiated(Account account, XmppStream stream) {
+    private async void external_discovery_refresh_services(Account account, XmppStream stream) {
         Module? ice_udp_module = stream.get_module(JingleIceUdp.Module.IDENTITY) as Module;
         if (ice_udp_module == null) return;
         Gee.List<Xep.ExternalServiceDiscovery.Service> services = yield ExternalServiceDiscovery.request_services(stream);
@@ -45,6 +61,28 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
                 }
             }
         }
+
+        if (ice_udp_module.turn_service != null) {
+            DateTime? expires = ice_udp_module.turn_service.expires;
+            if (expires != null) {
+                int64 delay = (expires.to_unix() - new DateTime.now_utc().to_unix()) / 2;
+
+                if (delay >= delay_min && delay <= delay_max) {
+                    debug("Next server external service discovery in %lds (because of TURN credentials' expiry time)", (long) delay);
+
+                    uint timeout_handle_id = Timeout.add_seconds((uint) delay, () => {
+                            on_timeout(stream);
+                            return false;
+                        });
+                    timeouts[stream] = new TimerPayload(account, timeout_handle_id);
+                    timeouts[stream].account = account;
+                    timeouts[stream].timeout_handle_id = timeout_handle_id;
+                } else {
+                    warning("Bogus TURN credentials' expiry time (delay value = %ld), *not* planning next service discovery", (long) delay);
+                }
+            }
+        }
+
         if (ice_udp_module.stun_ip == null) {
             InetAddress ip = yield lookup_ipv4_addess("stun.dino.im");
             if (ip == null) return;
@@ -54,20 +92,23 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
             ice_udp_module.stun_ip = ip.to_string();
             ice_udp_module.stun_port = 7886;
         }
+    }
 
-        if (ice_udp_module.turn_service != null) {
-            int64? expires = ice_udp_module.turn_service.expires;
-            if (expires != null) {
-                uint delay = (uint) (expires - new DateTime.now_utc().to_unix()) / 2;
+    public void on_timeout(XmppStream stream) {
+        if (!timeouts.has_key(stream)) return;
+        TimerPayload pl = timeouts[stream];
+        timeouts.unset(stream);
+        external_discovery_refresh_services.begin(pl.account, stream);
+    }
 
-                debug("Next server external service discovery in %us (because of TURN credentials' expiring time)", delay);
+    public void on_connection_state_changed(Account account, ConnectionManager.ConnectionState state) {
+        if (state == ConnectionManager.ConnectionState.DISCONNECTED) {
+            XmppStream? stream = app.stream_interactor.connection_manager.get_stream(account);
+            if (stream == null) return;
+            if (!timeouts.has_key(stream)) return;
 
-                Timeout.add_seconds(delay, () => {
-                    if (app.stream_interactor.connection_manager.get_state(account) != ConnectionManager.ConnectionState.CONNECTED) return false;
-                    on_stream_negotiated.begin(account, stream);
-                    return false;
-                });
-            }
+            Source.remove(timeouts[stream].timeout_handle_id);
+            timeouts.unset(stream);
         }
     }
 
