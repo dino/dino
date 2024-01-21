@@ -183,6 +183,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private void populate_grid_data(Account account) {
+        active_switch.sensitive = false;
         active_switch.state_set.disconnect(change_account_state);
 
         picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(new Conversation(account.bare_jid, account, Conversation.Type.CHAT), account.bare_jid);
@@ -213,10 +214,13 @@ public class Dialog : Gtk.Dialog {
             ConnectionManager.ConnectionState state = stream_interactor.connection_manager.get_state(account);
             switch (state) {
                 case ConnectionManager.ConnectionState.CONNECTING:
+                    active_switch.sensitive = false;
                     state_label.label = _("Connecting…"); break;
                 case ConnectionManager.ConnectionState.CONNECTED:
+                    active_switch.sensitive = true;
                     state_label.label = _("Connected"); break;
                 case ConnectionManager.ConnectionState.DISCONNECTED:
+                    active_switch.sensitive = true;
                     state_label.label = _("Disconnected"); break;
             }
             state_label.remove_css_class("is_error");
