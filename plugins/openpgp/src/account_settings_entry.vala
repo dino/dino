@@ -69,7 +69,7 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
             return;
         }
         if (keys.size == 0) {
-            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one!")));
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one or check if your key isn't expired or revoked!")));
             return;
         }
 
