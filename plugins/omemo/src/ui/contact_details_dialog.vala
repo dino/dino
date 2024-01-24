@@ -303,9 +303,9 @@ public class ContactDetailsDialog : Gtk.Dialog {
 
 public class FingerprintRow : ListBoxRow {
 
-    private Image trust_image = new Image() { visible = true, halign = Align.END };
+    private Image trust_image = new Image() { halign = Align.END };
     private Label fingerprint_label = new Label("") { use_markup=true, justify=Justification.RIGHT, halign = Align.START, valign = Align.CENTER, hexpand = false };
-    private Label trust_label = new Label(null) { visible = true, hexpand = true, xalign = 0 };
+    private Label trust_label = new Label(null) { halign = Align.END, hexpand = true, xalign = 0 };
 
     public Row row;
 
