@@ -105,7 +105,7 @@ public class ContactDetailsDialog : Gtk.Dialog {
             const int QUIET_ZONE_MODULES = 4;  // MUST be at least 4
             const int MODULE_SIZE_PX = 4;  // arbitrary
             var qr_paintable = new QRcode(iri, 2)
-                .to_paintable(MODULE_SIZE_PX * qrcode_picture.scale_factor);
+                .to_paintable(MODULE_SIZE_PX);
             qrcode_picture.paintable = qr_paintable;
             qrcode_picture.margin_top = qrcode_picture.margin_end =
                     qrcode_picture.margin_bottom = qrcode_picture.margin_start = QUIET_ZONE_MODULES * MODULE_SIZE_PX;
