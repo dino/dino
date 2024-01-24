@@ -126,20 +126,17 @@
                                                                                         <child>
                                                                                             <object class="GtkMenuButton" id="show_qrcode_button">
                                                                                                 <property name="icon-name">dino-qr-code-symbolic</property>
-                                                                                                <property name="halign">start</property>
                                                                                                 <property name="hexpand">1</property>
+                                                                                                <property name="halign">end</property>
+                                                                                                <property name="valign">center</property>
                                                                                             </object>
                                                                                         </child>
                                                                                         <child>
                                                                                             <object class="GtkButton" id="copy_button">
-                                                                                                <property name="halign">end</property>
+                                                                                                <property name="icon-name">edit-copy-symbolic</property>
                                                                                                 <property name="hexpand">1</property>
-                                                                                                <child>
-                                                                                                    <object class="GtkImage">
-                                                                                                        <property name="icon-size">normal</property>
-                                                                                                        <property name="icon-name">edit-copy-symbolic</property>
-                                                                                                    </object>
-                                                                                                </child>
+                                                                                                <property name="halign">end</property>
+                                                                                                <property name="valign">center</property>
                                                                                             </object>
                                                                                         </child>
                                                                                     </object>
