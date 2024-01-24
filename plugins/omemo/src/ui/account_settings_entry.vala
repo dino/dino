@@ -47,7 +47,7 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
             fingerprint.set_markup("%s\n<span font='8'>%s</span>".printf(_("Own fingerprint"), _("Will be generated on first connection")));
         } else {
             string res = fingerprint_markup(fingerprint_from_base64(((!)row)[plugin.db.identity.identity_key_public_base64]));
-            fingerprint.set_markup("%s\n<span font_family='monospace' font='8'>%s</span>".printf(_("Own fingerprint"), res));
+            fingerprint.set_markup("%s\n%s".printf(_("Own fingerprint"), res));
             btn.visible = true;
         }
     }
