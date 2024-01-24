@@ -9,7 +9,7 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
 
     private Box box = new Box(Orientation.HORIZONTAL, 0);
     private Label fingerprint = new Label("...") { xalign=0 };
-    private Button btn = new Button.from_icon_name("view-list-symbolic") { has_frame=false, valign=Align.CENTER, visible=false };
+    private Button btn = new Button.from_icon_name("view-list-symbolic") { has_frame=false, margin_start=10, valign=Align.CENTER, visible=false };
 
     public override string id { get { return "omemo_identity_key"; }}
 
