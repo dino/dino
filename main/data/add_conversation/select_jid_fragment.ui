@@ -2,68 +2,72 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiSelectJidFragment">
-        <property name="height_request">500</property>
-        <property name="width_request">460</property>
         <child>
-            <object class="GtkGrid">
-                <property name="hexpand">1</property>
-                <property name="margin-top">20</property>
-                <property name="margin-end">80</property>
-                <property name="margin-bottom">20</property>
-                <property name="margin-start">80</property>
-                <property name="orientation">vertical</property>
-                <property name="row-spacing">10</property>
-                <child>
-                    <object class="GtkEntry" id="entry">
-                        <property name="activates_default">1</property>
-                        <property name="hexpand">1</property>
-                    </object>
-                </child>
+            <object class="AdwClamp">
+                <property name="maximum-size">350</property>
+                <property name="tightening-threshold">300</property>
                 <child>
                     <object class="GtkBox">
                         <property name="hexpand">1</property>
-                        <property name="vexpand">1</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <property name="margin-top">20</property>
+                        <property name="margin-bottom">20</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">10</property>
                         <child>
-                            <object class="GtkFrame">
-                                <property name="child">
-                                    <object class="GtkScrolledWindow" id="scrolled_window">
-                                        <property name="hscrollbar_policy">never</property>
-                                        <property name="hexpand">1</property>
-                                        <property name="vexpand">1</property>
-                                        <property name="child">
-                                            <object class="GtkBox" id="box">
-                                                <property name="orientation">vertical</property>
-                                            </object>
-                                        </property>
-                                    </object>
-                                </property>
+                            <object class="GtkEntry" id="entry">
+                                <property name="activates-default">1</property>
+                                <property name="hexpand">1</property>
                             </object>
                         </child>
                         <child>
                             <object class="GtkBox">
-                                <property name="css-classes">toolbar</property>
-                                <style>
-                                    <class name="toolbar"/>
-                                    <class name="inline-toolbar"/>
-                                </style>
+                                <property name="hexpand">1</property>
+                                <property name="vexpand">1</property>
+                                <property name="orientation">vertical</property>
                                 <child>
-                                    <object class="GtkButton" id="add_button">
-                                        <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">list-add-symbolic</property>
-                                                <property name="icon-size">normal</property>
+                                    <object class="GtkFrame">
+                                        <property name="child">
+                                            <object class="GtkScrolledWindow" id="scrolled_window">
+                                                <property name="hscrollbar-policy">never</property>
+                                                <property name="hexpand">1</property>
+                                                <property name="vexpand">1</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="box">
+                                                        <property name="orientation">vertical</property>
+                                                    </object>
+                                                </property>
                                             </object>
-                                        </child>
+                                        </property>
                                     </object>
                                 </child>
                                 <child>
-                                    <object class="GtkButton" id="remove_button">
-                                        <property name="sensitive">0</property>
+                                    <object class="GtkBox">
+                                        <property name="css-classes">toolbar</property>
+                                        <style>
+                                            <class name="toolbar"/>
+                                            <class name="inline-toolbar"/>
+                                        </style>
                                         <child>
-                                            <object class="GtkImage">
-                                                <property name="icon-name">list-remove-symbolic</property>
-                                                <property name="icon-size">normal</property>
+                                            <object class="GtkButton" id="add_button">
+                                                <child>
+                                                    <object class="GtkImage">
+                                                        <property name="icon-name">list-add-symbolic</property>
+                                                        <property name="icon-size">normal</property>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkButton" id="remove_button">
+                                                <property name="sensitive">0</property>
+                                                <child>
+                                                    <object class="GtkImage">
+                                                        <property name="icon-name">list-remove-symbolic</property>
+                                                        <property name="icon-size">normal</property>
+                                                    </object>
+                                                </child>
                                             </object>
                                         </child>
                                     </object>

@@ -22,6 +22,8 @@ public class SelectContactDialog : Gtk.Dialog {
     public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
         Object(use_header_bar : Util.use_csd() ? 1 : 0);
         modal = true;
+        this.default_width = 460;
+        this.default_height = 550;
 
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;

@@ -17,19 +17,11 @@ foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
     endif
 endforeach
 
-if get_option('plugin-ice').enabled() and not get_option('plugin-rtp').enabled()
-    dep_gnutls_required = get_option('plugin-ice')
-elif get_option('plugin-ice').allowed() and not get_option('plugin-rtp').allowed()
-    dep_gnutls_required = get_option('plugin-ice')
-else
-    dep_gnutls_required = get_option('plugin-rtp')
-endif
-
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
 dep_glib = dependency('glib-2.0')
-dep_gnutls = dependency('gnutls', disabler: true, required: dep_gnutls_required)
+dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
 dep_gmodule = dependency('gmodule-2.0')
 dep_gpgme = dependency('gpgme', disabler: true, required: get_option('plugin-openpgp'))
 dep_gstreamer = dependency('gstreamer-1.0', disabler: true, required: get_option('plugin-rtp'))

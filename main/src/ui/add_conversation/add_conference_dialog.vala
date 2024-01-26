@@ -24,6 +24,8 @@ public class AddConferenceDialog : Gtk.Dialog {
         Object(use_header_bar : Util.use_csd() ? 1 : 0);
         this.title = _("Join Channel");
         this.modal = true;
+        this.default_width = 460;
+        this.default_height = 550;
         this.stream_interactor = stream_interactor;
 
         stack.visible = true;
@@ -101,6 +103,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         });
         select_fragment.remove_jid.connect((row) => {
             ConferenceListRow conference_row = row as ConferenceListRow;
+            if (conference_row == null) return;
             stream_interactor.get_module(MucManager.IDENTITY).remove_bookmark(conference_row.account, conference_row.bookmark);
         });
 
