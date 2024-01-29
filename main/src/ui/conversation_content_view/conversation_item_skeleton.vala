@@ -154,6 +154,14 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
             encryption_image.visible = true;
+            if (item.encryption == Encryption.OMEMO) {
+                encryption_image.tooltip_text = Util.string_if_tooltips_active(_("This message is OMEMO encrypted."));
+                Util.force_color(encryption_image, "#659E4F");
+            }
+            if (item.encryption == Encryption.PGP) {
+                encryption_image.tooltip_text = Util.string_if_tooltips_active(_("This message is PGP encrypted."));
+                Util.force_color(encryption_image, "#008BF0");
+            }
         }
 
         if (item.encryption == Encryption.NONE) {
