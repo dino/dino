@@ -73,6 +73,13 @@ public class EncryptionButton {
 
     private void update_encryption_menu_icon() {
         set_icon(conversation.encryption == Encryption.NONE ? "dino-unencrypted" : "changes-prevent-symbolic");
+        string? encbtn_tooltip = "";
+        switch(conversation.encryption){
+            case Encryption.NONE: encbtn_tooltip = _("Your message won't be encrypted. You can click to pick an encryption method."); break;
+            case Encryption.OMEMO: encbtn_tooltip = _("Your message will be OMEMO encrypted."); break;
+            case Encryption.PGP: encbtn_tooltip = _("Your message will be PGP encrypted."); break;
+        }
+        menu_button.tooltip_text = Util.string_if_tooltips_active(encbtn_tooltip);
     }
 
     private void update_visibility() {

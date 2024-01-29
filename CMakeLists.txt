@@ -103,8 +103,6 @@ endif ()
 
 # Flags for all C files
 AddCFlagIfSupported(CMAKE_C_FLAGS -Wall)
-AddCFlagIfSupported(CMAKE_C_FLAGS -Wno-incompatible-pointer-types-discards-qualifiers)
-AddCFlagIfSupported(CMAKE_C_FLAGS --disable-warnings-as-errors)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Wextra)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Werror=format-security)
 AddCFlagIfSupported(CMAKE_C_FLAGS -Wno-duplicate-decl-specifier)
