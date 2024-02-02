@@ -127,7 +127,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         stream_interactor.get_module(ChatInteraction.IDENTITY).focused_out.connect((conversation) => {
             if (!conversation.been_focused_out) {
                 conversation.been_focused_out = true;
-                update_unread_indicator();
+                update_unread_indicator(false);
             }
         });
 
@@ -135,7 +135,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             if (conversation.been_focused_out) {
                 conversation.been_focused_out = false;
                 conversation.been_focused_out_and_in = true;
-                update_unread_indicator();
+                update_unread_indicator(false);
             }
         });
 
@@ -417,28 +417,38 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         Idle.add(() => { on_value_notify(); return false; });
     }
 
-    private void update_unread_indicator() {
-        if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus(conversation) && conversation.been_focused_out_and_in) {
-            conversation.been_focused_out = false;
-            conversation.been_focused_out_and_in = false;
+    // update_unread_indicator() algorithm:
+    // - indicator updated according to `conversation.read_up_to_item` only if:
+    //   - focus is active (conversation active & window selected) XOR an item is being inserted
+    //   - AND (conversation is active OR focus been OUT then back IN)
+    // - the goal of this is that focusing out the conversation (leaving the window or selecting another conversation)
+    //   then focusing it back in clears the "New" marker, except if a message arrived in between
+    private void update_unread_indicator(bool item_inserted) {
+        bool is_active_focus = stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus(conversation);
 
-            ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        if ((is_active_focus && !item_inserted) || (!is_active_focus && item_inserted)) {
+            if (conversation.active || conversation.been_focused_out_and_in) {
+                conversation.been_focused_out = false;
+                conversation.been_focused_out_and_in = false;
 
-            if (read_up_to_item == null) {
-                return;
-            }
+                ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
 
-            if (unread_indicator != null) {
-                remove_item(unread_indicator);
-            }
+                if (read_up_to_item == null) {
+                    return;
+                }
 
-            int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation, read_up_to_item);
+                if (unread_indicator != null) {
+                    remove_item(unread_indicator);
+                }
 
-            if (current_num_unread > 0) {
-                unread_indicator = new UnreadIndicatorItem(read_up_to_item.time);
-                do_insert_item(unread_indicator);
-            } else {
-                unread_indicator = null;
+                int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation, read_up_to_item);
+
+                if (current_num_unread > 0) {
+                    unread_indicator = new UnreadIndicatorItem(read_up_to_item.time);
+                    do_insert_item(unread_indicator);
+                } else {
+                    unread_indicator = null;
+                }
             }
         }
     }
@@ -453,7 +463,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             }
         }
 
-        update_unread_indicator();
+        update_unread_indicator(true);
 
         do_insert_item(item);
     }
