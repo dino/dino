@@ -36,6 +36,8 @@ public class Conversation : Object {
     public Encryption encryption { get; set; default = Encryption.NONE; }
     public Message? read_up_to { get; set; }
     public int read_up_to_item { get; set; default=-1; }
+    public bool been_focused_out { get; set; default = true; }
+    public bool been_focused_out_and_in { get; set; default = true; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
     public NotifySetting notify_setting { get; set; default = NotifySetting.DEFAULT; }

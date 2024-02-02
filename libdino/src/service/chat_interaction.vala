@@ -32,14 +32,21 @@ public class ChatInteraction : StreamInteractionModule, Object {
         stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(new_item);
     }
 
-    public int get_num_unread(Conversation conversation) {
+    public int get_num_unread(Conversation conversation, ContentItem? read_up_to_item_opt = null) {
         Database db = Dino.Application.get_default().db;
 
         Qlite.QueryBuilder query = db.content_item.select()
                 .with(db.content_item.conversation_id, "=", conversation.id)
                 .with(db.content_item.hide, "=", false);
 
-        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        ContentItem? read_up_to_item;
+
+        if (read_up_to_item_opt == null) {
+            read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        } else {
+            read_up_to_item = read_up_to_item_opt;
+        }
+
         if (read_up_to_item != null) {
             string time = read_up_to_item.time.to_unix().to_string();
             string id = read_up_to_item.id.to_string();

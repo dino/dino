@@ -72,7 +72,16 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         message_menu_box.append(reaction_button);
     }
 
-    private UnreadIndicatorItem? unread_indicator = null;
+    private UnreadIndicatorItem? unread_indicator;
+
+    public DateTime? get_read_up_to_time(Conversation conversation) {
+        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        if (read_up_to_item != null) {
+            return read_up_to_item.time;
+        } else {
+            return null;
+        }
+    }
 
     public ConversationView init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -113,6 +122,21 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         main_wrap_box.add_controller(click_controller);
         click_controller.pressed.connect_after((n, x, y) => {
             update_highlight(x, y);
+        });
+
+        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_out.connect((conversation) => {
+            if (!conversation.been_focused_out) {
+                conversation.been_focused_out = true;
+                update_unread_indicator();
+            }
+        });
+
+        stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((conversation) => {
+            if (conversation.been_focused_out) {
+                conversation.been_focused_out = false;
+                conversation.been_focused_out_and_in = true;
+                update_unread_indicator();
+            }
         });
 
         return this;
@@ -378,8 +402,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
         content_populator.init(this, conversation, Plugins.WidgetType.GTK4);
         subscription_notification.init(conversation, this);
-
-        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((item, conversation) => update_unread_indicator());
     }
 
     private void display_latest() {
@@ -387,8 +409,6 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         foreach (ContentMetaItem item in items) {
             do_insert_item(item);
         }
-
-        update_unread_indicator();
 
         Application app = GLib.Application.get_default() as Application;
         foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
@@ -398,20 +418,28 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void update_unread_indicator() {
-        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
-        int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
-        if (current_num_unread == 0 && unread_indicator != null) {
-            remove_item(unread_indicator);
-            unread_indicator = null;
-        }
+        if (stream_interactor.get_module(ChatInteraction.IDENTITY).is_active_focus(conversation) && conversation.been_focused_out_and_in) {
+            conversation.been_focused_out = false;
+            conversation.been_focused_out_and_in = false;
 
-        if (read_up_to_item != null && current_num_unread > 0) {
+            ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+
+            if (read_up_to_item == null) {
+                return;
+            }
+
             if (unread_indicator != null) {
                 remove_item(unread_indicator);
             }
 
-            unread_indicator = new UnreadIndicatorItem(read_up_to_item);
-            do_insert_item(unread_indicator);
+            int current_num_unread = stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation, read_up_to_item);
+
+            if (current_num_unread > 0) {
+                unread_indicator = new UnreadIndicatorItem(read_up_to_item.time);
+                do_insert_item(unread_indicator);
+            } else {
+                unread_indicator = null;
+            }
         }
     }
 
@@ -645,14 +673,14 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 }
 
 private class UnreadIndicatorItem : Plugins.MetaConversationItem {
-    public UnreadIndicatorItem(ContentItem after_item) {
-        this.time = after_item.time;
-        this.secondary_sort_indicator = int.MAX;
+    public UnreadIndicatorItem(DateTime time) {
+        this.time = time;
+        this.secondary_sort_indicator = int.MIN;
     }
 
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
         Box box = new Box(Orientation.HORIZONTAL, 0) { hexpand=true, visible=true };
-        Label label = new Label("Unread") { use_markup=true, halign=Align.END, hexpand=false, visible=true };
+        Label label = new Label("New") { use_markup=true, halign=Align.END, hexpand=false, visible=true };
         label.get_style_context().add_class("dino-unread-label");
         Separator sep = new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true, visible=true };
         sep.get_style_context().add_class("dino-unread-label");
