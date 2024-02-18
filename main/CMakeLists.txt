@@ -43,6 +43,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-bell-large-symbolic.svg
     icons/scalable/status/dino-block-symbolic.svg
     icons/scalable/status/dino-double-tick-symbolic.svg
+    icons/scalable/status/dino-unencrypted.svg
     icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
     icons/scalable/status/dino-status-away.svg

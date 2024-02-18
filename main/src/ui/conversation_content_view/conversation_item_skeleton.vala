@@ -156,7 +156,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             encryption_image.visible = true;
             if (item.encryption == Encryption.OMEMO) {
                 encryption_image.tooltip_text = Util.string_if_tooltips_active(_("This message is OMEMO encrypted."));
-                Util.force_color(encryption_image, "#659E4F");
+                Util.force_color(encryption_image, "#0AEC00");
             }
             if (item.encryption == Encryption.PGP) {
                 encryption_image.tooltip_text = Util.string_if_tooltips_active(_("This message is PGP encrypted."));
@@ -168,7 +168,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             if (conversation.encryption != Encryption.NONE) {
                 encryption_image.icon_name = "changes-allow-symbolic";
                 encryption_image.tooltip_text = Util.string_if_tooltips_active(_("Unencrypted"));
-                Util.force_error_color(encryption_image);
+                Util.force_color(encryption_image, "#F02900");
                 encryption_image.visible = true;
             } else if (conversation.encryption == Encryption.NONE) {
                 encryption_image.icon_name = null;

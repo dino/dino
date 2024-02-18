@@ -72,7 +72,7 @@ public class EncryptionButton {
     }
 
     private void update_encryption_menu_icon() {
-        set_icon(conversation.encryption == Encryption.NONE ? "changes-allow-symbolic" : "changes-prevent-symbolic");
+        set_icon(conversation.encryption == Encryption.NONE ? "dino-unencrypted" : "changes-prevent-symbolic");
     }
 
     private void update_visibility() {
