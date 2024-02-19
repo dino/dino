@@ -11,7 +11,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     StreamInteractor stream_interactor;
     private Conversation? conversation;
 
-    Button button = new Button() { icon_name="view-more-symbolic" };
+    Button button = new Button() { icon_name="user-info-symbolic" };
 
     public MenuEntry(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
