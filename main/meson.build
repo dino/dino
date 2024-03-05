@@ -53,6 +53,7 @@ sources = files(
     'src/ui/conversation_content_view/quote_widget.vala',
     'src/ui/conversation_content_view/reactions_widget.vala',
     'src/ui/conversation_content_view/subscription_notification.vala',
+    'src/ui/conversation_content_view/unread_indicator_populator.vala',
     'src/ui/conversation_details.vala',
     'src/ui/conversation_list_titlebar.vala',
     'src/ui/conversation_selector/conversation_selector.vala',
@@ -121,4 +122,4 @@ install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: 
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'hicolor/scalable/apps')
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
-install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/servces')
+install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')

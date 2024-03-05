@@ -39,6 +39,9 @@ set(RESOURCE_LIST
     icons/scalable/mimetypes/dino-file-table-symbolic.svg
     icons/scalable/mimetypes/dino-file-video-symbolic.svg
 
+    icons/scalable/status/dino-bell-large-none-symbolic.svg
+    icons/scalable/status/dino-bell-large-symbolic.svg
+    icons/scalable/status/dino-block-symbolic.svg
     icons/scalable/status/dino-double-tick-symbolic.svg
     icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
@@ -189,6 +192,7 @@ SOURCES
     src/ui/conversation_content_view/quote_widget.vala
     src/ui/conversation_content_view/reactions_widget.vala
     src/ui/conversation_content_view/subscription_notification.vala
+    src/ui/conversation_content_view/unread_indicator_populator.vala
 
     src/ui/chat_input/chat_input_controller.vala
     src/ui/chat_input/chat_text_view.vala

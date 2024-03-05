@@ -4,7 +4,6 @@ dependencies = [
     dep_gee,
     dep_glib,
     dep_gmodule,
-    dep_gnutls,
     dep_gstreamer,
     dep_gstreamer_app,
     dep_gstreamer_audio,
