@@ -21,6 +21,16 @@ Build on Windows (x86_64)
     ```
 Note: the build script has some other options, their description can be found using the `--help`.
 
+Build Windows Installer (NSIS)
+------------
+Before this, you must build the project according to the instructions above. It's worth making sure that `windows-installer/dist-win64` is not empty.
+Now you should run:
+```sh
+./build-win64.sh --build-installer
+```
+
+The builded installer will be available in the directory `windows-installer/dino-installer.exe`.
+
 Resources
 ---------
 - Check out the [Dino website](https://dino.im).

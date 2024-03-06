@@ -102,7 +102,11 @@ dist_install()
     msg "Removing redudant header files"
     rm -rf $DIST_DIR/include
 
+    msg "Copy LICENSE"
+    cp -f ${PWD}/LICENSE $DIST_DIR/LICENSE
+
     msg "Copy icons, themes, locales and fonts"
+    cp -f ${PWD}/main/dino.ico $DIST_DIR/dino.ico
     cp -rf /mingw64/share/xml $DIST_DIR/share
     mkdir -p $DIST_DIR/etc/fonts && cp -r /mingw64/etc/fonts $DIST_DIR/etc/
     mkdir -p $DIST_DIR/share/icons && cp -r /mingw64/share/icons $DIST_DIR/share/
@@ -116,6 +120,15 @@ dist_install()
     curl -L -o $DIST_DIR/share/hunspell/en_US.dic https://github.com/elastic/hunspell/raw/master/dicts/en_US/en_US.dic
 
     msg "Successfully installed!"
+}
+
+build_installer()
+{
+    msg "Building an installer for Windows using NSIS"
+    cd windows-installer
+    makensis dino.nsi
+    msg "Installer successfully builded!"
+    cd ..
 }
 
 clean()
@@ -132,6 +145,7 @@ usage: $0 [OPTION]
   --configure                configure the project
   --build                    build the project
   --dist-install             install the builded project
+  --build-installer          build installer (using NSIS)
   --clean                    remove build artifacts
   --help                     show this help
 
@@ -149,6 +163,7 @@ case $1 in
     "--configure" ) configure ;;
     "--build" ) build ;;
     "--dist-install" ) dist_install ;;
+    "--build-installer") build_installer ;;
     "--clean" ) clean ;;
     "--help" ) help ;;
     "" )
