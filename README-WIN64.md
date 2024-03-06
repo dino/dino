@@ -15,7 +15,7 @@ Build on Windows (x86_64)
     ```sh
     ./build-win64.sh --prepare
     ```
-- Start the build (the builded distribution is available in the `dist-win64` folder):
+- Start the build (the builded distribution is available in the `windows-installer/dist-win64` folder):
     ```sh
     ./build-win64.sh
     ```

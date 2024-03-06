@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DIST_DIR=$PWD/win64-dist
+DIST_DIR=${PWD}/windows-installer/win64-dist
 JOBS=$NUMBER_OF_PROCESSORS
 
 msg()
@@ -47,6 +47,7 @@ prepare()
        mingw64/mingw-w64-x86_64-gst-plugins-good \
        mingw64/mingw-w64-x86_64-gst-plugins-base \
        mingw64/mingw-w64-x86_64-gst-plugins-ugly \
+       mingw64/mingw-w64-x86_64-nsis \
        make \
        zip \
        unzip \
