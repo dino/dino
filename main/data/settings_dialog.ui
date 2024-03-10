@@ -2,13 +2,24 @@
 <interface>
     <template class="DinoUiSettingsDialog" parent="AdwPreferencesWindow">
         <property name="default-width">500</property>
-        <property name="default-height">360</property>
+        <property name="default-height">420</property>
         <property name="modal">True</property>
         <property name="search-enabled">False</property>
         <child>
             <object class="AdwPreferencesPage">
                 <child>
                     <object class="AdwPreferencesGroup">
+                        <child>
+                            <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Set _Zoom Level</property>
+                                <property name="use-underline">True</property>
+                                <child type="suffix">
+                                    <object class="GtkSpinButton" id="zoom_spinbutton">
+                                        <property name="valign">center</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title" translatable="yes">Send _Typing Notifications</property>
