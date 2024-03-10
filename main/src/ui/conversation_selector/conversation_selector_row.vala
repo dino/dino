@@ -79,7 +79,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 break;
             case Conversation.Type.GROUPCHAT:
                 has_tooltip = Util.use_tooltips();
-                set_tooltip_text(Util.string_if_tooltips_active(conversation.counterpart.bare_jid.to_string()));
+                set_tooltip_text(Util.string_if_tooltips_active(conversation.counterpart.bare_jid.to_string() + _("\n\nConversation via your account ") + conversation.account.bare_jid.to_string()));
                 break;
             case Conversation.Type.GROUPCHAT_PM:
                 break;
@@ -291,7 +291,10 @@ public class ConversationSelectorRow : ListBoxRow {
         Label label = new Label(conversation.counterpart.to_string()) { valign=Align.START, xalign=0 };
         label.attributes = new AttrList();
         label.attributes.insert(attr_weight_new(Weight.BOLD));
+        Label via_x_account_str =  new Label("") { use_markup=true, hexpand=true, xalign=0 };
+        via_x_account_str.set_markup(_("Conversation via your account ") + "<i><b>" + conversation.account.bare_jid.to_string() + "</b></i>");
 
+        grid.attach(via_x_account_str, 0, 3, 2, 2);
         grid.attach(label, 0, 0, 2, 1);
 
         Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
