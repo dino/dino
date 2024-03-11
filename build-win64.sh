@@ -23,12 +23,9 @@ prepare()
        mingw64/mingw-w64-x86_64-gcc \
        mingw64/mingw-w64-x86_64-cmake \
        mingw64/mingw-w64-x86_64-ninja \
-       mingw64/mingw-w64-x86_64-libsoup3 \
-       mingw64/mingw-w64-x86_64-gtk3 \
+       mingw64/mingw-w64-x86_64-gtk4 \
+       mingw64/mingw-w64-x86_64-libadwaita \
        mingw64/mingw-w64-x86_64-sqlite3 \
-       mingw64/mingw-w64-x86_64-gobject-introspection \
-       mingw64/mingw-w64-x86_64-glib2 \
-       mingw64/mingw-w64-x86_64-glib-networking \
        mingw64/mingw-w64-x86_64-openssl \
        mingw64/mingw-w64-x86_64-libgcrypt \
        mingw64/mingw-w64-x86_64-libgee \
@@ -37,19 +34,17 @@ prepare()
        mingw64/mingw-w64-x86_64-qrencode \
        mingw64/mingw-w64-x86_64-ntldd-git \
        mingw64/mingw-w64-x86_64-gpgme \
-       mingw64/mingw-w64-x86_64-nsis \
        mingw64/mingw-w64-x86_64-fontconfig \
-       mingw64/mingw-w64-x86_64-gspell \
-       mingw64/mingw-w64-x86_64-enchant \
-       mingw64/mingw-w64-x86_64-hunspell \
        mingw64/mingw-w64-x86_64-iso-codes \
        mingw64/mingw-w64-x86_64-gst-plugins-bad \
        mingw64/mingw-w64-x86_64-gst-plugins-good \
        mingw64/mingw-w64-x86_64-gst-plugins-base \
        mingw64/mingw-w64-x86_64-gst-plugins-ugly \
        mingw64/mingw-w64-x86_64-nsis \
+       mingw64/mingw-w64-x86_64-libsignal-protocol-c \
+       mingw64/mingw-w64-x86_64-ninja \
+       mingw64/mingw-w64-x86_64-icu \
        make \
-       zip \
        unzip \
        curl
 
@@ -80,7 +75,6 @@ dist_install()
     cp /mingw64/bin/gspawn-win64-helper.exe $DIST_DIR/bin
 
     cp /mingw64/bin/libcrypto-*-x64.dll $DIST_DIR/bin/
-    cp -r /mingw64/lib/enchant-2 $DIST_DIR/lib
     cp -r /mingw64/lib/gstreamer-1.0 $DIST_DIR/lib
     mkdir -p $DIST_DIR/lib/gdk-pixbuf-2.0/ && cp -r /mingw64/lib/gdk-pixbuf-2.0 $DIST_DIR/lib/
     mkdir -p $DIST_DIR/lib/gio/ && cp -r /mingw64/lib/gio $DIST_DIR/lib/
@@ -111,13 +105,6 @@ dist_install()
     mkdir -p $DIST_DIR/etc/fonts && cp -r /mingw64/etc/fonts $DIST_DIR/etc/
     mkdir -p $DIST_DIR/share/icons && cp -r /mingw64/share/icons $DIST_DIR/share/
     mkdir -p $DIST_DIR/share/glib-2.0/schemas && cp -rf /mingw64/share/glib-2.0/schemas $DIST_DIR/share/glib-2.0/
-
-    msg "Downloading spell check files for RU and EN (USA)"
-    mkdir -p $DIST_DIR/share/hunspell
-    curl -L -o $DIST_DIR/share/hunspell/ru.aff https://github.com/elastic/hunspell/raw/master/dicts/ru/ru.aff
-    curl -L -o $DIST_DIR/share/hunspell/ru.dic https://github.com/elastic/hunspell/raw/master/dicts/ru/ru.dic
-    curl -L -o $DIST_DIR/share/hunspell/en_US.aff https://github.com/elastic/hunspell/raw/master/dicts/en_US/en_US.aff
-    curl -L -o $DIST_DIR/share/hunspell/en_US.dic https://github.com/elastic/hunspell/raw/master/dicts/en_US/en_US.dic
 
     msg "Successfully installed!"
 }
