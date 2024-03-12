@@ -203,6 +203,7 @@ SOURCES
 
     src/ui/contact_details/settings_provider.vala
     src/ui/contact_details/permissions_provider.vala
+    src/ui/contact_details/history_provider.vala
 
     src/ui/conversation_details.vala
 

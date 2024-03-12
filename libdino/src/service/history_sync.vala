@@ -120,6 +120,31 @@ public class Dino.HistorySync {
         }
     }
 
+    public async void fetch_history(Account account, Jid target, Cancellable? cancellable = null) {
+        debug("Fetch history for %s", target.to_string());
+
+        RowOption latest_row_opt = db.mam_catchup.select()
+                .with(db.mam_catchup.account_id, "=", account.id)
+                .with(db.mam_catchup.server_jid, "=", target.to_string())
+                .with(db.mam_catchup.to_time, ">=", (long) new DateTime.from_unix_utc(0).to_unix())
+                .order_by(db.mam_catchup.to_time, "DESC")
+                .single().row();
+        Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
+
+        if (latest_row == null) {
+            warning("Failed to fetch history for %s, no mam catchup data", target.to_string());
+            return;
+        }
+
+        DateTime latest_time = new DateTime.now();
+        string latest_id = latest_row[db.mam_catchup.from_id];
+
+        Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params;
+        query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(target, latest_time, latest_id);
+
+        yield fetch_query(account, query_params, latest_row[db.mam_catchup.id], cancellable);
+    }
+
     public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
         debug("Fetch everything for %s %s", mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
         RowOption latest_row_opt = db.mam_catchup.select()

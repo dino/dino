@@ -152,6 +152,7 @@ namespace Dino.Ui.ConversationDetails {
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_details_entry(new ContactDetails.SettingsProvider(stream_interactor));
         app.plugin_registry.register_contact_details_entry(new ContactDetails.PermissionsProvider(stream_interactor));
+        app.plugin_registry.register_contact_details_entry(new ContactDetails.HistoryProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
             provider.populate(conversation, contact_details, Plugins.WidgetType.GTK4);

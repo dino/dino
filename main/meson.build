@@ -39,6 +39,7 @@ sources = files(
     'src/ui/chat_input/view.vala',
     'src/ui/contact_details/permissions_provider.vala',
     'src/ui/contact_details/settings_provider.vala',
+    'src/ui/contact_details/history_provider.vala',
     'src/ui/conversation_content_view/call_widget.vala',
     'src/ui/conversation_content_view/chat_state_populator.vala',
     'src/ui/conversation_content_view/content_populator.vala',
