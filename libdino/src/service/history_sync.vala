@@ -131,18 +131,24 @@ public class Dino.HistorySync {
                 .single().row();
         Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
 
-        if (latest_row == null) {
-            warning("Failed to fetch history for %s, no mam catchup data", target.to_string());
-            return;
+        int? db_id = null;
+        string? latest_id = null;
+        if (latest_row != null) {
+            // Local mam catchup data exists so we can filter messages based on the latest id
+            db_id = latest_row[db.mam_catchup.id];
+            latest_id = latest_row[db.mam_catchup.from_id];
         }
 
         DateTime latest_time = new DateTime.now();
-        string latest_id = latest_row[db.mam_catchup.from_id];
-
         Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params;
         query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(target, latest_time, latest_id);
 
-        yield fetch_query(account, query_params, latest_row[db.mam_catchup.id], cancellable);
+        if (db_id == null) {
+            query_params.mam_server = account.bare_jid;
+            query_params.with = target;
+        }
+
+        yield fetch_query(account, query_params, db_id, cancellable);
     }
 
     public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
@@ -346,7 +352,7 @@ public class Dino.HistorySync {
      * Iteratively fetches all pages returned for a query (until a PageResult other than MorePagesAvailable is returned)
      * @return The last PageRequestResult result
      **/
-    private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int db_id, Cancellable? cancellable = null) {
+    private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int? db_id, Cancellable? cancellable = null) {
         debug("[%s | %s] Fetch query %s - %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start != null ? query_params.start.to_string() : "", query_params.end != null ? query_params.end.to_string() : "");
         PageRequestResult? page_result = null;
         do {
@@ -358,17 +364,21 @@ public class Dino.HistorySync {
             string earliest_mam_id = page_result.query_result.first;
             long earliest_mam_time = (long)mam_times[account][earliest_mam_id].to_unix();
 
-            debug("Updating %s to %s, %s", query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
-            var query = db.mam_catchup.update()
-                    .with(db.mam_catchup.id, "=", db_id)
-                    .set(db.mam_catchup.from_time, earliest_mam_time)
-                    .set(db.mam_catchup.from_id, earliest_mam_id);
+            if (db_id != null) {
+                // Update local mam catchup data if it exists
+                debug("Updating %s to %s, %s", query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
+                var query = db.mam_catchup.update()
+                        .with(db.mam_catchup.id, "=", db_id)
+                        .set(db.mam_catchup.from_time, earliest_mam_time)
+                        .set(db.mam_catchup.from_id, earliest_mam_id);
 
-            if (page_result.page_result == PageResult.NoMoreMessages) {
-                // If the server doesn't have more messages, store that this range is at its end.
-                query.set(db.mam_catchup.from_end, true);
+                if (page_result.page_result == PageResult.NoMoreMessages) {
+                    // If the server doesn't have more messages, store that this range is at its end.
+                    query.set(db.mam_catchup.from_end, true);
+                }
+                query.perform();
             }
-            query.perform();
+
         } while (page_result.page_result == PageResult.MorePagesAvailable);
 
         return page_result;
