@@ -71,10 +71,10 @@ public class Register : StreamInteractionModule, Object{
         return ret;
     }
 
-    public async void change_password(Account account, string new_pw){
-            XmppStream stream = stream_interactor.get_stream(account);
-            if (stream == null) return;
-            yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).change_password(stream, account.full_jid, new_pw);
+    public async string? change_password(Account account, string new_pw){
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream == null) return "Connection unavailable";
+        return yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).change_password(stream, account.full_jid, new_pw);
     }
 
     public class ServerAvailabilityReturn {
@@ -235,3 +235,4 @@ public class Register : StreamInteractionModule, Object{
 }
 
 }
+

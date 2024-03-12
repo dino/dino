@@ -1170,6 +1170,23 @@ msgstr "Gata!"
 msgid "Finish"
 msgstr "Finalizare"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr ""
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr ""
 #~ "Apăsați aici pentru a porni o conversație sau a vă alătura unui canal."

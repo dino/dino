@@ -1166,6 +1166,23 @@ msgstr "Tout est prêt !"
 msgid "Finish"
 msgstr "Terminer"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr ""
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "Cliquez ici pour commencer une discussion ou rejoindre un salon."
 

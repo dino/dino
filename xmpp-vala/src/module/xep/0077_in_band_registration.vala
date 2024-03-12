@@ -30,28 +30,23 @@ public class Module : XmppStreamNegotiationModule {
         return null;
     }
     
-    public async void change_password(XmppStream stream, Jid jid, string new_pw) {
-        StanzaNode pw_change_node = new StanzaNode.build("query",NS_URI).add_self_xmlns();
-        StanzaNode username_node = new StanzaNode.build("username");
-        StanzaNode pw_node = new StanzaNode.build("password");
+    public async string? change_password(XmppStream stream, Jid jid, string new_pw) {
+        StanzaNode pw_change_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
+        StanzaNode username_node = new StanzaNode.build("username", NS_URI);
+        StanzaNode pw_node = new StanzaNode.build("password", NS_URI);
         username_node.put_node(new StanzaNode.text(jid.localpart));
         pw_node.put_node(new StanzaNode.text(new_pw));
         pw_change_node.put_node(username_node);
         pw_change_node.put_node(pw_node);
-        //pw_change_node.put_node(new StanzaNode.build());
-//       StanzaNode execute_chpw = new StanzaNode.build("command","http://jabber.org/protocol/commands").add_self_xmlns();
-//      execute_chpw.put_attribute("node","passwd");
-//       execute_chpw.put_attribute("action","execute");
-        Iq.Stanza set_password_iq = new Iq.Stanza.set(pw_change_node, "changepwtest") { to=jid.bare_jid.domain_jid };
+        Iq.Stanza set_password_iq = new Iq.Stanza.set(pw_change_node, "change1") { to=jid.bare_jid.domain_jid };
 
-//        Iq.Stanza set_password_iq = new Iq.Stanza.set(execute_chpw) { to=jid.bare_jid.domain_jid };
         Iq.Stanza chpw_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, set_password_iq);
         if (chpw_result.is_error()) {
             ErrorStanza? error_stanza = chpw_result.get_error();
-            stderr.printf("\n" + error_stanza.text ?? "Error when trying to change password \n");
+            return error_stanza.text ?? "Error";
         }
-//        StanzaNode changepw_node = new StanzaNode.build("query", NS_URI).add_self_xmlns();
 
+        return null;
     }
 
     public override bool mandatory_outstanding(XmppStream stream) { return false; }
