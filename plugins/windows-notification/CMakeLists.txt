@@ -56,16 +56,6 @@ target_include_directories(windows-notification
     ${PROJECT_SOURCE_DIR}/yolort/include
 )
 
-add_custom_target(
-    yolort ALL
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/prepare-yolort.sh
-    BYPRODUCTS yolort/include
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    VERBATIM
-    USES_TERMINAL
-    COMMENT "=====> Generating YoloRT Header files for Windows Notification plugin <====="
-)
-
 find_library(shlwapi_LIBRARY shlwapi libshlwapi libshlwapi.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
 if(NOT shlwapi_LIBRARY)
     message(FATAL_ERROR "shlwapi library not found")
@@ -80,7 +70,6 @@ target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${ntdll_LI
 target_compile_features(windows-notification PRIVATE cxx_std_17)
 target_compile_definitions(windows-notification PRIVATE WINRT_GLIB_H_INSIDE)
 target_compile_options(windows-notification PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
-add_dependencies(windows-notification yolort)
 
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)

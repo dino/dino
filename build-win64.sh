@@ -4,6 +4,21 @@ set -e
 DIST_DIR=${PWD}/windows-installer/win64-dist
 JOBS=$NUMBER_OF_PROCESSORS
 
+download_yolort()
+{
+    file_name=cppwinrt-2.0.210122.3+windows-10.0.19041+yolort-835cd4e.zip
+    original_folder=${PWD}
+
+    cd plugins\\windows-notification
+    mkdir -p yolort
+    cd yolort
+    curl -L -O https://github.com/LAGonauta/YoloRT/releases/download/v1.0.0/${file_name}
+    echo "675a6d943c97b4acdbfaa473f68d3241d1798b31a67b5529c8d29fc0176a1707 ${file_name}" | sha256sum --check --status
+    unzip -o ${file_name}
+    rm ${file_name}
+    cd ${original_folder}
+}
+
 msg()
 {
     echo -e "\e[32m$1\e[0m"
@@ -48,7 +63,12 @@ prepare()
        unzip \
        curl
 
-       msg "Successfully installed!"
+    msg "Successfully installed!"
+
+    msg "Download YoloRT headers"
+    download_yolort
+    msg "Successfully downloaded!"
+
 }
 
 configure()
