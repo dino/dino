@@ -34,6 +34,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          submodules: true
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
         with:
           manifest-path: im.dino.Dino.json

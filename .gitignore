@@ -9,3 +9,4 @@ gschemas.compiled
 windows-installer/win64-dist/
 *.exe
 *.dll
+.flatpak-builder

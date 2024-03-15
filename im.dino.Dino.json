@@ -16,6 +16,7 @@
         "--talk-name=org.freedesktop.Notifications"
     ],
     "modules": [
+        "shared-modules/libcanberra/libcanberra.json",  
         {
             "name": "libsignal-protocol-c",
             "buildsystem": "cmake-ninja",
