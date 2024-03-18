@@ -6,11 +6,14 @@ using Xmpp;
 
 namespace Dino {
 
+const int HISTORY_SYNC_MAM_PAGES = 10;
+
 public class ContentItemStore : StreamInteractionModule, Object {
     public static ModuleIdentity<ContentItemStore> IDENTITY = new ModuleIdentity<ContentItemStore>("content_item_store");
     public string id { get { return IDENTITY.id; } }
 
     public signal void new_item(ContentItem item, Conversation conversation);
+    public signal void history_loaded(Conversation conversation, ContentItem item, int count);
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -241,8 +244,10 @@ public class ContentItemStore : StreamInteractionModule, Object {
 //        return ret;
 //    }
 
-    public Gee.List<ContentItem> get_before(Conversation conversation, ContentItem item, int count) {
+    public Gee.List<ContentItem> get_before(Conversation conversation, ContentItem item, int count, bool request_from_server = true) {
+        debug("Fetching earlier messages from the db");
         long time = (long) item.time.to_unix();
+
         QueryBuilder select = db.content_item.select()
             .where(@"time < ? OR (time = ? AND id < ?)", { time.to_string(), time.to_string(), item.id.to_string() })
             .with(db.content_item.conversation_id, "=", conversation.id)
@@ -251,7 +256,18 @@ public class ContentItemStore : StreamInteractionModule, Object {
             .order_by(db.content_item.id, "DESC")
             .limit(count);
 
-        return get_items_from_query(select, conversation);
+        var items = get_items_from_query(select, conversation);
+        if (items.size == 0 && request_from_server) {
+            // Async request to get earlier messages from the server
+            var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
+            history_sync.fetch_data.begin(conversation.account, conversation.counterpart.bare_jid, item.time, HISTORY_SYNC_MAM_PAGES, (_, res) => {
+                history_sync.fetch_data.end(res);
+                debug("History loaded");
+                history_loaded(conversation, item, count);
+            });
+        }
+
+        return items;
     }
 
     public Gee.List<ContentItem> get_after(Conversation conversation, ContentItem item, int count) {

@@ -44,6 +44,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     ContentMetaItem? current_meta_item = null;
     double last_y = -1;
 
+    private void on_history_loaded(Conversation conversation, ContentItem item, int count) {
+        // We received new messages from the server
+        // Load them from the DB, but do not make new request to the server
+        load_earlier_messages(false);
+    }
+
     construct {
         this.layout_manager = new BinLayout();
 
@@ -77,6 +83,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         scrolled.vadjustment.notify["upper"].connect_after(on_upper_notify);
         scrolled.vadjustment.notify["page-size"].connect(on_upper_notify);
         scrolled.vadjustment.notify["value"].connect(on_value_notify);
+
+        var content_item_store = stream_interactor.get_module(ContentItemStore.IDENTITY);
+        content_item_store.history_loaded.connect(on_history_loaded);
 
         content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
@@ -552,17 +561,22 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
-    private void load_earlier_messages() {
+    private void load_earlier_messages(bool request_from_server = true) {
         was_value = scrolled.vadjustment.value;
-        if (!reloading_mutex.trylock()) return;
+        debug("loading earlier messages");
+        if (!reloading_mutex.trylock()) {
+            return;
+        }
+
         if (content_items.size > 0) {
-            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, 20);
+            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, 20, request_from_server);
+            debug("inserting new messages, size: %d", items.size);
             foreach (ContentMetaItem item in items) {
                 do_insert_item(item);
             }
-        } else {
-            reloading_mutex.unlock();
         }
+
+        reloading_mutex.unlock();
     }
 
     private void load_later_messages() {

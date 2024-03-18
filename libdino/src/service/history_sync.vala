@@ -120,6 +120,36 @@ public class Dino.HistorySync {
         }
     }
 
+    private async PageRequestResult fetch_pages(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int pages) {
+        debug("[%s | %s] Fetch query %s - %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start != null ? query_params.start.to_string() : "", query_params.end != null ? query_params.end.to_string() : "");
+        PageRequestResult? page_result = null;
+
+        int processed_pages = 0;
+        do {
+            page_result = yield get_mam_page(account, query_params, page_result, null);
+            processed_pages++;
+
+            debug("[%s | %s] Page result %s (got stanzas: %s)", account.bare_jid.to_string(), query_params.mam_server.to_string(), page_result.page_result.to_string(), (page_result.stanzas != null).to_string());
+            if (processed_pages == pages) {
+                break;
+            }
+
+            if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled || page_result.query_result.first == null) {
+                return page_result;
+            } 
+
+        } while (page_result.page_result == PageResult.MorePagesAvailable);
+
+        return page_result;
+    }
+
+    public async void fetch_data(Account account, Jid target, DateTime latest, int pages) {
+        debug("Fetch history for %s", target.to_string());
+
+        var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(target, latest, null);
+        yield fetch_pages(account, query_params, pages);
+    }
+
     public async void fetch_history(Account account, Jid target, Cancellable? cancellable = null) {
         debug("Fetch history for %s", target.to_string());
 

@@ -134,10 +134,14 @@ public class MessageProcessor : StreamInteractionModule, Object {
         Entities.Message message = yield parse_message_stanza(account, message_stanza);
 
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
-        if (conversation == null) return;
+        if (conversation == null) {
+            return;
+        }
 
         bool abort = yield received_pipeline.run(message, message_stanza, conversation);
-        if (abort) return;
+        if (abort) {
+            return;
+        }
 
         if (message.direction == Entities.Message.DIRECTION_RECEIVED) {
             message_received(message, conversation);
@@ -245,6 +249,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
             // If the message is a duplicate
             if (builder.count() > 0) {
+                warning("deduplicate by server id");
                 history_sync.on_server_id_duplicate(account, stanza, message);
                 return true;
             }
@@ -271,6 +276,11 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             }
             bool duplicate = builder.single().row().is_present();
+
+            if (duplicate) {
+                warning("deduplicate by uuid");
+            }
+
             return duplicate;
         }
 
@@ -291,7 +301,13 @@ public class MessageProcessor : StreamInteractionModule, Object {
         } else {
             builder.with_null(db.message.counterpart_resource);
         }
-        return builder.count() > 0;
+
+        bool duplicate = builder.count() > 0;
+        if (duplicate) {
+            warning("deduplicate by content and metadata");
+        }
+
+        return duplicate;
     }
 
     private class DeduplicateMessageListener : MessageListener {
@@ -357,7 +373,10 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (message.body == null) return true;
+            if (message.body == null) {
+                return true;
+            }
+
             stream_interactor.get_module(ContentItemStore.IDENTITY).insert_message(message, conversation);
             return false;
         }

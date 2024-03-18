@@ -41,9 +41,9 @@ public class ContentProvider : ContentItemCollection, Object {
         return ret;
     }
 
-    public Gee.List<ContentMetaItem> populate_before(Conversation conversation, ContentItem before_item, int n) {
+    public Gee.List<ContentMetaItem> populate_before(Conversation conversation, ContentItem before_item, int n, bool request_from_server = true) {
         Gee.List<ContentMetaItem> ret = new ArrayList<ContentMetaItem>();
-        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_before(conversation, before_item, n);
+        Gee.List<ContentItem> items = stream_interactor.get_module(ContentItemStore.IDENTITY).get_before(conversation, before_item, n, request_from_server);
         foreach (ContentItem item in items) {
             ret.add(create_content_meta_item(item));
         }
