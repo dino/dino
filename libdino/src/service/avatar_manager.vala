@@ -304,6 +304,24 @@ public class AvatarManager : StreamInteractionModule, Object {
             return null;
         }
     }
+
+    public string? get_avatar_filepath(Account account, Jid jid_) {
+        Jid jid = jid_;
+        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {
+            jid = jid_.bare_jid;
+        }
+
+        string? hash = null;
+        if (user_avatars.has_key(jid)) {
+            hash = user_avatars[jid];
+        } else if (vcard_avatars.has_key(jid)) {
+            hash = vcard_avatars[jid];
+        }
+
+        if (hash == null) return null;
+
+        return Path.build_filename(folder, hash);
+    }
 }
 
 }

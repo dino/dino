@@ -6,3 +6,6 @@ Makefile
 .idea
 .sqlite3
 gschemas.compiled
+windows-installer/win64-dist/
+*.exe
+*.dll

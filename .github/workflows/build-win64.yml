@@ -1,0 +1,26 @@
+name: Build for Windows
+on: [pull_request, push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: git
+      - run: git config --global core.autocrlf input
+      - uses: actions/checkout@v4
+      - name: Build Dino
+        run: |
+          msys2 -c './build-win64.sh --prepare'
+          msys2 -c './build-win64.sh'
+      - name: Build Dino Installer
+        run: |
+          msys2 -c './build-win64.sh --build-installer'
+      - name: Upload Dino Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: dino-installer
+          path: windows-installer/dino-installer.exe

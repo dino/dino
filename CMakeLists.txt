@@ -12,6 +12,9 @@ endif ()
 
 # Prepare Plugins
 set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
+if (WIN32)
+    set(DEFAULT_PLUGINS ${DEFAULT_PLUGINS};win32-fonts;windows-notification)
+endif (WIN32)
 foreach (plugin ${DEFAULT_PLUGINS})
     if ("$CACHE{DINO_PLUGIN_ENABLED_${plugin}}" STREQUAL "")
         if (NOT DEFINED DINO_PLUGIN_ENABLED_${plugin}})
@@ -175,6 +178,11 @@ if (NOT NO_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
     set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} -g")
 endif (NOT NO_DEBUG)
+
+if (WIN32)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_POSIX_C_SOURCE=1")
+    set(CMAKE_VALA_FLAGS "${CMAKE_VALA_FLAGS} --define=_WIN32")
+endif(WIN32)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

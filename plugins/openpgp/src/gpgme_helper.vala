@@ -177,6 +177,13 @@ private static uint8[] get_uint8_from_data(Data data) {
 
 private static void initialize() {
     if (!initialized) {
+#if _WIN32
+        string gpg = GLib.Environment.find_program_in_path("gpg.exe");
+        if (gpg != null && gpg.length > 0)
+        {
+            set_global_flag("w32-inst-dir", GLib.Path.get_dirname(gpg));
+        }
+#endif
         check_version();
         initialized = true;
     }
