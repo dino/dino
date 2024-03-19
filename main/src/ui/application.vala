@@ -259,21 +259,21 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 #if Adw_1_2
         Adw.AboutWindow about_window = new Adw.AboutWindow();
         about_window.application_icon = "im.dino.Dino";
-        about_window.application_name = "Dino";
-        about_window.issue_url = "https://github.com/dino/dino/issues";
+        about_window.application_name = "Dino+";
+        about_window.issue_url = "https://github.com/mxlgv/dino/issues";
 #else
         Gtk.AboutDialog about_window = new Gtk.AboutDialog();
         about_window.logo_icon_name = "im.dino.Dino";
-        about_window.program_name = "Dino";
+        about_window.program_name = "Dino+";
         about_window.website_label = "dino.im";
 #endif
         about_window.destroy_with_parent = true;
         about_window.transient_for = window;
         about_window.modal = true;
-        about_window.title = _("About Dino");
+        about_window.title = _("About Dino+");
         about_window.version = version;
-        about_window.website = "https://dino.im/";
-        about_window.copyright = "Copyright © 2016-2023 - Dino Team";
+        about_window.website = "https://github.com/mxlgv/dino/";
+        about_window.copyright = "Copyright © 2016-2024 - Dino & Dino+ Teams";
         about_window.license_type = License.GPL_3_0;
 
         if (!use_csd()) {
