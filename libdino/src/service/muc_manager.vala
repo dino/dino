@@ -107,7 +107,7 @@ public class MucManager : StreamInteractionModule, Object {
                 var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
                 if (conversation == null) {
                     // We never joined the conversation before, fetch latest MAM pages
-                    yield history_sync.fetch_data(account, jid.bare_jid, new DateTime.now(), 10);
+                    yield history_sync.fetch_data(account, jid.bare_jid, new DateTime.now());
                 } else {
                     // Fetch everything up to the last time the user actively joined
                     if (!mucs_sync_cancellables.has_key(account)) {

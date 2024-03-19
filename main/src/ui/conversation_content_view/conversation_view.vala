@@ -564,11 +564,31 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private void load_earlier_messages(bool request_from_server = true) {
         was_value = scrolled.vadjustment.value;
         debug("loading earlier messages");
+
         if (!reloading_mutex.trylock()) {
             return;
         }
 
-        if (content_items.size > 0) {
+        if (content_items.size == 0) {
+            // List is empty, try load local data
+            Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 20);
+            debug("inserting new messages, size: %d", items.size);
+            foreach (ContentMetaItem item in items) {
+                do_insert_item(item);
+            }
+
+            if (request_from_server) {
+                // If the list is empty also try to load data from the server
+                var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
+                history_sync.fetch_conversation_data.begin(conversation, new DateTime.now(), (_, res) => {
+                    history_sync.fetch_conversation_data.end(res);
+
+                    // Request finished, reload messages
+                    load_earlier_messages(false);
+                });
+            }
+        } else if (content_items.size > 0) {
+            // List is not empty, fetch data before the latest available message
             Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, 20, request_from_server);
             debug("inserting new messages, size: %d", items.size);
             foreach (ContentMetaItem item in items) {

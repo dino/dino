@@ -6,8 +6,6 @@ using Xmpp;
 
 namespace Dino {
 
-const int HISTORY_SYNC_MAM_PAGES = 10;
-
 public class ContentItemStore : StreamInteractionModule, Object {
     public static ModuleIdentity<ContentItemStore> IDENTITY = new ModuleIdentity<ContentItemStore>("content_item_store");
     public string id { get { return IDENTITY.id; } }
@@ -260,8 +258,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         if (items.size == 0 && request_from_server) {
             // Async request to get earlier messages from the server
             var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
-            history_sync.fetch_data.begin(conversation.account, conversation.counterpart.bare_jid, item.time, HISTORY_SYNC_MAM_PAGES, (_, res) => {
-                history_sync.fetch_data.end(res);
+            history_sync.fetch_conversation_data.begin(conversation, item.time, (_, res) => {
+                history_sync.fetch_conversation_data.end(res);
                 debug("History loaded");
                 history_loaded(conversation, item, count);
             });

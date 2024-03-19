@@ -143,11 +143,30 @@ public class Dino.HistorySync {
         return page_result;
     }
 
-    public async void fetch_data(Account account, Jid target, DateTime latest, int pages) {
+    public async void fetch_data(Account account, Jid target, DateTime latest) {
         debug("Fetch history for %s", target.to_string());
 
         var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(target, latest, null);
-        yield fetch_pages(account, query_params, pages);
+        yield fetch_pages(account, query_params, HISTORY_SYNC_MAM_PAGES);
+    }
+
+    public async void fetch_conversation_data(Conversation? conversation, DateTime latest) {
+        if (conversation == null) {
+            warning("Failed to fetch history, conversation is null");
+            return;
+        }
+
+        var target = conversation.counterpart.bare_jid;
+        var account = conversation.account;
+        debug("Fetch history for %s", target.to_string());
+
+        var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(target, latest, null);
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            query_params.mam_server = account.bare_jid;
+            query_params.with = target;
+        }
+
+        yield fetch_pages(account, query_params, conversation.syncSpeed());
     }
 
     public async void fetch_history(Account account, Jid target, Cancellable? cancellable = null) {
