@@ -28,12 +28,11 @@ jobs:
           name: dino-installer
           path: windows-installer/dino-installer.exe
       - name: Release Dino installer
-        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        if: ${{ github.ref_type == 'tag' }}
         uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: windows-installer/dino-installer.exe
           asset_name: dino-installer.exe
           tag: ${{ github.ref }}
-          overwrite: true
-          release_name: Dino ${{ steps.ghd.outputs.describe }}"
+          release_name: Dino ${{ steps.ghd.outputs.describe }}
