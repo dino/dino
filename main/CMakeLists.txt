@@ -78,6 +78,7 @@ set(RESOURCE_LIST
     conversation_content_view/view.ui
     manage_accounts/account_row.ui
     manage_accounts/add_account_dialog.ui
+    manage_accounts/change_password_dialog.ui
     manage_accounts/dialog.ui
     menu_add.ui
     menu_app.ui
@@ -218,6 +219,7 @@ SOURCES
 
     src/ui/manage_accounts/account_row.vala
     src/ui/manage_accounts/add_account_dialog.vala
+    src/ui/manage_accounts/change_password_dialog.vala
     src/ui/manage_accounts/dialog.vala
 
     src/ui/occupant_menu/list.vala

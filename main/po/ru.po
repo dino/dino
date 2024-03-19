@@ -1167,6 +1167,23 @@ msgstr "Всё готово!"
 msgid "Finish"
 msgstr "Закончить"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr "Изменить пароль"
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr "Текущий пароль"
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr "Новый пароль"
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr "Подтверждение пароля"
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "Нажмите здесь, чтобы начать беседу или присоединиться к каналу."
 
