@@ -3,7 +3,7 @@ set -e
 
 APP_NAME="im.dino.Dino"
 DIST_NAME=${DIST_NAME:-"${APP_NAME}.flatpak"}
-DIST_DIR="$PWD/linux-distributives"
+DIST_DIR="$PWD/flatpak-dist"
 BUILD_TEMP_DIR="$DIST_DIR/buildtemp"
 BUILD_EXPORT_DIR="$DIST_DIR/export"
 
@@ -18,7 +18,8 @@ fatal()
     exit 1
 }
 
-getFlatpakDependencies(){
+get_flatpak_dependencies()
+{
     msg "Installing Flatpak dependencies..."
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     flatpak install flathub org.gnome.Sdk//44
@@ -26,19 +27,22 @@ getFlatpakDependencies(){
     msg "Flatpak dependencies installed"
 }
 
-pullSharedModules() {
+pull_shared_modules()
+{
     msg "Pulling shared modules..."
     git submodule init
     git submodule update
     msg "Shared modules successfully pulled"
 }
 
-prepare(){
-    getFlatpakDependencies
-    pullSharedModules
+prepare() 
+{
+    get_flatpak_dependencies
+    pull_shared_modules
 }
 
-build(){
+build()
+{
     msg "Build commencing!"
     rm -rf $BUILD_TEMP_DIR
     flatpak-builder $BUILD_TEMP_DIR "${APP_NAME}.json"
@@ -47,7 +51,8 @@ build(){
     msg "Flatpack bundle ready and saved to ${DIST_NAME}"
 }
 
-clean(){
+clean()
+{
     msg "Wiping intermediate files..."
     rm -rf $BUILD_TEMP_DIR $BUILD_EXPORT_DIR
     msg "Cleanup complete!"

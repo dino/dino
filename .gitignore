@@ -10,5 +10,5 @@ windows-installer/win64-dist/
 *.exe
 *.dll
 *.flatpak
-linux-distributives
+flatpak-dist
 .flatpak-builder
