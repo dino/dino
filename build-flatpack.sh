@@ -45,7 +45,7 @@ build()
 {
     msg "Build commencing!"
     rm -rf $BUILD_TEMP_DIR
-    flatpak-builder $BUILD_TEMP_DIR "${APP_NAME}.json"
+    flatpak-builder --install-deps-from=flathub $BUILD_TEMP_DIR "${APP_NAME}.json"
     flatpak build-export $BUILD_EXPORT_DIR $BUILD_TEMP_DIR
     flatpak build-bundle $BUILD_EXPORT_DIR $DIST_NAME $APP_NAME
     msg "Flatpack bundle ready and saved to ${DIST_NAME}"

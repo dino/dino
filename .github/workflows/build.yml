@@ -31,11 +31,27 @@ jobs:
       image: bilelmoussaoui/flatpak-github-actions:gnome-44
       options: --privileged
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: true
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
-        with:
-          manifest-path: im.dino.Dino.json
-          build-bundle: false
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            submodules: true
+        - run: flatpak repair --user
+        - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
+          with:
+              manifest-path: im.dino.Dino.json
+              build-bundle: true
+        - name: Git describe
+          if: ${{ github.ref_type == 'tag' }}
+          id: ghd
+          uses: proudust/gh-describe@v2
+          with:
+            default: ''
+        - name: Release Dino installer
+          if: ${{ github.ref_type == 'tag' }}
+          uses: svenstaro/upload-release-action@2.9.0
+          with:
+              repo_token: ${{ secrets.GITHUB_TOKEN }}
+              file: app.flatpak
+              asset_name: app.flatpak
+              tag: ${{ github.ref }}
+              release_name: Dino ${{ steps.ghd.outputs.describe }}
