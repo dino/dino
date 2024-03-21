@@ -5,6 +5,10 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
+public bool on_touchscreen() {
+    return (Gdk.Display.get_default().get_default_seat().get_capabilities() & Gdk.SeatCapabilities.TOUCH) != 0;
+}
+
 public class Config : Object {
 
     public Database db { get; private set; }
