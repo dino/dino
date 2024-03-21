@@ -103,6 +103,18 @@ public class HttpFileSender : FileSender, Object {
         put_message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, put_message.request_body));
         put_message.wrote_chunk.connect(() => transfer_more_bytes(file_transfer.input_stream, put_message.request_body));
 #endif
+
+        file_transfer.transferred_bytes = 0;
+        put_message.wrote_body_data.connect((chunk) => {
+            if (file_transfer.size != 0) {
+#if SOUP_3_0
+                file_transfer.transferred_bytes += chunk;
+#else
+                file_transfer.transferred_bytes += chunk.length;
+#endif
+            }
+        });
+
         foreach (var entry in file_send_data.headers.entries) {
             put_message.request_headers.append(entry.key, entry.value);
         }

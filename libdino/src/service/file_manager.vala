@@ -120,6 +120,7 @@ public class FileManager : StreamInteractionModule, Object {
             }
 
             yield file_sender.send_file(conversation, file_transfer, file_send_data, file_meta);
+            file_transfer.state = FileTransfer.State.COMPLETE;
 
         } catch (Error e) {
             warning("Send file error: %s", e.message);
@@ -250,6 +251,7 @@ public class FileManager : StreamInteractionModule, Object {
             ssize_t read;
             while ((read = yield input_stream.read_async(buffer, Priority.LOW, file_transfer.cancellable)) > 0) {
                 buffer.length = (int) read;
+                file_transfer.transferred_bytes += (uint64)read;
                 yield os.write_async(buffer, Priority.LOW, file_transfer.cancellable);
                 buffer.length = 1024;
             }
@@ -290,6 +292,7 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.file_name = file_meta.file_name;
         file_transfer.size = (int)file_meta.size;
         file_transfer.info = info;
+        file_transfer.transferred_bytes = 0;
 
         var encryption = file_provider.get_encryption(file_transfer, receive_data, file_meta);
         if (encryption != Encryption.NONE) file_transfer.encryption = encryption;
@@ -326,7 +329,7 @@ public class FileManager : StreamInteractionModule, Object {
             File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
             OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
             yield os.splice_async(file_transfer.input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE|OutputStreamSpliceFlags.CLOSE_TARGET);
-            file_transfer.state = FileTransfer.State.COMPLETE;
+            file_transfer.state = FileTransfer.State.IN_PROGRESS;
             file_transfer.path = filename;
             file_transfer.input_stream = yield file.read_async();
         } catch (Error e) {
