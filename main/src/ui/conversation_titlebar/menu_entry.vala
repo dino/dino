@@ -11,29 +11,41 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     StreamInteractor stream_interactor;
     private Conversation? conversation;
 
-    Button button = new Button() { icon_name="view-more-symbolic" };
+    MenuButton button = new MenuButton() { icon_name="view-more-symbolic" };
 
     public MenuEntry(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        button.clicked.connect(on_clicked);
+        Menu menu_model = new Menu();
+        menu_model.append(_("Conversation Details"), "conversation.details");
+        menu_model.append(_("Close Conversation"), "conversation.close");
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+        button.popover = popover_menu;
+
+        SimpleActionGroup action_group = new SimpleActionGroup();
+        SimpleAction details_action = new SimpleAction("details", null);
+        details_action.activate.connect((parameter) => {
+            open_conversation_details();
+        });
+        action_group.insert(details_action);
+        SimpleAction close_action = new SimpleAction("close", null);
+        close_action.activate.connect((parameter) => {
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+        });
+        action_group.insert(close_action);
+        button.insert_action_group("conversation", action_group);
     }
 
     public new void set_conversation(Conversation conversation) {
         button.sensitive = true;
         this.conversation = conversation;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            button.tooltip_text = Util.string_if_tooltips_active("Channel details");
-        } else {
-            button.tooltip_text = Util.string_if_tooltips_active("Conversation details");
-        }
     }
 
     public new void unset_conversation() {
         button.sensitive = false;
     }
 
-    private void on_clicked() {
+    private void open_conversation_details() {
         var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, (Window)button.get_root());
         conversation_details.present();
     }
