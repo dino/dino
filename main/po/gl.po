@@ -1166,6 +1166,23 @@ msgstr "Todo feito!"
 msgid "Finish"
 msgstr "Rematar"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr ""
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "Preme aquí para iniciar unha conversa ou unirte a unha canle."
 

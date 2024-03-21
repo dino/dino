@@ -1165,6 +1165,23 @@ msgstr "Guztia ezarri da!"
 msgid "Finish"
 msgstr "Amaitu"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr ""
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr ""
 #~ "Klikatu hemen elkarrizketa berri bat hasi edo kanal batean sartzeko."
