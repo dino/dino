@@ -11,6 +11,49 @@
                     <object class="AdwPreferencesGroup">
                         <child>
                             <object class="AdwActionRow">
+                                <property name="title" translatable="yes">Default encryption</property>
+                                <child>
+                                    <object class="GtkBox" id="default_encryption_box">
+                                        <child>
+                                            <object class="GtkCheckButton" id="encryption_radio_undecided">
+                                                <property name="label" translatable="yes">Ask</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="active">False</property>
+                                                <property name="group">encryption_radio_undecided</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkCheckButton" id="encryption_radio_omemo">
+                                                <property name="label" translatable="yes">OMEMO</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="active">False</property>
+                                                <property name="group">encryption_radio_undecided</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkCheckButton" id="encryption_radio_openpgp">
+                                                <property name="label" translatable="yes">OpenPGP</property>
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">False</property>
+                                                <property name="active">False</property>
+                                                <property name="group">encryption_radio_undecided</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwPreferencesGroup">
+                        <child>
+                            <object class="AdwActionRow">
                                 <property name="title" translatable="yes">Send _Typing Notifications</property>
                                 <property name="use-underline">True</property>
                                 <property name="activatable-widget">typing_switch</property>

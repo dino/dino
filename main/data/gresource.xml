@@ -16,6 +16,7 @@
     <file>conversation_list_titlebar_csd.ui</file>
     <file>conversation_row.ui</file>
     <file>conversation_view.ui</file>
+    <file>default_encryption_dialog.ui</file>
     <file>dino-conversation-list-placeholder-arrow.svg</file>
     <file>file_default_widget.ui</file>
     <file>file_send_overlay.ui</file>
