@@ -38,19 +38,12 @@
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkRevealer" id="time_revealer">
-                                                <property name="transition-type">slide-right</property>
-                                                <property name="transition-duration">50</property>
-                                                <property name="reveal-child">True</property>
-                                                <child>
-                                                    <object class="GtkLabel" id="time_label">
-                                                        <property name="hexpand">False</property>
-                                                        <property name="xalign">1</property>
-                                                        <attributes>
-                                                            <attribute name="scale" value="0.7"/>
-                                                        </attributes>
-                                                    </object>
-                                                </child>
+                                            <object class="GtkLabel" id="time_label">
+                                                <property name="hexpand">False</property>
+                                                <property name="xalign">1</property>
+                                                <attributes>
+                                                    <attribute name="scale" value="0.7"/>
+                                                </attributes>
                                             </object>
                                         </child>
                                     </object>
@@ -88,78 +81,30 @@
                                             </object>
                                         </child>
                                         <child>
-                                            <object class="GtkRevealer" id="top_row_revealer">
-                                                <property name="transition-type">slide-right</property>
-                                                <property name="transition-duration">50</property>
-                                                <property name="reveal-child">True</property>
+                                            <object class="GtkBox">
+                                                <property name="orientation">horizontal</property>
                                                 <property name="margin-start">15</property>
+                                                <property name="spacing">6</property>
                                                 <child>
-                                                    <object class="GtkBox">
-                                                        <property name="orientation">horizontal</property>
-                                                        <property name="spacing">6</property>
-                                                        <child>
-                                                            <object class="GtkLabel" id="unread_count_label">
-                                                                <property name="vexpand">False</property>
-                                                                <property name="visible">False</property>
-                                                                <property name="xalign">0.5</property>
-                                                                <attributes>
-                                                                    <attribute name="scale" value="0.6"/>
-                                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                                                                </attributes>
-                                                            </object>
-                                                        </child>
-                                                        <child>
-                                                            <object class="GtkImage" id="pinned_image">
-                                                                <property name="icon-name">view-pin-symbolic</property>
-                                                                <property name="pixel-size">12</property>
-                                                                <property name="visible">False</property>
-                                                            </object>
-                                                        </child>
+                                                    <object class="GtkLabel" id="unread_count_label">
+                                                        <property name="vexpand">False</property>
+                                                        <property name="visible">False</property>
+                                                        <property name="xalign">0.5</property>
+                                                        <attributes>
+                                                            <attribute name="scale" value="0.6"/>
+                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                        </attributes>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="GtkImage" id="pinned_image">
+                                                        <property name="icon-name">view-pin-symbolic</property>
+                                                        <property name="pixel-size">12</property>
+                                                        <property name="visible">False</property>
                                                     </object>
                                                 </child>
                                             </object>
                                         </child>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <child>
-                                    <object class="GtkBox">
-                                        <property name="vexpand">True</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkRevealer" id="xbutton_revealer">
-                                        <property name="transition-type">slide-left</property>
-                                        <property name="transition-duration">100</property>
-                                        <property name="reveal-child">False</property>
-                                        <child>
-                                            <object class="GtkButton" id="x_button">
-                                                <property name="width-request">27</property>
-                                                <property name="height-request">27</property>
-                                                <property name="vexpand">False</property>
-                                                <property name="margin-start">5</property>
-                                                <style>
-                                                    <class name="conversation_list_row_xbutton"/>
-                                                    <class name="circular"/>
-                                                    <class name="flat"/>
-                                                </style>
-                                                <child>
-                                                    <object class="GtkImage">
-                                                        <property name="icon-name">window-close-symbolic</property>
-                                                        <property name="icon-size">1</property>
-                                                    </object>
-                                                </child>
-                                            </object>
-                                        </child>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="GtkBox">
-                                        <property name="vexpand">True</property>
                                     </object>
                                 </child>
                             </object>
