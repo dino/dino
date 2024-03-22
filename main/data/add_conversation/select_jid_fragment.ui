@@ -72,6 +72,17 @@
                                         </child>
                                     </object>
                                 </child>
+                                <child>
+                                    <object class="GtkButton" id="filter_online_button">
+                                        <property name="visible">0</property>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">dino-status-chat</property>
+                                                <property name="icon-size">normal</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                     </object>

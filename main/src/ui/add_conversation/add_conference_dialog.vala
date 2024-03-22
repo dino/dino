@@ -95,7 +95,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         conference_list_box = conference_list.get_list_box();
         conference_list_box.row_activated.connect(() => { ok_button.clicked(); });
 
-        select_fragment = new SelectJidFragment(stream_interactor, conference_list_box, stream_interactor.get_accounts());
+        select_fragment = new SelectJidFragment(stream_interactor, conference_list_box, stream_interactor.get_accounts(), true);
         select_fragment.add_jid.connect((row) => {
             AddGroupchatDialog dialog = new AddGroupchatDialog(stream_interactor);
             dialog.set_transient_for(this);

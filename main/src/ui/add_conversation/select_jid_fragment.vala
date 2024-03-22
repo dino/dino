@@ -20,6 +20,7 @@ public class SelectJidFragment : Gtk.Box {
     [GtkChild] private unowned Box box;
     [GtkChild] private unowned Button add_button;
     [GtkChild] private unowned Button remove_button;
+    [GtkChild] private unowned Button filter_online_button;
 
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
@@ -27,14 +28,18 @@ public class SelectJidFragment : Gtk.Box {
 
     private ListBox list;
     private string[]? filter_values;
+    private bool filter_online_toggled = false;
 
-    public SelectJidFragment(StreamInteractor stream_interactor, ListBox list, Gee.List<Account> accounts) {
+    public SelectJidFragment(StreamInteractor stream_interactor, ListBox list, Gee.List<Account> accounts, bool is_conf_dialog) {
         this.stream_interactor = stream_interactor;
         this.list = list;
         this.accounts = accounts;
 
         list.activate_on_single_click = false;
         list.vexpand = true;
+
+        if(!is_conf_dialog) filter_online_button.visible = true;
+        filter_online_button.set_tooltip_text(_("Only showing online users is not toggled on."));
         box.append(list);
 
         list.set_sort_func(sort);
@@ -48,6 +53,20 @@ public class SelectJidFragment : Gtk.Box {
             var list_row = list.get_selected_row();
             if (list_row == null) return;
             remove_jid(list_row.child as ListRow);
+        });
+        filter_online_button.clicked.connect(() => {
+            if(!filter_online_toggled){
+                filter_online_toggled = true;
+                Util.force_css(filter_online_button, "* {border: 2px solid limegreen;}");
+                filter_online_button.set_tooltip_text(_("Only showing online users is toggled on."));
+            }
+            else{
+                filter_online_toggled = false;
+                Util.force_css(filter_online_button, "* {border: initial;}");
+                filter_online_button.set_tooltip_text(_("Only showing online users is not toggled on."));
+            }
+            list.set_filter_func(filter);
+            entry.grab_focus();
         });
     }
 
@@ -102,6 +121,11 @@ public class SelectJidFragment : Gtk.Box {
     private bool filter(ListBoxRow r) {
         ListRow? row = (r.child as ListRow);
         if (row == null) return true;
+        if (filter_online_toggled){
+            if(row.status_str == null){
+                return false;
+            }
+        }
 
         if (filter_values != null) {
             foreach (string filter in filter_values) {
@@ -125,7 +149,6 @@ public class SelectJidFragment : Gtk.Box {
         public AddListRow(StreamInteractor stream_interactor, Jid jid, Account account) {
             this.account = account;
             this.jid = jid;
-
             name_label.label = jid.to_string();
             if (stream_interactor.get_accounts().size > 1) {
                 via_label.label = account.bare_jid.to_string();

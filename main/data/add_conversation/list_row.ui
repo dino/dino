@@ -15,6 +15,15 @@
             </object>
         </child>
         <child>
+          <object class="GtkImage" id="status_dot">
+                <property name="pixel-size">10</property>
+                <layout>
+                    <property name="column">1</property>
+                    <property name="row">0</property>
+                </layout>
+          </object>
+        </child>
+        <child>
             <object class="GtkGrid">
                 <property name="valign">center</property>
                 <property name="orientation">vertical</property>
