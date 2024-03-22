@@ -119,7 +119,9 @@
                                         <property name="orientation">vertical</property>
                                         <property name="valign">center</property>
                                         <child>
-                                            <object class="GtkImage" id="confirm_image"/>
+                                            <object class="GtkImage" id="confirm_image">
+                                                <property name="icon-size">large</property>
+                                            </object>
                                         </child>
                                         <child>
                                             <object class="GtkLabel" id="confirm_title_label">
@@ -134,7 +136,7 @@
                                                 <property name="wrap">1</property>
                                                 <property name="max-width-chars">40</property>
                                                 <attributes>
-                                                    <attribute name="scale" value="0.8"></attribute>
+                                                    <attribute name="scale" value="1.0"></attribute>
                                                 </attributes>
                                                 <style>
                                                     <class name="dim-label"/>
