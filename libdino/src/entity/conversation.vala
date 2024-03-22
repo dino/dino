@@ -2,7 +2,7 @@ using Xmpp;
 
 namespace Dino.Entities {
 
-const int HISTORY_SYNC_MAM_PAGES = 10;
+const int HISTORY_SYNC_MAM_MESSAGES = 20;
 
 public class Conversation : Object {
 
@@ -16,10 +16,6 @@ public class Conversation : Object {
         public bool is_muc_semantic() {
             return this == GROUPCHAT || this == GROUPCHAT_PM;
         }
-    }
-
-    public int syncSpeed() {
-        return HISTORY_SYNC_MAM_PAGES;
     }
 
     public int id { get; set; }
