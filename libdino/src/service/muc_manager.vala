@@ -535,12 +535,25 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private void on_invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason) {
+        info("Invite received for room %s", room_jid.bare_jid.to_string());
+        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
+        foreach (Conversation conversation in conversations) {
+            if (conversation.counterpart.bare_jid.to_string() == room_jid.bare_jid.to_string()) {
+                // HACK: try to skip duplicate invites for active conversations
+                warning("Skipping duplicate invite for conversation %s", room_jid.bare_jid.to_string());
+                return;
+            }
+        }
+
         if (!invites.has_key(account)) {
             invites[account] = new LinkedList<Jid>(Jid.equals_func);
         }
-        if (invites[account].contains(room_jid)) return;
-        invites[account].add(room_jid);
 
+        if (invites[account].contains(room_jid)) {
+            return;
+        }
+
+        invites[account].add(room_jid);
         invite_received(account, room_jid, from_jid, password, reason);
 
         Timeout.add_seconds(5, () => {
