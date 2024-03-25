@@ -28,9 +28,21 @@ public class HistoryProvider : Plugins.ContactDetailsProvider, Object {
         entity_info.has_feature.begin(conversation.account, conversation.counterpart, Xmpp.MessageArchiveManagement.NS_URI, (_, res) => {
             bool can_do_mam = entity_info.has_feature.end(res);
             if (can_do_mam) {
+
                 Button resync_button = new Button.with_label(RESYNC_LABEL);
-                contact_details.add("Permissions", RESYNC_DESC_LABEL, "", resync_button);
+                Stack resync_stack = new Stack();
+                Gtk.Spinner spinner = new Gtk.Spinner();
+
+                resync_stack.visible = true;
+                contact_details.add("Permissions", RESYNC_DESC_LABEL, "", resync_stack);
+                resync_stack.add_child(spinner);
+                resync_stack.add_child(resync_button);
+                resync_stack.set_visible_child(resync_button);
+
                 resync_button.clicked.connect(() => {
+                    resync_stack.set_visible_child(spinner);
+                    spinner.start();
+
                     if (!sync_cancellables.has_key(conversation.account)) {
                         sync_cancellables[conversation.account] = new HashMap<Jid, Cancellable>();
                     }
@@ -40,6 +52,8 @@ public class HistoryProvider : Plugins.ContactDetailsProvider, Object {
                         var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
                         history_sync.fetch_history.begin(conversation.account, conversation.counterpart.bare_jid, sync_cancellables[conversation.account][conversation.counterpart.bare_jid], (_, res) => {
                             history_sync.fetch_everything.end(res);
+                            spinner.stop();
+                            resync_stack.set_visible_child(resync_button);
                             sync_cancellables[conversation.account].unset(conversation.counterpart.bare_jid);
                         });
                     }
