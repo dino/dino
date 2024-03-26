@@ -171,19 +171,8 @@ public class ConversationViewController : Object {
                 });
 
                 selection_dialog.response.connect((response_id) => {
-                    if (response_id == Gtk.ResponseType.DELETE_EVENT) {
-                        conversation.encryption = NONE;
-                    }
-                    else {
+                    if (response_id >= 0) {
                         conversation.encryption = response_id;
-
-                        if (selected_default != NONE) {
-                            settings.default_encryption = response_id;
-                        }
-                        else {
-                            // Set conversation as unencrypted, but keep
-                            // default encryption setting as undecided.
-                        }
                     }
                 });
 
