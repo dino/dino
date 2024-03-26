@@ -119,22 +119,7 @@ public class ConversationViewController : Object {
             return;
         }
 
-        bool visible = false;
-
-        // FIXME duplicate logic from encryption_button.vala
-        switch (conversation.type_) {
-            case Conversation.Type.CHAT:
-                visible = true;
-                break;
-            case Conversation.Type.GROUPCHAT_PM:
-                visible = false;
-                break;
-            case Conversation.Type.GROUPCHAT:
-                visible = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
-                break;
-        }
-
-        if (visible && conversation.encryption == UNKNOWN) {
+        if (conversation.type_ == Conversation.Type.CHAT && conversation.encryption == UNKNOWN) {
             Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
             if (settings.default_encryption == UNKNOWN) {
@@ -181,9 +166,6 @@ public class ConversationViewController : Object {
             else {
                 conversation.encryption = settings.default_encryption;
             }
-        }
-        else if (!visible) {
-            conversation.encryption = Encryption.NONE;
         }
     }
 

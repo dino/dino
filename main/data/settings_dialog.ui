@@ -11,7 +11,7 @@
                     <object class="AdwPreferencesGroup">
                         <child>
                             <object class="AdwActionRow">
-                                <property name="title" translatable="yes">Default encryption</property>
+                                <property name="title" translatable="yes">Default encryption for 1-on-1 chats</property>
                                 <child>
                                     <object class="GtkBox" id="default_encryption_box">
                                         <child>
