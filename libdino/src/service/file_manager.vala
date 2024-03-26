@@ -63,7 +63,7 @@ public class FileManager : StreamInteractionModule, Object {
         try {
             FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
             file_transfer.file_name = file_info.get_display_name();
-            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.mime_type = Util.get_content_type(file_info);
             file_transfer.size = (int)file_info.get_size();
             file_transfer.input_stream = yield file.read_async();
 
@@ -259,9 +259,16 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.input_stream = yield file.read_async();
 
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.mime_type = file_info.get_content_type();
+            file_transfer.mime_type = Util.get_content_type(file_info);
 
             file_transfer.state = FileTransfer.State.COMPLETE;
+
+#if _WIN32 // Add Zone.Identifier so Windows knows this file was downloaded from the internet
+            var file_alternate_stream = File.new_for_path(Path.build_filename(get_storage_dir(), filename + ":Zone.Identifier"));
+            var os_alternate_stream = file_alternate_stream.create(FileCreateFlags.REPLACE_DESTINATION);
+            os_alternate_stream.write("[ZoneTransfer]\r\nZoneId=3".data);
+#endif
+
         } catch (Error e) {
             warning("Error downloading file: %s", e.message);
             file_transfer.state = FileTransfer.State.FAILED;
