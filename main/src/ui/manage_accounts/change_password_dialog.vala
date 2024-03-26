@@ -87,8 +87,10 @@ namespace Dino.Ui{
                 string ret = yield stream_interactor.get_module(Register.IDENTITY).change_password(account, new_pw_input);
                 change_password_button.sensitive = true;
                 change_password_stack.visible_child_name = "label";
-                if (ret == null)
+                if (ret == null) {
+                    account.password = new_pw_input;
                     close();
+                }
 
                 change_password_error_label.label = ret;
 
