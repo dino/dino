@@ -144,6 +144,7 @@ public class ConversationViewController : Object {
                 var omemo_radio = selection_dialog_builder.get_object("omemo") as CheckButton;
                 var openpgp_radio = selection_dialog_builder.get_object("openpgp") as CheckButton;
                 var none_radio = selection_dialog_builder.get_object("none") as CheckButton;
+                selection_dialog.set_transient_for(view.get_root() as Window);
                 Encryption selected_default = UNKNOWN;
 
                 accept_button.sensitive = false;

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
 <interface>
-  <requires lib="gtk+" version="3.6"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="dialog">
     <property name="can_focus">True</property>
     <property name="modal">True</property>
     <property name="default_width">320</property>
     <property name="default_height">260</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
+    <property name="resizable">False</property>
     <child>
       <object class="GtkBox">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -67,6 +68,11 @@ Please select an option to start this conversation with. Choosing one of the enc
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="margin-top">20</property>
+                <style>
+                  <class name="text-button"/>
+                  <class name="suggested-action"/>
+                </style>
               </object>
             </child>
           </object>
