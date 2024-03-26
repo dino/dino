@@ -28,6 +28,20 @@ download_yolort()
     rm -f "$file_name"
 }
 
+download_gtk4_git()
+{
+    # FIXME: The bug fix https://gitlab.gnome.org/GNOME/gtk/-/issues/3749 is currently only available in the main branch, 
+    # so GTK4 was builded from it. Needs to be replaced with a package from the MSYS2 repository when the changes get there.
+    url="https://github.com/mxlgv/mingw-w64-gtk4-git/releases/download/rel1"
+    gtk_pkg="mingw-w64-x86_64-gtk4-git-4.14.1.r62.gb1eed1c153-1-any.pkg.tar.zst"
+    gtk_gstreamer_pkg="mingw-w64-x86_64-gtk4-media-gstreamer-git-4.14.1.r62.gb1eed1c153-1-any.pkg.tar.zst"
+
+    curl -L -o "$gtk_pkg" "$url/$gtk_pkg"
+    curl -L -o "$gtk_gstreamer_pkg" "$url/$gtk_gstreamer_pkg"
+
+    pacman -U --needed --noconfirm "$gtk_pkg" "$gtk_gstreamer_pkg"
+}
+
 prepare()
 {
     msg "Installing MINGW64 build dependencies"
@@ -36,7 +50,6 @@ prepare()
        mingw64/mingw-w64-x86_64-gcc \
        mingw64/mingw-w64-x86_64-cmake \
        mingw64/mingw-w64-x86_64-ninja \
-       mingw64/mingw-w64-x86_64-gtk4 \
        mingw64/mingw-w64-x86_64-libadwaita \
        mingw64/mingw-w64-x86_64-sqlite3 \
        mingw64/mingw-w64-x86_64-openssl \
@@ -62,6 +75,9 @@ prepare()
        make \
        unzip \
        curl
+
+    msg "Downloading and install git versions of gtk4 and gtk4-media-gstreamer packages"
+    download_gtk4_git
 
     msg "Successfully installed!"
 

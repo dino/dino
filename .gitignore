@@ -12,3 +12,4 @@ windows-installer/win64-dist/
 *.flatpak
 flatpak-dist
 .flatpak-builder
+*.zst
