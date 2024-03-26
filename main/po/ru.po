@@ -47,6 +47,7 @@ msgstr "доставка не удалась"
 #: main/src/ui/chat_input/encryption_button.vala:26
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:163
 #: main/data/menu_encryption.ui:14
+#: main/data/default_encryption_dialog.ui:57
 msgid "Unencrypted"
 msgstr "Не зашифровано"
 
@@ -1183,6 +1184,28 @@ msgstr "Новый пароль"
 #: main/src/ui/manage_accounts/change_password_dialog.vala :65
 msgid "Confirm new password"
 msgstr "Подтверждение пароля"
+
+#: main/data/default_encryption_dialog.ui :27
+msgid ""
+"You are opening a new conversation without having set end-to-end encryption by default.\n\n"
+"It is strongly recommended to enable it to prevent your messages from being read by third parties.\n\n"
+"Please select an option to start this conversation with. Choosing one of the encryption methods will also set it as default in the global settings.\n"
+msgstr ""
+"Вы начинаете новый диалог без установления настроек сквозного шифрования по умолчанию.\n\n"
+"Крайне рекомендуется включить его, чтобы исключить перехват ваших сообщений злоумышленниками.\n\n"
+"Пожалуйста, выберите с какими настройками шифрования начать этот диалог. Выбирая одну из них, вы установите эту же настройку глобально по умолчанию для других диалогов.\n"
+
+#: main/data/default_encryption_dialog.ui :38
+msgid "OMEMO (automatic setup)"
+msgstr "OMEMO (настроится автоматически)"
+
+#: main/data/default_encryption_dialog.ui :47
+msgid "OpenPGP (external setup required)"
+msgstr "OpenPGP (потребует ручной настройки)"
+
+#: main/data/default_encryption_dialog.ui :67
+msgid "Apply"
+msgstr "Применить"
 
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "Нажмите здесь, чтобы начать беседу или присоединиться к каналу."
