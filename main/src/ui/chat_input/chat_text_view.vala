@@ -101,7 +101,10 @@ public class ChatTextView : Box {
                 return true;
             }
 
-            if ((state & ModifierType.SHIFT_MASK) > 0) {
+            Dino.Entities.Settings settings = Dino.Application.get_default().settings;
+
+            if ((state & ModifierType.SHIFT_MASK) > 0
+                || settings.enter_newline) {
                 text_view.buffer.insert_at_cursor("\n", 1);
             } else if (text_view.buffer.text.strip() != "") {
                 send_text();

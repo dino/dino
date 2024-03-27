@@ -13,6 +13,8 @@ class SettingsDialog : Adw.PreferencesWindow {
     [GtkChild] private unowned CheckButton encryption_radio_undecided;
     [GtkChild] private unowned CheckButton encryption_radio_omemo;
     [GtkChild] private unowned CheckButton encryption_radio_openpgp;
+    [GtkChild] private unowned Switch send_button_switch;
+    [GtkChild] private unowned Switch enter_newline_switch;
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
@@ -27,6 +29,9 @@ class SettingsDialog : Adw.PreferencesWindow {
         encryption_radio_omemo.active = settings.default_encryption == Encryption.OMEMO;
         encryption_radio_openpgp.active = settings.default_encryption == Encryption.PGP;
 
+        send_button_switch.active = settings.send_button;
+        enter_newline_switch.active = settings.enter_newline;
+        enter_newline_switch.sensitive = settings.send_button;
 
         typing_switch.notify["active"].connect(() => { settings.send_typing = typing_switch.active; } );
         marker_switch.notify["active"].connect(() => { settings.send_marker = marker_switch.active; } );
@@ -51,6 +56,15 @@ class SettingsDialog : Adw.PreferencesWindow {
             }
         });
 
+        send_button_switch.notify["active"].connect(() => { settings.send_button = send_button_switch.active; });
+        enter_newline_switch.notify["active"].connect(() => { settings.enter_newline = enter_newline_switch.active; });
+        settings.send_button_update.connect((visible) => {
+            enter_newline_switch.sensitive = visible;
+
+            if (visible == false) {
+                enter_newline_switch.active = visible;
+            }
+        });
     }
 }
 

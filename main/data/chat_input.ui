@@ -17,7 +17,7 @@
                             <object class="GtkButton" id="file_button">
                                 <property name="icon-name">mail-attachment-symbolic</property>
                                 <property name="margin-top">2</property>
-                                <property name="valign">start</property>
+                                <property name="valign">center</property>
                                 <style>
                                     <class name="flat"/>
                                     <class name="dino-chatinput-button"/>
@@ -54,7 +54,7 @@
                                 <property name="icon-name">emoji-people-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="margin-top">2</property>
-                                <property name="valign">start</property>
+                                <property name="valign">center</property>
                                 <style>
                                     <class name="flat"/>
                                     <class name="dino-chatinput-button"/>
@@ -67,7 +67,21 @@
                                 <property name="icon-name">changes-allow-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="margin-top">2</property>
-                                <property name="valign">start</property>
+                                <property name="valign">center</property>
+                                <style>
+                                    <class name="flat"/>
+                                    <class name="dino-chatinput-button"/>
+                                    <class name="image-button"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="send_button">
+                                <property name="icon-name">mail-send-symbolic</property>
+                                <property name="has-frame">False</property>
+                                <property name="margin-top">2</property>
+                                <property name="valign">center</property>
+                                <property name="sensitive">false</property>
                                 <style>
                                     <class name="flat"/>
                                     <class name="dino-chatinput-button"/>

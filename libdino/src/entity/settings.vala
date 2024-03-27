@@ -13,6 +13,8 @@ public class Settings : Object {
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
         default_encryption = col_to_encryption_or_default("default_encryption", Encryption.UNKNOWN);
+        send_button = col_to_bool_or_default("send_button", false);
+        enter_newline = col_to_bool_or_default("enter_newline", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -100,6 +102,32 @@ public class Settings : Object {
         }
     }
 
+
+    public signal void send_button_update(bool visible);
+    private bool send_button_;
+    public bool send_button {
+        get { return send_button_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "send_button", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            send_button_ = value;
+            send_button_update(value);
+        }
+    }
+
+    private bool enter_newline_;
+    public bool enter_newline {
+        get { return enter_newline_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "enter_newline", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            enter_newline_ = value;
+        }
+    }
 }
 
 }
