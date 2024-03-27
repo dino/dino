@@ -73,6 +73,23 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
             return;
         }
 
+        //
+        if(keys.revoked == true) {
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("Invalid Key")));
+            return;
+
+        }
+
+        //
+        if(keys.expired == true) {
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("Invalid Key")));
+            return;
+
+        }
+
+
+
+
         string? account_key = plugin.db.get_account_key(current_account);
         int activate_index = 0;
         for (int i = 0; i < keys.size; i++) {
@@ -90,8 +107,30 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         combobox.changed.connect(key_changed);
     }
 
+    //private void populate_list_store() {
+     //   if (keys == null || keys.size == 0) {
+     //       return;
+     //   }
+
+     //   list_store.clear();
+     //   TreeIter iter;
+     //   list_store.append(out iter);
+     //   list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key") + "<span font_family='monospace' font='8'> \n </span>"), 1, "");
+     //   for (int i = 0; i < keys.size; i++) {
+     //       list_store.append(out iter);
+     //       list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>$(markup_colorize_id(keys[i].fpr, true))</span><span font='8'> </span>");
+     //       list_store.set(iter, 1, keys[i].fpr);
+      //      if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
+      //          set_label_active(iter, i + 1);
+      //      }
+     //   }
+     //   button.sensitive = true;
+    //}
+
+
+    //
     private void populate_list_store() {
-        if (keys == null || keys.size == 0) {
+        if (keys == null || keys.size == 0 || keys.revoked == true || keys.expired = true) {
             return;
         }
 
@@ -104,11 +143,17 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
             list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>$(markup_colorize_id(keys[i].fpr, true))</span><span font='8'> </span>");
             list_store.set(iter, 1, keys[i].fpr);
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
+                if(keys[i].fpr. revoked || keys[i].fpr.expired) {
+                    return
+                }
                 set_label_active(iter, i + 1);
             }
         }
         button.sensitive = true;
     }
+
+
+
 
     private async void fetch_keys() {
         label.set_markup(build_markup_string(_("Loading…"), _("Querying GnuPG")));
@@ -126,12 +171,40 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         yield;
     }
 
+   // private void set_label_active(TreeIter iter, int i = -1) {
+    //    Value text;
+    //    list_store.get_value(iter, 0, out text);
+    //    label.set_markup((string) text);
+    //    if (i != -1) combobox.active = i;
+    //}
+
+
+    //
+    Gtk.TreePath path = new Gtk.TreePath.from_string("").revoked
+    bool tmp = list_store.get_iter(out iter, path)
+    assert(tmp == true)
+    list_store.set(iter, 1, "not valid")
+
+    
+    
+
+//
     private void set_label_active(TreeIter iter, int i = -1) {
         Value text;
+        
         list_store.get_value(iter, 0, out text);
+
+        if(list_store.get_value(iter, 0, out text).keys.revoked == true) {
+            return "not valid"
+    
+        }
+
         label.set_markup((string) text);
         if (i != -1) combobox.active = i;
     }
+
+
+
 
     private void key_changed() {
         TreeIter selected;

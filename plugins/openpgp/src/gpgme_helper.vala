@@ -112,12 +112,29 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
         try {
             while (true) {
                 Key key = context.op_keylist_next();
-                keys.add(key);
+                if(key = context.op_keylist_next().CERT_REVOKED = true) {
+                    return "invalid key"
+                } else{
+                    keys.add(key);
+
+                }
+                
             }
-        } catch (Error e) {
-            if (e.code != GPGError.ErrorCode.EOF) throw e;
+        } 
+        
+
+        //
+        catch (Error e) {
+            if (e.code == GPGError.ErrorCode.CERT_REVOKED || e.code == GPGErrorCode.KEY_EXPIRED) throw e;
         }
+
+
+        //catch (Error e) {
+        //    if (e.code != GPGError.ErrorCode.EOF) throw e;
+        //}
         context.op_keylist_end();
+
+
         return keys;
     } finally {
         global_mutex.unlock();
@@ -138,6 +155,7 @@ private static Key? get_key(string sig, bool priv) throws GLib.Error {
         initialize();
         Context context = Context.create();
         Key key = context.get_key(sig, priv);
+
         return key;
     } finally {
         global_mutex.unlock();
