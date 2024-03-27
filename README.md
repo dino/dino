@@ -2,7 +2,7 @@ This is Dino+<br />
 A modern XMPP/Jabber client software, based on [Dino](https://github.com/dino/dino/)
 =======
 
-![screenshots](https://dino.im/img/screenshot-main.png)
+![screenshots](dino_plus.png)
 
 Project description
 ------------
