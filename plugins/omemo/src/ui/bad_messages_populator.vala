@@ -154,7 +154,7 @@ public class BadMessagesWidget : Box {
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             who = jid.to_string();
             // `jid` is a real JID. In MUCs, try to show nicks instead (given that the JID is currently online)
-            var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
+            var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_members(conversation.counterpart, conversation.account);
             if (occupants == null) return;
             foreach (Jid occupant in occupants) {
                 if (jid.equals_bare(plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupant, conversation.account))) {

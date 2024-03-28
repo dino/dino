@@ -60,7 +60,7 @@ public class Dino.CallState : Object {
         XmppStream stream = stream_interactor.get_stream(call.account);
         if (stream == null) return;
 
-        Gee.List<Jid> occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(muc, call.account);
+        Gee.List<Jid> occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_members(muc, call.account);
         foreach (Jid occupant in occupants) {
             Jid? real_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(occupant, call.account);
             if (real_jid == null) continue;

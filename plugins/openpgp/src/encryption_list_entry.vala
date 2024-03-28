@@ -53,7 +53,7 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
             }
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             Gee.List<Jid> muc_jids = new Gee.ArrayList<Jid>();
-            Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
+            Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_members(conversation.counterpart, conversation.account);
             if (occupants != null) muc_jids.add_all(occupants);
             Gee.List<Jid>? offline_members = stream_interactor.get_module(MucManager.IDENTITY).get_offline_members(conversation.counterpart, conversation.account);
             if (offline_members != null) muc_jids.add_all(offline_members);

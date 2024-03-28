@@ -11,6 +11,9 @@ public class ListRow : Object {
     private AvatarPicture picture;
     public Label name_label;
 
+    // TODO: use something more visual for status
+    public Label status;
+
     public Conversation? conversation;
     public Jid? jid;
 
@@ -19,6 +22,8 @@ public class ListRow : Object {
         main_grid = (Grid) builder.get_object("main_grid");
         picture = (AvatarPicture) builder.get_object("picture");
         name_label = (Label) builder.get_object("name_label");
+        status = (Label) builder.get_object("status_label");
+        status.label = "(unknown)";
     }
 
     public ListRow(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
@@ -36,6 +41,14 @@ public class ListRow : Object {
 
     public Widget get_widget() {
         return main_grid;
+    }
+
+    public void set_online() {
+        status.label = ("");
+    }
+
+    public void set_offline() {
+        status.label = ("(offline)");
     }
 }
 

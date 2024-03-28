@@ -17,7 +17,9 @@ public class List : Box {
 
     private Conversation conversation;
     private string[]? filter_values;
-    private HashMap<Jid, Widget> rows = new HashMap<Jid, Widget>(Jid.hash_func, Jid.equals_func);
+
+    // List of all chat members with corresponding widgets
+    private HashMap<string, Widget> rows = new HashMap<string, Widget>();
     public HashMap<Widget, ListRow> row_wrappers = new HashMap<Widget, ListRow>();
 
     public List(StreamInteractor stream_interactor, Conversation conversation) {
@@ -27,18 +29,46 @@ public class List : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(refilter);
 
-        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_received_online_presence);
         stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect(on_received_offline_presence);
 
         initialize_for_conversation(conversation);
     }
 
+    public bool get_status(Jid jid, Account account) {
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
+
+        debug("Get presence status for %s", jid.bare_jid.to_string());
+        string presence_str = null;
+        if (full_jids != null){
+            // Iterate over all connected devices
+            for (int i = 0; i < full_jids.size; i++) {
+                Jid full_jid = full_jids[i];
+                presence_str = stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, account);
+                switch(presence_str) {
+                    case "online": {
+                        // Return online status if user is online on at least one device
+                        return true;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+
+        return false;
+    }
+
     public void initialize_for_conversation(Conversation conversation) {
         this.conversation = conversation;
-        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
-        if (occupants != null) {
-            foreach (Jid occupant in occupants) {
-                add_occupant(occupant);
+
+        var identity = stream_interactor.get_module(MucManager.IDENTITY);
+        Gee.List<Jid>? members = identity.get_all_members(conversation.counterpart, conversation.account);
+        if (members != null) {
+            // Add all members and their status to the list
+            foreach (Jid member in members) {
+                bool online = get_status(member, conversation.account);
+                add_member(member, online);
             }
         }
         list_box.invalidate_filter();
@@ -53,34 +83,75 @@ public class List : Box {
         list_box.invalidate_filter();
     }
 
-    public void add_occupant(Jid jid) {
-        var row_wrapper = new ListRow(stream_interactor, conversation, jid);
-        var widget = row_wrapper.get_widget();
+    public void add_member(Jid jid, bool online) {
+        // HACK:
+        // Here we track members based on their names (not jids)
+        // Sometimes the same member can be referenced with different jids, for example:
+        // When initializing the conversation (see initialize_for_conversation function),
+        // we reference members like this:
+        // test_user@test_domain (using a local part, without a resource)
+        // However when updating status, we get the jid in the following format
+        // local_domain@test_domain/test_user (using a resource)
+        string member_name = null;
+        if (jid.resourcepart != null) {
+            member_name = jid.resourcepart;
+        } else {
+            member_name = jid.localpart;
+        }
 
-        row_wrappers[widget] = row_wrapper;
-        rows[jid] = widget;
-        list_box.append(widget);
-    }
+        if (member_name == null) {
+            return;
+        }
 
-    public void remove_occupant(Jid jid) {
-        list_box.remove(rows[jid]);
-        rows.unset(jid);
+        if (!rows.has_key(member_name)) {
+            debug("adding new member %s", jid.to_string());
+            debug("local %s", jid.localpart);
+            debug("domain %s", jid.domainpart);
+            debug("resource %s", jid.resourcepart);
+
+            var row_wrapper = new ListRow(stream_interactor, conversation, jid);
+            var widget = row_wrapper.get_widget();
+
+            if (online) {
+                row_wrapper.set_online();
+            } else {
+                row_wrapper.set_offline();
+            }
+
+            row_wrappers[widget] = row_wrapper;
+            rows[member_name] = widget;
+            list_box.append(widget);
+        }
     }
 
     private void on_received_offline_presence(Jid jid, Account account) {
         if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
-            if (rows.has_key(jid)) {
-                remove_occupant(jid);
+            var member_name = jid.resourcepart;
+            if (member_name == null) {
+                return;
+            }
+
+            if (rows.has_key(member_name)) {
+                row_wrappers[rows[member_name]].set_offline();
+                debug("%s is now offline", jid.to_string());
             }
             list_box.invalidate_filter();
         }
     }
 
-    private void on_show_received(Jid jid, Account account) {
+    private void on_received_online_presence(Jid jid, Account account) {
         if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
-            if (!rows.has_key(jid)) {
-                add_occupant(jid);
+            var member_name = jid.resourcepart;
+            if (member_name == null) {
+                return;
             }
+
+            if (!rows.has_key(member_name)) {
+                add_member(jid, true);
+            }
+
+            row_wrappers[rows[member_name]].set_online();
+            debug("%s is now online", jid.to_string());
             list_box.invalidate_filter();
         }
     }

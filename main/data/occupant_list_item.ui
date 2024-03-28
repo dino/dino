@@ -6,7 +6,7 @@
         <property name="margin-start">7</property>
         <property name="margin-bottom">3</property>
         <property name="margin-end">7</property>
-        <property name="column-spacing">10</property>
+        <property name="column-spacing">5</property>
         <child>
             <object class="DinoUiAvatarPicture" id="picture">
                 <property name="height-request">30</property>
@@ -21,6 +21,18 @@
                 <property name="xalign">0</property>
                 <layout>
                     <property name="column">1</property>
+                    <property name="row">0</property>
+                </layout>
+            </object>
+        </child>
+        <child>
+            <object class="GtkLabel" id="status_label">
+                <property name="max_width_chars">1</property>
+                <property name="ellipsize">end</property>
+                <property name="hexpand">1</property>
+                <property name="xalign">0</property>
+                <layout>
+                    <property name="column">2</property>
                     <property name="row">0</property>
                 </layout>
             </object>

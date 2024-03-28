@@ -107,7 +107,7 @@ public class OccupantsTabCompletor {
         Gee.List<string> ret = generate_completions_from_messages(prefix);
 
         // Then, suggest other nicks in alphabetical order
-        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_occupants(conversation.counterpart, conversation.account);
+        Gee.List<Jid>? occupants = stream_interactor.get_module(MucManager.IDENTITY).get_other_members(conversation.counterpart, conversation.account);
         Gee.List<string> filtered_occupants = new ArrayList<string>();
         if (occupants != null) {
             foreach (Jid jid in occupants) {

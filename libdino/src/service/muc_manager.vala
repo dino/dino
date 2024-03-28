@@ -259,27 +259,46 @@ public class MucManager : StreamInteractionModule, Object {
         return is_groupchat(jid, account) && !is_private_room(account, jid);
     }
 
-    public Gee.List<Jid>? get_occupants(Jid jid, Account account) {
+    public Gee.List<Jid>? get_all_members(Jid jid, Account account) {
         if (is_groupchat(jid, account)) {
             Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
-            Gee.List<Jid>? full_jids = get_offline_members(jid, account);
+
+            // This should return all members of the chat
+            Gee.List<Jid>? members = get_offline_members(jid, account);
+            if (members != null) {
+                ret.add_all(members);
+            }
+
+            return ret;
+        }
+
+        return null;
+    }
+
+    public Gee.List<Jid>? get_members(Jid jid, Account account) {
+        if (is_groupchat(jid, account)) {
+            Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
+            Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(jid, account);
             if (full_jids != null) {
                 ret.add_all(full_jids);
                 // Remove eventual presence from bare jid
                 ret.remove(jid);
             }
+
             return ret;
         }
+
         return null;
     }
 
-    public Gee.List<Jid>? get_other_occupants(Jid jid, Account account) {
-        Gee.List<Jid>? occupants = get_occupants(jid, account);
+    public Gee.List<Jid>? get_other_members(Jid jid, Account account) {
+        Gee.List<Jid>? members = get_members(jid, account);
         Jid? own_jid = get_own_jid(jid, account);
-        if (occupants != null && own_jid != null) {
-            occupants.remove(own_jid);
+        if (members != null && own_jid != null) {
+            members.remove(own_jid);
         }
-        return occupants;
+
+        return members;
     }
 
     public bool is_groupchat(Jid jid, Account account) {
