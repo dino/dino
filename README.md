@@ -61,6 +61,12 @@ Build on Windows (x86_64)
     ```sh
     ./build-win64.sh
     ```
+If you want to use meson build system, please use `-s meson` key as the first argument, i.e.
+   ```sh
+   bash build-win64.sh -s meson -c -b
+   ```
+will do the same as commands above, but using meson.
+
 Note: the build script has some other options, their description can be found using the `--help`.
 
 Build Windows Installer (NSIS)
