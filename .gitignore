@@ -6,7 +6,7 @@ Makefile
 .idea
 .sqlite3
 gschemas.compiled
-windows-installer/win64-dist/
+windows-installer/win64-*/
 *.exe
 *.dll
 *.flatpak
