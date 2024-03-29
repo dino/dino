@@ -18,14 +18,15 @@ prepare()
 configure()
 {
     arg=${1:-"none"}
+    encr=${2:-"auto"}
     local cmd=""
     if [ x"${arg}" == x"reconfig" ]; then
 	    cmd=--reconfigure
     fi
     mkdir -p $BUILD_DIR
     meson setup ${cmd} --prefix "$DIST_DIR" \
-	    --buildtype=debug \
-	    -D crypto-backend=gnutls \
+	    -D crypto-backend=${encr} \
+	    -D plugin-ice=enabled \
 	    $PROJ_DIR $BUILD_DIR
 }
 

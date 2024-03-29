@@ -2,6 +2,7 @@ if crypto_backend == 'openssl'
     if get_option('plugin-ice').enabled()
         error('plugin-ice does not work with openssl backend yet')
     else
+        warning('plugin-ice is not enabled!')
         subdir_done()
     endif
 endif
