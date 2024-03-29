@@ -1,4 +1,4 @@
-project('xmpp-vala', 'c', 'cpp', 'vala')
+project('xmpp-vala', 'c', 'cpp', 'vala', version:'0.1')
 
 fs = import('fs')
 gnome = import('gnome')
@@ -12,6 +12,7 @@ python = import('python')
 # On Windows, it's always required because we need it for glib-networking.
 if host_machine.system() == 'windows'
     plugin_crypto = true
+    add_project_arguments('-D', '_WIN32', language: 'vala')
 else
     plugin_crypto = get_option('plugin-ice')
     foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']

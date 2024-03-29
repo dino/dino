@@ -11,6 +11,7 @@
     <file>conversation_content_view/item_metadata_header.ui</file>
     <file>conversation_content_view/view.ui</file>
     <file>conversation_details.ui</file>
+    <file>conversation_details.css</file>
     <file>conversation_item_widget.ui</file>
     <file>conversation_list_titlebar.ui</file>
     <file>conversation_list_titlebar_csd.ui</file>

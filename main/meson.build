@@ -104,6 +104,8 @@ sources += gnome.compile_resources(
 c_args = [
     '-DG_LOG_DOMAIN="dino"',
     '-DGETTEXT_PACKAGE="dino"',
+    '-D_POSIX_C_SOURCE=1',
+    '-D_FILE_OFFSET_BITS=64',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
 vala_args = [
@@ -118,7 +120,15 @@ endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.8')
     vala_args += ['-D', 'GTK_4_8']
 endif
-exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true)
+
+link_args = []
+if host_machine.system() == 'windows'
+  link_args += ['-Wl,--export-all-symbols']
+  windows = import('windows')
+  sources += windows.compile_resources('dino-info.rc')
+endif
+
+exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, link_args: link_args)
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'hicolor/symbolic/apps')
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'hicolor/scalable/apps')

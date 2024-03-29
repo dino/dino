@@ -132,7 +132,7 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-lib_xmpp_vala = library('xmpp-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.1', install: true, install_dir: [true, true, true])
+lib_xmpp_vala = library('xmpp-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: meson.project_version(), install: true, install_dir: [true, true, true])
 dep_xmpp_vala = declare_dependency(link_with: lib_xmpp_vala, include_directories: include_directories('.'))
 
 install_data('xmpp-vala.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
