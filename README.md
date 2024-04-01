@@ -13,18 +13,20 @@ It was created due to upstream project's maintainers being seemingly unwilling t
 Some of the features that Dino+ implements:
 
 * Windows support
-* Chat history "scroll-to-load" (both for 1-on-1 chats and MUCs), much like Conversations and Gajim
-* Forced MAM sync for MUCs
+* Proper sync for chats history, including "scroll-to-load"
+* Forced MAM sync for chats
 * Password change via GUI
+* Optional support for Meson build system
 * Some additional QoL-features
 
 What's currently in the works:
 
-* Migrate build to Meson
-* Fixes for sound notifications on KDE and some GTK-based platforms
+* Multiple UI fixes
+* Fixes for sound notifications
 * MacOS support for Mac silicon
+* and more
 
-Dino+ is currently to be considered an alpha-quality product. Please open an issue or send a PR if you find or fix any issues.
+Dino+ is currently to be considered an alpha-quality product. Please open an issue or send a PR if you spot or fix any bugs.
 
 OS support
 ------------
@@ -33,9 +35,33 @@ OS support
 
 We only support 64 bit platforms.
 
-Installation
+Installation (prebuilt packages)
 ------------
 Have a look at our [releases](https://github.com/mxlgv/dino/releases).
+
+Windows installer is self-explanatory, and will place a shortcut on your desktop. Ignore the possible warning from Windows Defender: it's caused by the fact that installer does not have a digital signature.
+
+Flatpak is not present in Flathub yet, but you can install it manually. The commands below assume that you have "flatpak" package of your distro installed in your system. If it is not, please refer to https://flatpak.org/setup/
+
+1) Download the .flatpak file from [releases](https://github.com/mxlgv/dino/releases)
+2) Add default Flatpak repo:
+    ```
+    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    ```
+3) Change the directory to the one you've downloaded the .flatpak to and run:
+    ```
+    flatpak install ./im.dino.Dino.flatpak
+    ```
+4) To launch the program, run either
+    ```
+    /usr/bin/dino
+    ```
+    or
+    ```
+    flatpak run im.dino.Dino
+    ```
+
+Flatpak distribution is confirmed to be working on Arch Testing, Manjaro Stable and Void Linux.
 
 Build on Linux
 -----
