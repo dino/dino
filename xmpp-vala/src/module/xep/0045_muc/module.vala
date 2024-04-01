@@ -285,7 +285,7 @@ public class Module : XmppStreamModule {
     private void on_received_message(XmppStream stream, MessageStanza message) {
         if (message.type_ == MessageStanza.TYPE_GROUPCHAT) {
             StanzaNode? subject_node = message.stanza.get_subnode("subject");
-            if (subject_node != null) {
+            if (subject_node != null && message.body == null){ 
                 string subject = subject_node.get_string_content();
                 stream.get_flag(Flag.IDENTITY).set_muc_subject(message.from, subject);
                 subject_set(stream, subject, message.from);
