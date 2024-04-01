@@ -12,10 +12,17 @@ jobs:
           install: git
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v4
-      - name: Build Dino
+        with:
+          fetch-depth: 0
+      - name: Install build-dependencies
         run: |
           msys2 -c './build-win64.sh --prepare'
-          msys2 -c './build-win64.sh'
+      - name: Build Dino (Meson, without saving)
+        run: |
+          msys2 -c './build-win64.sh -s meson -c -b -w'
+      - name: Build Dino (CMake)
+        run: |
+          msys2 -c './build-win64.sh -s cmake -c -b -i'
       - name: Build Dino installer
         run: |
           msys2 -c './build-win64.sh --build-installer'
