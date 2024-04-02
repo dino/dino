@@ -596,17 +596,19 @@ public class MucManager : StreamInteractionModule, Object {
     private void set_autojoin(Account account, XmppStream stream, Jid jid, string? nick, string? password) {
         bookmarks_provider[account].get_conferences.begin(stream, (_, res) => {
             Set<Conference>? conferences = bookmarks_provider[account].get_conferences.end(res);
-            if (conferences == null) return;
 
-            foreach (Conference conference in conferences) {
-                if (conference.jid.equals(jid)) {
-                    if (!conference.autojoin) {
-                        Conference new_conference = new Conference() { jid=jid, nick=nick ?? conference.nick, name=conference.name, password=password ?? conference.password, autojoin=true };
-                        bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
+            if (conferences != null) {
+                foreach (Conference conference in conferences) {
+                    if (conference.jid.equals(jid)) {
+                        if (!conference.autojoin) {
+                            Conference new_conference = new Conference() { jid=jid, nick=nick ?? conference.nick, name=conference.name, password=password ?? conference.password, autojoin=true };
+                            bookmarks_provider[account].replace_conference.begin(stream, jid, new_conference);
+                        }
+                        return;
                     }
-                    return;
                 }
             }
+
             Conference changed = new Xep.Bookmarks.Bookmarks1Conference(jid) { nick=nick, password=password, autojoin=true };
             bookmarks_provider[account].add_conference.begin(stream, changed);
         });
