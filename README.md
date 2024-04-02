@@ -71,6 +71,14 @@ Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#
     make
     build/dino
 
+If you want to use `meson` build system, follow the next instructions:
+
+    meson setup build -Duse-soup2=true -Dcrypto-backend=gnutls -Dplugin-ice=enabled
+    meson compile -C build
+    build/main/dino
+
+If your `nice` library depends on `libsoup-3.0`, you can omit `-Duse-soup2=true` option.
+
 Build on Windows (x86_64)
 ------------
 - Install and configure the [MSYS2](https://www.msys2.org/) package;
