@@ -134,6 +134,12 @@ dist_install()
 {
     _dist_arg=${1:-$DIST_DIR}
 
+    msg "Generate dino-with-console.exe"
+    cp -f "$_dist_arg/bin/dino.exe" "$_dist_arg/bin/dino-with-console.exe"
+    # IMAGE_SUBSYSTEM_WINDOWS_CUI = 0x0003
+    # SUBSYSTEM_OFFSET = 0xDC (220)
+    printf '\x03\x00' | dd of="$_dist_arg/bin/dino-with-console.exe" bs=1 seek=220 count=2 conv=notrunc
+
     msg "Copying MINGW64 dependencies"
     cp /mingw64/bin/gdbus.exe "$_dist_arg/bin"
     cp /mingw64/bin/gspawn-win64-helper.exe "$_dist_arg/bin"
