@@ -170,7 +170,7 @@
                                                     </object>
                                                 </child>
                                                 <child>
-                                                    <object class="GtkButton" id="password_change_btn">
+                                                    <object class="GtkButton" id="password_change_button">
                                                         <property name="label">⚙️</property>
                                                         <layout>
                                                             <property name="column">2</property>

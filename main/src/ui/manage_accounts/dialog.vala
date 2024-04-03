@@ -25,7 +25,7 @@ public class Dialog : Gtk.Dialog {
     [GtkChild] public unowned Label state_label;
     [GtkChild] public unowned Switch active_switch;
     [GtkChild] public unowned Util.EntryLabelHybrid password_hybrid;
-    [GtkChild] public unowned Button password_change_btn;
+    [GtkChild] public unowned Button password_change_button;
     [GtkChild] public unowned Util.EntryLabelHybrid alias_hybrid;
     [GtkChild] public unowned Grid settings_list;
 
@@ -45,12 +45,12 @@ public class Dialog : Gtk.Dialog {
         image_button.clicked.connect(show_select_avatar);
         alias_hybrid.entry.changed.connect(() => { selected_account.alias = alias_hybrid.text; });
         password_hybrid.entry.changed.connect(() => { selected_account.password = password_hybrid.text; });
-        password_change_btn.clicked.connect(show_change_psswd_dialog);
+        password_change_button.clicked.connect(show_change_password_dialog);
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
         label_hybrid_group.add(alias_hybrid);
         label_hybrid_group.add(password_hybrid);
-        password_change_btn.sensitive = false;
+        password_change_button.sensitive = false;
 
         main_stack.set_visible_child_name("no_accounts");
 
@@ -112,10 +112,10 @@ public class Dialog : Gtk.Dialog {
         add_account_dialog.present();
     }
 
-    private void show_change_psswd_dialog() {
-         ChangePasswordDialog change_psswd_dialog = new ChangePasswordDialog(selected_account, stream_interactor);
-         change_psswd_dialog.set_transient_for(this);
-         change_psswd_dialog.present();
+    private void show_change_password_dialog() {
+         ChangePasswordDialog change_password_dialog = new ChangePasswordDialog(selected_account, stream_interactor);
+         change_password_dialog.set_transient_for(this);
+         change_password_dialog.present();
     }
 //
     private void remove_account(AccountRow account_item) {
@@ -224,10 +224,10 @@ public class Dialog : Gtk.Dialog {
                 case ConnectionManager.ConnectionState.CONNECTING:
                     state_label.label = _("Connecting…"); break;
                 case ConnectionManager.ConnectionState.CONNECTED:
-                    password_change_btn.sensitive = true;
+                    password_change_button.sensitive = true;
                     state_label.label = _("Connected"); break;
                 case ConnectionManager.ConnectionState.DISCONNECTED:
-                    password_change_btn.sensitive = false;
+                    password_change_button.sensitive = false;
                     state_label.label = _("Disconnected"); break;
             }
             state_label.remove_css_class("is_error");
@@ -235,7 +235,7 @@ public class Dialog : Gtk.Dialog {
     }
 
     private string get_connection_error_description(ConnectionManager.ConnectionError error) {
-        password_change_btn.sensitive = false;
+        password_change_button.sensitive = false;
         switch (error.source) {
             case ConnectionManager.ConnectionError.Source.SASL:
                 return _("Wrong password");
