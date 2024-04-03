@@ -38,7 +38,7 @@ public class Module : XmppStreamNegotiationModule {
         pw_node.put_node(new StanzaNode.text(new_pw));
         pw_change_node.put_node(username_node);
         pw_change_node.put_node(pw_node);
-        Iq.Stanza set_password_iq = new Iq.Stanza.set(pw_change_node, "change1") { to=jid.bare_jid.domain_jid };
+        Iq.Stanza set_password_iq = new Iq.Stanza.set(pw_change_node) { to=jid.bare_jid.domain_jid };
 
         Iq.Stanza chpw_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, set_password_iq);
         if (chpw_result.is_error()) {
