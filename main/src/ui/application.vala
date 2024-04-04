@@ -273,7 +273,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         about_window.title = _("About Dino+");
         about_window.version = version;
         about_window.website = "https://github.com/mxlgv/dino/";
-        about_window.copyright = "Copyright © 2016-2024 - Dino & Dino+ Teams";
+        about_window.copyright = "Copyright © 2016-2024 - Dino and Dino+ Teams";
         about_window.license_type = License.GPL_3_0;
 
         if (!use_csd()) {
