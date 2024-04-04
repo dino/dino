@@ -47,7 +47,7 @@ function(_compute_version_from_git)
         return()
     endif (NOT git_result EQUAL 0)
 
-    if (git_tag MATCHES "^v?([0-9]+[.]?[0-9]*[.]?[0-9]*)(-[.0-9A-Za-z-]+)?([+][.0-9A-Za-z-]+)?$")
+    if (git_tag MATCHES "^v?([0-9]+[.]?[0-9]*[.]?[0-9]*[.]?[0-9]*)(-[.0-9A-Za-z-]+)?([+][.0-9A-Za-z-]+)?$")
         set(VERSION_LAST_RELEASE "${CMAKE_MATCH_1}")
     else ()
         return()
