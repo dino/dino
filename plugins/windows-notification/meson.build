@@ -70,5 +70,5 @@ if host_machine.system() == 'windows'
   link_args += ['-Wl,--export-all-symbols']
 endif
 
-libwindows_notification = shared_library('windows-notification', sources: sources, include_directories: inc, name_prefix:'', c_args: c_args, vala_args:vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir')/'dino/plugins', link_args: link_args, cpp_args: cpp_args)
+libwindows_notification = shared_library('windows-notification', sources: sources, include_directories: inc, name_prefix:'', c_args: c_args, vala_args:vala_args, dependencies: dependencies, link_args: link_args, cpp_args: cpp_args, kwargs: install_options)
 dep_windows_notification = declare_dependency(link_with: libwindows_notification, include_directories: include_directories('.'))

@@ -59,5 +59,5 @@ endif
 if get_option('plugin-rtp-vp9').allowed()
     vala_args += ['-D', 'ENABLE_VP9']
 endif
-lib_rtp = shared_library('rtp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
+lib_rtp = shared_library('rtp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, kwargs: install_options)
 dep_rtp = declare_dependency(link_with: lib_rtp, include_directories: include_directories('.'))

@@ -79,8 +79,8 @@ sources = files(
 )
 sources += [version_vala]
 c_args = [
-    '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
-    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
+    '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('libdir')),
+    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
 lib_dino = library('dino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true])

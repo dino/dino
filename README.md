@@ -73,11 +73,16 @@ Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#
 
 If you want to use `meson` build system, follow the next instructions:
 
-    meson setup build -Duse-soup2=true -Dcrypto-backend=gnutls -Dplugin-ice=enabled
+    meson setup build -Dcrypto-backend=gnutls -Dplugin-ice=enabled
+    meson configure --prefix $PWD/build/install --libdir lib build
     meson compile -C build
-    build/main/dino
+    meson install -C build
+    LD_LIBRARY_PATH+=:$PWD/build/install/lib build/install/bin/dino
 
-If your `nice` library depends on `libsoup-3.0`, you can omit `-Duse-soup2=true` option.
+If your `nice` library depends on `libsoup-2.4` (consider `ldd` output for the `libnice.so`), you should additionally specify `-Duse-soup2=true` option.
+`LD_LIBRARY_PATH` should point to the directory containing the `libdino.so` library.
+Skip `meson configure` step, if you want to install the program globally.
+You can specify any convenient directory in the option `--prefix` where the program will be installed.
 
 Build on Windows (x86_64)
 ------------

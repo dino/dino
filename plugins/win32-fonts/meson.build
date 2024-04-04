@@ -37,5 +37,5 @@ if host_machine.system() == 'windows'
   link_args += ['-Wl,--export-all-symbols']
 endif
 
-libwin32_fonts = shared_library('win32-fonts', sources: sources, name_prefix:'', c_args: c_args, vala_args:vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir')/'dino/plugins', link_args: link_args)
+libwin32_fonts = shared_library('win32-fonts', sources: sources, name_prefix:'', c_args: c_args, vala_args:vala_args, dependencies: dependencies, link_args: link_args, kwargs: install_options)
 dep_win32_fonts = declare_dependency(link_with: libwin32_fonts, include_directories: include_directories('.'))

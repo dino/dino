@@ -32,5 +32,5 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-lib_ice = shared_library('ice', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
+lib_ice = shared_library('ice', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, dependencies: dependencies, kwargs: install_options)
 dep_ice = declare_dependency(link_with: lib_ice, include_directories: include_directories('.'))

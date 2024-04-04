@@ -1,4 +1,4 @@
-option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
+option('plugindir', type: 'string', value: 'dino/plugins', description: 'Dino plugin directory inside libdir')
 
 option('crypto-backend', type: 'combo', choices: ['auto', 'openssl', 'gnutls'], value: 'auto', description: 'Preferred crypto backend')
 

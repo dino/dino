@@ -1,3 +1,5 @@
+install_options = {'install': true, 'install_dir': get_option('libdir') / get_option('plugindir')}
+
 subdir('http-files')
 subdir('ice')
 subdir('notification-sound')

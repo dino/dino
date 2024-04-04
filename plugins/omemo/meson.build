@@ -70,7 +70,7 @@ vala_args = [
 if crypto_backend == 'gnutls'
     vala_args += ['-D', 'GCRYPT']
 endif
-lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
+lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, kwargs: install_options)
 dep_omemo = declare_dependency(link_with: lib_omemo, include_directories: include_directories('.'))
 
 sources = files(
