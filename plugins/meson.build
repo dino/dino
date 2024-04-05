@@ -9,4 +9,6 @@ subdir('rtp')
 if host_machine.system() == 'windows'
     subdir('win32-fonts')
     subdir('windows-notification')
+else
+    subdir('phone-ringer')
 endif
