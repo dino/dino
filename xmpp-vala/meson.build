@@ -136,3 +136,14 @@ lib_xmpp_vala = library('xmpp-vala', sources, c_args: c_args, vala_args: vala_ar
 dep_xmpp_vala = declare_dependency(link_with: lib_xmpp_vala, include_directories: include_directories('.'))
 
 install_data('xmpp-vala.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
+
+sources = files(
+    'tests/common.vala',
+    'tests/testcase.vala',
+    'tests/jid.vala',
+    'tests/stanza.vala',
+    'tests/color.vala',
+    'tests/util.vala',
+)
+test_xmpp_vala = executable('test_xmpp_vala', sources, vala_args: vala_args, dependencies: dependencies + [dep_xmpp_vala])
+test('xmpp-vala', test_xmpp_vala)

@@ -95,7 +95,7 @@ prepare()
 configure_cmake()
 {
     msg "Running configuration for Windows"
-    ./configure --program-prefix="$DIST_DIR" --no-debug --release --disable-fast-vapi --with-libsoup3
+    ./configure --program-prefix="$DIST_DIR" --no-debug --release --disable-fast-vapi --with-libsoup3 --with-tests
     msg "Configured!"
 }
 
@@ -106,6 +106,12 @@ build_cmake()
     msg "Successfully builded!"
     msg "Installing Dino .."
     make install
+}
+
+test_cmake()
+{
+    msg "Run tests"
+    make test
 }
 
 configure_meson()
@@ -125,9 +131,14 @@ configure_meson()
 
 build_meson()
 {
-    cd $BUILD_DIR && ninja
-    ninja install
-    cd $PROJ_DIR
+    meson compile -C $BUILD_DIR
+    meson install -C $BUILD_DIR
+}
+
+test_meson()
+{
+    msg "Run tests"
+    meson test -C $BUILD_DIR
 }
 
 dist_install()
@@ -205,7 +216,7 @@ help()
 
 	Usage: $0 [option]
 
-        Note: you may set the multiple options, but be surem that they will be
+        Note: you may set the multiple options, but be sure that they will be
 	      processed sequentially (one-by-one), e.g. command
                 $0 -s meson -c -b
               will run buld config and _after_ that run build using meson, while
@@ -230,7 +241,10 @@ help()
 		configure build using selected build-system.
 
 	--build, -b
-		invoked build.
+		invoke build.
+
+	--test, -t
+		run tests.
 
 	--reconfig, -r
 		reconfigure project, if minor changes were
@@ -281,6 +295,9 @@ do
 		--build|-b)
 			build_${build_sys}
 			;;
+		--test|-t)
+			test_${build_sys}
+			;;
 		--reconfig|-r)
 			configure_${build_sys} reconfig
 			;;
@@ -306,6 +323,7 @@ do
 				exit 1;
 			fi
                         build_sys=$2
+                        shift
 			;;
 		-*)
 			echo "Unknown option $1"

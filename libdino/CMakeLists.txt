@@ -112,12 +112,13 @@ install(TARGETS libdino ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.vapi ${CMAKE_BINARY_DIR}/exports/dino.deps DESTINATION ${VAPI_INSTALL_DIR})
 install(FILES ${CMAKE_BINARY_DIR}/exports/dino.h ${CMAKE_BINARY_DIR}/exports/dino_i18n.h DESTINATION ${INCLUDE_INSTALL_DIR})
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     vala_precompile(LIBDINO_TEST_VALA_C
     SOURCES
         "tests/weak_map.vala"
         "tests/testcase.vala"
         "tests/common.vala"
+        "tests/jid.vala"
     CUSTOM_VAPIS
         ${CMAKE_BINARY_DIR}/exports/dino_internal.vapi
         ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
@@ -131,4 +132,5 @@ if(BUILD_TESTS)
     add_definitions(${VALA_CFLAGS})
     add_executable(libdino-test ${LIBDINO_TEST_VALA_C})
     target_link_libraries(libdino-test libdino)
-endif(BUILD_TESTS)
+    add_test(NAME libdino COMMAND libdino-test)
+endif(BUILD_TESTING)

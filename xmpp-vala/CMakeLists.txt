@@ -177,7 +177,7 @@ install(TARGETS xmpp-vala ${TARGET_INSTALL})
 install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi ${CMAKE_BINARY_DIR}/exports/xmpp-vala.deps DESTINATION ${VAPI_INSTALL_DIR})
 install(FILES ${CMAKE_BINARY_DIR}/exports/xmpp-vala.h DESTINATION ${INCLUDE_INSTALL_DIR})
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     vala_precompile(ENGINE_TEST_VALA_C
     SOURCES
         "tests/common.vala"
@@ -198,4 +198,5 @@ if(BUILD_TESTS)
     add_definitions(${VALA_CFLAGS})
     add_executable(xmpp-vala-test ${ENGINE_TEST_VALA_C})
     target_link_libraries(xmpp-vala-test xmpp-vala ${SIGNAL_PROTOCOL_PACKAGES})
-endif(BUILD_TESTS)
+    add_test(NAME xmpp-vala COMMAND xmpp-vala-test)
+endif(BUILD_TESTING)

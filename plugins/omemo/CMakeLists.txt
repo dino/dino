@@ -104,7 +104,7 @@ set_target_properties(omemo PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_D
 
 install(TARGETS omemo ${PLUGIN_INSTALL})
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     vala_precompile(OMEMO_TEST_VALA_C
     SOURCES
         "tests/signal/common.vala"
@@ -127,4 +127,5 @@ if(BUILD_TESTS)
     add_executable(omemo-test ${OMEMO_TEST_VALA_C})
     add_dependencies(omemo-test omemo)
     target_link_libraries(omemo-test omemo ${OMEMO_PACKAGES})
-endif(BUILD_TESTS)
+    add_test(NAME omemo COMMAND omemo-test)
+endif(BUILD_TESTING)

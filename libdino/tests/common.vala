@@ -4,6 +4,7 @@ int main(string[] args) {
     GLib.Test.init(ref args);
     GLib.Test.set_nonfatal_assertions();
     TestSuite.get_root().add_suite(new WeakMapTest().get_suite());
+    TestSuite.get_root().add_suite(new JidTest().get_suite());
     return GLib.Test.run();
 }
 

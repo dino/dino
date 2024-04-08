@@ -15,7 +15,7 @@ eval set -- "$OPTS"
 PREFIX=${PREFIX:-/usr/local}
 ENABLED_PLUGINS=
 DISABLED_PLUGINS=
-BUILD_TESTS=
+BUILD_TESTS=no
 BUILD_TYPE=Debug
 DISABLE_FAST_VAPI=
 LIB_SUFFIX=
@@ -207,7 +207,7 @@ cmake -G "$cmake_type" \
     -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
     -DENABLED_PLUGINS="$ENABLED_PLUGINS" \
     -DDISABLED_PLUGINS="$DISABLED_PLUGINS" \
-    -DBUILD_TESTS="$BUILD_TESTS" \
+    -DBUILD_TESTING="$BUILD_TESTS" \
     -DUSE_SOUP3="$USE_SOUP3" \
     -DVALA_EXECUTABLE="$VALAC" \
     -DCMAKE_VALA_FLAGS="$VALACFLAGS" \
@@ -238,8 +238,6 @@ default:
 	@sh -c "cd build; $exec_command"
 distclean: clean uninstall
 	
-test: default
-	echo "make test not yet supported"
 %:
 	@sh -c "cd build; $exec_command \"\$@\""
 EOF

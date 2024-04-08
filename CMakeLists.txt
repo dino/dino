@@ -10,6 +10,8 @@ else ()
     set(PROJECT_VERSION ${VERSION_FULL})
 endif ()
 
+include(CTest)
+
 # Prepare Plugins
 set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
 if (WIN32)

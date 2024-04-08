@@ -19,10 +19,10 @@ jobs:
           msys2 -c './build-win64.sh --prepare'
       - name: Build Dino (Meson, without saving)
         run: |
-          msys2 -c './build-win64.sh -s meson -c -b -w'
+          msys2 -c './build-win64.sh -s meson -c -b -t -w'
       - name: Build Dino (CMake)
         run: |
-          msys2 -c './build-win64.sh -s cmake -c -b -i'
+          msys2 -c './build-win64.sh -s cmake -c -b -t -i'
       - name: Build Dino installer
         run: |
           msys2 -c './build-win64.sh --build-installer'
