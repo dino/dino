@@ -11,7 +11,7 @@ namespace Dino.Ui{
     public class ChangePasswordDialog : Gtk.Dialog {
     
         [GtkChild] private unowned Button change_password_button;
-        /*[GtkChild] private unowned Stack change_password_stack; */
+        [GtkChild] private unowned Stack change_password_stack;
         [GtkChild] private unowned Button cancel_button;
         [GtkChild] private unowned Adw.PasswordEntryRow current_password_entry;
         [GtkChild] private unowned Adw.PasswordEntryRow new_password_entry;
@@ -74,10 +74,10 @@ namespace Dino.Ui{
 
             if (pw_input != null && account.password == pw_input){
                 change_password_button.sensitive = false;
-            //    change_password_stack.visible_child_name = "spinner";
+                change_password_stack.visible_child_name = "spinner";
                 string ret = yield stream_interactor.get_module(Register.IDENTITY).change_password(account, new_pw_input);
                 change_password_button.sensitive = true;
-            //   change_password_stack.visible_child_name = "label";
+               change_password_stack.visible_child_name = "label";
                 if (ret == null) {
                     account.password = new_pw_input;
                     close();
