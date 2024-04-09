@@ -10,10 +10,7 @@ public class ListRow : Object {
     private Grid main_grid;
     private AvatarPicture picture;
     public Label name_label;
-
-    // TODO: use something more visual for status
-    public Label status;
-
+    public Image status_image;
     public Conversation? conversation;
     public Jid? jid;
 
@@ -22,8 +19,10 @@ public class ListRow : Object {
         main_grid = (Grid) builder.get_object("main_grid");
         picture = (AvatarPicture) builder.get_object("picture");
         name_label = (Label) builder.get_object("name_label");
-        status = (Label) builder.get_object("status_label");
-        status.label = "(unknown)";
+        status_image = (Image) builder.get_object("status_image");
+        main_grid.set_column_spacing(10);
+        main_grid.set_column_homogeneous(false);
+        main_grid.set_baseline_row(1);
     }
 
     public ListRow(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
@@ -44,11 +43,11 @@ public class ListRow : Object {
     }
 
     public void set_online() {
-        status.label = ("");
+        status_image.icon_name = "dino-status-online";
     }
 
     public void set_offline() {
-        status.label = ("(offline)");
+        status_image.icon_name = "dino-status-offline";
     }
 }
 

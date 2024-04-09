@@ -15,7 +15,8 @@
         </child>
         <child>
             <object class="GtkLabel" id="name_label">
-                <property name="max_width_chars">1</property>
+                <property name="width-chars">20</property>
+                <property name="max-width-chars">40</property>
                 <property name="ellipsize">end</property>
                 <property name="hexpand">1</property>
                 <property name="xalign">0</property>
@@ -26,11 +27,8 @@
             </object>
         </child>
         <child>
-            <object class="GtkLabel" id="status_label">
-                <property name="max_width_chars">1</property>
-                <property name="ellipsize">end</property>
-                <property name="hexpand">1</property>
-                <property name="xalign">0</property>
+            <object class="GtkImage" id="status_image">
+                <property name="pixel-size">12</property>
                 <layout>
                     <property name="column">2</property>
                     <property name="row">0</property>
