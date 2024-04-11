@@ -43,7 +43,7 @@ public class ListRow : Object {
     }
 
     public void set_online() {
-        status_image.icon_name = "dino-status-online";
+        status_image.icon_name = "dino-status-online-bright";
     }
 
     public void set_offline() {

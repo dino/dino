@@ -49,6 +49,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-status-chat.svg
     icons/scalable/status/dino-status-dnd.svg
     icons/scalable/status/dino-status-online.svg
+    icons/scalable/status/dino-status-online-bright.svg
     icons/scalable/status/dino-status-offline.svg
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
