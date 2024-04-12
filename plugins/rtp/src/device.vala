@@ -55,12 +55,12 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     private string device_name;
     private string device_display_name;
 
-    private Gst.Caps device_caps;
-    private Gst.Element element;
-    private Gst.Element tee;
-    private Gst.Element dsp;
-    private Gst.Base.Aggregator mixer;
-    private Gst.Element filter;
+    private Gst.Caps device_caps = null;
+    private Gst.Element element = null;
+    private Gst.Element tee = null;
+    private Gst.Element dsp = null;
+    private Gst.Base.Aggregator mixer = null;
+    private Gst.Element filter = null;
     private int links;
 
     // Codecs
