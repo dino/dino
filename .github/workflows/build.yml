@@ -10,9 +10,26 @@ jobs:
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
       - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libadwaita-1-dev libsignal-protocol-c-dev libcanberra-dev
-      - run: ./configure --with-tests --with-libsignal-in-tree
-      - run: make
-      - run: make test
+      - run: ./configure --release --no-debug --with-tests --enable-plugin=notification-sound --prefix=/usr
+      - run: cmake --build build
+      - run: cmake --build build --target=test
+      - name: Build DEB-package
+        run: cd build && cpack -G DEB
+      - name: Upload Dino+ DEB-package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dino-plus-deb
+          path: _packages/dino-plus.deb
+      - name: Release Dino+ DEB-package
+        if: ${{ github.ref_type == 'tag' }}
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: _packages/dino-plus.deb
+          asset_name: dino-plus.deb
+          tag: ${{ github.ref }}
+          release_name: Dino ${{ github.ref_name }}
+
   build-meson:
     runs-on: ubuntu-22.04
     steps:
