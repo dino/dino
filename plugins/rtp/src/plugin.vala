@@ -58,6 +58,27 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
     }
 
+#if WITH_VOICE_PROCESSOR
+    private Gst.Element create_echo_bin(Gst.Element element) {
+        Gst.Bin bin = new Gst.Bin("echoprobebin");
+        Gst.Element converter = Gst.ElementFactory.make("audioconvert", "echo_convert_");
+        Gst.Element resampler = Gst.ElementFactory.make("audioresample", "echo_resample_");
+
+        bin.add_many(element, converter, resampler);
+        element.link(converter);
+        converter.link(resampler);
+
+        Gst.Pad sink_pad = bin.find_unlinked_pad(Gst.PadDirection.SINK);
+        Gst.Pad src_pad = bin.find_unlinked_pad(Gst.PadDirection.SRC);
+        Gst.Pad ghost_source = new Gst.GhostPad("source", src_pad);
+        Gst.Pad ghost_sink = new Gst.GhostPad("sink", sink_pad);
+        bin.add_pad(ghost_source);
+        bin.add_pad(ghost_sink);
+
+        return (Gst.Element)bin;
+    }
+#endif
+
     private void init_call_pipe() {
         if (pipe != null) return;
         pipe = new Gst.Pipeline(null);
@@ -80,7 +101,10 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 #if WITH_VOICE_PROCESSOR
         // Audio echo probe
         echoprobe = new EchoProbe();
-        if (echoprobe != null) pipe.add(echoprobe);
+        if (echoprobe != null) {
+            echoprobe = create_echo_bin(echoprobe);
+            pipe.add(echoprobe);
+        }
 #endif
 
         // Pipeline
