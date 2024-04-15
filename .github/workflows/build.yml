@@ -28,7 +28,7 @@ jobs:
           file: _packages/dino-plus.deb
           asset_name: dino-plus.deb
           tag: ${{ github.ref }}
-          release_name: Dino ${{ github.ref_name }}
+          release_name: Dino+ ${{ github.ref_name }}
 
   build-meson:
     runs-on: ubuntu-22.04
@@ -57,7 +57,7 @@ jobs:
         with:
           manifest-path: im.dino.Dino.json
           build-bundle: true
-      - name: Release Dino installer
+      - name: Release Dino+ flatpak
         if: ${{ github.ref_type == 'tag' }}
         uses: svenstaro/upload-release-action@2.9.0
         with:
@@ -65,4 +65,4 @@ jobs:
           file: app.flatpak
           asset_name: app.flatpak
           tag: ${{ github.ref }}
-          release_name: Dino ${{ github.ref_name }}
+          release_name: Dino+ ${{ github.ref_name }}

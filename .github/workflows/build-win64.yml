@@ -17,26 +17,26 @@ jobs:
       - name: Install build-dependencies
         run: |
           msys2 -c './build-win64.sh --prepare'
-      - name: Build Dino (Meson, without saving)
+      - name: Build Dino+ (Meson, without saving)
         run: |
           msys2 -c './build-win64.sh -s meson -c -b -t -w'
-      - name: Build Dino (CMake)
+      - name: Build Dino+ (CMake)
         run: |
           msys2 -c './build-win64.sh -s cmake -c -b -t -i'
-      - name: Build Dino installer
+      - name: Build Dino+ installer
         run: |
           msys2 -c './build-win64.sh --build-installer'
-      - name: Upload Dino installer
+      - name: Upload Dino+ installer
         uses: actions/upload-artifact@v4
         with:
-          name: dino-installer
+          name: dino-plus-installer
           path: windows-installer/dino-installer.exe
-      - name: Release Dino installer
+      - name: Release Dino+ installer
         if: ${{ github.ref_type == 'tag' }}
         uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: windows-installer/dino-installer.exe
-          asset_name: dino-installer.exe
+          asset_name: dino-plus-installer.exe
           tag: ${{ github.ref }}
-          release_name: Dino ${{ github.ref_name }}
+          release_name: Dino+ ${{ github.ref_name }}
