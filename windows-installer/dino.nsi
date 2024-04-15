@@ -13,7 +13,7 @@ SetCompressor /SOLID lzma
 
 # Modern Interface
 !include "MUI2.nsh"
-!insertmacro MUI_PAGE_LICENSE "LICENSE_SHORT"
+!insertmacro MUI_PAGE_LICENSE "../LICENSE_SHORT"
 !insertmacro MUI_PAGE_INSTFILES
 !include "english.nsh"
 

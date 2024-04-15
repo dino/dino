@@ -1,5 +1,6 @@
-Dino - Modern Jabber/XMPP Client using GTK+/Vala
-Copyright (C) 2016-2020 Dino contributors
+Dino+, a modern XMPP/Jabber client software based on Dino
+Copyright (C) 2016-2023 Dino contributors
+Copyright (C) 2024 Dino+ contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
