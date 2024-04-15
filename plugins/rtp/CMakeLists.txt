@@ -58,6 +58,10 @@ if(RTP_ENABLE_MSDK)
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} ENABLE_MSDK)
 endif()
 
+if(WIN32 AND WITH_WASAPI)
+    list(APPEND RTP_DEFINITIONS WITH_WASAPI)
+endif()
+
 vala_precompile(RTP_VALA_C
 SOURCES
     src/codec_util.vala

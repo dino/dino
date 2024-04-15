@@ -42,6 +42,19 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         if (pause_count < 0) warning("Pause count below zero!");
     }
 
+    private bool is_skipped(Gst.Device device) {
+        bool is_noprops = device.properties == null;
+#if WITH_WASAPI
+        bool is_disabled_sound = device.properties.get_string("device.api") == "directsound";
+#else
+        bool is_disabled_sound = device.properties.get_string("device.api") == "wasapi";
+#endif
+        bool is_proplist = device.properties.has_name("pipewire-proplist") && device.has_classes("Audio");
+        bool is_monitor = device.properties.get_string("device.class") == "monitor";
+        bool is_in_devices = devices.any_match((it) => it.matches(device));
+        return is_noprops || is_disabled_sound || is_proplist || is_monitor || is_in_devices;
+    }
+
     private void init_device_monitor() {
         if (device_monitor != null) return;
         device_monitor = new Gst.DeviceMonitor();
@@ -49,11 +62,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
         device_monitor.start();
         foreach (Gst.Device device in device_monitor.get_devices()) {
-            if (device.properties == null) continue;
-            if (device.properties.get_string("device.api") == "wasapi") continue;
-            if (device.properties.has_name("pipewire-proplist") && device.has_classes("Audio")) continue;
-            if (device.properties.get_string("device.class") == "monitor") continue;
-            if (devices.any_match((it) => it.matches(device))) continue;
+            if (is_skipped(device)) continue;
+            debug(@"(Init) Add name=$(device.name) device=$(device.display_name)");
             devices.add(new Device(this, device));
         }
     }
@@ -227,20 +237,23 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         switch (message.type) {
             case Gst.MessageType.DEVICE_ADDED:
                 message.parse_device_added(out gst_device);
-                if (devices.any_match((it) => it.matches(gst_device))) return Source.CONTINUE;
+                if (is_skipped(gst_device)) return Source.CONTINUE;
                 device = new Device(this, gst_device);
+                debug(@"(Notify) Add name=$(gst_device.name) device=$(gst_device.display_name)");
                 devices.add(device);
                 break;
 #if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out gst_device, out old_gst_device);
                 device = devices.first_match((it) => it.matches(old_gst_device));
+                debug(@"(Notify) Change name=$(gst_device.name) device=$(gst_device.display_name)");
                 if (device != null) device.update(gst_device);
                 break;
 #endif
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out gst_device);
                 device = devices.first_match((it) => it.matches(gst_device));
+                debug(@"(Notify) Remove name=$(gst_device.name) device=$(gst_device.display_name)");
                 if (device != null) devices.remove(device);
                 break;
             default:

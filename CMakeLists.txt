@@ -13,6 +13,7 @@ endif ()
 include(CTest)
 
 option(PLUGIN_RTP_WEBRTC_AUDIO_PROCESSING "Use WebRTC audio processing" ON)
+option(WITH_WASAPI "Use wasapi instead of directsound on windows" ON)
 
 # https://gitlab.kitware.com/cmake/cmake/-/issues/19804
 if (WIN32)

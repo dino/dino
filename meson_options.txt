@@ -16,3 +16,4 @@ option('plugin-rtp-vp9', type: 'feature', value: 'disabled', description: 'VP9 c
 option('plugin-rtp-webrtc-audio-processing', type: 'feature', description: 'Voice preprocessing')
 
 option('use-soup2', type: 'boolean', value: false, description: 'Use libsoup version 2 instead of 3')
+option('with-wasapi', type: 'boolean', value: true, description: 'Use wasapi insted of directsound on windows')
