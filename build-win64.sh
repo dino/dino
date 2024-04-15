@@ -74,7 +74,6 @@ prepare()
        mingw64/mingw-w64-x86_64-nsis \
        mingw64/mingw-w64-x86_64-libsignal-protocol-c \
        mingw64/mingw-w64-x86_64-icu \
-       mingw64/mingw-w64-x86_64-webrtc-audio-processing \
        mingw64/mingw-w64-x86_64-meson \
        git \
        make \

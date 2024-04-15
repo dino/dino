@@ -58,6 +58,8 @@ else
     libsoup_version = '3.0'
 endif
 
+cc = meson.get_compiler('c')
+
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
@@ -81,9 +83,12 @@ dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
 dep_libsignal_protocol_c = dependency('libsignal-protocol-c', version: ['>=2.3.2', '<2.3.4'], disabler: true, required: get_option('plugin-omemo'))
 dep_libsoup = dependency('libsoup-@0@'.format(libsoup_version), disabler: true, required: get_option('plugin-http-files'))
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
-dep_m = meson.get_compiler('c').find_library('m', required: false)
+dep_m = cc.find_library('m', required: false)
 dep_sqlite3 = dependency('sqlite3', version: '>=3.24')
-dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2', '<0.4'], required: get_option('plugin-rtp-webrtc-audio-processing'))
+
+dep_gstreamer_bad = dependency('gstreamer-plugins-bad-1.0', disabler: true, required: get_option('plugin-rtp-webrtc-audio-processing'))
+gstpluginsdir = dep_gstreamer_bad.get_variable('pluginsdir')
+dep_webrtcdsp = cc.find_library('gstwebrtcdsp', dirs: gstpluginsdir, disabler: true, required: get_option('plugin-rtp-webrtc-audio-processing'))
 
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()

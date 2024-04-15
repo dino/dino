@@ -12,6 +12,13 @@ endif ()
 
 include(CTest)
 
+option(PLUGIN_RTP_WEBRTC_AUDIO_PROCESSING "Use WebRTC audio processing" ON)
+
+# https://gitlab.kitware.com/cmake/cmake/-/issues/19804
+if (WIN32)
+    list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .dll)
+endif()
+
 # Prepare Plugins
 set(DEFAULT_PLUGINS omemo;openpgp;http-files;ice;rtp)
 if (WIN32)

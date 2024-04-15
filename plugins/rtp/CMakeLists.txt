@@ -1,5 +1,13 @@
 find_package(GLib ${GLib_GLOBAL_VERSION} REQUIRED)
-find_package(WebRTCAudioProcessing 0.2)
+
+set(RTP_DEFINITIONS)
+set(RTP_EXTRA_OPTIONS)
+
+if(PLUGIN_RTP_WEBRTC_AUDIO_PROCESSING)
+    set(EXTRA_RTP_PACKAGES GstWebrtcDsp)
+    list(APPEND RTP_DEFINITIONS WITH_VOICE_PROCESSOR)
+endif()
+
 find_packages(RTP_PACKAGES REQUIRED
     Gee
     GLib
@@ -11,10 +19,8 @@ find_packages(RTP_PACKAGES REQUIRED
     GstAudio
     GstRtp
     GstVideo
+    ${EXTRA_RTP_PACKAGES}
 )
-
-set(RTP_DEFINITIONS)
-set(RTP_EXTRA_OPTIONS)
 
 if(GstRtp_VERSION VERSION_GREATER_EQUAL "1.16")
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} GST_1_16)
@@ -50,20 +56,6 @@ endif()
 set(RTP_ENABLE_MSDK "no" CACHE BOOL "Enable MSDK support")
 if(RTP_ENABLE_MSDK)
     set(RTP_DEFINITIONS ${RTP_DEFINITIONS} ENABLE_MSDK)
-endif()
-
-if(WebRTCAudioProcessing_VERSION GREATER "0.4")
-    message(STATUS "Ignoring WebRTCAudioProcessing, only versions < 0.4 supported so far")
-    unset(WebRTCAudioProcessing_FOUND)
-endif()
-
-if(WebRTCAudioProcessing_FOUND)
-    set(RTP_DEFINITIONS ${RTP_DEFINITIONS} WITH_VOICE_PROCESSOR)
-    set(RTP_VOICE_PROCESSOR_VALA src/voice_processor.vala)
-    set(RTP_VOICE_PROCESSOR_CXX src/voice_processor_native.cpp)
-    set(RTP_VOICE_PROCESSOR_LIB webrtc-audio-processing)
-else()
-    message(STATUS "WebRTCAudioProcessing not found, build without voice pre-processing!")
 endif()
 
 vala_precompile(RTP_VALA_C

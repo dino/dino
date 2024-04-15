@@ -30,12 +30,8 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if dep_webrtc_audio_processing.found()
-    dependencies += [dep_webrtc_audio_processing]
-    sources += files(
-        'src/voice_processor.vala',
-        'src/voice_processor_native.cpp',
-    )
+if dep_webrtcdsp.found()
+    dependencies += [dep_webrtcdsp]
     vala_args += ['-D', 'WITH_VOICE_PROCESSOR']
 endif
 if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.16')

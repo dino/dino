@@ -74,7 +74,7 @@ Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#
 
 If you want to use `meson` build system, follow the next instructions:
 
-    meson setup build -Dcrypto-backend=gnutls -Dplugin-ice=enabled
+    meson setup build
     meson configure --prefix $PWD/build/install --libdir lib build
     meson compile -C build
     meson install -C build
@@ -84,6 +84,12 @@ If your `nice` library depends on `libsoup-2.4` (consider `ldd` output for the `
 `LD_LIBRARY_PATH` should point to the directory containing the `libdino.so` library.
 Skip `meson configure` step, if you want to install the program globally.
 You can specify any convenient directory in the option `--prefix` where the program will be installed.
+
+If there is no `webrtcdsp` plugin in your system (check this by calling `gst-inspect-1.0 webrtcdsp`) you should pass extra argument:
+
+* `--without-webrtcdsp` for `./configure`;
+* `-Dplugin-rtp-webrtc-audio-processing=disabled` for `meson`;
+* `-DPLUGIN_RTP_WEBRTC_AUDIO_PROCESSING=OFF` for `cmake`.
 
 In addition, there is a git version of this package for **Arch Linux** on [AUR](https://aur.archlinux.org/packages/dino-plus-git)
 

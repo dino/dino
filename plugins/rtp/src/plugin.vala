@@ -59,13 +59,14 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
 #if WITH_VOICE_PROCESSOR
-    private Gst.Element create_echo_bin(Gst.Element element) {
+    private Gst.Element create_echo_probe() {
         Gst.Bin bin = new Gst.Bin("echoprobebin");
         Gst.Element converter = Gst.ElementFactory.make("audioconvert", "echo_convert_");
         Gst.Element resampler = Gst.ElementFactory.make("audioresample", "echo_resample_");
+        Gst.Element webrtcechoprobe = Gst.ElementFactory.make("webrtcechoprobe", "webrtcechoprobe0");
 
-        bin.add_many(element, converter, resampler);
-        element.link(converter);
+        bin.add_many(webrtcechoprobe, converter, resampler);
+        webrtcechoprobe.link(converter);
         converter.link(resampler);
 
         Gst.Pad sink_pad = bin.find_unlinked_pad(Gst.PadDirection.SINK);
@@ -100,11 +101,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 
 #if WITH_VOICE_PROCESSOR
         // Audio echo probe
-        echoprobe = new EchoProbe();
-        if (echoprobe != null) {
-            echoprobe = create_echo_bin(echoprobe);
-            pipe.add(echoprobe);
-        }
+        echoprobe = create_echo_probe();
+        pipe.add(echoprobe);
 #endif
 
         // Pipeline

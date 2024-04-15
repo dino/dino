@@ -9,8 +9,8 @@ jobs:
           fetch-depth: 0
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libadwaita-1-dev libsignal-protocol-c-dev libcanberra-dev
-      - run: ./configure --release --no-debug --with-tests --enable-plugin=notification-sound --prefix=/usr
+      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libadwaita-1-dev libsignal-protocol-c-dev libcanberra-dev
+      - run: ./configure --release --no-debug --with-tests --enable-plugin=notification-sound --prefix=/usr --without-webrtc
       - run: cmake --build build
       - run: cmake --build build --target=test
       - name: Build DEB-package
@@ -38,8 +38,8 @@ jobs:
           fetch-depth: 0
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup2.4-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
-      - run: meson setup build -Dcrypto-backend=auto -Dplugin-ice=enabled -Duse-soup2=true
+      - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup2.4-dev libsqlite3-dev libsrtp2-dev meson valac
+      - run: meson setup build -Duse-soup2=true -Dplugin-rtp-webrtc-audio-processing=disabled
       - run: meson compile -C build
       - run: meson test -C build
   build-flatpak:
