@@ -1,5 +1,8 @@
+
 using Dino.Entities;
 using Gtk;
+using Gee;
+
 
 namespace Dino.Plugins.OpenPgp {
 
@@ -12,6 +15,9 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
 
     private Plugin plugin;
     private Account current_account;
+    
+    private Gee.List<GPG.Key> keyz = null; /* new key list */
+    private Gee.List<GPG.Key> keyzz = null; /* new key list */
     private Gee.List<GPG.Key> keys = null;
     private Gtk.ListStore list_store = new Gtk.ListStore(2, typeof(string), typeof(string?));
 
@@ -48,11 +54,19 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
 
     private async void set_account_(Account account) {
         this.current_account = account;
-        if (keys == null) {
+          
+
+           if (keys == null) {
             yield fetch_keys();
+        
+           
             populate_list_store();
-        }
+ 
+       } //first section
+
+         
         activate_current_account();
+  
     }
 
     private void on_button_clicked() {
@@ -75,11 +89,19 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
 
         string? account_key = plugin.db.get_account_key(current_account);
         int activate_index = 0;
-        for (int i = 0; i < keys.size; i++) {
+        for (int i = 0; i < keys.size; i++) { 
             GPG.Key key = keys[i];
-            if (key.fpr == account_key) {
+            if(key.revoked = true) {
+             label.set_markup(build_markup_string(_("Key publishing disabled"), _("Revoked keys not displayed")));
+             return;
+             }
+            /* determine if key is marked as revoked */
+            if(key.revoked = false) {
+            if (key.fpr == account_key && !key.revoked = true) {
                 activate_index = i + 1;
             }
+
+           }
         }
         combobox.active = activate_index;
 
@@ -100,12 +122,34 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         list_store.append(out iter);
         list_store.set(iter, 0, build_markup_string(_("Key publishing disabled"), _("Select key") + "<span font_family='monospace' font='8'> \n </span>"), 1, "");
         for (int i = 0; i < keys.size; i++) {
-            list_store.append(out iter);
+
+            /* use a while loop for out iter and remove function */
+           // if(!keys[i].revoked) { /* don't add if revoked */
+           // list_store.append(out iter);
+           // } /* end of not revoked if loop  */
+         
+
+             if(keys[i].revoked = true) {
+             /* keys[i].revoked == true;   */
+             /* var keyids = new ArrayList<string>(); */
+            /*  var keydds = new ArrayList<string>(); */
+            /*  keyz.add(key_id);   */
+             GPG.Key key = keys[i];
+              keyzz.add(key);
+              
+              }
+             
+               
             list_store.set(iter, 0, @"$(Markup.escape_text(keys[i].uids[0].uid))\n<span font_family='monospace' font='8'>$(markup_colorize_id(keys[i].fpr, true))</span><span font='8'> </span>");
             list_store.set(iter, 1, keys[i].fpr);
+
+       
             if (keys[i].fpr == plugin.db.get_account_key(current_account)) {
                 set_label_active(iter, i + 1);
             }
+         /* end of while loop */
+
+         /* while loop old ending   }    */
         }
         button.sensitive = true;
     }
@@ -117,6 +161,7 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         new Thread<void*> (null, () => { // Querying GnuPG might take some time
             try {
                 keys = GPGHelper.get_keylist(null, true);
+
             } catch (Error e) {
                 warning(e.message);
             }
