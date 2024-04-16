@@ -50,7 +50,7 @@ public class FileDefaultWidget : Box {
 
         switch (state) {
             case FileTransfer.State.COMPLETE:
-                mime_label.label = mime_description;
+                mime_label.label = _("%s offered: %s").printf(mime_description, get_size_string(size));
                 image_stack.set_visible_child_name("content_type_image");
 
                 // Create a menu
