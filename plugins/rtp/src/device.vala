@@ -348,9 +348,46 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         }
     }
 
+    private Gst.Caps get_best_audio_caps() {
+        // Choose caps based on the highest rate
+        int best_index = -1;
+        int best_rate = 0;
+        for (int i = 0; i < device.caps.get_size(); i++) {
+            unowned Gst.Structure? structure = device.caps.get_structure(i);
+            if (structure == null) {
+                continue;
+            }
+
+            if (!structure.has_field("rate")) {
+                continue;
+            }
+
+            int rate = 0;
+            if (!structure.get_int("rate", out rate)) {
+                continue;
+            }
+
+            if (rate > best_rate) {
+                best_rate = rate;
+                best_index = i;
+            }
+        }
+
+        if (best_index != -1) {
+            Gst.Caps caps = caps_copy_nth(device.caps, best_index);
+            info("Selected Audio Caps: %s", caps.to_string());
+            return caps;
+        }
+
+        // Default Caps
+        string default_caps = "audio/x-raw,rate=48000,channels=1";
+        info("Selected Default Audio Caps: %s", default_caps);
+        return Gst.Caps.from_string(default_caps);
+    }
+
     private Gst.Caps get_best_caps() {
         if (media == "audio") {
-            return Gst.Caps.from_string("audio/x-raw,rate=48000,channels=1");
+            return get_best_audio_caps();
         } else if (media == "video" && device.caps.get_size() > 0) {
             int best_index = -1;
             Value? best_fraction = null;
