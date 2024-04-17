@@ -20,7 +20,7 @@ msgstr ""
 
 #: plugins/openpgp/src/account_settings_entry.vala:72
 msgid "No keys available. Generate one!"
-msgstr ""
+msgstr "No keys available. Generate one or check if your keys aren't expired or revoked!"
 
 #: plugins/openpgp/src/account_settings_entry.vala:101
 msgid "Select key"

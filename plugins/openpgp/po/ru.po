@@ -31,7 +31,7 @@ msgstr "Ошибка в GnuPG"
 
 #: plugins/openpgp/src/account_settings_entry.vala:72
 msgid "No keys available. Generate one!"
-msgstr "Нет доступных ключей. Стоило бы сгенерировать один!"
+msgstr "Нет доступных ключей. Создайте как минимум один, либо проверьте что уже существующие (ранее созданные) ключи не были отозваны или срок их действия не закончился!"
 
 #: plugins/openpgp/src/account_settings_entry.vala:101
 msgid "Select key"

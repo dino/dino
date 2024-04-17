@@ -112,7 +112,12 @@ public static Gee.List<Key> get_keylist(string? pattern = null, bool secret_only
         try {
             while (true) {
                 Key key = context.op_keylist_next();
-                keys.add(key);
+                if (!key.expired && !key.revoked) {
+                    debug("PGP Key " + key.fpr + " is valid!");
+                    keys.add(key);
+                } else {
+                    debug("PGP Key " + key.fpr + " is either expired or revoked!");
+                }
             }
         } catch (Error e) {
             if (e.code != GPGError.ErrorCode.EOF) throw e;
