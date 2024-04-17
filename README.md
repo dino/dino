@@ -84,6 +84,8 @@ If your `nice` library depends on `libsoup-2.4` (consider `ldd` output for the `
 Skip `meson configure` step, if you want to install the program globally.
 You can specify any convenient directory in the option `--prefix` where the program will be installed.
 
+In addition, there is a git version of this package for **Arch Linux** on [AUR](https://aur.archlinux.org/packages/dino-plus-git)
+
 Build on Windows (x86_64)
 ------------
 - Install and configure the [MSYS2](https://www.msys2.org/) package;
