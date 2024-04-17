@@ -20,7 +20,26 @@ cd dino
 
 ## Install with Brew
 
-TODO
+To build Dino using this formula, follow these instructions:
+
+```
+brew tap mxlgv/homebrew-dino
+brew install mxlgv/homebrew-dino/dino
+```
+
+You can start the Dino client installed via homebrew with the following command:
+
+```
+./opt/homebrew/Cellar/dino/3/bin/dino
+```
+
+You can create a shortcut with a symbolic link pointing to this file, so that you can open it in a more convenient way.
+
+If you encounter an error related to rpath, you need to add `DYLD_LIBRARY_PATH` to the environment variable:
+
+```
+export DYLD_LIBRARY_PATH=/opt/homebrew/Cellar/dino/3/lib
+```
 
 ## Notifications
 
@@ -30,4 +49,6 @@ There is a draft PR which can be used to enable notifications: https://github.co
 
 In order to run Dino, just run in the build folder:
 
-`./dino`
+```
+./dino
+```
