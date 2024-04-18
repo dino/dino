@@ -32,6 +32,7 @@ OS support
 ------------
 * Linux (flatpaks are targeted for Ubuntu 22.04+)
 * Windows 10\11
+* MacOS via [brew](https://brew.sh/) (very experimental!)
 
 We only support 64 bit platforms.
 
@@ -61,7 +62,7 @@ Flatpak is not present in Flathub yet, but you can install it manually. The comm
     flatpak run im.dino.Dino
     ```
 
-Flatpak distribution is confirmed to be working on Arch Testing, Manjaro Stable and Void Linux.
+Flatpak distribution is confirmed to be working on Arch Testing, Manjaro Stable, Void Linux and Linux Mint.
 
 Build on Linux
 -----
@@ -117,6 +118,12 @@ Now you should run:
 ```sh
 ./build-win64.sh --build-installer
 ```
+
+Build on MacOS
+------------
+Builds for Mac are currently available only as a [brew](https://brew.sh/) formulae. Please follow [these instructions](https://github.com/mxlgv/dino/blob/master/BUILD_MACOS.md) to produce a build.
+
+Please note that Mac support is very experimental, and currently missing support for event notifications, among other things. You have been warned.
 
 Resources
 ---------
