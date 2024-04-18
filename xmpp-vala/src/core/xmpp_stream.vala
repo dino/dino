@@ -191,4 +191,12 @@ public abstract class Xmpp.XmppStream : Object {
             }
         }
     }
+
+    public static bool equals_func(XmppStream str1, XmppStream str2) {
+        return str1.remote_name.to_string() == str2.remote_name.to_string();
+    }
+
+    public static uint hash_func(XmppStream str) {
+        return str.remote_name.to_string().hash();
+    }
 }
