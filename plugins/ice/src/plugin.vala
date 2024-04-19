@@ -37,7 +37,6 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
                 stream.get_module(JingleRawUdp.Module.IDENTITY).set_local_ip_address_handler(get_local_ip_addresses);
             }
         });
-        app.stream_interactor.stream_negotiated.connect(external_discovery_refresh_services);
         app.stream_interactor.connection_manager.connection_state_changed.connect(on_connection_state_changed);
     }
 
@@ -102,13 +101,20 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
     }
 
     public void on_connection_state_changed(Account account, ConnectionManager.ConnectionState state) {
-        if (state == ConnectionManager.ConnectionState.DISCONNECTED) {
-            XmppStream? stream = app.stream_interactor.connection_manager.get_stream(account);
-            if (stream == null) return;
-            if (!timeouts.has_key(stream)) return;
+        switch(state)
+        {
+            case ConnectionManager.ConnectionState.DISCONNECTED:
+                XmppStream? stream = app.stream_interactor.connection_manager.get_stream(account);
+                if (stream == null) return;
+                if (!timeouts.has_key(stream)) return;
 
-            Source.remove(timeouts[stream].timeout_handle_id);
-            timeouts.unset(stream);
+                Source.remove(timeouts[stream].timeout_handle_id);
+                timeouts.unset(stream);
+            break;
+            case ConnectionManager.ConnectionState.CONNECTED:
+                XmppStream? stream = app.stream_interactor.connection_manager.get_stream(account);
+                external_discovery_refresh_services(account, stream);
+            break;
         }
     }
 
