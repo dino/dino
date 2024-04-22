@@ -55,9 +55,9 @@ namespace GPG {
         public string issuer_name;
         public string chain_id;
         public Validity owner_trust;
-        [CCode(array_null_terminated = true)]
+        [CCode(array_length = false, array_null_terminated = true)]
         public SubKey[] subkeys;
-        [CCode(array_null_terminated = true)]
+        [CCode(array_length = false, array_null_terminated = true)]
         public UserID[] uids;
         public KeylistMode keylist_mode;
         public string fpr { get { return subkeys[0].fpr; } }
