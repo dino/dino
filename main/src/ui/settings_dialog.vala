@@ -15,6 +15,7 @@ class SettingsDialog : Adw.PreferencesWindow {
     [GtkChild] private unowned CheckButton encryption_radio_openpgp;
     [GtkChild] private unowned Switch send_button_switch;
     [GtkChild] private unowned Switch enter_newline_switch;
+    [GtkChild] private unowned Switch dark_theme;
 
     Dino.Entities.Settings settings = Dino.Application.get_default().settings;
 
@@ -32,6 +33,8 @@ class SettingsDialog : Adw.PreferencesWindow {
         send_button_switch.active = settings.send_button;
         enter_newline_switch.active = settings.enter_newline;
         enter_newline_switch.sensitive = settings.send_button;
+        dark_theme.active = settings.dark_theme;
+        dark_theme.sensitive = !Adw.StyleManager.get_default().system_supports_color_schemes;
 
         typing_switch.notify["active"].connect(() => { settings.send_typing = typing_switch.active; } );
         marker_switch.notify["active"].connect(() => { settings.send_marker = marker_switch.active; } );
@@ -65,6 +68,7 @@ class SettingsDialog : Adw.PreferencesWindow {
                 enter_newline_switch.active = visible;
             }
         });
+        dark_theme.notify["active"].connect(() => { settings.dark_theme = dark_theme.active; });
     }
 }
 

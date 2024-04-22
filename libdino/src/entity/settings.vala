@@ -15,6 +15,7 @@ public class Settings : Object {
         default_encryption = col_to_encryption_or_default("default_encryption", Encryption.UNKNOWN);
         send_button = col_to_bool_or_default("send_button", false);
         enter_newline = col_to_bool_or_default("enter_newline", false);
+        dark_theme = col_to_bool_or_default("dark_theme", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -126,6 +127,20 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             enter_newline_ = value;
+        }
+    }
+
+    public signal void dark_theme_update(bool is_dark);
+    private bool dark_theme_;
+    public bool dark_theme {
+        get { return dark_theme_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "dark_theme", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            dark_theme_ = value;
+            dark_theme_update(value);
         }
     }
 }

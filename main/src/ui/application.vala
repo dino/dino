@@ -68,6 +68,19 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                     }
                 }
             });
+
+            settings.dark_theme_update.connect((is_dark) => {
+                var manager = Adw.StyleManager.get_default();
+                if (is_dark != manager.dark) {
+                    if (is_dark) {
+                        manager.set_color_scheme(Adw.ColorScheme.PREFER_DARK);
+                    } else {
+                        manager.set_color_scheme(Adw.ColorScheme.PREFER_LIGHT);
+                    }
+                }
+            });
+
+            settings.dark_theme_update(settings.dark_theme); // Change theme at startup.
         });
 
         activate.connect(() => {

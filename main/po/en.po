@@ -533,12 +533,10 @@ msgid "Local Settings"
 msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:23
 msgid "Send typing notifications"
 msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:32
 msgid "Send read receipts"
 msgstr ""
 
@@ -1012,16 +1010,52 @@ msgstr ""
 msgid "Add Contact"
 msgstr ""
 
-#: main/data/settings_dialog.ui:41
+#: main/data/settings_dialog.ui:14
+msgid "Default encryption for 1-on-1 chats"
+msgstr ""
+
+#: main/data/settings_dialog.ui:19
+msgid "Ask"
+msgstr ""
+
+#: main/data/settings_dialog.ui:57
+msgid "Send _Typing Notifications"
+msgstr ""
+
+#: main/data/settings_dialog.ui:85
+msgid "_Notifications"
+msgstr ""
+
+#: main/data/settings_dialog.ui:69
+msgid "Send _Read Receipts"
+msgstr ""
+
+#: main/data/settings_dialog.ui:86
 msgid "Notify when a new message arrives"
 msgstr ""
 
-#: main/data/settings_dialog.ui:50
-msgid "Convert smileys to emojis"
+#: main/data/settings_dialog.ui:102
+msgid "_Convert Smileys to Emoji"
 msgstr ""
 
-#: main/data/settings_dialog.ui:59
-msgid "Check spelling"
+#: main/data/settings_dialog.ui:118
+msgid "_Display send button"
+msgstr ""
+
+#: main/data/settings_dialog.ui:130
+msgid "_Use Enter key to start a new line"
+msgstr ""
+
+#: main/data/settings_dialog.ui:131
+msgid "If disabled, use Shift+Enter to start a new line"
+msgstr ""
+
+#: main/data/settings_dialog.ui:147
+msgid "_Dark theme"
+msgstr ""
+
+#: main/data/settings_dialog.ui:148
+msgid "If disabled, use system settings"
 msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:7

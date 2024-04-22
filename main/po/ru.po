@@ -1028,17 +1028,53 @@ msgstr "Псевдоним"
 msgid "Add Contact"
 msgstr "Добавить контакт"
 
-#: main/data/settings_dialog.ui:41
+#: main/data/settings_dialog.ui:14
+msgid "Default encryption for 1-on-1 chats"
+msgstr "Шифрование по умолчанию для 1-на-1 чатов"
+
+#: main/data/settings_dialog.ui:19
+msgid "Ask"
+msgstr "Спрашивать"
+
+#: main/data/settings_dialog.ui:57
+msgid "Send _Typing Notifications"
+msgstr "Отправлять уведомления при наборе сообщения"
+
+#: main/data/settings_dialog.ui:85
+msgid "_Notifications"
+msgstr "Уведомления"
+
+#: main/data/settings_dialog.ui:69
+msgid "Send _Read Receipts"
+msgstr "Отправлять уведомления о прочтении"
+
+#: main/data/settings_dialog.ui:86
 msgid "Notify when a new message arrives"
 msgstr "Уведомлять о новых сообщениях"
 
-#: main/data/settings_dialog.ui:50
-msgid "Convert smileys to emojis"
+#: main/data/settings_dialog.ui:102
+msgid "_Convert Smileys to Emoji"
 msgstr "Превращать смайлы в эмодзи"
 
-#: main/data/settings_dialog.ui:59
-msgid "Check spelling"
-msgstr "Проверка орфографии"
+#: main/data/settings_dialog.ui:118
+msgid "_Display send button"
+msgstr "Показывать кнопку отправки"
+
+#: main/data/settings_dialog.ui:130
+msgid "_Use Enter key to start a new line"
+msgstr "Использовать Enter для вставки новой строки"
+
+#: main/data/settings_dialog.ui:131
+msgid "If disabled, use Shift+Enter to start a new line"
+msgstr "Если опция недоступна, используйте Shift+Enter для вставки новой строки"
+
+#: main/data/settings_dialog.ui:147
+msgid "_Dark theme"
+msgstr "Тёмная тема"
+
+#: main/data/settings_dialog.ui:148
+msgid "If disabled, use system settings"
+msgstr "Если опция недоступна, используйте настройки системы"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
