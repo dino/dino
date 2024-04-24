@@ -44,7 +44,11 @@ public class Dialog : Gtk.Dialog {
         });
         image_button.clicked.connect(show_select_avatar);
         alias_hybrid.entry.changed.connect(() => { selected_account.alias = alias_hybrid.text; });
-        password_hybrid.entry.changed.connect(() => { selected_account.password = password_hybrid.text; });
+        password_hybrid.entry.changed.connect(() => {
+            if (password_hybrid.text != "************") {
+                selected_account.password = password_hybrid.text;
+            }
+        });
         password_change_btn.clicked.connect(show_change_psswd_dialog);
 
         Util.LabelHybridGroup label_hybrid_group = new Util.LabelHybridGroup();
@@ -68,6 +72,7 @@ public class Dialog : Gtk.Dialog {
 
             settings_list.attach(widget, 1, row_index, 2);
             row_index++;
+            password_hybrid.text = "************";
         }
     }
 
@@ -200,7 +205,7 @@ public class Dialog : Gtk.Dialog {
 
         alias_hybrid.text = account.alias ?? "";
         password_hybrid.entry.input_purpose = InputPurpose.PASSWORD;
-        password_hybrid.text = account.password;
+        
 
         update_status_label(account);
 
