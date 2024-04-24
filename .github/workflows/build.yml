@@ -7,6 +7,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - run: sudo rm /etc/apt/sources.list.d/microsoft-prod.list
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
       - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libadwaita-1-dev libsignal-protocol-c-dev libcanberra-dev
@@ -36,6 +37,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - run: sudo rm /etc/apt/sources.list.d/microsoft-prod.list
       - run: sudo apt-get update
       - run: sudo apt-get remove libunwind-14-dev
       - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup2.4-dev libsqlite3-dev libsrtp2-dev meson valac
