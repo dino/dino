@@ -80,6 +80,7 @@ sources = files(
 sources += [version_vala]
 c_args = [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('libdir')),
+    '-DDINO_SYSTEM_LOCALEDIR_NAME="@0@"'.format(get_option('localedir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]

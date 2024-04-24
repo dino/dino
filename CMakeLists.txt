@@ -81,6 +81,8 @@ macro(set_path what val desc)
     endif()
 endmacro(set_path)
 
+set(LOCALEDIR_NAME "share/locale")
+
 string(REGEX REPLACE "^liblib" "lib" LIBDIR_NAME "lib${LIB_SUFFIX}")
 set_path(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" "Installation directory for architecture-independent files")
 set_path(EXEC_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}" "Installation directory for architecture-dependent files")
@@ -94,7 +96,7 @@ set_path(SERVICE_FILE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/dbus-1/services" "Ins
 set_path(ICON_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/icons" "Installation directory for icons")
 set_path(INCLUDE_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/include" "Installation directory for C header files")
 set_path(LIB_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/${LIBDIR_NAME}" "Installation directory for object code libraries")
-set_path(LOCALE_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/locale" "Installation directory for locale files")
+set_path(LOCALE_INSTALL_DIR "${EXEC_INSTALL_PREFIX}/${LOCALEDIR_NAME}" "Installation directory for locale files")
 set_path(PLUGIN_INSTALL_DIR "${LIB_INSTALL_DIR}/dino/plugins" "Installation directory for dino plugin object code files")
 set_path(VAPI_INSTALL_DIR "${SHARE_INSTALL_PREFIX}/vala/vapi" "Installation directory for Vala API files")
 

@@ -2,6 +2,7 @@ namespace Dino {
 
 private extern const string SYSTEM_LIBDIR_NAME;
 private extern const string SYSTEM_PLUGIN_DIR;
+private extern const string SYSTEM_LOCALEDIR_NAME;
 
 public class SearchPathGenerator {
 
@@ -12,14 +13,21 @@ public class SearchPathGenerator {
     }
 
     public string get_locale_path(string gettext_package, string locale_install_dir) {
-        string? locale_dir = null;
-        if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
-            string exec_locale = Path.build_filename(Path.get_dirname(exec_path), "locale");
-            if (FileUtils.test(Path.build_filename(exec_locale, "en", "LC_MESSAGES", gettext_package + ".mo"), FileTest.IS_REGULAR)) {
-                locale_dir = exec_locale;
+        if (exec_path != null) {
+            var exec_dir = Path.get_dirname(exec_path);
+            string[] search_paths = new string[] {
+                Path.build_filename(exec_dir, "locale"),
+                Path.build_filename(Path.get_dirname(exec_dir), SYSTEM_LOCALEDIR_NAME)
+            };
+            foreach (var path in search_paths) {
+                if (FileUtils.test(Path.build_filename(path, "en", "LC_MESSAGES", gettext_package + ".mo"), FileTest.IS_REGULAR)) {
+                    debug(@"Found locale $(gettext_package).mo in $(path)");
+                    return path;
+                }
             }
         }
-        return locale_dir ?? locale_install_dir;
+
+        return locale_install_dir;
     }
 
     public string[] get_plugin_paths() {
