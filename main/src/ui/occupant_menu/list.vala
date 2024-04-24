@@ -29,8 +29,8 @@ public class List : Box {
         list_box.set_filter_func(filter);
         search_entry.search_changed.connect(refilter);
 
-        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_received_online_presence);
-        stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect(on_received_offline_presence);
+        stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_show_received);
+        stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect(on_quit_received);
 
         initialize_for_conversation(conversation);
     }
@@ -63,12 +63,11 @@ public class List : Box {
         this.conversation = conversation;
 
         var identity = stream_interactor.get_module(MucManager.IDENTITY);
-        Gee.List<Jid>? members = identity.get_all_members(conversation.counterpart, conversation.account);
+        Gee.List<Jid>? members = identity.get_members(conversation.counterpart, conversation.account);
         if (members != null) {
             // Add all members and their status to the list
             foreach (Jid member in members) {
-                bool online = get_status(member, conversation.account);
-                add_member(member, online);
+                add_member(member); //use add_member_with_status if you want to get online/offline statuses
             }
         }
         list_box.invalidate_filter();
@@ -83,7 +82,7 @@ public class List : Box {
         list_box.invalidate_filter();
     }
 
-    public void add_member(Jid jid, bool online) {
+    public void add_member_with_status(Jid jid, bool online) {
         // HACK:
         // Here we track members based on their names (not jids)
         // Sometimes the same member can be referenced with different jids, for example:
@@ -124,6 +123,35 @@ public class List : Box {
         }
     }
 
+    public void add_member(Jid jid) {
+        var row_wrapper = new ListRow(stream_interactor, conversation, jid);
+        var widget = row_wrapper.get_widget();
+
+        string member_name = null;
+        if (jid.resourcepart != null) {
+            member_name = jid.resourcepart;
+        } else {
+            member_name = jid.localpart;
+        }
+
+        if (member_name == null) {
+            return;
+        }
+
+        row_wrappers[widget] = row_wrapper;
+        rows[member_name] = widget;
+        list_box.append(widget);
+    }
+
+    public void remove_member(Jid jid) {
+        var member_name = jid.resourcepart;
+        if (member_name == null) {
+            return;
+        }
+        list_box.remove(rows[member_name]);
+        rows.unset(member_name);
+    }
+
     private void on_received_offline_presence(Jid jid, Account account) {
         if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
             var member_name = jid.resourcepart;
@@ -139,6 +167,19 @@ public class List : Box {
         }
     }
 
+    private void on_quit_received(Jid jid, Account account) {
+        if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
+            var member_name = jid.resourcepart;
+            if (member_name == null) {
+                return;
+            }
+            if (rows.has_key(member_name)) {
+                remove_member(jid);
+            }
+            list_box.invalidate_filter();
+        }
+    }
+
     private void on_received_online_presence(Jid jid, Account account) {
         if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
             var member_name = jid.resourcepart;
@@ -147,7 +188,7 @@ public class List : Box {
             }
 
             if (!rows.has_key(member_name)) {
-                add_member(jid, true);
+                add_member_with_status(jid, true);
             }
 
             row_wrappers[rows[member_name]].set_online();
@@ -155,6 +196,20 @@ public class List : Box {
             list_box.invalidate_filter();
         }
     }
+
+    private void on_show_received(Jid jid, Account account) {
+        if (conversation != null && conversation.counterpart.equals_bare(jid) && jid.is_full()) {
+            var member_name = jid.resourcepart;
+            if (member_name == null) {
+               return;
+            }
+            if (!rows.has_key(member_name)) {
+                add_member(jid);
+            }
+            list_box.invalidate_filter();
+        }
+    }
+
 
     private void header(ListBoxRow row, ListBoxRow? before_row) {
         ListRow row_wrapper1 = row_wrappers[row.get_child()];
