@@ -25,13 +25,13 @@ public interface Application : GLib.Application {
 
     public abstract void handle_uri(string jid, string query, Gee.Map<string, string> options);
 
-    public void init() throws Error {
+    public void init(bool default_dark_theme) throws Error {
         if (DirUtils.create_with_parents(get_storage_dir(), 0700) == -1) {
             throw new Error(-1, 0, "Could not create storage dir \"%s\": %s", get_storage_dir(), FileUtils.error_from_errno(errno).to_string());
         }
 
         this.db = new Database(Path.build_filename(get_storage_dir(), "dino.db"));
-        this.settings = new Dino.Entities.Settings.from_db(db);
+        this.settings = new Dino.Entities.Settings.from_db(db, default_dark_theme);
         this.stream_interactor = new StreamInteractor(db);
 
         MessageProcessor.start(stream_interactor, db);

@@ -4,7 +4,7 @@ public class Settings : Object {
 
     private Database db;
 
-    public Settings.from_db(Database db) {
+    public Settings.from_db(Database db, bool default_dark_theme) {
         this.db = db;
 
         send_typing_ = col_to_bool_or_default("send_typing", true);
@@ -15,7 +15,7 @@ public class Settings : Object {
         default_encryption = col_to_encryption_or_default("default_encryption", Encryption.UNKNOWN);
         send_button = col_to_bool_or_default("send_button", false);
         enter_newline = col_to_bool_or_default("enter_newline", false);
-        dark_theme = col_to_bool_or_default("dark_theme", false);
+        dark_theme = col_to_bool_or_default("dark_theme", default_dark_theme);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {

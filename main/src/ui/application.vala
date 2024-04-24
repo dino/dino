@@ -29,7 +29,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 
     public Application() throws Error {
         Object(application_id: "im.dino.Dino", flags: ApplicationFlags.HANDLES_OPEN);
-        init();
+
+        var style_manager = Adw.StyleManager.get_default();
+        bool system_dark_theme = style_manager.system_supports_color_schemes && style_manager.dark;
+        init(system_dark_theme);
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("im.dino.Dino");
 
@@ -73,9 +76,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 var manager = Adw.StyleManager.get_default();
                 if (is_dark != manager.dark) {
                     if (is_dark) {
-                        manager.set_color_scheme(Adw.ColorScheme.PREFER_DARK);
+                        manager.set_color_scheme(Adw.ColorScheme.FORCE_DARK);
                     } else {
-                        manager.set_color_scheme(Adw.ColorScheme.PREFER_LIGHT);
+                        manager.set_color_scheme(Adw.ColorScheme.FORCE_LIGHT);
                     }
                 }
             });

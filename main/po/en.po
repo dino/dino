@@ -1054,10 +1054,6 @@ msgstr ""
 msgid "_Dark theme"
 msgstr ""
 
-#: main/data/settings_dialog.ui:148
-msgid "If disabled, use system settings"
-msgstr ""
-
 #: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
 msgstr ""

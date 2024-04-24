@@ -145,7 +145,6 @@
                         <child>
                             <object class="AdwActionRow">
                                 <property name="title" translatable="yes">_Dark theme</property>
-                                <property name="subtitle" translatable="yes">If disabled, use system settings</property>
                                 <property name="use-underline">True</property>
                                 <property name="activatable-widget">dark_theme</property>
                                 <child type="suffix">

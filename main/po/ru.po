@@ -1072,10 +1072,6 @@ msgstr "Если опция недоступна, используйте Shift+E
 msgid "_Dark theme"
 msgstr "Тёмная тема"
 
-#: main/data/settings_dialog.ui:148
-msgid "If disabled, use system settings"
-msgstr "Если опция недоступна, используйте настройки системы"
-
 #: main/data/im.dino.Dino.appdata.xml.in:7
 msgid "Modern XMPP Chat Client"
 msgstr "Современный XMPP клиент"

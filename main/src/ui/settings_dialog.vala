@@ -34,7 +34,6 @@ class SettingsDialog : Adw.PreferencesWindow {
         enter_newline_switch.active = settings.enter_newline;
         enter_newline_switch.sensitive = settings.send_button;
         dark_theme.active = settings.dark_theme;
-        dark_theme.sensitive = !Adw.StyleManager.get_default().system_supports_color_schemes;
 
         typing_switch.notify["active"].connect(() => { settings.send_typing = typing_switch.active; } );
         marker_switch.notify["active"].connect(() => { settings.send_marker = marker_switch.active; } );
