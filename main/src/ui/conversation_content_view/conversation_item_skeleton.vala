@@ -153,13 +153,14 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
             if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
             encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
+            encryption_image.tooltip_text = Util.string_if_tooltips_active(_(item.encryption.to_string()));
             encryption_image.visible = true;
         }
 
         if (item.encryption == Encryption.NONE) {
             if (conversation.encryption != Encryption.NONE) {
                 encryption_image.icon_name = "changes-allow-symbolic";
-                encryption_image.tooltip_text = Util.string_if_tooltips_active(_("Unencrypted"));
+                encryption_image.tooltip_text = Util.string_if_tooltips_active(_(item.encryption.to_string()));
                 Util.force_error_color(encryption_image);
                 encryption_image.visible = true;
             } else if (conversation.encryption == Encryption.NONE) {
