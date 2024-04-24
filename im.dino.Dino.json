@@ -60,7 +60,11 @@
             "buildsystem": "cmake-ninja",
             "builddir": true,
             "config-opts": [
-                "-DSOUP_VERSION=3"
+                "-DSOUP_VERSION=3",
+                "-DNO_DEBUG=yes",
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DENABLED_PLUGINS=notification-sound",
+                "-DPLUGIN_RTP_WEBRTC_AUDIO_PROCESSING=OFF"
             ],
             "cleanup": [
                 "/include",
