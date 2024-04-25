@@ -36,11 +36,13 @@ OS support
 
 We only support 64 bit platforms.
 
-Installation (prebuilt packages)
+Installation (prebuilt packages & AUR)
 ------------
 Have a look at our [releases](https://github.com/mxlgv/dino/releases).
 
 Windows installer is self-explanatory, and will place a shortcut on your desktop. Ignore the possible warning from Windows Defender: it's caused by the fact that installer does not have a digital signature.
+
+Deb package is built and tested only for Ubuntu 22.04, but it may work on its derivatives as well, such as Pop!_OS or Linux Mint.
 
 Flatpak is not present in Flathub yet, but you can install it manually. The commands below assume that you have "flatpak" package of your distro installed in your system. If it is not, please refer to https://flatpak.org/setup/
 
@@ -49,7 +51,7 @@ Flatpak is not present in Flathub yet, but you can install it manually. The comm
     ```
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     ```
-3) Change the directory to the one you've downloaded the .flatpak to and run:
+3) Change the directory to the one you've downloaded the .flatpak to and run (you may have to change the file name in this command):
     ```
     flatpak install ./im.dino.Dino.flatpak
     ```
@@ -64,13 +66,17 @@ Flatpak is not present in Flathub yet, but you can install it manually. The comm
 
 Flatpak distribution is confirmed to be working on Arch Testing, Manjaro Stable, Void Linux and Linux Mint.
 
+Arch Linux & Manjaro users may install `dino-plus-git` package from [AUR](https://aur.archlinux.org/packages/dino-plus-git) via any helper of their choice.
+
 Build on Linux
 -----
 Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#dependencies).
 
-    ./configure
+    ./configure --release --no-debug --with-tests --enable-plugin=notification-sound --prefix=/usr
     make
     build/dino
+
+Additionally, you might need to install `gst-plugins-bad` and `webrtc-audio-processing` packages (or however they might be called in your distro), if you want to have noise cancelling and gain control. If you don't want that or your distro don't have that package, add "--without-webrtc" (without quotes) to the first command.
 
 If you want to use `meson` build system, follow the next instructions:
 
@@ -90,8 +96,6 @@ If there is no `webrtcdsp` plugin in your system (check this by calling `gst-ins
 * `--without-webrtcdsp` for `./configure`;
 * `-Dplugin-rtp-webrtc-audio-processing=disabled` for `meson`;
 * `-DPLUGIN_RTP_WEBRTC_AUDIO_PROCESSING=OFF` for `cmake`.
-
-In addition, there is a git version of this package for **Arch Linux** on [AUR](https://aur.archlinux.org/packages/dino-plus-git)
 
 Build on Windows (x86_64)
 ------------
