@@ -106,7 +106,7 @@ while true; do
         --enable-plugin ) if [ -z "$ENABLED_PLUGINS" ]; then ENABLED_PLUGINS="$2"; else ENABLED_PLUGINS="$ENABLED_PLUGINS;$2"; fi; shift; shift ;;
         --disable-plugin ) if [ -z "$DISABLED_PLUGINS" ]; then DISABLED_PLUGINS="$2"; else DISABLED_PLUGINS="$DISABLED_PLUGINS;$2"; fi; shift; shift ;;
         --valac ) VALA_EXECUTABLE="$2"; shift; shift ;;
-        --valac-flags ) VALAC_FLAGS="$2"; shift; shift ;;
+        --valac-flags ) VALACFLAGS="$2"; shift; shift ;;
         --lib-suffix ) LIB_SUFFIX="$2"; shift; shift ;;
         --with-libsoup3 ) USE_SOUP3=yes; shift ;;
         --disable-fast-vapi ) DISABLE_FAST_VAPI=yes; shift ;;

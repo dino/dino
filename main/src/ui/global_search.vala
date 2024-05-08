@@ -260,7 +260,8 @@ public class GlobalSearch {
             for (; match_info.matches(); match_info.next()) {
                 int start, end;
                 match_info.fetch_pos(0, out start, out end);
-                markup_text += Markup.escape_text(text[last_end:start]) + "<span bgcolor=\"yellow\">" + Markup.escape_text(text[start:end]) + "</span>";
+                string themed_span = Util.is_dark_theme(label) ? "<span color=\"black\" bgcolor=\"yellow\">" : "<span bgcolor=\"yellow\">";
+                markup_text += Markup.escape_text(text[last_end:start]) + themed_span + Markup.escape_text(text[start:end]) + "</span>";
                 last_end = end;
             }
             markup_text += Markup.escape_text(text[last_end:text.length]);
