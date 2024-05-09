@@ -29,6 +29,10 @@
   <url type="donation">https://dino.im/#donate</url>
   <url type="translate">https://hosted.weblate.org/projects/dino/</url>
   <update_contact>appstream@dino.im</update_contact>
+  <branding>
+    <color type="primary" scheme_preference="light">#B2DFDB</color>
+    <color type="primary" scheme_preference="dark">#004D40</color>
+  </branding>
   <releases>
     <release date="2023-02-07" version="0.4">
       <description>
