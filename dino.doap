@@ -3,7 +3,7 @@
   <Project>
     <name>Dino</name>
     <short-name>dino</short-name>
-    <shortdesc xml:lang="en">Modern XMPP Chat Client</shortdesc>
+    <shortdesc xml:lang="en">Modern XMPP chat client</shortdesc>
     <shortdesc xml:lang="zh-TW">現代化的 XMPP 用戶端聊天軟件</shortdesc>
     <shortdesc xml:lang="zh-CN">现代 XMPP 聊天客户端</shortdesc>
     <shortdesc xml:lang="tr">Modern XMPP Sohbet İstemcisi</shortdesc>
