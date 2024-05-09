@@ -1052,7 +1052,7 @@ msgid "Check spelling"
 msgstr "التدقيق الإملائي"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Modern XMPP Chat Client"
+msgid "Modern XMPP chat client"
 msgstr "تطبيق حديث للدردشة عبر XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:9

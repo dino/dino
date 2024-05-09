@@ -1035,7 +1035,7 @@ msgid "Check spelling"
 msgstr "Revisa l'ortografia"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Modern XMPP Chat Client"
+msgid "Modern XMPP chat client"
 msgstr "Client de xat XMPP modern"
 
 #: main/data/im.dino.Dino.appdata.xml.in:9

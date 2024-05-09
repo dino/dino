@@ -1030,7 +1030,7 @@ msgid "Check spelling"
 msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Modern XMPP Chat Client"
+msgid "Modern XMPP chat client"
 msgstr "現代化的 XMPP 用戶端聊天軟件"
 
 #: main/data/im.dino.Dino.appdata.xml.in:9

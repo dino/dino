@@ -5,7 +5,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Dino</name>
-  <summary>Modern XMPP Chat Client</summary>
+  <summary>Modern XMPP chat client</summary>
   <summary xml:lang="zh_TW">現代化的 XMPP 用戶端聊天軟件</summary>
   <summary xml:lang="zh_CN">现代 XMPP 聊天客户端</summary>
   <summary xml:lang="tr">Modern XMPP Sohbet İstemcisi</summary>

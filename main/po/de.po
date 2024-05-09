@@ -1033,7 +1033,7 @@ msgid "Check spelling"
 msgstr "Rechtschreibung prüfen"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Modern XMPP Chat Client"
+msgid "Modern XMPP chat client"
 msgstr "Modernes XMPP-Chat-Programm"
 
 #: main/data/im.dino.Dino.appdata.xml.in:9
