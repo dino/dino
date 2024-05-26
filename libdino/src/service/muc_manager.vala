@@ -232,15 +232,8 @@ public class MucManager : StreamInteractionModule, Object {
 
     //the term `private room` is a short hand for members-only+non-anonymous rooms
     public bool is_private_room(Account account, Jid jid) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) {
-            return false;
-        }
-        Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-        if (flag == null) {
-            return false;
-        }
-        return flag.has_room_feature(jid, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(jid, Xep.Muc.Feature.MEMBERS_ONLY);
+        var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
+        return entity_info.has_feature_offline(account, jid, "muc_membersonly") && entity_info.has_feature_offline(account, jid, "muc_nonanonymous");
     }
 
     public bool is_moderated_room(Account account, Jid jid) {
