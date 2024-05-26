@@ -20,6 +20,11 @@ namespace Xmpp.Xep.UserAvatars {
         stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, null, NS_URI_METADATA, sha1, metadata_node);
     }
 
+    public void unset_avatar(XmppStream stream) {
+        StanzaNode metadata_node = new StanzaNode.build("metadata", NS_URI_METADATA).add_self_xmlns();
+        stream.get_module(Pubsub.Module.IDENTITY).delete_node(stream, null, NS_URI_METADATA);
+    }
+
     public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) {
         Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, jid, NS_URI_DATA);
         if (items == null || items.size == 0 || items[0].sub_nodes.size == 0) return null;
@@ -41,21 +46,25 @@ namespace Xmpp.Xep.UserAvatars {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0084_user_avatars");
 
         public signal void received_avatar_hash(XmppStream stream, Jid jid, string id);
+        public signal void avatar_removed(XmppStream stream, Jid jid);
 
         public override void attach(XmppStream stream) {
-            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, true, on_pupsub_event, null);
+            stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI_METADATA, on_pupsub_item, null, on_pubsub_delete);
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Pubsub.Module.IDENTITY).remove_filtered_notification(stream, NS_URI_METADATA);
         }
 
-
-        public void on_pupsub_event(XmppStream stream, Jid jid, string hash, StanzaNode? node) {
+        public void on_pupsub_item(XmppStream stream, Jid jid, string hash, StanzaNode? node) {
             StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
             string? type = info_node == null ? null : info_node.get_attribute("type");
             if (type != "image/png" && type != "image/jpeg") return;
             received_avatar_hash(stream, jid, hash);
+        }
+
+        public void on_pubsub_delete(XmppStream stream, Jid jid) {
+            avatar_removed(stream, jid);
         }
 
         public override string get_ns() { return NS_URI; }
