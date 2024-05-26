@@ -79,6 +79,24 @@ public class Settings : Object {
             check_spelling_ = value;
         }
     }
+
+    public Encryption get_default_encryption(Account account) {
+        string? setting = db.account_settings.get_value(account.id, "default-encryption");
+        if (setting != null) {
+            return (Encryption) int.parse(setting);
+        }
+        return Encryption.NONE;
+    }
+
+    public void set_default_encryption(Account account, Encryption encryption) {
+        db.account_settings.upsert()
+                .value(db.account_settings.key, "default-encryption", true)
+                .value(db.account_settings.account_id, account.id, true)
+                .value(db.account_settings.value, ((int)encryption).to_string())
+                .perform();
+
+
+    }
 }
 
 }
