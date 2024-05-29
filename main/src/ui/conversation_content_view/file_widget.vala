@@ -43,6 +43,7 @@ public class FileWidget : SizeRequestBox {
 
     enum State {
         IMAGE,
+        IMAGE_COLLAPSED,
         DEFAULT
     }
 
@@ -89,51 +90,87 @@ public class FileWidget : SizeRequestBox {
     }
 
     private async void update_widget() {
-        if (show_image() && state != State.IMAGE) {
-            var content_bak = content;
+        var desire = desired_state();
 
-            FileImageWidget file_image_widget = null;
-            try {
-                file_image_widget = new FileImageWidget();
-                yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
+        if (desire == state) return;
 
-                // If the widget changed in the meanwhile, stop
-                if (content != content_bak) return;
-
+        switch (desire) {
+            case State.DEFAULT:
                 if (content != null) this.remove(content);
-                content = file_image_widget;
-                state = State.IMAGE;
+                FileDefaultWidget default_file_widget = new FileDefaultWidget();
+                default_widget_controller = new FileDefaultWidgetController(default_file_widget);
+                default_widget_controller.set_file_transfer(file_transfer);
+                content = default_file_widget;
                 this.append(content);
-                return;
-            } catch (Error e) { }
+                break;
+            case State.IMAGE_COLLAPSED:
+                var expander = expander();
+                expander.set_child(null);
+
+                expander.expanded = false;
+                break;
+            case State.IMAGE:
+                var expander = expander();
+
+                FileImageWidget file_image_widget = null;
+                try {
+                    file_image_widget = new FileImageWidget();
+                    yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
+
+                    expander.set_child(file_image_widget);
+                    expander.expanded = true;
+                } catch (Error e) { return; }
+                break;
         }
 
-        if (state != State.DEFAULT) {
-            if (content != null) this.remove(content);
-            FileDefaultWidget default_file_widget = new FileDefaultWidget();
-            default_widget_controller = new FileDefaultWidgetController(default_file_widget);
-            default_widget_controller.set_file_transfer(file_transfer);
-            content = default_file_widget;
-            this.state = State.DEFAULT;
-            this.append(content);
+        state = desire;
+    }
+
+    private void toggle_expanded() {
+        var expander = content as Gtk.Expander;
+
+        if (expander == null) return;
+
+        if (file_transfer.state == FileTransfer.State.COMPLETE && !expander.expanded) {
+            file_transfer.state = FileTransfer.State.COLLAPSED;
+        } else if (file_transfer.state == FileTransfer.State.COLLAPSED && expander.expanded) {
+            file_transfer.state = FileTransfer.State.COMPLETE;
         }
     }
 
-    private bool show_image() {
-        if (file_transfer.mime_type == null) return false;
-        if (file_transfer.state != FileTransfer.State.COMPLETE &&
+    private Gtk.Expander expander() {
+        var expander = content as Gtk.Expander;
+
+        if (expander != null) return expander;
+
+        if (content != null) this.remove(content);
+
+        content = expander = new Gtk.Expander(file_transfer.file_name);
+        expander.notify["expanded"].connect(toggle_expanded);
+        this.append(content);
+
+        return expander;
+    }
+
+    private State desired_state() {
+        if (file_transfer.mime_type == null) return State.DEFAULT;
+        if (!(file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.state == FileTransfer.State.COLLAPSED) &&
                 !(file_transfer.direction == FileTransfer.DIRECTION_SENT && file_transfer.state == FileTransfer.State.IN_PROGRESS)) {
-            return false;
+            return State.DEFAULT;
         }
 
         foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
             foreach (string mime_type in pixbuf_format.get_mime_types()) {
                 if (mime_type == file_transfer.mime_type) {
-                    return true;
+                    if (file_transfer.state == FileTransfer.State.COLLAPSED) {
+                        return State.IMAGE_COLLAPSED;
+                    } else {
+                        return State.IMAGE;
+                    }
                 }
             }
         }
-        return false;
+        return State.DEFAULT;
     }
 
     public override void dispose() {
