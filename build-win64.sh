@@ -21,13 +21,13 @@ fatal()
 
 download_yolort()
 {
-    file_name=cppwinrt-2.0.210122.3+windows-10.0.19041+yolort-835cd4e.zip
+    file_name=yolort.zip
     yolort_dir="$PROJ_DIR/plugins/windows-notification/yolort"
 
     rm -rf "$yolort_dir"
     mkdir "$yolort_dir"
-    curl -L -o "$file_name" "https://github.com/LAGonauta/YoloRT/releases/download/v1.0.0/$file_name"
-    echo "675a6d943c97b4acdbfaa473f68d3241d1798b31a67b5529c8d29fc0176a1707 $file_name" | sha256sum --check --status
+    curl -L -o "$file_name" "https://github.com/mxlgv/YoloRT/releases/download/dev1/$file_name"
+    echo "c2727e390da7e842f66e0a4cf0a9f5d9dfb665115bb554152d98f108d322bbc1 $file_name" | sha256sum --check --status
     unzip -o "$file_name" -d "$yolort_dir"
     rm -f "$file_name"
 }
