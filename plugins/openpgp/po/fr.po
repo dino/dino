@@ -7,8 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-11-12 17:21+0000\n"
+"POT-Creation-Date: 2024-06-09 22:16+0200\n"
+"PO-Revision-Date: 2024-06-09 22:22+0200\n"
+"Last-Translator: \n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/fr/>\n"
 "Language: fr\n"
@@ -16,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: plugins/openpgp/src/account_settings_entry.vala:68
 #: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
+#: plugins/openpgp/src/account_settings_entry.vala:113
 msgid "Key publishing disabled"
 msgstr "La publication des clés est désactivée"
 
@@ -29,18 +30,39 @@ msgid "Error in GnuPG"
 msgstr "Erreur dans GnuPG"
 
 #: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Aucune clé n’est disponible. Générez-en une !"
+msgid ""
+"No keys available. Generate one or check if your keys aren't expired or "
+"revoked!"
+msgstr ""
+"Pas de clés disponibles. Générez-en une nouvelle ou vérifier si vos "
+"clés ne seraient pas expirées ou révoquées!"
 
-#: plugins/openpgp/src/account_settings_entry.vala:101
+#: plugins/openpgp/src/account_settings_entry.vala:95
+msgid "expired!"
+msgstr "expirée!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:95
+msgid "revoked!"
+msgstr "révoquée!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:96
+msgid "Attention required!"
+msgstr "Attention requise!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:96
+#, c-format
+msgid "Your key %s is %s"
+msgstr "Votre clé %s est %s"
+
+#: plugins/openpgp/src/account_settings_entry.vala:113
 msgid "Select key"
 msgstr "Choix d’une clé"
 
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/account_settings_entry.vala:126
 msgid "Loading…"
 msgstr "Chargement…"
 
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/account_settings_entry.vala:126
 msgid "Querying GnuPG"
 msgstr "Interrogation de GnuPG"
 

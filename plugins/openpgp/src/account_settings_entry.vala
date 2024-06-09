@@ -69,7 +69,7 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
             return;
         }
         if (keys.size == 0) {
-            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one!")));
+            label.set_markup(build_markup_string(_("Key publishing disabled"), _("No keys available. Generate one or check if your keys aren't expired or revoked!")));
             return;
         }
 
@@ -88,6 +88,18 @@ public class AccountSettingsEntry : Plugins.AccountSettingsEntry {
         set_label_active(selected);
 
         combobox.changed.connect(key_changed);
+        if (account_key != null) {
+            try {
+                GPG.Key key_check = GPGHelper.get_public_key(account_key);
+                if(key_check.expired || key_check.revoked) {
+                    string status_str = key_check.expired ? _("expired!") : _("revoked!");
+                    label.set_markup(build_markup_string(_("Attention required!"), _("Your key %s is %s").printf("<span color='red'><b>"+ key_check.fpr +"</b></span>", status_str) ) );
+                }
+            }
+            catch {
+                debug("Coudn't check GPG key status.");
+            }
+        }
     }
 
     private void populate_list_store() {

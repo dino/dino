@@ -1,9 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-openpgp-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-04-16 20:11+0000\n"
+"POT-Creation-Date: 2024-06-09 22:16+0200\n"
+"PO-Revision-Date: 2024-06-09 22:39+0200\n"
+"Last-Translator: eerielili \n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/de/>\n"
 "Language: de\n"
@@ -11,11 +12,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.1-dev\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: plugins/openpgp/src/account_settings_entry.vala:68
 #: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
+#: plugins/openpgp/src/account_settings_entry.vala:113
 msgid "Key publishing disabled"
 msgstr "Schlüsselveröffentlichung deaktiviert"
 
@@ -24,18 +25,40 @@ msgid "Error in GnuPG"
 msgstr "Fehler in GnuPG"
 
 #: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Keine Schlüssel vorhanden. Erzeuge einen!"
+msgid ""
+"No keys available. Generate one or check if your keys aren't expired or "
+"revoked!"
+msgstr ""
+"Keine Schlüssel vorhanden. Erstellen Sie einen oder prüfen Sie,"
+"ob Ihre Schlüssel nicht abgelaufen sind oder widerrufen!"
 
-#: plugins/openpgp/src/account_settings_entry.vala:101
+
+#: plugins/openpgp/src/account_settings_entry.vala:95
+msgid "expired!"
+msgstr "abgelaufen"
+
+#: plugins/openpgp/src/account_settings_entry.vala:95
+msgid "revoked!"
+msgstr "widerrufen!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:96
+msgid "Attention required!"
+msgstr "Achtung!"
+
+#: plugins/openpgp/src/account_settings_entry.vala:96
+#, c-format
+msgid "Your key %s is %s"
+msgstr "Ihr Schlüssel %s is %s"
+
+#: plugins/openpgp/src/account_settings_entry.vala:113
 msgid "Select key"
 msgstr "Wähle einen Schlüssel"
 
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/account_settings_entry.vala:126
 msgid "Loading…"
 msgstr "Lade…"
 
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/account_settings_entry.vala:126
 msgid "Querying GnuPG"
 msgstr "Frage GnuPG ab"
 
@@ -46,6 +69,3 @@ msgstr "Schlüssel nicht im Schlüsselbund"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Verschlüsselung"
-
-#~ msgid "OpenPGP"
-#~ msgstr "OpenPGP"
