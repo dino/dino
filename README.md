@@ -32,9 +32,9 @@ OS support
 ------------
 * Linux (flatpaks are targeted for Ubuntu 22.04+)
 * Windows 10\11
-* MacOS via [brew](https://brew.sh/) (very experimental!)
+* MacOS via [brew](https://brew.sh/) (very experimental, see below)
 
-We support only x86_64 architecture. Whilst you may be able to compile this code for arm64-based platforms (like Pinephone), there's zero guarantees that it'll compile or function properly, as we don't have the hardware and the time to test it out.
+Oficially, we support only x86_64 architecture. Whilst you may be able to compile this code for ARM-based platforms (like Pinephone or MacOS), there's zero guarantees that it'll compile or function properly, as we don't have the hardware and the time to test it out.
 
 Installation (prebuilt packages & AUR)
 ------------
