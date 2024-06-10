@@ -34,7 +34,7 @@ OS support
 * Windows 10\11
 * MacOS via [brew](https://brew.sh/) (very experimental, see below)
 
-Oficially, we support only x86_64 architecture. Whilst you may be able to compile this code for ARM-based platforms (like Pinephone or MacOS), there's zero guarantees that it'll compile or function properly, as we don't have the hardware and the time to test it out.
+Officially, we support only x86_64 architecture. Whilst you may be able to compile this code for ARM-based platforms (like Pinephone or MacOS), there's zero guarantees that it'll compile or function properly, as we don't have the hardware and the time to test it out.
 
 Installation (prebuilt packages & AUR)
 ------------
