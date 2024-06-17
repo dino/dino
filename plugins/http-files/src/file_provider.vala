@@ -120,6 +120,11 @@ public class FileProvider : Dino.FileProvider, Object {
         var head_message = new Soup.Message("HEAD", http_receive_data.url);
         head_message.request_headers.append("Accept-Encoding", "identity");
 
+#if SOUP_3_0
+        string transfer_host = Uri.parse(http_receive_data.url, UriFlags.NONE).get_host();
+        head_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
+#endif
+
         try {
 #if SOUP_3_0
             yield session.send_async(head_message, GLib.Priority.LOW, null);
@@ -152,6 +157,11 @@ public class FileProvider : Dino.FileProvider, Object {
         if (http_receive_data == null) assert(false);
 
         var get_message = new Soup.Message("GET", http_receive_data.url);
+
+#if SOUP_3_0
+        string transfer_host = Uri.parse(http_receive_data.url, UriFlags.NONE).get_host();
+        get_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
+#endif
 
         try {
 #if SOUP_3_0
