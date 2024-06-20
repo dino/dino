@@ -14,6 +14,7 @@ sources = files(
     'src/contact_details_provider.vala',
     'src/database.vala',
     'src/encryption_list_entry.vala',
+    'src/encryption_preferences_entry.vala',
     'src/file_transfer/file_decryptor.vala',
     'src/file_transfer/file_encryptor.vala',
     'src/gpgme_fix.c',
