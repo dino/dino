@@ -4,11 +4,10 @@
   <template class="DinoUiAccountPreferencesSubpage">
     <property name="orientation">vertical</property>
     <child>
-      <object class="AdwHeaderBar">
+      <object class="AdwHeaderBar" id="headerbar">
         <style>
           <class name="flat"/>
         </style>
-        <property name="show-title">False</property>
         <child>
           <object class="GtkButton" id="back_button">
             <property name="icon-name">go-previous-symbolic</property>

@@ -69,7 +69,7 @@ public class MainWindowController : Object {
             dialog.set_transient_for(app.get_active_window());
             dialog.present();
         });
-        window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("accounts", null); });
+        window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("preferences", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
 
 //        ConversationListModel list_model = new ConversationListModel(stream_interactor);

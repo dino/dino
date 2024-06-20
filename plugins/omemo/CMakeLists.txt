@@ -39,9 +39,6 @@ if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
     set(OMEMO_DEFINITIONS ${OMEMO_DEFINITIONS} Adw_1_2)
 endif()
 
-message(STATUS ${Adwaita_VERSION})
-message(STATUS ${Adw_1_2})
-
 vala_precompile(OMEMO_VALA_C
 SOURCES
     src/dtls_srtp_verification_draft.vala

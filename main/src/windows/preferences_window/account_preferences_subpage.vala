@@ -8,6 +8,7 @@ using Gdk;
 [GtkTemplate (ui = "/im/dino/Dino/preferences_window_account.ui")]
 public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
 
+    [GtkChild] public unowned Adw.HeaderBar headerbar;
     [GtkChild] public unowned Button back_button;
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Adw.ActionRow xmpp_address;
@@ -30,6 +31,9 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     private ulong alias_entry_changed = 0;
 
     construct {
+#if Adw_1_4
+        headerbar.show_title = false;
+#endif
         button_container.layout_manager = new NaturalDirectionBoxLayout((BoxLayout)button_container.layout_manager);
         back_button.clicked.connect(() => {
             var window = (Adw.PreferencesWindow) this.get_root();
