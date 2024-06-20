@@ -18,8 +18,9 @@ public class SelectContactDialog : Gtk.Dialog {
     private SelectJidFragment select_jid_fragment;
     private StreamInteractor stream_interactor;
     private Gee.List<Account> accounts;
+    private bool notes_mode;
 
-    public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
+    public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts, bool notes_mode = false) {
         Object(use_header_bar : Util.use_csd() ? 1 : 0);
         modal = true;
         this.default_width = 460;
@@ -27,6 +28,7 @@ public class SelectContactDialog : Gtk.Dialog {
 
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;
+        this.notes_mode = notes_mode;
 
         setup_view();
         setup_headerbar();
@@ -72,10 +74,10 @@ public class SelectContactDialog : Gtk.Dialog {
     }
 
     private void setup_view() {
-        roster_list = new RosterList(stream_interactor, accounts);
+        roster_list = new RosterList(stream_interactor, accounts, notes_mode);
         roster_list_box = roster_list.get_list_box();
         roster_list_box.row_activated.connect(() => { ok_button.clicked(); });
-        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list_box, accounts);
+        select_jid_fragment = new SelectJidFragment(stream_interactor, roster_list_box, accounts, notes_mode);
         select_jid_fragment.add_jid.connect((row) => {
             AddContactDialog add_contact_dialog = new AddContactDialog(stream_interactor);
             add_contact_dialog.set_transient_for(this);
@@ -96,12 +98,13 @@ public class AddChatDialog : SelectContactDialog {
 
     public signal void added(Conversation conversation);
 
-    public AddChatDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
-        base(stream_interactor, accounts);
-        title = _("Start Conversation");
+    public AddChatDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts, bool notes_mode = false) {
+        base(stream_interactor, accounts, notes_mode);
+        title = notes_mode ? _("Open notes") : _("Start Conversation");
         ok_button.label = _("Start");
         selected.connect((account, jid) => {
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.CHAT);
+            if(notes_mode) conversation.pinned = 1;
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
             added(conversation);
         });
