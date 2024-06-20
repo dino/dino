@@ -127,13 +127,13 @@ picture.avatar {
 
 /* Overlay Toolbar */
 
-.dino-main .overlay-toolbar {
+.overlay-toolbar {
     padding: 2px;
     border-radius: 6px;
     border-spacing: 0;
 }
 
-.dino-main .overlay-toolbar > * {
+.overlay-toolbar > * {
     margin-top: 0;
     margin-bottom: 0;
 }

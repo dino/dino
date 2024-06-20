@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/im/dino/Dino">
+    <file>account_picker_row.ui</file>
     <file>add_conversation/add_contact_dialog.ui</file>
     <file>add_conversation/add_groupchat_dialog.ui</file>
     <file>add_conversation/conference_details_fragment.ui</file>
@@ -66,6 +67,9 @@
     <file>occupant_list.ui</file>
     <file>occupant_list_item.ui</file>
     <file>quote.ui</file>
+    <file>preferences_window.ui</file>
+    <file>preferences_window_account.ui</file>
+    <file>preferences_window_general.ui</file>
     <file>search_autocomplete.ui</file>
     <file>settings_dialog.ui</file>
     <file>style-dark.css</file>

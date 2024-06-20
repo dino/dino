@@ -1,5 +1,6 @@
 subdir('po')
 dependencies = [
+    dep_libadwaita,
     dep_crypto_vala,
     dep_dino,
     dep_gee,
@@ -40,13 +41,13 @@ sources = files(
     'src/signal/store.vala',
     'src/signal/util.vala',
     'src/trust_level.vala',
-    'src/ui/account_settings_entry.vala',
     'src/ui/bad_messages_populator.vala',
     'src/ui/call_encryption_entry.vala',
     'src/ui/contact_details_dialog.vala',
     'src/ui/contact_details_provider.vala',
     'src/ui/device_notification_populator.vala',
     'src/ui/encryption_list_entry.vala',
+    'src/ui/encryption_preferences_entry.vala',
     'src/ui/manage_key_dialog.vala',
     'src/ui/own_notifications.vala',
     'src/ui/util.vala',

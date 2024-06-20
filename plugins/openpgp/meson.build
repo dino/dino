@@ -1,5 +1,6 @@
 subdir('po')
 dependencies = [
+    dep_libadwaita,
     dep_dino,
     dep_gee,
     dep_glib,
@@ -10,7 +11,6 @@ dependencies = [
     dep_xmpp_vala,
 ]
 sources = files(
-    'src/account_settings_entry.vala',
     'src/contact_details_provider.vala',
     'src/database.vala',
     'src/encryption_list_entry.vala',

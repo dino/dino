@@ -201,8 +201,13 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
         hash_table["category"] = new Variant.string("im.error");
+        string[] actions = new string[] {"default", "Open preferences"};
         try {
-            yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, new string[]{}, hash_table, -1);
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, actions, hash_table, -1);
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("preferences-account", new Variant.int32(account.id));
+            });
         } catch (Error e) {
             warning("Failed showing connection error notification: %s", e.message);
         }
