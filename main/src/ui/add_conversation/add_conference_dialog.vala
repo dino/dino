@@ -165,7 +165,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         details_fragment.clear();
 
         ListRow? row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row().get_child() as ListRow : null;
-        ConferenceListRow? conference_row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row() as ConferenceListRow : null;
+        ConferenceListRow? conference_row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row().get_child() as ConferenceListRow : null;
         if (conference_row != null) {
             details_fragment.account = conference_row.account;
             details_fragment.jid = conference_row.bookmark.jid.to_string();
