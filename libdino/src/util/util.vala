@@ -33,10 +33,30 @@ public class SearchPathGenerator {
             if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
                 exec_path = Environment.find_program_in_path(this.exec_path);
             }
-            if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
+            string dirname = Path.get_dirname(exec_path);
+            // Does our environment look like a CMake build dir?
+            if (dirname.contains("dino") || dirname == "." || dirname.contains("build") || Path.get_basename(dirname) == "main") {
                 search_paths += Path.build_filename(Path.get_dirname(exec_path), "plugins");
             }
-            if (Path.get_basename(Path.get_dirname(exec_path)) == "bin") {
+            // Does our environment look like a meson build dir?
+            if (dirname == "." || Path.get_basename(dirname) == "main") {
+                try {
+                    Dir plugin_dir = Dir.open(Path.build_path(Path.DIR_SEPARATOR_S, dirname, "..", "plugins"));
+                    string? entry = null;
+                    while ((entry = plugin_dir.read_name()) != null) {
+                        string plugin_subdir = Path.build_path(Path.DIR_SEPARATOR_S, dirname, "..", "plugins", entry);
+                        try {
+                            Dir.open(plugin_subdir);
+                            search_paths += plugin_subdir;
+                        } catch (FileError e) {
+                            // ignore
+                        }
+                    }
+                } catch (FileError e) {
+                    // ignore
+                }
+            }
+            if (Path.get_basename(dirname) == "bin") {
                 search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), SYSTEM_LIBDIR_NAME, "dino", "plugins");
             }
         }
