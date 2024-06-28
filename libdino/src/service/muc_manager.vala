@@ -84,17 +84,12 @@ public class MucManager : StreamInteractionModule, Object {
         }
         mucs_joining[account].add(jid);
 
-        if (!mucs_todo.has_key(account)) {
-            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
-        }
-
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null);
 
         mucs_joining[account].remove(jid);
 
         if (res.nick != null) {
             // Join completed
-            mucs_todo[account].add(jid.with_resource(res.nick));
             enter_errors.unset(jid);
             if (!already_autojoin) set_autojoin(account, stream, jid, nick, password);
             stream_interactor.get_module(MessageProcessor.IDENTITY).send_unsent_muc_messages(account, jid);
@@ -122,14 +117,15 @@ public class MucManager : StreamInteractionModule, Object {
                     }
                 }
             }
-        } else {
+        } else if (res.muc_error != null) {
             // Join failed
-            mucs_todo[account].add(jid.with_resource(nick_));
-
-            if (res.muc_error != null) {
-                enter_errors[jid] = res.muc_error;
-            }
+            enter_errors[jid] = res.muc_error;
         }
+
+        if (!mucs_todo.has_key(account)) {
+            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
+        }
+        mucs_todo[account].add(jid.with_resource(res.nick ?? nick_));
 
         return res;
     }
