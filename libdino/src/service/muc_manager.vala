@@ -84,11 +84,6 @@ public class MucManager : StreamInteractionModule, Object {
         }
         mucs_joining[account].add(jid);
 
-        if (!mucs_todo.has_key(account)) {
-            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
-        }
-        mucs_todo[account].add(jid.with_resource(nick_));
-
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null);
 
         mucs_joining[account].remove(jid);
@@ -126,6 +121,11 @@ public class MucManager : StreamInteractionModule, Object {
             // Join failed
             enter_errors[jid] = res.muc_error;
         }
+
+        if (!mucs_todo.has_key(account)) {
+            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
+        }
+        mucs_todo[account].add(jid.with_resource(res.nick ?? nick_));
 
         return res;
     }
