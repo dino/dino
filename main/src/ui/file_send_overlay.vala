@@ -81,7 +81,8 @@ public class FileSendOverlay {
         if (widget == null) {
             FileDefaultWidget default_widget = new FileDefaultWidget();
             default_widget.name_label.label = file_name;
-            default_widget.update_file_info(mime_type, FileTransfer.State.COMPLETE, (long)file_info.get_size());
+            default_widget.update_file_info(mime_type, 0, FileTransfer.DIRECTION_SENT,
+                FileTransfer.State.COMPLETE, (long)file_info.get_size());
             widget = default_widget;
         }
 
