@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
   <id>im.dino.Dino</id>
-  <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0+</project_license>
   <name>Dino</name>
   <summary>Modern XMPP chat client</summary>
+  <icon type="stock">im.dino.Dino</icon>
+  <icon type="remote" width="128" height="128">https://dino.im/img/appdata/icon-dino-0.4-128x128.png</icon>
   <description>
     <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
     <p>It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.</p>
     <p>Dino fetches history from the server and synchronizes messages with other devices.</p>
   </description>
-  <screenshots>
-    <screenshot type="default">
-      <image>https://dino.im/img/appdata/2022-02_screenshot-main.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://dino.im/img/appdata/2022-02_screenshot-call.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://dino.im/img/appdata/start_chat.png</image>
-    </screenshot>
-  </screenshots>
-  <translation type="gettext">dino</translation>
-  <developer_name>Dino Development Team</developer_name>
+  <categories>
+    <category>Network</category>
+    <category>InstantMessaging</category>
+    <category>Chat</category>
+    <category>GTK</category>
+  </categories>
+  <keywords>
+    <keyword translate="no">Jabber</keyword>
+    <keyword translate="no">XMPP</keyword>
+  </keywords>
   <url type="homepage">https://dino.im</url>
   <url type="bugtracker">https://github.com/dino/dino/issues</url>
   <url type="donation">https://dino.im/#donate</url>
+  <url type="vcs-browser">https://github.com/dino/dino</url>
   <url type="translate">https://hosted.weblate.org/projects/dino/</url>
-  <update_contact>appstream@dino.im</update_contact>
-  <branding>
-    <color type="primary" scheme_preference="light">#B2DFDB</color>
-    <color type="primary" scheme_preference="dark">#004D40</color>
-  </branding>
+  <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <releases>
     <release date="2023-02-07" version="0.4">
       <description>
@@ -55,8 +49,50 @@
       </description>
     </release>
   </releases>
+  <provides>
+    <mediatype>x-scheme-handler/xmpp</mediatype>
+  </provides>
+  <recommends>
+    <internet>always</internet>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <project_license>GPL-3.0+</project_license>
+  <developer id="im.dino">
+    <name>Dino Development Team</name>
+    <url>https://dino.im/</url>
+  </developer>
+  <!-- Deprecated: -->
+  <developer_name>Dino Development Team</developer_name>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-main-2244x1644@2.png</image>
+      <caption>Main screen</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="1441" height="929" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-call-1441x929@2.png</image>
+      <caption>Video call screen</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-search-2244x1644@2.png</image>
+      <caption>Main screen featuring search overlay</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="964" height="1552" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-mobile-964x1552@2.png</image>
+      <caption>Main screen in mobile size window</caption>
+    </screenshot>
+  </screenshots>
+  <translation type="gettext">dino</translation>
   <content_rating type="oars-1.1">
     <content_attribute id="social-chat">intense</content_attribute>
     <content_attribute id="social-audio">intense</content_attribute>
   </content_rating>
+  <update_contact>appstream@dino.im</update_contact>
+  <branding>
+    <color type="primary" scheme_preference="light">#B2DFDB</color>
+    <color type="primary" scheme_preference="dark">#004D40</color>
+  </branding>
 </component>
