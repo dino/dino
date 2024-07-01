@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2022-02-04 09:55+0000\n"
+"PO-Revision-Date: 2023-04-28 07:51+0000\n"
 "Language-Team: none\n"
-"Language: el\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11-dev\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
-msgstr "Αναζήτηση στο GnuPG"
+msgstr "Đang truy vấn GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
@@ -27,23 +27,23 @@ msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Το κλειδί δεν είναι στο keychain"
+msgstr "Khoá không trong chuỗi khoá"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Κρυπτογράφηση"
+msgstr "Mã hoá"
 
 #~ msgid "Key publishing disabled"
-#~ msgstr "Η δημοσίευση του κλειδιού είναι απενεργοποιημένη"
+#~ msgstr "Công khai khoá đã bị vô hiệu hoá"
 
 #~ msgid "Error in GnuPG"
-#~ msgstr "Σφάλμα στο GnuPG"
+#~ msgstr "Lỗi trong GnuPG"
 
 #~ msgid "No keys available. Generate one!"
-#~ msgstr "Δεν υπάρχουν διαθέσιμα κλειδιά. Δημιουργήστε ένα!"
+#~ msgstr "Không có khoá khả dụng. Hãy tạo một khoá!"
 
 #~ msgid "Select key"
-#~ msgstr "Επιλέξτε κλειδί"
+#~ msgstr "Chọn khoá"
 
 #~ msgid "Loading…"
-#~ msgstr "Φόρτωση…"
+#~ msgstr "Đang tải…"

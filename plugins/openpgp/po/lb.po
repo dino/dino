@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
 "PO-Revision-Date: 2018-01-24 12:20+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-openpgp/lb/>\n"
@@ -13,31 +13,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.19-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "Schlëssel Verëffentlechung ausgeschalt"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "Feeler am GnuPG"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Keng Schlëssele verfügbar. Generéier een!"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "Schlëssel auswielen"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "Lueden…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "GnuPG gëtt ofgefrot"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -46,6 +28,21 @@ msgstr "Schlësselen net am Schlësselbond"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Verschlësselung"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Schlëssel Verëffentlechung ausgeschalt"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "Feeler am GnuPG"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Keng Schlëssele verfügbar. Generéier een!"
+
+#~ msgid "Select key"
+#~ msgstr "Schlëssel auswielen"
+
+#~ msgid "Loading…"
+#~ msgstr "Lueden…"
 
 #~ msgid "OpenPGP"
 #~ msgstr "OpenPGP"

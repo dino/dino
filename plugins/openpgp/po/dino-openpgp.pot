@@ -8,39 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
 msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28

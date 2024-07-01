@@ -7,107 +7,278 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2022-02-15 23:54+0000\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"PO-Revision-Date: 2024-04-02 11:08+0000\n"
 "Language-Team: none\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:67
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/conversation_view_controller.vala:216
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/src/ui/add_conversation/add_conference_dialog.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:121
+#: main/src/ui/application.vala:289 main/src/ui/manage_accounts/dialog.vala:146
+#: main/src/ui/conversation_content_view/file_default_widget.vala:70
+#: main/data/message_item_widget_edit_mode.ui:46
+#: main/data/add_conversation/add_groupchat_dialog.ui:12
+#: main/data/add_conversation/add_contact_dialog.ui:13
+msgid "Cancel"
+msgstr "Anuloje"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:68
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:75
+#: main/data/manage_accounts/add_account_dialog.ui:245
+msgid "Connect"
+msgstr "Lidhuni"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:107
+#: main/data/preferences_window_account.ui:110
+msgid "Disable account"
+msgstr ""
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:107
+msgid "Enable account"
+msgstr ""
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/manage_accounts/dialog.vala:146
+msgid "Select avatar"
+msgstr "Përzgjidhni avatar"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/conversation_view_controller.vala:216
+#: main/src/ui/manage_accounts/dialog.vala:146
+msgid "Select"
+msgstr "Përzgjidhe"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:157
+#: main/src/ui/manage_accounts/dialog.vala:153
+msgid "Images"
+msgstr "Figura"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:157
+msgid "All files"
+msgstr "Krejt kartelat"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:177
+#: main/src/ui/manage_accounts/dialog.vala:116
+#, c-format
+msgid "Remove account %s?"
+msgstr "Të hiqet llogaria %s?"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:180
+#: main/src/ui/manage_accounts/dialog.vala:119
+msgid "Remove"
+msgstr "Hiqe"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
+#: main/src/ui/call_window/participant_widget.vala:128
+#: main/src/ui/manage_accounts/dialog.vala:216
+msgid "Connecting…"
+msgstr "Po lidhet…"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
+#: main/src/ui/manage_accounts/dialog.vala:218
+msgid "Connected"
+msgstr "U lidh"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:206
+#: main/src/ui/manage_accounts/dialog.vala:220
+msgid "Disconnected"
+msgstr "U shkëput"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:217
+#: main/src/ui/notifier_freedesktop.vala:192
+#: main/src/ui/manage_accounts/dialog.vala:229
+msgid "Wrong password"
+msgstr "Fjalëkalim i gabuar"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:219
+#: main/src/ui/notifier_freedesktop.vala:195
+#: main/src/ui/manage_accounts/dialog.vala:231
+msgid "Invalid TLS certificate"
+msgstr "Dëshmi TLS e pavlefshme"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:222
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:236
+msgid "Error"
+msgstr "Gabim"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:15
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/manage_accounts/dialog.ui:5
+msgid "Accounts"
+msgstr "Llogari"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:28
+msgid "Disabled accounts"
+msgstr ""
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:31
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
+msgid "Add Account"
+msgstr "Shtoni Llogari"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:72
+#: main/src/windows/preferences_window/encryption_preferences_page.vala:50
+#: main/src/ui/main_window.vala:188
+msgid "No active accounts"
+msgstr "Pa llogari aktive"
+
+#: main/src/windows/conversation_details.vala:58
+msgid "Pinned"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:58
+msgid "Pin"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:68
+msgid "Blocked"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:68
+msgid "Block"
+msgstr "Bllokoje"
+
+#: main/src/windows/conversation_details.vala:87
+#: main/src/windows/conversation_details.vala:88
+msgid "Mute"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:89
+msgid "Notifications enabled"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:92
+msgid "Notifications for mentions"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:95
+#: main/src/windows/conversation_details.vala:96
+msgid "Muted"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:97
+msgid "Notifications disabled"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:124
+msgid "About"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:127
+msgid "Encryption"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:130
+msgid "Settings"
+msgstr "Rregullime"
+
+#: main/src/windows/conversation_details.vala:133
+msgid "Room Configuration"
+msgstr "Formësim Dhome"
 
 #: main/src/ui/file_send_overlay.vala:92
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Kjo kartelë e tejkalon madhësinë maksimum për ngarkime të shërbyesit."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:81
+#: main/src/ui/conversation_content_view/message_widget.vala:84
 msgid "Message too long"
 msgstr "Mesazh shumë i gjatë"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:107
+#: main/src/ui/conversation_content_view/message_widget.vala:110
 msgid "edited"
 msgstr "përpunoi"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:116
+#: main/src/ui/conversation_content_view/message_widget.vala:119
 msgid "pending…"
 msgstr "pezull…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:129
+#: main/src/ui/conversation_content_view/message_widget.vala:132
 msgid "delivery failed"
 msgstr "dërgimi dështoi"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:163
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "I pafshehtëzuar"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
 msgstr "S’arrihet të dërgohet mesazh"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:238
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%x, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:123
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:239
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%x, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:126
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:127
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:243
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:130
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:249
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:131
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:247
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:357
-#: main/src/ui/conversation_content_view/call_widget.vala:178
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H:%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:358
-#: main/src/ui/conversation_content_view/call_widget.vala:178
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:251
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:352
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:361
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:255
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:355
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -115,70 +286,70 @@ msgstr[0] "%i minutë më parë"
 msgstr[1] "%i minuta më parë"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:363
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:357
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "Mu tani"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:172
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:197
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:212
-#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
-#: main/src/ui/util/helper.vala:134
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
+#: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "Unë"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Figura u dërgua"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Kartela u dërgua"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "U mor figurë"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "U mor kartelë"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
-#: main/src/ui/conversation_content_view/call_widget.vala:171
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
 msgstr "Thirrje e dërguar"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:133
-#: main/src/ui/conversation_content_view/call_widget.vala:171
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
+#: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
 msgstr "Thirrje e marrë"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:350
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%d %B"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:354
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "Dje"
 
 #: main/src/ui/conversation_list_titlebar.vala:27
-#: main/src/ui/add_conversation/select_contact_dialog.vala:99
-#: main/data/menu_add.ui:7 main/data/shortcuts.ui:14
+#: main/src/ui/add_conversation/select_contact_dialog.vala:101
+#: main/data/gtk/help-overlay.ui:14 main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Nisni Bisedë"
 
@@ -224,31 +395,70 @@ msgstr "Shfuqizojini leje shkrimi"
 msgid "Invite to Conference"
 msgstr "Ftoni në Konferencë"
 
-#: main/src/ui/conversation_view_controller.vala:214
+#: main/src/ui/conversation_view_controller.vala:216
 msgid "Select file"
 msgstr "Përzgjidhni kartelë"
 
-#: main/src/ui/conversation_view_controller.vala:214
-#: main/src/ui/manage_accounts/dialog.vala:146
-msgid "Select"
-msgstr "Përzgjidhe"
-
-#: main/src/ui/conversation_view_controller.vala:214
-#: main/src/ui/add_conversation/select_contact_dialog.vala:39
-#: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/add_conversation/add_conference_dialog.vala:118
-#: main/src/ui/application.vala:298 main/src/ui/manage_accounts/dialog.vala:146
-#: main/src/ui/conversation_content_view/file_default_widget.vala:70
-#: main/data/message_item_widget_edit_mode.ui:46
-#: main/data/add_conversation/add_groupchat_dialog.ui:12
-#: main/data/add_conversation/add_contact_dialog.ui:13
-msgid "Cancel"
-msgstr "Anuloje"
-
-#: main/src/ui/util/helper.vala:118
+#: main/src/ui/util/helper.vala:65
 #, c-format
 msgid "%s from %s"
 msgstr "%s prej %s"
+
+#: main/src/ui/util/data_forms.vala:20
+msgid "Name of the room"
+msgstr "Emër i dhomës"
+
+#: main/src/ui/util/data_forms.vala:23
+msgid "Description of the room"
+msgstr "Përshkrim i dhomës"
+
+#: main/src/ui/util/data_forms.vala:26
+msgid "Persistent"
+msgstr "E qëndrueshme"
+
+#: main/src/ui/util/data_forms.vala:27
+msgid "The room will persist after the last occupant leaves"
+msgstr "Dhoma do të mbetet, pasi të dalë i pranishmi i fundit"
+
+#: main/src/ui/util/data_forms.vala:30
+msgid "Publicly searchable"
+msgstr "Mund të kërkohet publikisht"
+
+#: main/src/ui/util/data_forms.vala:33
+msgid "Occupants may change the subject"
+msgstr "Të pranishmit mund të ndryshojnë subjektin"
+
+#: main/src/ui/util/data_forms.vala:36
+msgid "Permission to view JIDs"
+msgstr "Leje për të parë JID-ra"
+
+#: main/src/ui/util/data_forms.vala:37
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr "Cilit i është lejuar të shohë JID pjesëmarrësish?"
+
+#: main/src/ui/util/data_forms.vala:40
+#: main/data/add_conversation/conference_details_fragment.ui:162
+#: main/data/add_conversation/add_groupchat_dialog.ui:122
+#: main/data/manage_accounts/dialog.ui:149
+#: main/data/manage_accounts/add_account_dialog.ui:194
+msgid "Password"
+msgstr "Fjalëkalim"
+
+#: main/src/ui/util/data_forms.vala:44
+msgid "Moderated"
+msgstr "I moderuar"
+
+#: main/src/ui/util/data_forms.vala:45
+msgid "Only occupants with voice may send messages"
+msgstr "Vetëm të pranishëm me zë mund të dërgojnë mesazhe"
+
+#: main/src/ui/util/data_forms.vala:48
+msgid "Members only"
+msgstr "Vetëm anëtarët"
+
+#: main/src/ui/util/data_forms.vala:49
+msgid "Only members may enter the room"
+msgstr "Në dhomë mund të futen vetëm anëtarë"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
@@ -258,8 +468,8 @@ msgstr "Kjo konferencë s’ju lejon të dërgoni mesazhe."
 msgid "Request permission"
 msgstr "Kërkesë për leje"
 
-#: main/src/ui/chat_input/view.vala:44 main/data/file_send_overlay.ui:24
-#: main/data/shortcuts.ui:37
+#: main/src/ui/chat_input/view.vala:46 main/data/gtk/help-overlay.ui:43
+#: main/data/file_send_overlay.ui:24
 msgid "Send a file"
 msgstr "Dërgoni një kartelë"
 
@@ -276,7 +486,7 @@ msgid "Video call"
 msgstr "Thirrje me video"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
-#: main/data/shortcuts.ui:31
+#: main/data/gtk/help-overlay.ui:37
 msgid "Search messages"
 msgstr "Kërko te mesazhet"
 
@@ -284,30 +494,33 @@ msgstr "Kërko te mesazhet"
 msgid "Members"
 msgstr "Anëtarë"
 
-#: main/src/ui/call_window/participant_widget.vala:118
+#: main/src/ui/conversation_titlebar/menu_entry.vala:20
+msgid "Conversation Details"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/menu_entry.vala:21
+msgid "Close Conversation"
+msgstr ""
+
+#: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
 msgstr "Hollësi diagnostikimi"
 
-#: main/src/ui/call_window/participant_widget.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:148
+#: main/src/ui/call_window/participant_widget.vala:124
+#: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
 msgstr "Po thirret…"
 
-#: main/src/ui/call_window/participant_widget.vala:129
+#: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
 msgstr "Po i bihet ziles…"
 
-#: main/src/ui/call_window/participant_widget.vala:131
-#: main/src/ui/manage_accounts/dialog.vala:216
-msgid "Connecting…"
-msgstr "Po lidhet…"
-
-#: main/src/ui/call_window/call_window.vala:191
+#: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
 msgstr "%s përfundoi thirrjen"
 
-#: main/src/ui/call_window/call_window.vala:193
+#: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
 msgstr "%s s’pranoi thirrjen"
@@ -340,32 +553,32 @@ msgstr "S’u gjetën altoparlantë."
 msgid "Invite to Call"
 msgstr "Ftoni për Thirrje"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:100
+#: main/src/ui/add_conversation/select_contact_dialog.vala:102
 msgid "Start"
 msgstr "Fillo"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:298 main/data/menu_add.ui:11
-#: main/data/shortcuts.ui:20
+#: main/src/ui/application.vala:289 main/data/gtk/help-overlay.ui:20
+#: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Hyni në Kanal"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:45
-#: main/src/ui/add_conversation/add_conference_dialog.vala:114
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:117
 #: main/data/manage_accounts/add_account_dialog.ui:94
 #: main/data/manage_accounts/add_account_dialog.ui:353
 #: main/data/manage_accounts/add_account_dialog.ui:426
 msgid "Next"
 msgstr "Pasuesi"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/add_conference_dialog.vala:138
+#: main/src/ui/add_conversation/add_conference_dialog.vala:65
+#: main/src/ui/add_conversation/add_conference_dialog.vala:141
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:298
+#: main/src/ui/application.vala:289 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Merrni pjesë"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:143
+#: main/src/ui/add_conversation/add_conference_dialog.vala:146
 #: main/data/manage_accounts/add_account_dialog.ui:160
 #: main/data/manage_accounts/add_account_dialog.ui:226
 msgid "Back"
@@ -405,7 +618,7 @@ msgstr "Shumë të pranishëm në dhomë"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
 #: main/src/ui/notifier_gnotifications.vala:104
-#: main/src/ui/notifier_freedesktop.vala:185
+#: main/src/ui/notifier_freedesktop.vala:188
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -424,13 +637,9 @@ msgstr "Adresë e pavlefshme"
 msgid "Add"
 msgstr "Shto"
 
-#: main/src/ui/application.vala:204 main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr "Shkurtore Tastiere"
-
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:276 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr "Mbi Dino-s"
+msgstr "Mbi Dino-n"
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
@@ -458,130 +667,98 @@ msgid "With %s"
 msgstr "Me %s"
 
 #: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:133
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
 msgstr "Thirrje ardhëse me video"
 
 #: main/src/ui/notifier_gnotifications.vala:72
-#: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:135
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
 msgstr "Thirrje ardhëse me video për grupin"
 
 #: main/src/ui/notifier_gnotifications.vala:72
-#: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:135
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
 msgstr "Thirrje ardhëse për grupin"
 
 #: main/src/ui/notifier_gnotifications.vala:80
-#: main/src/ui/notifier_freedesktop.vala:123
-#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:73
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
 msgstr "Hidhe tej"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
-#: main/src/ui/notifier_gnotifications.vala:131
-#: main/src/ui/notifier_gnotifications.vala:147
-#: main/src/ui/notifier_freedesktop.vala:123
-#: main/src/ui/notifier_freedesktop.vala:161
-#: main/src/ui/notifier_freedesktop.vala:220
-#: main/src/ui/notifier_freedesktop.vala:253
+#: main/src/ui/notifier_gnotifications.vala:134
+#: main/src/ui/notifier_gnotifications.vala:150
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:230
+#: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:81
 msgid "Accept"
 msgstr "Pranojeni"
 
 #: main/src/ui/notifier_gnotifications.vala:91
-#: main/src/ui/notifier_freedesktop.vala:155
+#: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
 msgstr "Kërkesë pajtimi"
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_gnotifications.vala:130
-#: main/src/ui/notifier_gnotifications.vala:146
-#: main/src/ui/notifier_freedesktop.vala:161
-#: main/src/ui/notifier_freedesktop.vala:253
+#: main/src/ui/notifier_gnotifications.vala:133
+#: main/src/ui/notifier_gnotifications.vala:149
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
 msgstr "Mohojeni"
 
-#: main/src/ui/notifier_gnotifications.vala:120
-#: main/src/ui/notifier_freedesktop.vala:211
+#: main/src/ui/notifier_gnotifications.vala:123
+#: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
 msgstr "Ftesë për te %s"
 
-#: main/src/ui/notifier_gnotifications.vala:121
-#: main/src/ui/notifier_freedesktop.vala:212
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s ju ftoi te %s"
 
-#: main/src/ui/notifier_gnotifications.vala:138
-#: main/src/ui/notifier_freedesktop.vala:244
+#: main/src/ui/notifier_gnotifications.vala:141
+#: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
 msgstr "Kërkesë për leje"
 
-#: main/src/ui/notifier_gnotifications.vala:139
-#: main/src/ui/notifier_freedesktop.vala:245
+#: main/src/ui/notifier_gnotifications.vala:142
+#: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s kërkon leje për shkrim te %s"
 
-#: main/src/ui/contact_details/settings_provider.vala:12
-#: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/data/settings_dialog.ui:4 main/data/menu_app.ui:11
-msgid "Settings"
-msgstr "Rregullime"
-
-#: main/src/ui/contact_details/settings_provider.vala:13
-msgid "Local Settings"
-msgstr "Rregullime Vendore"
-
 #: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:23
 msgid "Send typing notifications"
 msgstr "Dërgo njoftime shtypjesh"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:32
 msgid "Send read receipts"
 msgstr "Dërgo dëftesa leximi"
 
-#: main/src/ui/contact_details/settings_provider.vala:38
-#: main/src/ui/contact_details/settings_provider.vala:47
-msgid "Notifications"
-msgstr "Njoftime"
-
-#: main/src/ui/contact_details/settings_provider.vala:55
-msgid "Pin conversation"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:55
-msgid "Pins the conversation to the top of the conversation list"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:89
-#: main/src/ui/contact_details/settings_provider.vala:129
-#: main/src/ui/contact_details/settings_provider.vala:131
+#: main/src/ui/contact_details/settings_provider.vala:66
+#: main/src/ui/contact_details/settings_provider.vala:68
 msgid "On"
 msgstr "On"
 
-#: main/src/ui/contact_details/settings_provider.vala:91
-#: main/src/ui/contact_details/settings_provider.vala:129
-#: main/src/ui/contact_details/settings_provider.vala:132
+#: main/src/ui/contact_details/settings_provider.vala:66
+#: main/src/ui/contact_details/settings_provider.vala:69
 msgid "Off"
 msgstr "Off"
 
-#: main/src/ui/contact_details/settings_provider.vala:93
-msgid "Only when mentioned"
-msgstr "Vetëm kur përmendet"
-
-#: main/src/ui/contact_details/settings_provider.vala:95
-#: main/src/ui/contact_details/settings_provider.vala:130
+#: main/src/ui/contact_details/settings_provider.vala:67
 #, c-format
 msgid "Default: %s"
 msgstr "Parazgjedhje: %s"
@@ -591,101 +768,8 @@ msgid "Request"
 msgstr "Kërkesë"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Permissions"
-msgstr "Leje"
-
-#: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
 msgstr "Kërko leje për dërgim mesazhesh"
-
-#: main/src/ui/contact_details/dialog.vala:37
-msgid "Conference Details"
-msgstr "Hollësi Konference"
-
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-msgid "Contact Details"
-msgstr "Hollësi Kontakti"
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Block"
-msgstr "Bllokoje"
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Communication and status updates in either direction are blocked"
-msgstr ""
-"Përditësimet mbi komunikimin dhe gjendjet, nga cilido kah, janë të bllokuara"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:50
-msgid "Name of the room"
-msgstr "Emër i dhomës"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:53
-msgid "Description of the room"
-msgstr "Përshkrim i dhomës"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:56
-msgid "Persistent"
-msgstr "E qëndrueshme"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:57
-msgid "The room will persist after the last occupant leaves"
-msgstr "Dhoma do të mbetet, pasi të dalë i pranishmi i fundit"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Publicly searchable"
-msgstr "Mund të kërkohet publikisht"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
-msgid "Occupants may change the subject"
-msgstr "Të pranishmit mund të ndryshojnë subjektin"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Permission to view JIDs"
-msgstr "Leje për të parë JID-ra"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Who is allowed to view the occupants' JIDs?"
-msgstr "Cilit i është lejuar të shohë JID pjesëmarrësish?"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:70
-#: main/data/add_conversation/conference_details_fragment.ui:162
-#: main/data/add_conversation/add_groupchat_dialog.ui:122
-#: main/data/manage_accounts/dialog.ui:151
-#: main/data/manage_accounts/add_account_dialog.ui:194
-msgid "Password"
-msgstr "Fjalëkalim"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "A password to restrict access to the room"
-msgstr "Një fjalëkalim për të kufizuar hyrje te dhoma"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:74
-msgid "Moderated"
-msgstr "I moderuar"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:75
-msgid "Only occupants with voice may send messages"
-msgstr "Vetëm të pranishëm me zë mund të dërgojnë mesazhe"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
-msgid "Members only"
-msgstr "Vetëm anëtarët"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:79
-msgid "Only members may enter the room"
-msgstr "Në dhomë mund të futen vetëm anëtarë"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:82
-msgid "Message history"
-msgstr "Historik mesazhesh"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:83
-msgid "Maximum amount of backlog issued by the room"
-msgstr "Sasi maksimum mesazhesh historiku të emetuar nga dhoma"
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:89
-msgid "Room Configuration"
-msgstr "Formësim Dhome"
 
 #: main/src/ui/main_window.vala:179
 msgid "Welcome to Dino!"
@@ -699,61 +783,22 @@ msgstr "Që t’ia filloni, bëni hyrjen ose krijoni një llogari."
 msgid "Set up account"
 msgstr "Ujdisni llogari"
 
-#: main/src/ui/main_window.vala:188
-msgid "No active accounts"
-msgstr "Pa llogari aktive"
-
 #: main/src/ui/main_window.vala:189
 msgid "Manage accounts"
 msgstr "Administroni llogari"
 
-#: main/src/ui/notifier_freedesktop.vala:189
-#: main/src/ui/manage_accounts/dialog.vala:229
-msgid "Wrong password"
-msgstr "Fjalëkalim i gabuar"
+#: main/src/ui/conversation_details.vala:117
+#: main/data/preferences_window_account.ui:71
+msgid "XMPP Address"
+msgstr ""
 
-#: main/src/ui/notifier_freedesktop.vala:192
-#: main/src/ui/manage_accounts/dialog.vala:231
-msgid "Invalid TLS certificate"
-msgstr "Dëshmi TLS e pavlefshme"
+#: main/src/ui/conversation_details.vala:122
+msgid "Display name"
+msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:116
-#, c-format
-msgid "Remove account %s?"
-msgstr "Të hiqet llogaria %s?"
-
-#: main/src/ui/manage_accounts/dialog.vala:119
-msgid "Remove"
-msgstr "Hiqe"
-
-#: main/src/ui/manage_accounts/dialog.vala:146
-msgid "Select avatar"
-msgstr "Përzgjidhni avatar"
-
-#: main/src/ui/manage_accounts/dialog.vala:153
-msgid "Images"
-msgstr "Figura"
-
-#: main/src/ui/manage_accounts/dialog.vala:157
-msgid "All files"
-msgstr "Krejt kartelat"
-
-#: main/src/ui/manage_accounts/dialog.vala:218
-msgid "Connected"
-msgstr "U lidh"
-
-#: main/src/ui/manage_accounts/dialog.vala:220
-msgid "Disconnected"
-msgstr "U shkëput"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-#: main/src/ui/manage_accounts/dialog.vala:236
-msgid "Error"
-msgstr "Gabim"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:82
-msgid "Add Account"
-msgstr "Shtoni Llogari"
+#: main/src/ui/conversation_details.vala:136
+msgid "Topic"
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -820,132 +865,132 @@ msgstr "Regjistrohuni"
 msgid "Check %s for information on how to sign up"
 msgstr "Për hollësi se si të regjistroheni, shihni te %s"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:213
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "Edit message"
-msgstr ""
+msgstr "Përpunoni mesazhin"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr ""
+msgstr "Ju"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
-#: main/src/ui/conversation_content_view/item_actions.vala:8
+#: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr ""
+msgstr "Shtoni reagim"
 
-#: main/src/ui/conversation_content_view/file_image_widget.vala:53
+#: main/src/ui/conversation_content_view/file_image_widget.vala:52
 #: main/src/ui/conversation_content_view/file_default_widget.vala:57
 msgid "Open"
 msgstr "Hape"
 
-#: main/src/ui/conversation_content_view/file_image_widget.vala:54
-#: main/src/ui/conversation_content_view/file_widget.vala:171
+#: main/src/ui/conversation_content_view/file_image_widget.vala:53
+#: main/src/ui/conversation_content_view/file_widget.vala:186
 #: main/src/ui/conversation_content_view/file_default_widget.vala:58
 msgid "Save as…"
 msgstr "Ruajeni si…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
 msgstr "%s, %s dhe %i të tjerë po shtypin…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
 msgstr "%s, %s dhe %s po shtypin…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
 msgstr "%s, dhe %s po shtypin…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
 msgstr "%s po shkruan…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:155
+#: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
 msgstr "Nisi thirrja"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:157
+#: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
 msgstr "Filluar %s më parë"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:172
+#: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
 msgstr "Me këtë thirrje u morët në pajisje tjetër"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:177
+#: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
 msgstr "Thirrja përfundoi"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:180
+#: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
 msgstr "Përfundoi më %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:182
+#: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
 msgstr "Zgjati %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:186
+#: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
 msgstr "Thirrje e humbur"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:188
+#: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
 msgstr "E humbët këtë thirrje"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:191
+#: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
 msgstr "%s e humbi këtë thirrje"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:196
+#: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
 msgstr "Thirrja s’u pranua"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:198
+#: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
 msgstr "S’e pranuat këtë thirrje"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:201
+#: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
 msgstr "%s s’e pranoi këtë thirrje"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:206
+#: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
 msgstr "Thirrja dështoi"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:230
+#: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
 msgstr[0] "%i orë"
 msgstr[1] "%i orë"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:237
+#: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
 msgstr[0] "%i minutë"
 msgstr[1] "%i minuta"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:244
+#: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
 msgstr "pak sekonda"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:191
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr ""
+msgstr "U dorëzua"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:195
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr ""
+msgstr "I lexuar"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -953,15 +998,15 @@ msgstr "Ky kontakt do të donte t’ju shtonte te lista e tyre e kontakteve"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
-msgstr ""
+msgstr "Kjo bisedë nuk mbulon reagime."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:33
+#: main/src/ui/conversation_content_view/item_actions.vala:34
 msgid "Reply"
-msgstr ""
+msgstr "Përgjigjuni"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:43
+#: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
-msgstr ""
+msgstr "Kjo bisedë nuk mbulon përgjigje."
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:64
 #, c-format
@@ -988,11 +1033,39 @@ msgstr "Shpërngulja e kartelës dështoi"
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:34
 msgid "File"
+msgstr "Kartelë"
+
+#: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
+msgid "New"
 msgstr ""
+
+#: main/data/menu_conversation.ui:7
+msgid "Contact Details"
+msgstr "Hollësi Kontakti"
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
 msgstr "Përditësoni mesazhin"
+
+#: main/data/preferences_window_general.ui:9
+msgid "Send _Typing Notifications"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:22
+msgid "Send _Read Receipts"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:38
+msgid "_Notifications"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:39
+msgid "Notify when a new message arrives"
+msgstr "Njoftomë kur mbërrin mesazh i ri"
+
+#: main/data/preferences_window_general.ui:55
+msgid "_Convert Smileys to Emoji"
+msgstr ""
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1000,7 +1073,31 @@ msgstr "S’keni fjalosje të hapura"
 
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
+msgstr "Klikoni mbi +, që të nisni një fjalosje, ose të hyni në një kanal"
+
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Të përgjithshme"
+
+#: main/data/gtk/help-overlay.ui:26
+msgid "Keyboard shortcuts"
 msgstr ""
+
+#: main/data/gtk/help-overlay.ui:33
+msgid "Conversation"
+msgstr "Bisedë"
+
+#: main/data/gtk/help-overlay.ui:50
+msgid "Navigation"
+msgstr "Lëvizje"
+
+#: main/data/gtk/help-overlay.ui:54
+msgid "Jump to next conversation"
+msgstr "Hidhu te biseda pasuese"
+
+#: main/data/gtk/help-overlay.ui:60
+msgid "Jump to previous conversation"
+msgstr "Hidhu te biseda e mëparshme"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
@@ -1022,23 +1119,15 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Shtoni Kontakt"
 
-#: main/data/settings_dialog.ui:41
-msgid "Notify when a new message arrives"
-msgstr "Njoftomë kur mbërrin mesazh i ri"
-
-#: main/data/settings_dialog.ui:50
-msgid "Convert smileys to emojis"
-msgstr "Shndërro emotikonet në emoji"
-
-#: main/data/settings_dialog.ui:59
-msgid "Check spelling"
-msgstr "Kontroll drejtshkrimi"
-
 #: main/data/im.dino.Dino.appdata.xml.in:7
+msgid "Dino"
+msgstr ""
+
+#: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP chat client"
 msgstr "Klient Modern Fjalosjesh XMPP"
 
-#: main/data/im.dino.Dino.appdata.xml.in:9
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
@@ -1048,7 +1137,7 @@ msgstr ""
 "përqendrohet në dhënien e një mënyre funksionimi të qartë dhe të qëndrueshme "
 "për protokoll Jabber/XMPP, teksa ka në mendje privatësinë tuaj."
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
@@ -1058,13 +1147,26 @@ msgstr ""
 "veçorish të lidhura me privatësinë, bie fjala, dëshmish leximi dhe njoftime "
 "shtypjeje."
 
-#: main/data/im.dino.Dino.appdata.xml.in:11
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
 "Dino e sjell historikun prej shërbyesve dhe njëkohëson mesazhet në pajisje "
 "të tjera."
+
+#: main/data/preferences_window_account.ui:79
+#: main/data/manage_accounts/dialog.ui:174
+msgid "Local alias"
+msgstr "Alias vendor"
+
+#: main/data/preferences_window_account.ui:89
+msgid "Connection status"
+msgstr ""
+
+#: main/data/preferences_window_account.ui:119
+msgid "Remove account"
+msgstr ""
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1086,39 +1188,45 @@ msgstr "Kontrolloni drejtshkrimin ose provoni të hiqni filtra"
 msgid "Send"
 msgstr "Dërgoje"
 
-#: main/data/shortcuts.ui:10
-msgid "General"
-msgstr "Të përgjithshme"
+#: main/data/join_room_dialog1.ui:21
+msgid "Search for channels or enter an XMPP address"
+msgstr ""
 
-#: main/data/shortcuts.ui:27
-msgid "Conversation"
-msgstr "Bisedë"
+#: main/data/join_room_dialog1.ui:124
+msgid "No channels found"
+msgstr ""
 
-#: main/data/shortcuts.ui:44
-msgid "Navigation"
-msgstr "Lëvizje"
+#: main/data/join_room_dialog1.ui:125
+msgid ""
+"None of your bookmarks matches your search and the XMPP address could not be "
+"resolved."
+msgstr ""
 
-#: main/data/shortcuts.ui:48
-msgid "Jump to next conversation"
-msgstr "Hidhu te biseda pasuese"
+#: main/data/join_room_dialog1.ui:136
+msgid "No known channels"
+msgstr ""
 
-#: main/data/shortcuts.ui:54
-msgid "Jump to previous conversation"
-msgstr "Hidhu te biseda e mëparshme"
+#: main/data/join_room_dialog1.ui:137
+msgid "Discover new channels or enter an XMPP address!"
+msgstr ""
 
-#: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:5
-msgid "Accounts"
-msgstr "Llogari"
+#: main/data/join_room_dialog1.ui:148
+msgid "You are offline"
+msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:176
-msgid "Local alias"
-msgstr "Alias vendor"
+#: main/data/menu_app.ui:7
+msgid "Preferences"
+msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:225
+#: main/data/menu_app.ui:11
+msgid "Keyboard Shortcuts"
+msgstr "Shkurtore Tastiere"
+
+#: main/data/manage_accounts/dialog.ui:223
 msgid "No accounts configured"
 msgstr "S’ka llogari të formësuara"
 
-#: main/data/manage_accounts/dialog.ui:233
+#: main/data/manage_accounts/dialog.ui:231
 msgid "Add an account"
 msgstr "Shtoni një llogari"
 
@@ -1134,10 +1242,6 @@ msgstr "Krijoni llogari"
 #: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"
 msgstr "S’u vendos dot një lidhje të sigurt"
-
-#: main/data/manage_accounts/add_account_dialog.ui:245
-msgid "Connect"
-msgstr "Lidhuni"
 
 #: main/data/manage_accounts/add_account_dialog.ui:294
 msgid "Choose a public server"
@@ -1162,6 +1266,47 @@ msgstr "Gjithçka e ujdisur!"
 #: main/data/manage_accounts/add_account_dialog.ui:506
 msgid "Finish"
 msgstr "Përfundoje"
+
+#~ msgid "Local Settings"
+#~ msgstr "Rregullime Vendore"
+
+#~ msgid "Notifications"
+#~ msgstr "Njoftime"
+
+#~ msgid "Pin conversation"
+#~ msgstr "Fiksoje bisedën"
+
+#~ msgid "Pins the conversation to the top of the conversation list"
+#~ msgstr "E fikson bisedën në krye të listës së bisedave"
+
+#~ msgid "Only when mentioned"
+#~ msgstr "Vetëm kur përmendet"
+
+#~ msgid "Permissions"
+#~ msgstr "Leje"
+
+#~ msgid "Conference Details"
+#~ msgstr "Hollësi Konference"
+
+#~ msgid "Communication and status updates in either direction are blocked"
+#~ msgstr ""
+#~ "Përditësimet mbi komunikimin dhe gjendjet, nga cilido kah, janë të "
+#~ "bllokuara"
+
+#~ msgid "A password to restrict access to the room"
+#~ msgstr "Një fjalëkalim për të kufizuar hyrje te dhoma"
+
+#~ msgid "Message history"
+#~ msgstr "Historik mesazhesh"
+
+#~ msgid "Maximum amount of backlog issued by the room"
+#~ msgstr "Sasi maksimum mesazhesh historiku të emetuar nga dhoma"
+
+#~ msgid "Convert smileys to emojis"
+#~ msgstr "Shndërro emotikonet në emoji"
+
+#~ msgid "Check spelling"
+#~ msgstr "Kontroll drejtshkrimi"
 
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "Klikoni këtu që të nisni një bisedë ose të hyni në një kanal."

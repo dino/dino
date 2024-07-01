@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
 "PO-Revision-Date: 2021-07-30 08:33+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.7.2-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:157
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -26,11 +26,11 @@ msgstr ""
 "%s güvenilmeyen bir cihaz kullanıyor. Güvenmediğiniz cihazlardan gelen "
 "mesajları görmezsiniz."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
 msgstr "Cihazları yönet"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:160
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -109,6 +109,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
 #: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
 msgstr "Anahtarı reddet"
@@ -120,6 +121,7 @@ msgstr "Bu anahtarı kullanan kişinin cihazıyla şifreli iletişimi engelle."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
 #: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
 msgstr "Kabul"
@@ -208,14 +210,53 @@ msgstr "OMEMO güven kararı gerekli"
 msgid "Did you add a new device for account %s?"
 msgstr "%s hesabı için yeni bir cihaz eklediniz mi?"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-#: plugins/omemo/src/ui/account_settings_entry.vala:50
-msgid "Own fingerprint"
-msgstr "Kendi parmak iziniz"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
+msgstr ""
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-msgid "Will be generated on first connection"
-msgstr "İlk bağlantıda oluşturulacak"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+msgid "New keys"
+msgstr "Yeni anahtarlar"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
+#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Diğer cihazlarınızdan gelen yeni şifreleme anahtarları otomatik olarak kabul "
+"edilecek."
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
+#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+msgid "Accepted"
+msgstr "Kabul edildi"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
+#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+msgid "Rejected"
+msgstr "Reddedildi"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
+#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+msgid "Verified"
+msgstr "Onaylandı"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+msgid "New device"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
@@ -245,10 +286,6 @@ msgstr ""
 msgid "Own key"
 msgstr "Kendi anahtarınız"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
-msgid "New keys"
-msgstr "Yeni anahtarlar"
-
 #: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
 msgstr "İlişkili anahtarlar"
@@ -257,28 +294,15 @@ msgstr "İlişkili anahtarlar"
 msgid "Inactive keys"
 msgstr "Etkin olmayan anahtarlar"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
-msgid ""
-"New encryption keys from your other devices will be accepted automatically."
-msgstr ""
-"Diğer cihazlarınızdan gelen yeni şifreleme anahtarları otomatik olarak kabul "
-"edilecek."
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
-msgid "Accepted"
-msgstr "Kabul edildi"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
-msgid "Rejected"
-msgstr "Reddedildi"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
-msgid "Verified"
-msgstr "Onaylandı"
-
 #: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
 msgstr "Kullanılmamış"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Kendi parmak iziniz"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "İlk bağlantıda oluşturulacak"
 
 #~ msgid "Your contact"
 #~ msgstr "Kişiniz"

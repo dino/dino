@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2022-02-04 09:55+0000\n"
+"PO-Revision-Date: 2023-04-21 18:49+0000\n"
 "Language-Team: none\n"
-"Language: el\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
-msgstr "Αναζήτηση στο GnuPG"
+msgstr "Kysellään GnuPG:tä"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
@@ -27,23 +27,23 @@ msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "Το κλειδί δεν είναι στο keychain"
+msgstr "Avain ei ole avainnipussa"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
-msgstr "Κρυπτογράφηση"
+msgstr "Salaus"
 
 #~ msgid "Key publishing disabled"
-#~ msgstr "Η δημοσίευση του κλειδιού είναι απενεργοποιημένη"
+#~ msgstr "Avaimen julkaiseminen pois käytöstä"
 
 #~ msgid "Error in GnuPG"
-#~ msgstr "Σφάλμα στο GnuPG"
+#~ msgstr "Virhe GnuPG:ssä"
 
 #~ msgid "No keys available. Generate one!"
-#~ msgstr "Δεν υπάρχουν διαθέσιμα κλειδιά. Δημιουργήστε ένα!"
+#~ msgstr "Ei avaimia saatavilla. Luo avain!"
 
 #~ msgid "Select key"
-#~ msgstr "Επιλέξτε κλειδί"
+#~ msgstr "Valitse avain"
 
 #~ msgid "Loading…"
-#~ msgstr "Φόρτωση…"
+#~ msgstr "Ladataan…"

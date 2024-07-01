@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2022-08-26 22:15+0000\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"PO-Revision-Date: 2023-07-21 07:03+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -16,99 +16,270 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 5.0-dev\n"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:67
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/conversation_view_controller.vala:216
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/src/ui/add_conversation/add_conference_dialog.vala:44
+#: main/src/ui/add_conversation/add_conference_dialog.vala:121
+#: main/src/ui/application.vala:289 main/src/ui/manage_accounts/dialog.vala:146
+#: main/src/ui/conversation_content_view/file_default_widget.vala:70
+#: main/data/message_item_widget_edit_mode.ui:46
+#: main/data/add_conversation/add_groupchat_dialog.ui:12
+#: main/data/add_conversation/add_contact_dialog.ui:13
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:68
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:75
+#: main/data/manage_accounts/add_account_dialog.ui:245
+msgid "Connect"
+msgstr "Приєднатися"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:107
+#: main/data/preferences_window_account.ui:110
+msgid "Disable account"
+msgstr ""
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:107
+msgid "Enable account"
+msgstr ""
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/manage_accounts/dialog.vala:146
+msgid "Select avatar"
+msgstr "Вибрати аватар"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:150
+#: main/src/ui/conversation_view_controller.vala:216
+#: main/src/ui/manage_accounts/dialog.vala:146
+msgid "Select"
+msgstr "Вибрати"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:157
+#: main/src/ui/manage_accounts/dialog.vala:153
+msgid "Images"
+msgstr "Зображення"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:161
+#: main/src/ui/manage_accounts/dialog.vala:157
+msgid "All files"
+msgstr "Усі файли"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:177
+#: main/src/ui/manage_accounts/dialog.vala:116
+#, c-format
+msgid "Remove account %s?"
+msgstr "Видалити обліковий запис %s?"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:180
+#: main/src/ui/manage_accounts/dialog.vala:119
+msgid "Remove"
+msgstr "Видалити"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
+#: main/src/ui/call_window/participant_widget.vala:128
+#: main/src/ui/manage_accounts/dialog.vala:216
+msgid "Connecting…"
+msgstr "З'єднання…"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
+#: main/src/ui/manage_accounts/dialog.vala:218
+msgid "Connected"
+msgstr "Під’єднано"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:206
+#: main/src/ui/manage_accounts/dialog.vala:220
+msgid "Disconnected"
+msgstr "Роз'єднано"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:217
+#: main/src/ui/notifier_freedesktop.vala:192
+#: main/src/ui/manage_accounts/dialog.vala:229
+msgid "Wrong password"
+msgstr "Хибний пароль"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:219
+#: main/src/ui/notifier_freedesktop.vala:195
+#: main/src/ui/manage_accounts/dialog.vala:231
+msgid "Invalid TLS certificate"
+msgstr "Недійсний сертифікат TLS"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:222
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:224
+#: main/src/ui/manage_accounts/dialog.vala:234
+#: main/src/ui/manage_accounts/dialog.vala:236
+msgid "Error"
+msgstr "Помилка"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:15
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/manage_accounts/dialog.ui:5
+msgid "Accounts"
+msgstr "Облікові записи"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:28
+msgid "Disabled accounts"
+msgstr ""
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:31
+#: main/src/ui/manage_accounts/add_account_dialog.vala:82
+msgid "Add Account"
+msgstr "Додати обліковий запис"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:72
+#: main/src/windows/preferences_window/encryption_preferences_page.vala:50
+#: main/src/ui/main_window.vala:188
+msgid "No active accounts"
+msgstr "Немає активних облікових записів"
+
+#: main/src/windows/conversation_details.vala:58
+msgid "Pinned"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:58
+msgid "Pin"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:68
+msgid "Blocked"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:68
+msgid "Block"
+msgstr "Заблокувати"
+
+#: main/src/windows/conversation_details.vala:87
+#: main/src/windows/conversation_details.vala:88
+msgid "Mute"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:89
+msgid "Notifications enabled"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:92
+msgid "Notifications for mentions"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:95
+#: main/src/windows/conversation_details.vala:96
+msgid "Muted"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:97
+msgid "Notifications disabled"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:124
+msgid "About"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:127
+msgid "Encryption"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:130
+msgid "Settings"
+msgstr "Налаштування"
+
+#: main/src/windows/conversation_details.vala:133
+msgid "Room Configuration"
+msgstr "Налаштування кімнати"
 
 #: main/src/ui/file_send_overlay.vala:92
 msgid "The file exceeds the server's maximum upload size."
-msgstr ""
+msgstr "Розмір файлу перевищує дозволений для завантаження на сервер."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:81
+#: main/src/ui/conversation_content_view/message_widget.vala:84
 msgid "Message too long"
 msgstr "Повідомлення задовге"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:107
+#: main/src/ui/conversation_content_view/message_widget.vala:110
 msgid "edited"
 msgstr "відредаговано"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:116
+#: main/src/ui/conversation_content_view/message_widget.vala:119
 msgid "pending…"
-msgstr ""
+msgstr "очикування…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:129
+#: main/src/ui/conversation_content_view/message_widget.vala:132
 msgid "delivery failed"
-msgstr ""
+msgstr "доставка невдалася"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:163
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
 msgstr "Нешифровано"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:201
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
 msgstr "Не вдалося надіслати повідомлення"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:238
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
 #, no-c-format
 msgid "%x, %H∶%M"
 msgstr "%H∶%M, %x"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:123
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:239
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
 #, no-c-format
 msgid "%x, %l∶%M %p"
 msgstr "%l∶%M, %x %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:126
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
 #, no-c-format
 msgid "%b %d, %H∶%M"
 msgstr "%d %b, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:127
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:243
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
 msgstr "%d %b, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:130
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:249
 #, no-c-format
 msgid "%a, %H∶%M"
 msgstr "%a, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:131
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:247
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
 #, no-c-format
 msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:357
-#: main/src/ui/conversation_content_view/call_widget.vala:178
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
 msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:358
-#: main/src/ui/conversation_content_view/call_widget.vala:178
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:251
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:352
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
 msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:361
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:255
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:355
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
@@ -117,70 +288,70 @@ msgstr[1] "%i хвилини тому"
 msgstr[2] "%i хвилин тому"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:363
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:257
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:357
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "Щойно"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:172
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:197
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:212
-#: main/src/ui/util/helper.vala:122 main/src/ui/util/helper.vala:126
-#: main/src/ui/util/helper.vala:134
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
+#: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "Я"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Зображення надіслано"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Файл надіслано"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "Зображення отримано"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:205
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "Файл отримано"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
-#: main/src/ui/conversation_content_view/call_widget.vala:171
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
+#: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr ""
+msgstr "Вихідний виклик"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:214
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:133
-#: main/src/ui/conversation_content_view/call_widget.vala:171
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
+#: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr ""
+msgstr "Вхідний виклик"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:350
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:354
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "Учора"
 
 #: main/src/ui/conversation_list_titlebar.vala:27
-#: main/src/ui/add_conversation/select_contact_dialog.vala:99
-#: main/data/menu_add.ui:7 main/data/shortcuts.ui:14
+#: main/src/ui/add_conversation/select_contact_dialog.vala:101
+#: main/data/gtk/help-overlay.ui:14 main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Почати розмову"
 
@@ -226,31 +397,70 @@ msgstr "Відкликати дозвіл писати"
 msgid "Invite to Conference"
 msgstr "Запросити до конференції"
 
-#: main/src/ui/conversation_view_controller.vala:214
+#: main/src/ui/conversation_view_controller.vala:216
 msgid "Select file"
 msgstr "Виберіть файл"
 
-#: main/src/ui/conversation_view_controller.vala:214
-#: main/src/ui/manage_accounts/dialog.vala:146
-msgid "Select"
-msgstr "Вибрати"
-
-#: main/src/ui/conversation_view_controller.vala:214
-#: main/src/ui/add_conversation/select_contact_dialog.vala:39
-#: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/add_conversation/add_conference_dialog.vala:118
-#: main/src/ui/application.vala:298 main/src/ui/manage_accounts/dialog.vala:146
-#: main/src/ui/conversation_content_view/file_default_widget.vala:70
-#: main/data/message_item_widget_edit_mode.ui:46
-#: main/data/add_conversation/add_groupchat_dialog.ui:12
-#: main/data/add_conversation/add_contact_dialog.ui:13
-msgid "Cancel"
-msgstr "Скасувати"
-
-#: main/src/ui/util/helper.vala:118
+#: main/src/ui/util/helper.vala:65
 #, c-format
 msgid "%s from %s"
 msgstr "%s з %s"
+
+#: main/src/ui/util/data_forms.vala:20
+msgid "Name of the room"
+msgstr "Назва кімнати"
+
+#: main/src/ui/util/data_forms.vala:23
+msgid "Description of the room"
+msgstr "Опис кімнати"
+
+#: main/src/ui/util/data_forms.vala:26
+msgid "Persistent"
+msgstr "Постійна"
+
+#: main/src/ui/util/data_forms.vala:27
+msgid "The room will persist after the last occupant leaves"
+msgstr "Кімната буде збережена після в виходу останнього відвідувача"
+
+#: main/src/ui/util/data_forms.vala:30
+msgid "Publicly searchable"
+msgstr "Доступний для загального пошуку"
+
+#: main/src/ui/util/data_forms.vala:33
+msgid "Occupants may change the subject"
+msgstr "Відвідувачи можуть змінювати тему"
+
+#: main/src/ui/util/data_forms.vala:36
+msgid "Permission to view JIDs"
+msgstr "Дозвіл на перегляд JID"
+
+#: main/src/ui/util/data_forms.vala:37
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr "Кому дозволено перегляд JID відвідувачів?"
+
+#: main/src/ui/util/data_forms.vala:40
+#: main/data/add_conversation/conference_details_fragment.ui:162
+#: main/data/add_conversation/add_groupchat_dialog.ui:122
+#: main/data/manage_accounts/dialog.ui:149
+#: main/data/manage_accounts/add_account_dialog.ui:194
+msgid "Password"
+msgstr "Пароль"
+
+#: main/src/ui/util/data_forms.vala:44
+msgid "Moderated"
+msgstr "Модерований"
+
+#: main/src/ui/util/data_forms.vala:45
+msgid "Only occupants with voice may send messages"
+msgstr "Тільки відвідувачи за голосом можуть відсилати повідомлення"
+
+#: main/src/ui/util/data_forms.vala:48
+msgid "Members only"
+msgstr "Тільки для учасників"
+
+#: main/src/ui/util/data_forms.vala:49
+msgid "Only members may enter the room"
+msgstr "Тільки учасники можуть зайти до кімнати"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
@@ -260,25 +470,25 @@ msgstr "Вам заборонено відправляти повідомлен�
 msgid "Request permission"
 msgstr "Попросити дозвіл"
 
-#: main/src/ui/chat_input/view.vala:44 main/data/file_send_overlay.ui:24
-#: main/data/shortcuts.ui:37
+#: main/src/ui/chat_input/view.vala:46 main/data/gtk/help-overlay.ui:43
+#: main/data/file_send_overlay.ui:24
 msgid "Send a file"
-msgstr ""
+msgstr "Відіслати файл"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr ""
+msgstr "Распочати виклик"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
-msgstr ""
+msgstr "Аудіо виклик"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr ""
+msgstr "Відео виклик"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
-#: main/data/shortcuts.ui:31
+#: main/data/gtk/help-overlay.ui:37
 msgid "Search messages"
 msgstr "Пошук повідомлень"
 
@@ -286,88 +496,91 @@ msgstr "Пошук повідомлень"
 msgid "Members"
 msgstr "Члени"
 
-#: main/src/ui/call_window/participant_widget.vala:118
+#: main/src/ui/conversation_titlebar/menu_entry.vala:20
+msgid "Conversation Details"
+msgstr ""
+
+#: main/src/ui/conversation_titlebar/menu_entry.vala:21
+msgid "Close Conversation"
+msgstr ""
+
+#: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr ""
+msgstr "Налагоджувальна інформація"
 
-#: main/src/ui/call_window/participant_widget.vala:127
-#: main/src/ui/conversation_content_view/call_widget.vala:148
+#: main/src/ui/call_window/participant_widget.vala:124
+#: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr ""
+msgstr "Йде виклик…"
 
-#: main/src/ui/call_window/participant_widget.vala:129
+#: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr ""
+msgstr "Йде дзвінок…"
 
-#: main/src/ui/call_window/participant_widget.vala:131
-#: main/src/ui/manage_accounts/dialog.vala:216
-msgid "Connecting…"
-msgstr "З'єднання…"
-
-#: main/src/ui/call_window/call_window.vala:191
+#: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s заверши(в|ла) виклик"
 
-#: main/src/ui/call_window/call_window.vala:193
+#: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s відхилив виклик"
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr ""
+msgstr "Камери"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr ""
+msgstr "Камер не знайдено."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr ""
+msgstr "Мікрофони"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr ""
+msgstr "Мікрофонів не знайдено."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr ""
+msgstr "Колонки"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr ""
+msgstr "Колонок не знайдено."
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr ""
+msgstr "Викликати"
 
-#: main/src/ui/add_conversation/select_contact_dialog.vala:100
+#: main/src/ui/add_conversation/select_contact_dialog.vala:102
 msgid "Start"
 msgstr "Почати"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:298 main/data/menu_add.ui:11
-#: main/data/shortcuts.ui:20
+#: main/src/ui/application.vala:289 main/data/gtk/help-overlay.ui:20
+#: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Приєднатись до каналу"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:45
-#: main/src/ui/add_conversation/add_conference_dialog.vala:114
+#: main/src/ui/add_conversation/add_conference_dialog.vala:47
+#: main/src/ui/add_conversation/add_conference_dialog.vala:117
 #: main/data/manage_accounts/add_account_dialog.ui:94
 #: main/data/manage_accounts/add_account_dialog.ui:353
 #: main/data/manage_accounts/add_account_dialog.ui:426
 msgid "Next"
 msgstr "Далі"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:63
-#: main/src/ui/add_conversation/add_conference_dialog.vala:138
+#: main/src/ui/add_conversation/add_conference_dialog.vala:65
+#: main/src/ui/add_conversation/add_conference_dialog.vala:141
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:298
+#: main/src/ui/application.vala:289 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Приєднатися"
 
-#: main/src/ui/add_conversation/add_conference_dialog.vala:143
+#: main/src/ui/add_conversation/add_conference_dialog.vala:146
 #: main/data/manage_accounts/add_account_dialog.ui:160
 #: main/data/manage_accounts/add_account_dialog.ui:226
 msgid "Back"
@@ -399,7 +612,7 @@ msgstr "Кімната тільки для учасників"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr "Оберіть інший нікнейм"
+msgstr "Оберіть інше прізвисько"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
@@ -407,7 +620,7 @@ msgstr "У кімнаті занадто багато відвідувачів"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
 #: main/src/ui/notifier_gnotifications.vala:104
-#: main/src/ui/notifier_freedesktop.vala:185
+#: main/src/ui/notifier_freedesktop.vala:188
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
@@ -426,13 +639,9 @@ msgstr "Недійсна адреса"
 msgid "Add"
 msgstr "Додати"
 
-#: main/src/ui/application.vala:204 main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
-msgstr ""
-
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:21
+#: main/src/ui/application.vala:276 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr ""
+msgstr "О Dino"
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
@@ -453,241 +662,117 @@ msgstr[2] "%i результатів пошуку"
 #: main/src/ui/global_search.vala:206
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "В %s"
 
 #: main/src/ui/global_search.vala:206
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "З %s"
 
 #: main/src/ui/notifier_gnotifications.vala:70
-#: main/src/ui/notifier_freedesktop.vala:113
-#: main/src/ui/conversation_content_view/call_widget.vala:133
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr ""
+msgstr "Вхідний відео виклик"
 
 #: main/src/ui/notifier_gnotifications.vala:72
-#: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:135
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr ""
+msgstr "Вхідний групповий відео виклик"
 
 #: main/src/ui/notifier_gnotifications.vala:72
-#: main/src/ui/notifier_freedesktop.vala:115
-#: main/src/ui/conversation_content_view/call_widget.vala:135
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr ""
+msgstr "Вхідний групповий виклик"
 
 #: main/src/ui/notifier_gnotifications.vala:80
-#: main/src/ui/notifier_freedesktop.vala:123
-#: main/src/ui/notifier_freedesktop.vala:220 main/data/call_widget.ui:73
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr ""
+msgstr "Відхилити"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
-#: main/src/ui/notifier_gnotifications.vala:131
-#: main/src/ui/notifier_gnotifications.vala:147
-#: main/src/ui/notifier_freedesktop.vala:123
-#: main/src/ui/notifier_freedesktop.vala:161
-#: main/src/ui/notifier_freedesktop.vala:220
-#: main/src/ui/notifier_freedesktop.vala:253
+#: main/src/ui/notifier_gnotifications.vala:134
+#: main/src/ui/notifier_gnotifications.vala:150
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:230
+#: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:81
 msgid "Accept"
 msgstr "Прийняти"
 
 #: main/src/ui/notifier_gnotifications.vala:91
-#: main/src/ui/notifier_freedesktop.vala:155
+#: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
 msgstr "Необхідна авторизація"
 
 #: main/src/ui/notifier_gnotifications.vala:98
-#: main/src/ui/notifier_gnotifications.vala:130
-#: main/src/ui/notifier_gnotifications.vala:146
-#: main/src/ui/notifier_freedesktop.vala:161
-#: main/src/ui/notifier_freedesktop.vala:253
+#: main/src/ui/notifier_gnotifications.vala:133
+#: main/src/ui/notifier_gnotifications.vala:149
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
-msgstr "Відхилити"
+msgstr "Заборонити"
 
-#: main/src/ui/notifier_gnotifications.vala:120
-#: main/src/ui/notifier_freedesktop.vala:211
+#: main/src/ui/notifier_gnotifications.vala:123
+#: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
 msgstr "Запрошення до %s"
 
-#: main/src/ui/notifier_gnotifications.vala:121
-#: main/src/ui/notifier_freedesktop.vala:212
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
 msgstr "%s запросив вас до %s"
 
-#: main/src/ui/notifier_gnotifications.vala:138
-#: main/src/ui/notifier_freedesktop.vala:244
+#: main/src/ui/notifier_gnotifications.vala:141
+#: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
 msgstr "Запит на дозвіл"
 
-#: main/src/ui/notifier_gnotifications.vala:139
-#: main/src/ui/notifier_freedesktop.vala:245
+#: main/src/ui/notifier_gnotifications.vala:142
+#: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
 msgstr "%s запитує дозвіл писати в %s"
 
-#: main/src/ui/contact_details/settings_provider.vala:12
-#: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/data/settings_dialog.ui:4 main/data/menu_app.ui:11
-msgid "Settings"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:13
-msgid "Local Settings"
-msgstr ""
-
 #: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:23
 msgid "Send typing notifications"
-msgstr ""
+msgstr "Надситали сповіщення про введення тексту"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:32
 msgid "Send read receipts"
-msgstr ""
+msgstr "Надсилати сповіщення про прочтення"
 
-#: main/src/ui/contact_details/settings_provider.vala:38
-#: main/src/ui/contact_details/settings_provider.vala:47
-msgid "Notifications"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:55
-msgid "Pin conversation"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:55
-msgid "Pins the conversation to the top of the conversation list"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:89
-#: main/src/ui/contact_details/settings_provider.vala:129
-#: main/src/ui/contact_details/settings_provider.vala:131
+#: main/src/ui/contact_details/settings_provider.vala:66
+#: main/src/ui/contact_details/settings_provider.vala:68
 msgid "On"
-msgstr ""
+msgstr "Включити"
 
-#: main/src/ui/contact_details/settings_provider.vala:91
-#: main/src/ui/contact_details/settings_provider.vala:129
-#: main/src/ui/contact_details/settings_provider.vala:132
+#: main/src/ui/contact_details/settings_provider.vala:66
+#: main/src/ui/contact_details/settings_provider.vala:69
 msgid "Off"
-msgstr ""
+msgstr "Виключити"
 
-#: main/src/ui/contact_details/settings_provider.vala:93
-msgid "Only when mentioned"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:95
-#: main/src/ui/contact_details/settings_provider.vala:130
+#: main/src/ui/contact_details/settings_provider.vala:67
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "За замовчуванням: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
-
-#: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Permissions"
-msgstr ""
+msgstr "Запросити"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
-
-#: main/src/ui/contact_details/dialog.vala:37
-msgid "Conference Details"
-msgstr ""
-
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
-msgid "Contact Details"
-msgstr ""
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Block"
-msgstr ""
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Communication and status updates in either direction are blocked"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:50
-msgid "Name of the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:53
-msgid "Description of the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:56
-msgid "Persistent"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:57
-msgid "The room will persist after the last occupant leaves"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Publicly searchable"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
-msgid "Occupants may change the subject"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Permission to view JIDs"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:70
-#: main/data/add_conversation/conference_details_fragment.ui:162
-#: main/data/add_conversation/add_groupchat_dialog.ui:122
-#: main/data/manage_accounts/dialog.ui:151
-#: main/data/manage_accounts/add_account_dialog.ui:194
-msgid "Password"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "A password to restrict access to the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:74
-msgid "Moderated"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:75
-msgid "Only occupants with voice may send messages"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
-msgid "Members only"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:79
-msgid "Only members may enter the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:82
-msgid "Message history"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:83
-msgid "Maximum amount of backlog issued by the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:89
-msgid "Room Configuration"
-msgstr ""
+msgstr "Запросити дозвіл на відсилку повідомлення"
 
 #: main/src/ui/main_window.vala:179
 msgid "Welcome to Dino!"
@@ -701,82 +786,43 @@ msgstr "Увійдіть в систему або створіть обліко�
 msgid "Set up account"
 msgstr "Налаштування облікового запису"
 
-#: main/src/ui/main_window.vala:188
-msgid "No active accounts"
-msgstr "Немає активних облікових записів"
-
 #: main/src/ui/main_window.vala:189
 msgid "Manage accounts"
 msgstr "Керування обліковими записами"
 
-#: main/src/ui/notifier_freedesktop.vala:189
-#: main/src/ui/manage_accounts/dialog.vala:229
-msgid "Wrong password"
-msgstr "Хибний пароль"
+#: main/src/ui/conversation_details.vala:117
+#: main/data/preferences_window_account.ui:71
+msgid "XMPP Address"
+msgstr ""
 
-#: main/src/ui/notifier_freedesktop.vala:192
-#: main/src/ui/manage_accounts/dialog.vala:231
-msgid "Invalid TLS certificate"
-msgstr "Недійсний сертифікат TLS"
+#: main/src/ui/conversation_details.vala:122
+msgid "Display name"
+msgstr ""
 
-#: main/src/ui/manage_accounts/dialog.vala:116
-#, c-format
-msgid "Remove account %s?"
-msgstr "Видалити обліковий запис %s?"
-
-#: main/src/ui/manage_accounts/dialog.vala:119
-msgid "Remove"
-msgstr "Видалити"
-
-#: main/src/ui/manage_accounts/dialog.vala:146
-msgid "Select avatar"
-msgstr "Вибрати аватар"
-
-#: main/src/ui/manage_accounts/dialog.vala:153
-msgid "Images"
-msgstr "Зображення"
-
-#: main/src/ui/manage_accounts/dialog.vala:157
-msgid "All files"
-msgstr "Усі файли"
-
-#: main/src/ui/manage_accounts/dialog.vala:218
-msgid "Connected"
-msgstr "Під’єднано"
-
-#: main/src/ui/manage_accounts/dialog.vala:220
-msgid "Disconnected"
-msgstr "Роз'єднано"
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-#: main/src/ui/manage_accounts/dialog.vala:236
-msgid "Error"
-msgstr "Помилка"
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:82
-msgid "Add Account"
-msgstr "Додати обліковий запис"
+#: main/src/ui/conversation_details.vala:136
+msgid "Topic"
+msgstr ""
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "Сервер не зміг підтвердити, що це %s."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
+msgstr "Ваша операційна система не довіряє його сертифікату безпеки."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "Його сертифікат безпеки видано іншому домену."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "Його сертифікат безпеки стане дійсним тількі у майбутньому."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "Його сертифікат безпеки закінчився."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
@@ -822,134 +868,134 @@ msgstr "Зареєструватися"
 msgid "Check %s for information on how to sign up"
 msgstr "Прочитайте %s, щоб дізнатися про процес реєстрації"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:213
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "Edit message"
-msgstr ""
+msgstr "Редагувати повідомлення"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr ""
+msgstr "Ви"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
-#: main/src/ui/conversation_content_view/item_actions.vala:8
+#: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr ""
+msgstr "Додати реакцію"
 
-#: main/src/ui/conversation_content_view/file_image_widget.vala:53
+#: main/src/ui/conversation_content_view/file_image_widget.vala:52
 #: main/src/ui/conversation_content_view/file_default_widget.vala:57
 msgid "Open"
-msgstr ""
+msgstr "Відкрити"
 
-#: main/src/ui/conversation_content_view/file_image_widget.vala:54
-#: main/src/ui/conversation_content_view/file_widget.vala:171
+#: main/src/ui/conversation_content_view/file_image_widget.vala:53
+#: main/src/ui/conversation_content_view/file_widget.vala:186
 #: main/src/ui/conversation_content_view/file_default_widget.vala:58
 msgid "Save as…"
-msgstr ""
+msgstr "Зберегти як…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
 msgstr "%s, %s та %i інших друкують…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
 msgstr "%s, %s та %s друкують…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
 msgstr "%s і %s друкують…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
 msgstr "%s друкує…"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:155
+#: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr ""
+msgstr "Виклик разпочато"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:157
+#: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "Розпочато %s тому"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:172
+#: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Ви обробили цей виклик на іншому пристрої"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:174
+msgid "Call ended"
+msgstr "Виклик закінчено"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
-msgid "Call ended"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:180
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "Закінчено в %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:182
+#: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "Тривав %s"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:186
+#: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr ""
+msgstr "Виклик пропущено"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:185
+msgid "You missed this call"
+msgstr "Ви пропустили виклик"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
-msgid "You missed this call"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:191
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s пропустил(а) цей виклик"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:196
+#: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr ""
+msgstr "Виклик відхиленно"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:195
+msgid "You declined this call"
+msgstr "Ви відхилили виклик"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
-msgid "You declined this call"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/call_widget.vala:201
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s відхили(в|ла) виклик"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:206
+#: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr ""
+msgstr "Помилка виклика"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:230
+#: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%i година"
+msgstr[1] "%i години"
+msgstr[2] "%i годин"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:237
+#: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%i минута"
+msgstr[1] "%i минути"
+msgstr[2] "%i минут"
 
-#: main/src/ui/conversation_content_view/call_widget.vala:244
+#: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr ""
+msgstr "декілька секунд"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:191
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr ""
+msgstr "Доставлено"
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:195
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr ""
+msgstr "Прочитано"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
@@ -957,15 +1003,15 @@ msgstr "Цей контакт хоче додати вас до свого сп�
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
-msgstr ""
+msgstr "Ця бесіда не підтримує реакций."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:33
+#: main/src/ui/conversation_content_view/item_actions.vala:34
 msgid "Reply"
-msgstr ""
+msgstr "Відповісти"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:43
+#: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
-msgstr ""
+msgstr "Ця бесіда не підтримує відповідей."
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:64
 #, c-format
@@ -992,169 +1038,275 @@ msgstr "Помилка передачі файлу"
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:34
 msgid "File"
+msgstr "Файл"
+
+#: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
+msgid "New"
 msgstr ""
+
+#: main/data/menu_conversation.ui:7
+msgid "Contact Details"
+msgstr "Контактні данні"
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
+msgstr "Оновити повідомлення"
+
+#: main/data/preferences_window_general.ui:9
+msgid "Send _Typing Notifications"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:22
+msgid "Send _Read Receipts"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:38
+msgid "_Notifications"
+msgstr ""
+
+#: main/data/preferences_window_general.ui:39
+msgid "Notify when a new message arrives"
+msgstr "Сповіщати про надходження нового повідомлення"
+
+#: main/data/preferences_window_general.ui:55
+msgid "_Convert Smileys to Emoji"
 msgstr ""
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
-msgstr ""
+msgstr "У вас немає відкритих спілкуваннь"
 
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
+msgstr "Натисніть + щоб роспочати спілкування або приєднатися до каналу"
+
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Загальні"
+
+#: main/data/gtk/help-overlay.ui:26
+msgid "Keyboard shortcuts"
 msgstr ""
+
+#: main/data/gtk/help-overlay.ui:33
+msgid "Conversation"
+msgstr "Бесіда"
+
+#: main/data/gtk/help-overlay.ui:50
+msgid "Navigation"
+msgstr "Навігація"
+
+#: main/data/gtk/help-overlay.ui:54
+msgid "Jump to next conversation"
+msgstr "Перейти до наступної бесіди"
+
+#: main/data/gtk/help-overlay.ui:60
+msgid "Jump to previous conversation"
+msgstr "Перейти до попередньої бесіди"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
 #: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
-msgstr ""
+msgstr "Обліковий запис"
 
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr ""
+msgstr "Прізвисько"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr ""
+msgstr "Псевдонім"
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
-msgstr ""
-
-#: main/data/settings_dialog.ui:41
-msgid "Notify when a new message arrives"
-msgstr ""
-
-#: main/data/settings_dialog.ui:50
-msgid "Convert smileys to emojis"
-msgstr ""
-
-#: main/data/settings_dialog.ui:59
-msgid "Check spelling"
-msgstr ""
+msgstr "Добавити контакт"
 
 #: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Modern XMPP chat client"
+msgid "Dino"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:9
+#: main/data/im.dino.Dino.appdata.xml.in:8
+msgid "Modern XMPP chat client"
+msgstr "Сучасний кліент XMPP"
+
+#: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
 "Dino is a modern open-source chat client for the desktop. It focuses on "
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino - це сучасний клієнт чату з відкритим вихідним кодом для комп’ютера. "
+"Він зосереджений на забезпеченні чистого та надійного досвіду Jabber/XMPP, "
+"зважаючи на вашу конфіденційність."
 
-#: main/data/im.dino.Dino.appdata.xml.in:10
+#: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
 "It supports end-to-end encryption with OMEMO and OpenPGP and allows "
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"Він підтримує наскрізне шифрування за допомогою OMEMO та OpenPGP і дозволяє "
+"налаштовувати пов’язані з конфіденційністю функції, такі як сповіщення про "
+"прочитання та сповіщення про введення тексту."
 
-#: main/data/im.dino.Dino.appdata.xml.in:11
+#: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"Dino отримує історію з сервера та синхронізує повідомлення з іншими "
+"пристроями."
+
+#: main/data/preferences_window_account.ui:79
+#: main/data/manage_accounts/dialog.ui:174
+msgid "Local alias"
+msgstr "Місцевий псевдонім"
+
+#: main/data/preferences_window_account.ui:89
+msgid "Connection status"
+msgstr ""
+
+#: main/data/preferences_window_account.ui:119
+msgid "Remove account"
+msgstr ""
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr ""
+msgstr "Пошук по повідомленням"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr ""
+msgstr "Введіть, щоб почати пошук"
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr ""
+msgstr "Повідомлень не знайдено"
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Перевірте набраний текст або спробуйте видалити фільтри"
 
 #: main/data/file_send_overlay.ui:61
 msgid "Send"
+msgstr "Відіслати"
+
+#: main/data/join_room_dialog1.ui:21
+msgid "Search for channels or enter an XMPP address"
 msgstr ""
 
-#: main/data/shortcuts.ui:10
-msgid "General"
+#: main/data/join_room_dialog1.ui:124
+msgid "No channels found"
 msgstr ""
 
-#: main/data/shortcuts.ui:27
-msgid "Conversation"
+#: main/data/join_room_dialog1.ui:125
+msgid ""
+"None of your bookmarks matches your search and the XMPP address could not be "
+"resolved."
 msgstr ""
 
-#: main/data/shortcuts.ui:44
-msgid "Navigation"
+#: main/data/join_room_dialog1.ui:136
+msgid "No known channels"
 msgstr ""
 
-#: main/data/shortcuts.ui:48
-msgid "Jump to next conversation"
+#: main/data/join_room_dialog1.ui:137
+msgid "Discover new channels or enter an XMPP address!"
 msgstr ""
 
-#: main/data/shortcuts.ui:54
-msgid "Jump to previous conversation"
+#: main/data/join_room_dialog1.ui:148
+msgid "You are offline"
 msgstr ""
 
-#: main/data/menu_app.ui:7 main/data/manage_accounts/dialog.ui:5
-msgid "Accounts"
+#: main/data/menu_app.ui:7
+msgid "Preferences"
 msgstr ""
 
-#: main/data/manage_accounts/dialog.ui:176
-msgid "Local alias"
-msgstr ""
+#: main/data/menu_app.ui:11
+msgid "Keyboard Shortcuts"
+msgstr "Гарячі клавіши"
 
-#: main/data/manage_accounts/dialog.ui:225
+#: main/data/manage_accounts/dialog.ui:223
 msgid "No accounts configured"
-msgstr ""
+msgstr "Облікові записи не налаштовано"
 
-#: main/data/manage_accounts/dialog.ui:233
+#: main/data/manage_accounts/dialog.ui:231
 msgid "Add an account"
-msgstr ""
+msgstr "Добавити обліковий запис"
 
 #: main/data/manage_accounts/add_account_dialog.ui:35
 msgid "Sign in"
-msgstr ""
+msgstr "Увійти"
 
 #: main/data/manage_accounts/add_account_dialog.ui:75
 #: main/data/manage_accounts/add_account_dialog.ui:284
 msgid "Create account"
-msgstr ""
+msgstr "Створити обліковий запис"
 
 #: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:245
-msgid "Connect"
-msgstr ""
+msgstr "Не вдалося встановити безпечне з'єднання"
 
 #: main/data/manage_accounts/add_account_dialog.ui:294
 msgid "Choose a public server"
-msgstr ""
+msgstr "Оберіть публічний сервер"
 
 #: main/data/manage_accounts/add_account_dialog.ui:318
 msgid "Or specify a server address"
-msgstr ""
+msgstr "Або вкажіть адресу сервера"
 
 #: main/data/manage_accounts/add_account_dialog.ui:334
 msgid "Sign in instead"
-msgstr ""
+msgstr "Увійти замість"
 
 #: main/data/manage_accounts/add_account_dialog.ui:408
 msgid "Pick another server"
-msgstr ""
+msgstr "Оберіть інший сервер"
 
 #: main/data/manage_accounts/add_account_dialog.ui:476
 msgid "All set up!"
-msgstr ""
+msgstr "Все готово!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:506
 msgid "Finish"
-msgstr ""
+msgstr "Закінчити"
+
+#~ msgid "Local Settings"
+#~ msgstr "Локальні налаштування"
+
+#~ msgid "Notifications"
+#~ msgstr "Сповіщення"
+
+#~ msgid "Pin conversation"
+#~ msgstr "Закріпити бесіду"
+
+#~ msgid "Pins the conversation to the top of the conversation list"
+#~ msgstr "Закріпити бесіду вгорі списку розмов"
+
+#~ msgid "Only when mentioned"
+#~ msgstr "Тільки якщо вказано"
+
+#~ msgid "Permissions"
+#~ msgstr "Дозволи"
+
+#~ msgid "Conference Details"
+#~ msgstr "Деталі конференції"
+
+#~ msgid "Communication and status updates in either direction are blocked"
+#~ msgstr "Зв'язок і оновлення статусу в будь-якому напрямку заблоковано"
+
+#~ msgid "A password to restrict access to the room"
+#~ msgstr "Пароль обмежує доступ до кімнати"
+
+#~ msgid "Message history"
+#~ msgstr "Історія повідомлень"
+
+#~ msgid "Maximum amount of backlog issued by the room"
+#~ msgstr "Максимальна кількість повідомлень в історії кімнати"
+
+#~ msgid "Convert smileys to emojis"
+#~ msgstr "Перетворювати смайли на емодзі"
+
+#~ msgid "Check spelling"
+#~ msgstr "Перевіряти правопис"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
 "PO-Revision-Date: 2018-05-08 09:42+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hans/>\n"
@@ -13,31 +13,13 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 3.0-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "已禁用密钥发布功能"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "GnuPG 错误"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "没有密钥可用。生成一个吧！"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "选择密钥"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "载入中…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "正在查询 GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -46,6 +28,21 @@ msgstr "密钥并没有在密钥串里"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "加密"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "已禁用密钥发布功能"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "GnuPG 错误"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "没有密钥可用。生成一个吧！"
+
+#~ msgid "Select key"
+#~ msgstr "选择密钥"
+
+#~ msgid "Loading…"
+#~ msgstr "载入中…"
 
 #~ msgid "Own fingerprint"
 #~ msgstr "自己的指纹"

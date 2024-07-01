@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2021-03-04 15:20+0000\n"
+"PO-Revision-Date: 2023-04-28 07:51+0000\n"
 "Language-Team: none\n"
-"Language: sq\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5.1-dev\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -23,54 +23,54 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
-"%s ka përdorur një pajisje jo të besuar. S’do të shihni mesazhe prej "
-"pajisjesh që nuk i besoni."
+"%s đang sử dụng một thiết bị chưa được tin tưởng. Bạn sẽ không nhìn thấy tin "
+"nhắn từ các thiệt bị bạn không tin tưởng."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
-msgstr "Administroni pajisje"
+msgstr "Quản lý thiết bị"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
-"%s nuk e beson këtë pajisje. Kjo do të thotë, mund të jeni duke humbur "
-"mesazhe."
+"%s không tin tưởng thiết bị này. Điều đó có nghĩa là bạn có thể bị thiếu tin "
+"nhắn."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
-msgstr "Administroni Kyç"
+msgstr "Quản lý khóa"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Krahasoni shenjën e gishtave, shenjë pas shenje, me atë të shfaqur në "
-"pajisjen e kontaktit tuaj."
+"So sánh chuỗi fingerprint từng ký tự một với chuỗi được hiển thị trên thiết "
+"bị của liên hệ của bạn."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
-msgstr "Shenjat e gishtave janë të ndryshme"
+msgstr "Fingerprints khác nhau"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints match"
-msgstr "Shenjat e gishtave përputhen"
+msgstr "Fingerprints trùng khớp"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 #: plugins/omemo/src/ui/manage_key_dialog.vala:81
 #: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
-msgstr "Anuloje"
+msgstr "Huỷ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
-msgstr "Ripohojeni"
+msgstr "Xác nhận"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
-msgstr "Verifikoni kyç"
+msgstr "Xác thực khoá"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
@@ -78,12 +78,12 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Mesazhe të ardhshme dërguar nga %s prej pajisjes që përdor këtë kyç do të "
-"theksohen te dritarja e fjalosjes."
+"Tin nhắn được gửi trong tương lai bởi %s từ thiết bị sử dụng khoá này sẽ "
+"được làm nổi bật trong cửa sổ trò chuyện."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
-msgstr "Shenjat e gishtave nuk përputhen"
+msgstr "Fingerprints không khớp"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
@@ -92,81 +92,79 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Ju lutemi, verifikoni se po krahasoi shenjat e sakta të gishtave. Nëse "
-"shenjat e gishtave nuk përputhen, llogaria e %s mund të komprometohet dhe "
-"duhet të shihni mundësinë e hedhjes poshtë të këtij kyçi."
+"Vui lòng xác minh rằng bạn đang so sánh đúng chuỗi fingerprint. Nếu "
+"fingerprints không khớp, tài khoản của %s có thể đã bị xâm phạm và bạn nên "
+"cân nhắc từ chối khoá này."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
-msgstr "Verifikoni shenja gishtash kyçi"
+msgstr "Xác thực khoá fingerprint"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Krahasoni shenjën e gishtit të këtij kyçi me shenjën e gishtit të shfaqur në "
-"pajisjen e kontaktit."
+"So sáng chuỗi fingerprint của khoá này với chuỗi fingerprint được hiển thị "
+"trên thiết bị của người liên hệ."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
 #: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
-msgstr "Hidhe tej kyçin"
+msgstr "Từ chối khoá"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Blloko komunikim të fshehtëzuar me pajisjen e kontaktit që përdor këtë kyç."
+msgstr "Chặn liên lạc được mã hóa với thiết bị của liên hệ sử dụng khóa này."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
 #: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
-msgstr "Pranoje kyçin"
+msgstr "Chấp nhận khóa"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Lejo komunikim të fshehtëzuar me pajisjen e kontaktit që përdor këtë kyç."
+msgstr "Cho phép giao tiếp mã hóa với thiết bị của liên hệ sử dụng khóa này."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr "Ky kyç aktualisht është %s."
+msgstr "Khoá này hiện %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr "i pranuar"
+msgstr "đã chấp nhận"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
-"Kjo do të thotë se mund të përdoret nga %s për të marrë dhe dërguar mesazhe "
-"të fshehtëzuara."
+"Điều này có nghĩa là nó có thể được sử dụng bởi %s để nhận và gửi tin nhắn "
+"được mã hóa."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr "i verifikuar"
+msgstr "đã xác thực"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Për më tepër, është verifikuar për t’u përputhur me kyçin në pajisjen e "
-"kontaktit."
+"Ngoài ra, nó đã được xác thực trùng khớp với khóa trên thiết bị của người "
+"liên hệ."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr "i hedhur poshtë"
+msgstr "đã bị từ chối"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
@@ -174,8 +172,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"Kjo do të thotë se s’mund të përdoret nga %s për të deshifruar mesazhet "
-"tuaja, dhe s’do të shihni dot mesazhe të fshehtëzuara me të."
+"Điều này có nghĩa là %s không thể sử dụng nó để giải mã tin nhắn của bạn và "
+"bạn sẽ không thấy tin nhắn được mã hóa bằng nó."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
@@ -183,9 +181,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"S’do të shihni dot mesazhe të fshehtëzuar prej pajisjes së %s që përdor këtë "
-"kyç. Më anë tjetër, ajo pajisje s’do të jetë në gjendje të deshifrojë më "
-"mesazhet tuaja."
+"Bạn sẽ không thấy tin nhắn được mã hóa từ thiết bị của %s sử dụng khóa này. "
+"Ngược lại, thiết bị đó cũng sẽ không thể giải mã tin nhắn của bạn nữa."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
@@ -193,29 +190,29 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
-"Do të jeni në gjendje të shkëmbeni mesazhe të fshehtëzuar me pajisjen e %s "
-"që përdor këtë kyç."
+"Bạn sẽ có thể trao đổi tin nhắn được mã hóa với thiết bị của %s sử dụng khóa "
+"này."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
-msgstr "Mbrapsht"
+msgstr "Quay lại"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Administroni"
+msgstr "Quản lý"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
-msgstr "Ky kontakt ka pajisje të reja"
+msgstr "Liên hệ này có thiết bị mới"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "Lypset vendim besimi OMEMO"
+msgstr "Yêu cầu quyết định ủy thác OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Shtuat një pajisje të re për llogarinë %s?"
+msgstr "Bạn đã thêm một thiết bị mới cho tài khoản %s à?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
@@ -236,30 +233,29 @@ msgstr ""
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
-msgstr "Kyçe të rinj"
+msgstr "Khoá mới"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
 #: plugins/omemo/src/ui/contact_details_dialog.vala:86
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Kyçe të rinj fshehtëzimi prej pajisjesh tuaja të tjera do të pranohen "
-"automatikisht."
+"Khóa mã hóa mới từ các thiết bị khác của bạn sẽ được chấp nhận tự động."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 #: plugins/omemo/src/ui/contact_details_dialog.vala:335
 msgid "Accepted"
-msgstr "Të pranuar"
+msgstr "Đã chấp nhận"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 #: plugins/omemo/src/ui/contact_details_dialog.vala:340
 msgid "Rejected"
-msgstr "Të hedhur tej"
+msgstr "Đã từ chối"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
 #: plugins/omemo/src/ui/contact_details_dialog.vala:345
 msgid "Verified"
-msgstr "Të verifikuar"
+msgstr "Đã xác thực"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "New device"
@@ -267,45 +263,44 @@ msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
-msgstr "Fshehtëzim"
+msgstr "Mã hoá"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d pajisje OMEMO"
-msgstr[1] "%d pajisje OMEMO"
+msgstr[0] "%d thiết bị OMEMO"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "OMEMO Key Management"
-msgstr "Administrim Kyçesh OMEMO"
+msgstr "Quản lý khóa OMEMO"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"
-msgstr "Prano automatikisht kyçe të rinj"
+msgstr "Tự động chấp nhận khóa mới"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr "Kyçe të rinj fshehtëzimi nga ky kontakt do të pranohen automatikisht."
+msgstr "Các khóa mã hóa mới từ liên hệ này sẽ được chấp nhận tự động."
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Own key"
-msgstr "Kyç i vet"
+msgstr "Khoá của bạn"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
-msgstr "Kyçe të përshoqëruar"
+msgstr "Các khóa đã liên kết"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:54
 msgid "Inactive keys"
-msgstr "Kyçe jo aktivë"
+msgstr "Các khoá không hoạt động"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
-msgstr "Të papërdorur"
+msgstr "Chưa được sử dụng"
 
 #~ msgid "Own fingerprint"
-#~ msgstr "Shenjë e vet gishtash"
+#~ msgstr "Fingerprint đang sở hữu"
 
 #~ msgid "Will be generated on first connection"
-#~ msgstr "Do të prodhohet gjatë lidhjes së parë"
+#~ msgstr "Sẽ được tạo trong lần kết nối đầu tiên"

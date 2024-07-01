@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2021-03-04 15:20+0000\n"
+"PO-Revision-Date: 2024-01-06 01:07+0000\n"
 "Language-Team: none\n"
-"Language: sq\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5.1-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -23,54 +23,48 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
-"%s ka përdorur një pajisje jo të besuar. S’do të shihni mesazhe prej "
-"pajisjesh që nuk i besoni."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
-msgstr "Administroni pajisje"
+msgstr ""
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
-"%s nuk e beson këtë pajisje. Kjo do të thotë, mund të jeni duke humbur "
-"mesazhe."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
-msgstr "Administroni Kyç"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Krahasoni shenjën e gishtave, shenjë pas shenje, me atë të shfaqur në "
-"pajisjen e kontaktit tuaj."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
-msgstr "Shenjat e gishtave janë të ndryshme"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints match"
-msgstr "Shenjat e gishtave përputhen"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 #: plugins/omemo/src/ui/manage_key_dialog.vala:81
 #: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
-msgstr "Anuloje"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
-msgstr "Ripohojeni"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
-msgstr "Verifikoni kyç"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
@@ -78,12 +72,10 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Mesazhe të ardhshme dërguar nga %s prej pajisjes që përdor këtë kyç do të "
-"theksohen te dritarja e fjalosjes."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
-msgstr "Shenjat e gishtave nuk përputhen"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
@@ -92,81 +84,70 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Ju lutemi, verifikoni se po krahasoi shenjat e sakta të gishtave. Nëse "
-"shenjat e gishtave nuk përputhen, llogaria e %s mund të komprometohet dhe "
-"duhet të shihni mundësinë e hedhjes poshtë të këtij kyçi."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
-msgstr "Verifikoni shenja gishtash kyçi"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Krahasoni shenjën e gishtit të këtij kyçi me shenjën e gishtit të shfaqur në "
-"pajisjen e kontaktit."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
 #: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
-msgstr "Hidhe tej kyçin"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Blloko komunikim të fshehtëzuar me pajisjen e kontaktit që përdor këtë kyç."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
 #: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
-msgstr "Pranoje kyçin"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
-"Lejo komunikim të fshehtëzuar me pajisjen e kontaktit që përdor këtë kyç."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr "Ky kyç aktualisht është %s."
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr "i pranuar"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
-"Kjo do të thotë se mund të përdoret nga %s për të marrë dhe dërguar mesazhe "
-"të fshehtëzuara."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr "i verifikuar"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
 msgstr ""
-"Për më tepër, është verifikuar për t’u përputhur me kyçin në pajisjen e "
-"kontaktit."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr "i hedhur poshtë"
+msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
@@ -174,8 +155,6 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"Kjo do të thotë se s’mund të përdoret nga %s për të deshifruar mesazhet "
-"tuaja, dhe s’do të shihni dot mesazhe të fshehtëzuara me të."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
@@ -183,9 +162,6 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"S’do të shihni dot mesazhe të fshehtëzuar prej pajisjes së %s që përdor këtë "
-"kyç. Më anë tjetër, ajo pajisje s’do të jetë në gjendje të deshifrojë më "
-"mesazhet tuaja."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
@@ -193,29 +169,27 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
-"Do të jeni në gjendje të shkëmbeni mesazhe të fshehtëzuar me pajisjen e %s "
-"që përdor këtë kyç."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
-msgstr "Mbrapsht"
+msgstr ""
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Administroni"
+msgstr ""
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:83
 msgid "This contact has new devices"
-msgstr "Ky kontakt ka pajisje të reja"
+msgstr ""
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "Lypset vendim besimi OMEMO"
+msgstr ""
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Shtuat një pajisje të re për llogarinë %s?"
+msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
@@ -236,30 +210,28 @@ msgstr ""
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
-msgstr "Kyçe të rinj"
+msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
 #: plugins/omemo/src/ui/contact_details_dialog.vala:86
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Kyçe të rinj fshehtëzimi prej pajisjesh tuaja të tjera do të pranohen "
-"automatikisht."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 #: plugins/omemo/src/ui/contact_details_dialog.vala:335
 msgid "Accepted"
-msgstr "Të pranuar"
+msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 #: plugins/omemo/src/ui/contact_details_dialog.vala:340
 msgid "Rejected"
-msgstr "Të hedhur tej"
+msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
 #: plugins/omemo/src/ui/contact_details_dialog.vala:345
 msgid "Verified"
-msgstr "Të verifikuar"
+msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "New device"
@@ -267,45 +239,39 @@ msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 msgid "Encryption"
-msgstr "Fshehtëzim"
+msgstr "Kryptering"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
-msgstr[0] "%d pajisje OMEMO"
-msgstr[1] "%d pajisje OMEMO"
+msgstr[0] ""
+msgstr[1] ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48
 msgid "OMEMO Key Management"
-msgstr "Administrim Kyçesh OMEMO"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"
-msgstr "Prano automatikisht kyçe të rinj"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:50
 msgid "New encryption keys from this contact will be accepted automatically."
-msgstr "Kyçe të rinj fshehtëzimi nga ky kontakt do të pranohen automatikisht."
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:51
 msgid "Own key"
-msgstr "Kyç i vet"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
-msgstr "Kyçe të përshoqëruar"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:54
 msgid "Inactive keys"
-msgstr "Kyçe jo aktivë"
+msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
-msgstr "Të papërdorur"
-
-#~ msgid "Own fingerprint"
-#~ msgstr "Shenjë e vet gishtash"
-
-#~ msgid "Will be generated on first connection"
-#~ msgstr "Do të prodhohet gjatë lidhjes së parë"
+msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-07-01 12:03+0200\n"
 "PO-Revision-Date: 2020-06-22 10:41+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
@@ -17,31 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.2-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "Publicacion de clau desactivada"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "Error dins gnuPG"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Cap de clau pas disponibla. Generatz-ne una !"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "Seleccionar una clau"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "Cargament…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Consultacion de GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -50,3 +32,18 @@ msgstr "La clau es pas al trocèl"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Chiframent"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Publicacion de clau desactivada"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "Error dins gnuPG"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Cap de clau pas disponibla. Generatz-ne una !"
+
+#~ msgid "Select key"
+#~ msgstr "Seleccionar una clau"
+
+#~ msgid "Loading…"
+#~ msgstr "Cargament…"
