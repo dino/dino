@@ -1116,10 +1116,6 @@ msgstr "别名"
 msgid "Add Contact"
 msgstr "添加联系人"
 
-#: main/data/im.dino.Dino.appdata.xml.in:7
-msgid "Dino"
-msgstr ""
-
 #: main/data/im.dino.Dino.appdata.xml.in:8
 msgid "Modern XMPP chat client"
 msgstr "现代 XMPP 聊天客户端"
@@ -1180,32 +1176,6 @@ msgstr "检查拼写或尝试移除过滤器"
 #: main/data/file_send_overlay.ui:61
 msgid "Send"
 msgstr "发送"
-
-#: main/data/join_room_dialog1.ui:21
-msgid "Search for channels or enter an XMPP address"
-msgstr ""
-
-#: main/data/join_room_dialog1.ui:124
-msgid "No channels found"
-msgstr ""
-
-#: main/data/join_room_dialog1.ui:125
-msgid ""
-"None of your bookmarks matches your search and the XMPP address could not be "
-"resolved."
-msgstr ""
-
-#: main/data/join_room_dialog1.ui:136
-msgid "No known channels"
-msgstr ""
-
-#: main/data/join_room_dialog1.ui:137
-msgid "Discover new channels or enter an XMPP address!"
-msgstr ""
-
-#: main/data/join_room_dialog1.ui:148
-msgid "You are offline"
-msgstr ""
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
