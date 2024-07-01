@@ -1154,6 +1154,23 @@ msgstr "全部設定好了！"
 msgid "Finish"
 msgstr "完成"
 
+#: main/src/ui/manage_accounts/change_password_dialog.vala :5
+#: main/src/ui/manage_accounts/change_password_dialog.vala :103
+msgid "Change password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :21
+msgid "Current password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :43
+msgid "New password"
+msgstr ""
+
+#: main/src/ui/manage_accounts/change_password_dialog.vala :65
+msgid "Confirm new password"
+msgstr ""
+
 #~ msgid "Click here to start a conversation or join a channel."
 #~ msgstr "點擊此處開始對話或加入聊天室。"
 
