@@ -11,7 +11,8 @@ public class FileTransfer : Object {
         COMPLETE,
         IN_PROGRESS,
         NOT_STARTED,
-        FAILED
+        FAILED,
+        COLLAPSED
     }
 
     public int id { get; set; default=-1; }
