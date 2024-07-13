@@ -102,7 +102,8 @@ public class ChatTextView : Box {
             }
 
             if ((state & ModifierType.SHIFT_MASK) > 0) {
-                text_view.buffer.insert_at_cursor("\n", 1);
+                // Let the default handler normally insert a newline if shift was hold
+                return false;
             } else if (text_view.buffer.text.strip() != "") {
                 send_text();
             }
