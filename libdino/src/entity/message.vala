@@ -202,6 +202,7 @@ public class Message : Object {
     }
 
     public static uint hash_func(Message message) {
+        if (message.body == null) return 0;
         return message.body.hash();
     }
 
