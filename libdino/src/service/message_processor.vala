@@ -406,8 +406,20 @@ public class MessageProcessor : StreamInteractionModule, Object {
             new_message.type_ = MessageStanza.TYPE_CHAT;
         }
 
-        string? fallback = get_fallback_body_set_infos(message, new_message, conversation);
-        new_message.body = fallback == null ? message.body : fallback + message.body;
+        if (message.quoted_item_id != 0) {
+            ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
+            if (quoted_content_item != null) {
+                Jid? quoted_sender = message.from;
+                string? quoted_stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, quoted_content_item);
+                if (quoted_sender != null && quoted_stanza_id != null) {
+                    Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
+                }
+
+                foreach (var fallback in message.get_fallbacks()) {
+                    Xep.FallbackIndication.set_fallback(new_message, fallback);
+                }
+            }
+        }
 
         build_message_stanza(message, new_message, conversation);
         pre_message_send(message, new_message, conversation);
@@ -455,26 +467,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 }
             }
         });
-    }
-
-    public string? get_fallback_body_set_infos(Entities.Message message, MessageStanza new_stanza, Conversation conversation) {
-        if (message.quoted_item_id == 0) return null;
-
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
-        if (content_item == null) return null;
-
-        Jid? quoted_sender = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_sender_for_content_item(conversation, content_item);
-        string? quoted_stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, content_item);
-        if (quoted_sender != null && quoted_stanza_id != null) {
-            Xep.Replies.set_reply_to(new_stanza, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
-        }
-
-        string fallback = FallbackBody.get_quoted_fallback_body(content_item);
-
-        var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback.char_count());
-        Xep.FallbackIndication.set_fallback(new_stanza, new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
-
-        return fallback;
     }
 }
 

@@ -67,7 +67,7 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
-    public int quoted_item_id = 0;
+    public int quoted_item_id { get; private set; default=0; }
 
     private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
 
@@ -142,6 +142,22 @@ public class Message : Object {
         notify.connect(on_update);
     }
 
+    public void set_quoted_item(int quoted_content_item_id) {
+        if (id == -1) {
+            warning("Message needs to be persisted before setting quoted item");
+            return;
+        }
+
+        this.quoted_item_id = quoted_content_item_id;
+
+        db.reply.upsert()
+                .value(db.reply.message_id, id, true)
+                .value(db.reply.quoted_content_item_id, quoted_content_item_id)
+                .value_null(db.reply.quoted_message_stanza_id)
+                .value_null(db.reply.quoted_message_from)
+                .perform();
+    }
+
     public Gee.List<Xep.FallbackIndication.Fallback> get_fallbacks() {
         if (fallbacks != null) return fallbacks;
 
@@ -165,7 +181,25 @@ public class Message : Object {
     }
 
     public void set_fallbacks(Gee.List<Xep.FallbackIndication.Fallback> fallbacks) {
+        if (id == -1) {
+            warning("Message needs to be persisted before setting fallbacks");
+            return;
+        }
+
         this.fallbacks = fallbacks;
+
+        foreach (var fallback in fallbacks) {
+            foreach (var location in fallback.locations) {
+                db.body_meta.insert()
+                        .value(db.body_meta.message_id, id)
+                        .value(db.body_meta.info_type, Xep.FallbackIndication.NS_URI)
+                        .value(db.body_meta.info, fallback.ns_uri)
+                        .value(db.body_meta.from_char, location.from_char)
+                        .value(db.body_meta.to_char, location.to_char)
+                        .perform();
+            }
+        }
+
     }
 
     public void set_type_string(string type) {

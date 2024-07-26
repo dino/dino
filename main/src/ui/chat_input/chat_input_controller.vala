@@ -1,6 +1,7 @@
 using Gee;
 using Gdk;
 using Gtk;
+using Xmpp;
 
 using Dino.Entities;
 
@@ -195,7 +196,17 @@ public class ChatInputController : Object {
         }
         Message out_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(text, conversation);
         if (quoted_content_item_bak != null) {
-            stream_interactor.get_module(Replies.IDENTITY).set_message_is_reply_to(out_message, quoted_content_item_bak);
+            out_message.set_quoted_item(quoted_content_item_bak.id);
+
+            // Store body with fallback
+            string fallback = FallbackBody.get_quoted_fallback_body(quoted_content_item_bak);
+            out_message.body = fallback + out_message.body;
+
+            // Store fallback location
+            var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback.char_count());
+            var fallback_list = new ArrayList<Xep.FallbackIndication.Fallback>();
+            fallback_list.add(new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
+            out_message.set_fallbacks(fallback_list);
         }
         stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(out_message, conversation);
     }
