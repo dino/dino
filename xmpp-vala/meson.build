@@ -55,6 +55,7 @@ sources = files(
     'src/module/xep/0047_in_band_bytestreams.vala',
     'src/module/xep/0048_bookmarks.vala',
     'src/module/xep/0048_conference.vala',
+    'src/module/xep/0394_message_markup.vala',
     'src/module/xep/0049_private_xml_storage.vala',
     'src/module/xep/0054_vcard/module.vala',
     'src/module/xep/0059_result_set_management.vala',

@@ -74,6 +74,7 @@ sources = files(
     'src/service/stream_interactor.vala',
     'src/service/util.vala',
     'src/util/display_name.vala',
+    'src/util/send_message.vala',
     'src/util/util.vala',
     'src/util/weak_map.vala',
     'src/util/weak_timeout.vala',
