@@ -1,18 +1,11 @@
 # version_vala
 dot_git = meson.current_source_dir() / '../.git'
 version_file = meson.current_source_dir() / '../VERSION'
-command = [prog_python, files('version.py'), version_file, '@OUTPUT@', '--git-repo', meson.current_source_dir()]
+command = [prog_python, files('version.py'), version_file, '--git-repo', meson.current_source_dir()]
 if prog_git.found()
     command += ['--git', prog_git]
 endif
-depend_files = []
-if fs.exists(dot_git)
-    depend_files += [dot_git]
-endif
-if fs.exists(version_file)
-    depend_files += [version_file]
-endif
-version_vala = custom_target('libdino_version_vala', command: command, output: 'version.vala', depend_files: depend_files)
+version_vala = vcs_tag(command: command, input: 'src/version.vala.in', output: 'version.vala', replace_string: '%VERSION%')
 
 # libdino
 dependencies = [

@@ -1,4 +1,4 @@
-project('xmpp-vala', 'c', 'cpp', 'vala')
+project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0', license_files: 'LICENSE')
 
 fs = import('fs')
 gnome = import('gnome')
