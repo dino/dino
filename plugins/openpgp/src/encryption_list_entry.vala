@@ -32,11 +32,20 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         return null;
     }
 
+
     public void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus input_status_callback) {
         try {
             GPGHelper.get_public_key(db.get_account_key(conversation.account) ?? "");
         } catch (Error e) {
             input_status_callback(new Plugins.InputFieldStatus("You didn't configure OpenPGP for this account. You can do that in the Accounts Dialog.", Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
+            return;
+        }
+
+        GPG.Key key_check = GPGHelper.get_public_key(db.get_account_key(conversation.account));
+        if (key_check.expired || key_check.revoked){
+            string status_str = key_check.expired ? " has expired." : " has been revoked.";
+            debug("GPG public key %s is NOT fine for encryption: it %s.\n", key_check.fpr, status_str);
+            input_status_callback(new Plugins.InputFieldStatus("Your GPG key " + key_check.fpr + status_str, Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
             return;
         }
 
