@@ -32,6 +32,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         init();
         Environment.set_application_name("Dino");
         Window.set_default_icon_name("im.dino.Dino");
+        GLib.Environment.set_prgname("im.dino.Dino");
 
         create_actions();
         add_main_option_entries(options);
