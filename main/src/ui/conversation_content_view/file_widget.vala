@@ -176,7 +176,7 @@ public class FileWidgetController : Object {
 
     private void open_file() {
         try{
-            AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
+            Dino.Util.launch_default_for_uri(file_transfer.get_file().get_uri());
         } catch (Error err) {
             warning("Failed to open %s - %s", file_transfer.get_file().get_uri(), err.message);
         }

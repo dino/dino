@@ -9,6 +9,12 @@ namespace Dino {
 void main(string[] args) {
 
     try{
+#if _WIN32
+        var pangocairoResult = Environment.set_variable("PANGOCAIRO_BACKEND", "fontconfig", false);
+        if (!pangocairoResult) {
+            warning("Unable to set PANGOCAIRO_BACKEND environment variable to fontconfig");
+        }
+#endif
         string? exec_path = args.length > 0 ? args[0] : null;
         SearchPathGenerator search_path_generator = new SearchPathGenerator(exec_path);
         Intl.textdomain(GETTEXT_PACKAGE);
