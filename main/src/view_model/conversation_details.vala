@@ -6,15 +6,14 @@ using Gtk;
 
 public class Dino.Ui.ViewModel.ConversationDetails : Object {
     public signal void pin_changed();
-    public signal void block_changed(BlockActions action);
+    public signal void block_changed(BlockState action);
     public signal void notification_flipped();
     public signal void notification_changed(NotificationSetting setting);
 
-    public enum BlockActions {
+    public enum BlockState {
         USER,
         DOMAIN,
-        UNBLOCK,
-        TOGGLE
+        UNBLOCK
     }
 
     public enum NotificationOptions {
@@ -38,8 +37,7 @@ public class Dino.Ui.ViewModel.ConversationDetails : Object {
     public bool notification_is_default { get; set; }
 
     public bool show_blocked { get; set; }
-    public bool blocked { get; set; }
-    public bool domain_blocked { get; set; }
+    public BlockState blocked { get; set; }
 
     public GLib.ListStore preferences_rows = new GLib.ListStore(typeof(PreferencesRow.Any));
     public GLib.ListStore about_rows = new GLib.ListStore(typeof(PreferencesRow.Any));

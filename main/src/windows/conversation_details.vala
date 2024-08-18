@@ -11,7 +11,7 @@ namespace Dino.Ui.ConversationDetails {
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;
         [GtkChild] public unowned Adw.ButtonContent pin_button_content;
-        [GtkChild] public unowned Adw.SplitButton block_button;
+        [GtkChild] public unowned MenuButton block_button;
         [GtkChild] public unowned Adw.ButtonContent block_button_content;
         [GtkChild] public unowned Button notification_button_toggle;
         [GtkChild] public unowned Adw.ButtonContent notification_button_toggle_content;
@@ -22,25 +22,22 @@ namespace Dino.Ui.ConversationDetails {
 
         [GtkChild] public unowned ViewModel.ConversationDetails model { get; }
 
+        private SimpleAction block_action = new SimpleAction.stateful("block", VariantType.INT32, new Variant.int32(ViewModel.ConversationDetails.BlockState.UNBLOCK));
+
         class construct {
             install_action("notification.on", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.ON); } );
             install_action("notification.off", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.OFF); } );
             install_action("notification.highlight", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.HIGHLIGHT); } );
             install_action("notification.default", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.DEFAULT); } );
-            install_action("do.block", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.USER); } );
-            install_action("do.block_domain", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.DOMAIN); } );
-            install_action("do.unblock", null, (widget, action_name) => { ((Dialog) widget).model.block_changed(ViewModel.ConversationDetails.BlockActions.UNBLOCK); } );
         }
 
         construct {
             pin_button.clicked.connect(() => { model.pin_changed(); });
-            block_button.clicked.connect(() => { model.block_changed(ViewModel.ConversationDetails.BlockActions.TOGGLE); });
             notification_button_toggle.clicked.connect(() => { model.notification_flipped(); });
             notification_button_split.clicked.connect(() => { model.notification_flipped(); });
 
             model.notify["pinned"].connect(update_pinned_button);
             model.notify["blocked"].connect(update_blocked_button);
-            model.notify["domain-blocked"].connect(update_blocked_button);
             model.notify["notification"].connect(update_notification_button);
             model.notify["notification"].connect(update_notification_button_state);
             model.notify["notification-options"].connect(update_notification_button_visibility);
@@ -51,10 +48,32 @@ namespace Dino.Ui.ConversationDetails {
             model.settings_rows.items_changed.connect(create_preferences_rows);
             model.notify["room-configuration-rows"].connect(create_preferences_rows);
 
+            // Create block action
+            SimpleActionGroup block_action_group = new SimpleActionGroup();
+            block_action = new SimpleAction.stateful("block", VariantType.INT32, new Variant.int32(0));
+            block_action.activate.connect((parameter) => {
+                block_action.set_state(parameter);
+                model.block_changed((ViewModel.ConversationDetails.BlockState) parameter.get_int32());
+            });
+            block_action_group.insert(block_action);
+            this.insert_action_group("block", block_action_group);
+
+            // Create block menu model
+            Menu block_menu_model = new Menu();
+            string[] menu_labels = new string[] { _("Block user"), _("Block entire domain"), _("Unblock") };
+            ViewModel.ConversationDetails.BlockState[] menu_states = new ViewModel.ConversationDetails.BlockState[] { ViewModel.ConversationDetails.BlockState.USER, ViewModel.ConversationDetails.BlockState.DOMAIN, ViewModel.ConversationDetails.BlockState.UNBLOCK };
+            for (int i = 0; i < menu_labels.length; i++) {
+                MenuItem item = new MenuItem(menu_labels[i], null);
+                item.set_action_and_target_value("block.block", new Variant.int32(menu_states[i]));
+                block_menu_model.append_item(item);
+            }
+            block_button.menu_model = block_menu_model;
+
 #if Adw_1_4
             // TODO: replace with putting buttons in new line on small screens
             notification_button_menu_content.can_shrink = true;
 #endif
+            update_blocked_button();
         }
 
         private void update_pinned_button() {
@@ -68,18 +87,22 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void update_blocked_button() {
-            if (model.blocked) {
-                block_button_content.label = _("Blocked");
-                block_button.add_css_class("error");
-            } else {
-                block_button_content.label = _("Block");
-                block_button.remove_css_class("error");
+            switch (model.blocked) {
+                case USER:
+                    block_button_content.label = _("Blocked");
+                    block_button.add_css_class("error");
+                    break;
+                case DOMAIN:
+                    block_button_content.label = _("Domain blocked");
+                    block_button.add_css_class("error");
+                    break;
+                case UNBLOCK:
+                    block_button_content.label = _("Block");
+                    block_button.remove_css_class("error");
+                    break;
             }
 
-            if (model.domain_blocked) {
-                block_button_content.label = _("Domain blocked");
-                block_button.add_css_class("error");
-            }
+            block_action.set_state(new Variant.int32(model.blocked));
         }
 
         private void update_notification_button() {
