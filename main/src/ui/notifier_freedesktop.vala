@@ -121,7 +121,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         hash_table["sound-name"] = new Variant.string("phone-incoming-call");
         hash_table["urgency"] = new Variant.byte(2);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
-        hash_table["category"] = new Variant.string("im");
+        hash_table["category"] = new Variant.string("call.incoming");
         string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
         try {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
