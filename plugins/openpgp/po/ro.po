@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2018-01-12 23:14+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 2.19-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -25,7 +25,7 @@ msgstr "Se interoghează GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
-msgstr ""
+msgstr "Dezactivat"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"

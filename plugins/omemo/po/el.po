@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2022-02-04 09:55+0000\n"
 "Language-Team: none\n"
 "Language: el\n"
@@ -268,20 +268,21 @@ msgstr "Επαληθευμένα"
 msgid "New device"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:32
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "OMEMO Key Management"
+msgstr "Διαχείριση κλειδιών OMEMO"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 msgid "Encryption"
 msgstr "Κρυπτογράφηση"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO συσκευή"
 msgstr[1] "%d OMEMO συσκευές"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "Διαχείριση κλειδιών OMEMO"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"

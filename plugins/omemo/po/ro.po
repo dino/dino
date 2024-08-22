@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2020-10-13 09:26+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -222,19 +222,19 @@ msgstr "Ați adăugat un nou dispozitiv pentru contul %s?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO activat implicit"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "Activează criptarea OMEMO pentru conversațiile noi"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "Criptează pentru dispozitive noi"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "Criptează automat pentru dispozitivele noi ale acestui contact."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
@@ -266,23 +266,24 @@ msgstr "Verificată"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "New device"
-msgstr ""
+msgstr "Dispozitiv nou"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:32
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "OMEMO Key Management"
+msgstr "Administrare chei OMEMO"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 msgid "Encryption"
 msgstr "Criptare"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d dispozitiv OMEMO"
 msgstr[1] "%d dispozitive OMEMO"
 msgstr[2] "%d de dispozitive OMEMO"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "Administrare chei OMEMO"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"

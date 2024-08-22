@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2023-04-03 03:51+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-22 17:09+0000\n"
 "Language-Team: none\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -35,48 +35,48 @@ msgstr "रद्द करें"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:75
 #: main/data/manage_accounts/add_account_dialog.ui:245
 msgid "Connect"
-msgstr ""
+msgstr "जुड़ें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "खाता अक्षम करें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "खाता सक्षम करें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
 msgid "Select avatar"
-msgstr ""
+msgstr "अवतार चुनें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/conversation_view_controller.vala:216
 #: main/src/ui/manage_accounts/dialog.vala:146
 msgid "Select"
-msgstr "चयन करें"
+msgstr "चुनें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:157
 #: main/src/ui/manage_accounts/dialog.vala:153
 msgid "Images"
-msgstr ""
+msgstr "छवियां"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:161
 #: main/src/ui/manage_accounts/dialog.vala:157
 msgid "All files"
-msgstr ""
+msgstr "सभी फाइलें"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:177
 #: main/src/ui/manage_accounts/dialog.vala:116
 #, c-format
 msgid "Remove account %s?"
-msgstr ""
+msgstr "खाता %s हटाएं?"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:180
 #: main/src/ui/manage_accounts/dialog.vala:119
 msgid "Remove"
-msgstr ""
+msgstr "हटाएं"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/call_window/participant_widget.vala:128
@@ -87,128 +87,144 @@ msgstr "कनेक्ट हो रहा है…"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/manage_accounts/dialog.vala:218
 msgid "Connected"
-msgstr ""
+msgstr "कनेक्टेड"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:206
 #: main/src/ui/manage_accounts/dialog.vala:220
 msgid "Disconnected"
-msgstr ""
+msgstr "डिस्कनेक्टेड"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:217
 #: main/src/ui/notifier_freedesktop.vala:192
 #: main/src/ui/manage_accounts/dialog.vala:229
 msgid "Wrong password"
-msgstr ""
+msgstr "गलत पासवर्ड"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:219
 #: main/src/ui/notifier_freedesktop.vala:195
 #: main/src/ui/manage_accounts/dialog.vala:231
 msgid "Invalid TLS certificate"
-msgstr ""
+msgstr "अमान्य TLS प्रमाणपत्र"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:222
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:224
 #: main/src/ui/manage_accounts/dialog.vala:234
 #: main/src/ui/manage_accounts/dialog.vala:236
 msgid "Error"
-msgstr ""
+msgstr "त्रुटि"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
 #: main/data/manage_accounts/dialog.ui:5
 msgid "Accounts"
-msgstr ""
+msgstr "खाते"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "अक्षम खाते"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
 msgid "Add Account"
-msgstr ""
+msgstr "खाता जोड़ें"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:72
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:50
 #: main/src/ui/main_window.vala:188
 msgid "No active accounts"
+msgstr "कोई सक्रिय खाता नहीं"
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "पिन किए गए"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:68
-msgid "Blocked"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:68
-msgid "Block"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
-msgid "Mute"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:89
-msgid "Notifications enabled"
-msgstr ""
+msgstr "पिन"
 
 #: main/src/windows/conversation_details.vala:92
-msgid "Notifications for mentions"
-msgstr ""
+msgid "Blocked"
+msgstr "अवरुद्ध"
 
-#: main/src/windows/conversation_details.vala:95
 #: main/src/windows/conversation_details.vala:96
-msgid "Muted"
+msgid "Domain blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:97
-msgid "Notifications disabled"
-msgstr ""
+#: main/src/windows/conversation_details.vala:100
+msgid "Block"
+msgstr "अवरुद्ध करें"
+
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
+msgid "Mute"
+msgstr "मूक"
+
+#: main/src/windows/conversation_details.vala:121
+msgid "Notifications enabled"
+msgstr "अधिसूचनाएं सक्षम"
 
 #: main/src/windows/conversation_details.vala:124
-msgid "About"
-msgstr ""
+msgid "Notifications for mentions"
+msgstr "उल्लेखों के लिए अधिसूचनाएं"
 
 #: main/src/windows/conversation_details.vala:127
+#: main/src/windows/conversation_details.vala:128
+msgid "Muted"
+msgstr "मूक किया गया"
+
+#: main/src/windows/conversation_details.vala:129
+msgid "Notifications disabled"
+msgstr "अधिसूचनाएं अक्षम"
+
+#: main/src/windows/conversation_details.vala:156
+msgid "About"
+msgstr "परिचय"
+
+#: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
-msgstr ""
+msgstr "कूटलेखन"
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
-msgstr ""
+msgstr "सेटिंग"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
-msgstr ""
+msgstr "कक्ष विन्यास"
 
 #: main/src/ui/file_send_overlay.vala:92
 msgid "The file exceeds the server's maximum upload size."
-msgstr "फ़ाइल सर्वर के अधिकतम अपलोड आकार से अधिक है।"
+msgstr "फाइल सर्वर के अधिकतम अपलोड आकार से अधिक है।"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "संदेश बहुत लंबा है"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "संपादित"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
-msgstr "अपूर्ण …"
+msgstr "लंबित…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "डिलीवरी विफल"
 
@@ -217,7 +233,7 @@ msgstr "डिलीवरी विफल"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "अनएन्क्रिप्टेड"
+msgstr "अकूटलेखित"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
@@ -240,13 +256,13 @@ msgstr "%x, %l∶%M %p"
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "%b %d, %H∶%M"
+msgstr "%d %b, %H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:127
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "%b %d, %l∶%M %p"
+msgstr "%d %b, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:130
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:249
@@ -289,7 +305,7 @@ msgstr[1] "%i मिनट पहले"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:357
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
-msgstr "अभी अभी"
+msgstr "बस अभी"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:165
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:190
@@ -303,7 +319,7 @@ msgstr "मैं"
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr "चित्र भेजा गया"
+msgstr "छवि भेजी गई"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:196
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -315,18 +331,18 @@ msgstr "फाइल भेजी गई"
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr "चित्र प्राप्त हुआ"
+msgstr "छवि प्राप्त हुई"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:198
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr "फ़ाइल प्राप्त हुई"
+msgstr "फाइल प्राप्त हुई"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr "आउटगोइंग कॉल"
+msgstr "जावक कॉल"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:207
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -334,24 +350,24 @@ msgstr "आउटगोइंग कॉल"
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr "इनकमिंग कॉल"
+msgstr "आवक कॉल"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
-msgstr "%b %d"
+msgstr "%d %b"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
-msgstr "कल"
+msgstr "बिता कल"
 
 #: main/src/ui/conversation_list_titlebar.vala:27
 #: main/src/ui/add_conversation/select_contact_dialog.vala:101
 #: main/data/gtk/help-overlay.ui:14 main/data/menu_add.ui:7
 msgid "Start Conversation"
-msgstr "बातचीत शुरू करें"
+msgstr "बातचीत प्रारंभ करें"
 
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
@@ -367,7 +383,7 @@ msgstr "सदस्य"
 
 #: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
-msgstr "उपयोगकर्ता"
+msgstr "उपयोक्ता"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:145
@@ -381,15 +397,15 @@ msgstr "निजी बातचीत शुरू करें"
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
-msgstr "बाहर निकलो"
+msgstr "बाहर निकालें"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
-msgstr "लिखने की अनुमति दें"
+msgstr "लेखन अनुमति दें"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
-msgstr "लिखने की अनुमति रद्द करें"
+msgstr "लेखन अनुमति रद्द करें"
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
@@ -397,7 +413,7 @@ msgstr "सम्मेलन में आमंत्रित करें"
 
 #: main/src/ui/conversation_view_controller.vala:216
 msgid "Select file"
-msgstr "फ़ाइल का चयन करें"
+msgstr "फाइल चुनें"
 
 #: main/src/ui/util/helper.vala:65
 #, c-format
@@ -406,35 +422,35 @@ msgstr "%s द्वारा %s"
 
 #: main/src/ui/util/data_forms.vala:20
 msgid "Name of the room"
-msgstr ""
+msgstr "कक्ष का नाम"
 
 #: main/src/ui/util/data_forms.vala:23
 msgid "Description of the room"
-msgstr ""
+msgstr "कक्ष का विवरण"
 
 #: main/src/ui/util/data_forms.vala:26
 msgid "Persistent"
-msgstr ""
+msgstr "बरकरार"
 
 #: main/src/ui/util/data_forms.vala:27
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "अंतिम सदस्य के जाने के बाद भी कक्ष बना रहेगा"
 
 #: main/src/ui/util/data_forms.vala:30
 msgid "Publicly searchable"
-msgstr ""
+msgstr "सार्वजनिक रूप से खोज योग्य"
 
 #: main/src/ui/util/data_forms.vala:33
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "सदस्य विषय बदल सकते हैं"
 
 #: main/src/ui/util/data_forms.vala:36
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "JID देखने की अनुमति"
 
 #: main/src/ui/util/data_forms.vala:37
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "सदस्यों की JID देखने की अनुमति किसे है?"
 
 #: main/src/ui/util/data_forms.vala:40
 #: main/data/add_conversation/conference_details_fragment.ui:162
@@ -442,27 +458,27 @@ msgstr ""
 #: main/data/manage_accounts/dialog.ui:149
 #: main/data/manage_accounts/add_account_dialog.ui:194
 msgid "Password"
-msgstr ""
+msgstr "पासवर्ड"
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Moderated"
-msgstr ""
+msgstr "नियंत्रित"
 
 #: main/src/ui/util/data_forms.vala:45
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "केवल वॉयस वाले लोग ही संदेश भेज सकते हैं"
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Members only"
-msgstr ""
+msgstr "केवल सदस्य"
 
 #: main/src/ui/util/data_forms.vala:49
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "केवल सदस्य ही कक्ष में प्रवेश कर सकते हैं"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
-msgstr "यह कॉन्फ़्रेंस आपको संदेश भेजने की अनुमति नहीं देती है."
+msgstr "यह कॉन्फ़्रेंस आपको संदेश भेजने की अनुमति नहीं देती है।"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
@@ -475,7 +491,7 @@ msgstr "फाइल भेजें"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr "कॉल शुरू करो"
+msgstr "कॉल शुरू करें"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
@@ -496,15 +512,15 @@ msgstr "सदस्य"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "बातचीत का विवरण"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "बातचीत बंद करें"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr "डिबग सूचना"
+msgstr "डिबग जानकारी"
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
@@ -535,7 +551,7 @@ msgstr "कैमरा नहीं मिला।"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr "माइक्रोफ़ोन"
+msgstr "माइक्रोफोन"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
@@ -543,15 +559,15 @@ msgstr "कोई माइक्रोफोन नहीं मिला।"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr "ध्वनि उपकरण"
+msgstr "स्पीकर"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr "कोई ध्वनि उपकरण नहीं मिला।"
+msgstr "कोई स्पीकर नहीं मिला।"
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr "कॉल के लिए आमंत्रित करें"
+msgstr "कॉल हेतु आमंत्रित करें"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:102
 msgid "Start"
@@ -561,7 +577,7 @@ msgstr "शुरु"
 #: main/src/ui/application.vala:289 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr ""
+msgstr "चैनल से जुड़ें"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:47
 #: main/src/ui/add_conversation/add_conference_dialog.vala:117
@@ -569,52 +585,52 @@ msgstr ""
 #: main/data/manage_accounts/add_account_dialog.ui:353
 #: main/data/manage_accounts/add_account_dialog.ui:426
 msgid "Next"
-msgstr ""
+msgstr "अगला"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:65
 #: main/src/ui/add_conversation/add_conference_dialog.vala:141
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
 #: main/src/ui/application.vala:289 main/data/join_room_dialog2.ui:190
 msgid "Join"
-msgstr ""
+msgstr "जुड़ें"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:146
 #: main/data/manage_accounts/add_account_dialog.ui:160
 #: main/data/manage_accounts/add_account_dialog.ui:226
 msgid "Back"
-msgstr ""
+msgstr "पीछे"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Joining…"
-msgstr ""
+msgstr "जुड़ रहे हैं…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:164
 msgid "Password required to enter room"
-msgstr ""
+msgstr "कक्ष में प्रवेश के लिए पासवर्ड आवश्यक है"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "कॉन्फ़्रेंस में शामिल होने या बनाने पर प्रतिबंध लगा दिया गया है"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Room does not exist"
-msgstr ""
+msgstr "कक्ष मौजूद नहीं है"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "कक्ष बनाने की अनुमति नहीं है"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr ""
+msgstr "केवल सदस्यों के लिए कक्ष"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr ""
+msgstr "कोई अलग उपनाम चुनें"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "कक्ष में बहुत अधिक लोग हैं"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
 #: main/src/ui/notifier_gnotifications.vala:104
@@ -622,7 +638,7 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:261
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "%s से जुड़ नहीं सके"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 #: main/src/ui/manage_accounts/add_account_dialog.vala:266
@@ -630,65 +646,66 @@ msgstr ""
 #: main/src/ui/manage_accounts/add_account_dialog.vala:309
 #: main/src/ui/manage_accounts/add_account_dialog.vala:402
 msgid "Invalid address"
-msgstr ""
+msgstr "अमान्य पता"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
-msgstr ""
+msgstr "जोड़ें"
 
 #: main/src/ui/application.vala:276 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr ""
+msgstr "डिनो के बारे में"
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
-msgstr ""
+msgstr "आज"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, fuzzy, c-format
 msgid "%a, %b %d"
-msgstr ""
+msgstr "%a, %d %b"
 
 #: main/src/ui/global_search.vala:179
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i खोज परिणाम"
+msgstr[1] "%i खोज परिणाम"
 
 #: main/src/ui/global_search.vala:206
 #, c-format
 msgid "In %s"
-msgstr ""
+msgstr "%s में"
 
 #: main/src/ui/global_search.vala:206
 #, c-format
 msgid "With %s"
-msgstr ""
+msgstr "%s के साथ"
 
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr ""
+msgstr "आवक वीडियो कॉल"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr ""
+msgstr "आवक वीडियो समूह कॉल"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr ""
+msgstr "आवक समूह कॉल"
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
 #: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr ""
+msgstr "अस्वीकारें"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
@@ -701,12 +718,12 @@ msgstr ""
 #: main/src/ui/conversation_content_view/subscription_notification.vala:37
 #: main/data/call_widget.ui:81
 msgid "Accept"
-msgstr ""
+msgstr "स्वीकारें"
 
 #: main/src/ui/notifier_gnotifications.vala:91
 #: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
-msgstr ""
+msgstr "सदस्यता अनुरोध"
 
 #: main/src/ui/notifier_gnotifications.vala:98
 #: main/src/ui/notifier_gnotifications.vala:133
@@ -715,413 +732,413 @@ msgstr ""
 #: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:38
 msgid "Deny"
-msgstr ""
+msgstr "अस्वीकारें"
 
 #: main/src/ui/notifier_gnotifications.vala:123
 #: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
-msgstr ""
+msgstr "%s को आमंत्रण"
 
 #: main/src/ui/notifier_gnotifications.vala:124
 #: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s ने आपको %s पर आमंत्रित किया"
 
 #: main/src/ui/notifier_gnotifications.vala:141
 #: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
-msgstr ""
+msgstr "अनुमति अनुरोध"
 
 #: main/src/ui/notifier_gnotifications.vala:142
 #: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr ""
+msgstr "%1$s, %2$s में लिखने की अनुमति का अनुरोध करता है"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 msgid "Send typing notifications"
-msgstr ""
+msgstr "टाइपिंग सूचनाएं भेजें"
 
 #: main/src/ui/contact_details/settings_provider.vala:33
 msgid "Send read receipts"
-msgstr ""
+msgstr "पठन रसीदें भेजें"
 
 #: main/src/ui/contact_details/settings_provider.vala:66
 #: main/src/ui/contact_details/settings_provider.vala:68
 msgid "On"
-msgstr ""
+msgstr "चालू"
 
 #: main/src/ui/contact_details/settings_provider.vala:66
 #: main/src/ui/contact_details/settings_provider.vala:69
 msgid "Off"
-msgstr ""
+msgstr "बंद"
 
 #: main/src/ui/contact_details/settings_provider.vala:67
 #, c-format
 msgid "Default: %s"
-msgstr ""
+msgstr "तयशुदा: %s"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request"
-msgstr ""
+msgstr "अनुरोध"
 
 #: main/src/ui/contact_details/permissions_provider.vala:25
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "संदेश भेजने की अनुमति का अनुरोध करें"
 
 #: main/src/ui/main_window.vala:179
 msgid "Welcome to Dino!"
-msgstr ""
+msgstr "डिनो में स्वागत है!"
 
 #: main/src/ui/main_window.vala:180
 msgid "Sign in or create an account to get started."
-msgstr ""
+msgstr "आरंभ करने के लिए साइन इन करें या खाता बनाएं।"
 
 #: main/src/ui/main_window.vala:181
 msgid "Set up account"
-msgstr ""
+msgstr "खाता स्थापित करें"
 
 #: main/src/ui/main_window.vala:189
 msgid "Manage accounts"
-msgstr ""
+msgstr "खाते प्रबंधित करें"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP पता"
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "प्रदर्शित नाम"
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "विषय"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "सर्वर यह साबित नहीं कर सका कि यह %s है।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:155
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
+msgstr "इसका सुरक्षा प्रमाणपत्र आपके ऑपरेटिंग सिस्टम द्वारा विश्वसनीय नहीं है।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "इसका सुरक्षा प्रमाणपत्र दूसरे डोमेन को जारी किया जाता है।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "इसका सुरक्षा प्रमाणपत्र भविष्य में ही मान्य होगा।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "इसका सुरक्षा प्रमाणपत्र समाप्त हो गया है।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
 msgid "Sign in to %s"
-msgstr ""
+msgstr "%s में साइन इन करें"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:224
 #, c-format
 msgid "You can now use the account %s."
-msgstr ""
+msgstr "अब आप %s खाते का उपयोग कर सकते हैं।"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:281
 msgid "Wrong username or password"
-msgstr ""
+msgstr "गलत उपयोक्ता नाम या पासवर्ड"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:284
 msgid "Something went wrong"
-msgstr ""
+msgstr "कुछ गलत हुआ"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:327
 msgid "No response from server"
-msgstr ""
+msgstr "सर्वर से कोई प्रतिक्रिया नहीं"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:338
 #, c-format
 msgid "Register on %s"
-msgstr ""
+msgstr "%s पर पंजीकरण करें"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:341
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "सर्वर को एक वेबसाइट के माध्यम से साइन अप करने की आवश्यकता होती है"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:343
 msgid "Open website"
-msgstr ""
+msgstr "वेबसाइट खोलें"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:364
 msgid "Register"
-msgstr ""
+msgstr "पंजीकृत करें"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:366
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr ""
+msgstr "साइन अप करने के तरीके के बारे में जानकारी के लिए %s देखें"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
-msgstr ""
+msgstr "संदेश संपादित करें"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr ""
+msgstr "आप"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr ""
+msgstr "प्रतिक्रिया जोड़ें"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:52
 #: main/src/ui/conversation_content_view/file_default_widget.vala:57
 msgid "Open"
-msgstr ""
+msgstr "खोलें"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:53
 #: main/src/ui/conversation_content_view/file_widget.vala:186
 #: main/src/ui/conversation_content_view/file_default_widget.vala:58
 msgid "Save as…"
-msgstr ""
+msgstr "ऐसे सहेजें…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr ""
+msgstr "%s, %s और %i अन्य लोग टाइप कर रहे हैं…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s और %s टाइप कर रहे हैं…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s और %s टाइप कर रहे हैं…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s टाइप कर रहा है…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr ""
+msgstr "कॉल शुरू हुई"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "%s पहले शुरू हुआ"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "आपने यह कॉल किसी अन्य डिवाइस पर संभाली"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr ""
+msgstr "कॉल समाप्त"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "%s पर समाप्त हुआ"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "%s तक चला"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr ""
+msgstr "कॉल छूट गई"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr ""
+msgstr "आपसे यह कॉल छूट गई"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s से यह कॉल छूट गई"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr ""
+msgstr "कॉल अस्वीकृत"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr ""
+msgstr "आपने यह कॉल अस्वीकार कर दिया"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s ने इस कॉल को अस्वीकार कर दिया"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr ""
+msgstr "कॉल विफल"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i घंटा"
+msgstr[1] "%i घंटे"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i मिनट"
+msgstr[1] "%i मिनट"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr ""
+msgstr "कुछ सेकंड"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr ""
+msgstr "वितरित"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr ""
+msgstr "पठित"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:48
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "यह संपर्क आपको अपनी संपर्क सूची में जोड़ना चाहता है"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
-msgstr ""
+msgstr "यह बातचीत प्रतिक्रियाओं का समर्थन नहीं करती।"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:34
 msgid "Reply"
-msgstr ""
+msgstr "जवाब"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
-msgstr ""
+msgstr "यह बातचीत जवाब का समर्थन नहीं करती।"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:64
 #, c-format
 msgid "Downloading %s…"
-msgstr ""
+msgstr "%s डाउनलोड हो रहा है…"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s पेश: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:79
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "फाइल पेश: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 msgid "File offered"
-msgstr ""
+msgstr "फाइल पेश"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 msgid "File transfer failed"
-msgstr ""
+msgstr "फाइल स्थानांतरण विफल"
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:34
 msgid "File"
-msgstr ""
+msgstr "फाइल"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "नया"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr ""
+msgstr "संपर्क विवरण"
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
-msgstr ""
+msgstr "संदेश अपडेट करें"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "टाइपिंग अधिसूचना भेजें (_T)"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "पठन रसीद भेजें (_R)"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "अधिसूचनाएं (_N)"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "नया संदेश आने पर सूचित करें"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "स्माइलीज को इमोजी में बदलें (_C)"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
-msgstr ""
+msgstr "आपके पास कोई खुली चैट नहीं है"
 
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
-msgstr ""
+msgstr "चैट शुरू करने या चैनल से जुड़ने के लिए + पर क्लिक करें"
 
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
-msgstr ""
+msgstr "सामान्य"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "कीबोर्ड शॉर्टकट"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
-msgstr ""
+msgstr "वार्तालाप"
 
 #: main/data/gtk/help-overlay.ui:50
 msgid "Navigation"
-msgstr ""
+msgstr "नेविगेशन"
 
 #: main/data/gtk/help-overlay.ui:54
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "अगली बातचीत पर जाएं"
 
 #: main/data/gtk/help-overlay.ui:60
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "पिछली बातचीत पर जाएं"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
 #: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
-msgstr ""
+msgstr "खाता"
 
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr ""
+msgstr "उपनाम"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr ""
+msgstr "उपनाम"
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
-msgstr ""
+msgstr "संपर्क जोड़ें"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
-msgstr ""
+msgstr "आधुनिक XMPP चैट क्लाइंट"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1129,6 +1146,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"डिनो डेस्कटॉप के लिए एक आधुनिक ओपन-सोर्स चैट क्लाइंट है। यह आपकी गोपनीयता को ध्यान में "
+"रखते हुए एक स्वच्छ और विश्वसनीय जैबर/एक्सएमपीपी अनुभव प्रदान करने पर केंद्रित है।"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1136,95 +1155,98 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"यह OMEMO और OpenPGP के साथ शुरू-से-अंत कूटलेखन का समर्थन करता है और गोपनीयता-संबंधी "
+"सुविधाओं जैसे कि पठन रसीद और टाइपिंग अधिसूचनाओं को विन्यस्त करने की अनुमति देता है।"
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"डिनो सर्वर से इतिहास प्राप्त करता है और संदेशों को अन्य डिवाइसों के साथ समन्वयित करता है।"
 
 #: main/data/preferences_window_account.ui:79
 #: main/data/manage_accounts/dialog.ui:174
 msgid "Local alias"
-msgstr ""
+msgstr "स्थानीय उपनाम"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "कनेक्शन स्थिति"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "खाता हटाएं"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr ""
+msgstr "कोई सक्रिय खोज नहीं"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr ""
+msgstr "खोज शुरू करने के लिए टाइप करें"
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr ""
+msgstr "कोई मेल खाता संदेश नहीं"
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "वर्तनी जांचें या फिल्टर हटाने का प्रयास करें"
 
 #: main/data/file_send_overlay.ui:61
 msgid "Send"
-msgstr ""
+msgstr "भेजें"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "प्राथमिकताएं"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "कीबोर्ड शॉर्टकट"
 
 #: main/data/manage_accounts/dialog.ui:223
 msgid "No accounts configured"
-msgstr ""
+msgstr "कोई खाता विन्यस्त नहीं"
 
 #: main/data/manage_accounts/dialog.ui:231
 msgid "Add an account"
-msgstr ""
+msgstr "खाता जोड़ें"
 
 #: main/data/manage_accounts/add_account_dialog.ui:35
 msgid "Sign in"
-msgstr ""
+msgstr "साइन इन"
 
 #: main/data/manage_accounts/add_account_dialog.ui:75
 #: main/data/manage_accounts/add_account_dialog.ui:284
 msgid "Create account"
-msgstr ""
+msgstr "खाता बनाएं"
 
 #: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "सुरक्षित कनेक्शन स्थापित नहीं किया जा सका"
 
 #: main/data/manage_accounts/add_account_dialog.ui:294
 msgid "Choose a public server"
-msgstr ""
+msgstr "सार्वजनिक सर्वर चुनें"
 
 #: main/data/manage_accounts/add_account_dialog.ui:318
 msgid "Or specify a server address"
-msgstr ""
+msgstr "या सर्वर पता निर्दिष्ट करें"
 
 #: main/data/manage_accounts/add_account_dialog.ui:334
 msgid "Sign in instead"
-msgstr ""
+msgstr "इसके बजाय साइन इन करें"
 
 #: main/data/manage_accounts/add_account_dialog.ui:408
 msgid "Pick another server"
-msgstr ""
+msgstr "कोई अन्य सर्वर चुनें"
 
 #: main/data/manage_accounts/add_account_dialog.ui:476
 msgid "All set up!"
-msgstr ""
+msgstr "सब तैयार!"
 
 #: main/data/manage_accounts/add_account_dialog.ui:506
 msgid "Finish"
-msgstr ""
+msgstr "समापन"

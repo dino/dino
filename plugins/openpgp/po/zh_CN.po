@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2018-05-08 09:42+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hans/>\n"
-"Language: zh_Hans\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.0-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -19,11 +19,11 @@ msgstr "正在查询 GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
-msgstr ""
+msgstr "已禁用"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
-msgstr "密钥并没有在密钥串里"
+msgstr "密钥不在密钥链中"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"

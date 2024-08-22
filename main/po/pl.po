@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2024-02-06 08:01+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-11 01:09+0000\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/translations/"
 "pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -42,11 +42,11 @@ msgstr "Połącz"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Wyłącz konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Włącz konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -123,7 +123,7 @@ msgstr "Konta"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Wyłączone konta"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -136,57 +136,73 @@ msgstr "Dodaj konto"
 msgid "No active accounts"
 msgstr "Brak aktywnych kont"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Przypięte"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Przypnij"
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
+msgstr "Zablokowano"
+
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "Zablokuj"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Wycisz"
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:92
-msgid "Notifications for mentions"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
-msgid "Muted"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:97
-msgid "Notifications disabled"
-msgstr ""
+msgstr "Włączono powiadomienia"
 
 #: main/src/windows/conversation_details.vala:124
-msgid "About"
-msgstr ""
+msgid "Notifications for mentions"
+msgstr "Powiadomienia o wzmiankach"
 
 #: main/src/windows/conversation_details.vala:127
-msgid "Encryption"
-msgstr ""
+#: main/src/windows/conversation_details.vala:128
+msgid "Muted"
+msgstr "Wyciszono"
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:129
+msgid "Notifications disabled"
+msgstr "Wyłączono powiadomienia"
+
+#: main/src/windows/conversation_details.vala:156
+msgid "About"
+msgstr "O kontakcie"
+
+#: main/src/windows/conversation_details.vala:159
+msgid "Encryption"
+msgstr "Szyfrowanie"
+
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "Konfiguracja pokoju"
 
@@ -195,22 +211,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "Plik przekracza maksymalny rozmiar wysyłanych plików dla tego serwera."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "Wiadomość zbyt długa"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "edytowane"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr "wysyłanie…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "wysyłanie nie powiodło się"
 
@@ -499,11 +515,11 @@ msgstr "Członkowie"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Szczegóły konwersacji"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Zamknij konwersację"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -649,6 +665,7 @@ msgid "Today"
 msgstr "Dzisiaj"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, fuzzy, c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -791,18 +808,18 @@ msgstr "Załóż konto"
 msgid "Manage accounts"
 msgstr "Zarządzaj kontami"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "Adres XMPP"
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Wyświetlana nazwa użytkownika"
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Temat"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -871,7 +888,7 @@ msgstr "Zarejestruj się"
 msgid "Check %s for information on how to sign up"
 msgstr "Dowiedz się na %s, jak się zarejestrować"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr "Popraw wiadomość"
 
@@ -1045,7 +1062,7 @@ msgstr "Plik"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nowy"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1057,15 +1074,15 @@ msgstr "Aktualizuj wiadomość"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Wysyłaj _powiadomienia o pisaniu"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Wysyłaj _potwierdzenia odczytania"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Powiadomienia"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1073,7 +1090,7 @@ msgstr "Powiadom o przychodzącej wiadomości"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Zamieniaj Smileys na Emoji"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1089,7 +1106,7 @@ msgstr "Ogólne"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Skróty klawiszowe"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1127,7 +1144,7 @@ msgstr "Pseudonim"
 msgid "Add Contact"
 msgstr "Dodaj kontakt"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Nowoczesny komunikator XMPP"
 
@@ -1165,11 +1182,11 @@ msgstr "Lokalny nick"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Stan połączenia"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Usuń konto"
 
 #: main/data/global_search.ui:27
 msgid "No active search"

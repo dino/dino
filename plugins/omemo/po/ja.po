@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2020-10-10 10:49+0000\n"
 "Language-Team: none\n"
 "Language: ja\n"
@@ -257,19 +257,20 @@ msgstr "検証済み"
 msgid "New device"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:32
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "OMEMO Key Management"
+msgstr "OMEMO キー管理"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 msgid "Encryption"
 msgstr "暗号化"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d 台の OMEMO デバイス"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO キー管理"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"

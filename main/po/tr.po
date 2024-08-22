@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2023-02-10 18:35+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -40,11 +40,11 @@ msgstr "Bağlan"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Hesabı devre dışı bırak"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Hesabı etkinleştir"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -121,7 +121,7 @@ msgstr "Hesaplar"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Devre dışı hesaplar"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -134,57 +134,73 @@ msgstr "Hesap Ekle"
 msgid "No active accounts"
 msgstr "Etkin hesap yok"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Sabitlendi"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Sabitle"
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
+msgstr "Engellendi"
+
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "Engelle"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Sesini kapat"
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:92
-msgid "Notifications for mentions"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
-msgid "Muted"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:97
-msgid "Notifications disabled"
-msgstr ""
+msgstr "Bildirimler etkinleştirildi"
 
 #: main/src/windows/conversation_details.vala:124
-msgid "About"
-msgstr ""
+msgid "Notifications for mentions"
+msgstr "Bahsetmeler için bildirimler"
 
 #: main/src/windows/conversation_details.vala:127
-msgid "Encryption"
-msgstr ""
+#: main/src/windows/conversation_details.vala:128
+msgid "Muted"
+msgstr "Sesi kapatıldı"
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:129
+msgid "Notifications disabled"
+msgstr "Bildirimler devre dışı bırakıldı"
+
+#: main/src/windows/conversation_details.vala:156
+msgid "About"
+msgstr "Hakkında"
+
+#: main/src/windows/conversation_details.vala:159
+msgid "Encryption"
+msgstr "Şifreleme"
+
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "Oda Ayarları"
 
@@ -193,22 +209,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "Dosya, sunucunun azami yükleme boyutunu aşıyor."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "Mesaj çok uzun"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "düzenlendi"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr "bekliyor…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "teslimat başarısız"
 
@@ -496,11 +512,11 @@ msgstr "Üyeler"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Sohbet Ayrıntıları"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Sohbeti Kapat"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -646,6 +662,7 @@ msgid "Today"
 msgstr "Bugün"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, fuzzy, c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -787,18 +804,18 @@ msgstr "Hesap oluştur"
 msgid "Manage accounts"
 msgstr "Hesapları yönet"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP Adresi"
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Görünen ad"
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Konu"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -865,7 +882,7 @@ msgstr "Kayıt"
 msgid "Check %s for information on how to sign up"
 msgstr "Nasıl kaydolacağınızla ilgili bilgi için %s sayfasına bakın"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr "Mesajı düzenle"
 
@@ -1037,7 +1054,7 @@ msgstr "Dosya"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Yeni"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1049,15 +1066,15 @@ msgstr "Mesajı güncelle"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "_Yazma Bildirimleri Gönder"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "_Okundu Bilgisi Gönder"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Bildirimler"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1065,7 +1082,7 @@ msgstr "Mesaj ulaştığında bildirim gönder"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "Gülen Yüzleri Emoji'ye _Dönüştür"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1081,7 +1098,7 @@ msgstr "Genel"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Klavye kısayolları"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1119,7 +1136,7 @@ msgstr "Mahlas"
 msgid "Add Contact"
 msgstr "Kişi Ekle"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Modern XMPP Sohbet İstemcisi"
 
@@ -1158,11 +1175,11 @@ msgstr "Yerel mahlas"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Bağlantı durumu"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Hesabı kaldır"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1186,7 +1203,7 @@ msgstr "Gönder"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"

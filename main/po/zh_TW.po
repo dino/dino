@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2020-12-10 19:29+0000\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
@@ -134,57 +134,73 @@ msgstr "新增帳號"
 msgid "No active accounts"
 msgstr "没有啓用的帳號"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "封鎖"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:92
+#: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
+#: main/src/windows/conversation_details.vala:127
+#: main/src/windows/conversation_details.vala:128
 msgid "Muted"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:97
+#: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:124
+#: main/src/windows/conversation_details.vala:156
 msgid "About"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:127
+#: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "設定"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "聊天室設定"
 
@@ -193,22 +209,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "檔案大小超過了伺服器的的上傳限制。"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "訊息太長"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "已編輯"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr ""
 
@@ -645,6 +661,7 @@ msgid "Today"
 msgstr "今天"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, fuzzy, c-format
 msgid "%a, %b %d"
 msgstr "%b%d日，%A"
 
@@ -785,16 +802,16 @@ msgstr "設定帳號"
 msgid "Manage accounts"
 msgstr "管理帳號"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
 msgstr ""
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
 msgstr ""
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
 msgstr ""
 
@@ -863,7 +880,7 @@ msgstr "註冊"
 msgid "Check %s for information on how to sign up"
 msgstr "查閱 %s 以取得關於如何註冊的資訊"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr ""
 
@@ -1115,7 +1132,7 @@ msgstr "別名"
 msgid "Add Contact"
 msgstr "新增聯絡人"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "現代化的 XMPP 用戶端聊天軟件"
 

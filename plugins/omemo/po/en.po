@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -228,20 +228,21 @@ msgstr ""
 msgid "New device"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:32
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "OMEMO Key Management"
+msgstr ""
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 msgid "Encryption"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] ""
 msgstr[1] ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr ""
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2023-04-21 18:49+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -41,11 +41,11 @@ msgstr "Yhdistä"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Poista tili käytöstä"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Ota tili käyttöön"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -122,7 +122,7 @@ msgstr "Tilit"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Käytöstä poistetut tilit"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -135,57 +135,73 @@ msgstr "Lisää tili"
 msgid "No active accounts"
 msgstr "Ei aktiivisia tilejä"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Kiinnitetty"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Kiinnitä"
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
+msgstr "Estetty"
+
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "Estä"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Mykistä"
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:92
-msgid "Notifications for mentions"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
-msgid "Muted"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:97
-msgid "Notifications disabled"
-msgstr ""
+msgstr "Ilmoitukset käytössä"
 
 #: main/src/windows/conversation_details.vala:124
-msgid "About"
-msgstr ""
+msgid "Notifications for mentions"
+msgstr "Ilmoitukset maininnoista"
 
 #: main/src/windows/conversation_details.vala:127
-msgid "Encryption"
-msgstr ""
+#: main/src/windows/conversation_details.vala:128
+msgid "Muted"
+msgstr "Mykistetty"
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:129
+msgid "Notifications disabled"
+msgstr "Ilmoitukset pois käytöstä"
+
+#: main/src/windows/conversation_details.vala:156
+msgid "About"
+msgstr "Tietoja"
+
+#: main/src/windows/conversation_details.vala:159
+msgid "Encryption"
+msgstr "Salaus"
+
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "Asetukset"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "Huoneen asetukset"
 
@@ -194,22 +210,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "Tiedosto on suurempi kuin palvelimen suurin sallittu lähetyskoko."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "Viesti liian pitkä"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "muokattu"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr "odottaa…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "toimitus epäonnistui"
 
@@ -497,11 +513,11 @@ msgstr "Jäsenet"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Keskustelun tiedot"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Sulje keskustelu"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -788,18 +804,18 @@ msgstr "Määritä tili"
 msgid "Manage accounts"
 msgstr "Hallitse tilejä"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP-osoite"
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Näyttönimi"
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Aihe"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -866,7 +882,7 @@ msgstr "Rekisteröity"
 msgid "Check %s for information on how to sign up"
 msgstr "Tarkista %s ohjeet kirjautumiseen"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr "Muokkaa viestiä"
 
@@ -1038,7 +1054,7 @@ msgstr "Tiedosto"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Uusi"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1050,15 +1066,15 @@ msgstr "Päivitä viesti"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Lähetä _kirjoitusilmoitukset"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Lähetä _lukukuittaukset"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Ilmoitukset"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1066,7 +1082,7 @@ msgstr "Ilmoita kun uusi viesti saapuu"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Muunna hymiöt emojeiksi"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1082,7 +1098,7 @@ msgstr "Yleiset"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Pikanäppäimet"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1120,7 +1136,7 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Lisää yhteystieto"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Nykyaikainen XMPP-asiakasohjelma"
 
@@ -1159,11 +1175,11 @@ msgstr "Paikallinen alias"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Yhteyden tila"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Poista tili"
 
 #: main/data/global_search.ui:27
 msgid "No active search"

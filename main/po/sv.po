@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
-"PO-Revision-Date: 2023-02-10 18:35+0000\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"PO-Revision-Date: 2024-08-16 05:09+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 5.7\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -40,11 +40,11 @@ msgstr "Anslut"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Deaktivera konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Aktivera konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -121,7 +121,7 @@ msgstr "Konton"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Inaktiverade konton"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -134,57 +134,73 @@ msgstr "Lägg till konto"
 msgid "No active accounts"
 msgstr "Inga aktiva konton"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Pinnade"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Pinna"
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
+msgstr "Blockerad"
+
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "Blockera"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Tysta"
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:92
-msgid "Notifications for mentions"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
-msgid "Muted"
-msgstr ""
-
-#: main/src/windows/conversation_details.vala:97
-msgid "Notifications disabled"
-msgstr ""
+msgstr "Aviseringar aktiverade"
 
 #: main/src/windows/conversation_details.vala:124
-msgid "About"
-msgstr ""
+msgid "Notifications for mentions"
+msgstr "Aviseringar för omnämnanden"
 
 #: main/src/windows/conversation_details.vala:127
-msgid "Encryption"
-msgstr ""
+#: main/src/windows/conversation_details.vala:128
+msgid "Muted"
+msgstr "Tystad"
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:129
+msgid "Notifications disabled"
+msgstr "Aviseringar inaktiverade"
+
+#: main/src/windows/conversation_details.vala:156
+msgid "About"
+msgstr "Om"
+
+#: main/src/windows/conversation_details.vala:159
+msgid "Encryption"
+msgstr "Kryptering"
+
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "Inställningar"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "Rumskonfiguration"
 
@@ -193,22 +209,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "Filen är större än vad servern tillåter."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "Meddelandet är för långt"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "redigerad"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr "väntar…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "leverans misslyckades"
 
@@ -497,11 +513,11 @@ msgstr "Medlemmar"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Konversationsdetaljer"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Stäng Konversation"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -788,18 +804,18 @@ msgstr "Ställ in konto"
 msgid "Manage accounts"
 msgstr "Hantera konton"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP-adress"
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Visningsnamn"
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Ämne"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -866,7 +882,7 @@ msgstr "Registrera"
 msgid "Check %s for information on how to sign up"
 msgstr "Kolla %s för information om registrering"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr "Redigera meddelande"
 
@@ -1038,7 +1054,7 @@ msgstr "Fil"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nytt"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1050,15 +1066,15 @@ msgstr "Uppdatera meddelande"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Skicka _Skriftaviseringar"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Skicka _läskvitton"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Aviseringar"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1066,7 +1082,7 @@ msgstr "Avisera när ett nytt meddelande mottages"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Konvertera Smileys till Emoji"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1082,7 +1098,7 @@ msgstr "Allmänt"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Tangentbordsgenvägar"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1120,7 +1136,7 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Lägg till kontakt"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Modern XMPP-chattklient"
 
@@ -1159,11 +1175,11 @@ msgstr "Lokalt alias"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Anslutningsstatus"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Ta bort konto"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1187,7 +1203,7 @@ msgstr "Skicka"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "Inställningar"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"

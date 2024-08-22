@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-01 12:03+0200\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2024-05-17 20:01+0000\n"
 "Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -133,57 +133,73 @@ msgstr "Afegeix un compte"
 msgid "No active accounts"
 msgstr "No hi ha cap compte actiu"
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:63
+msgid "Block user"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Block entire domain"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:63
+msgid "Unblock"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:58
+#: main/src/windows/conversation_details.vala:81
 msgid "Pin"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:68
+#: main/src/windows/conversation_details.vala:96
+msgid "Domain blocked"
+msgstr ""
+
+#: main/src/windows/conversation_details.vala:100
 msgid "Block"
 msgstr "Bloca"
 
-#: main/src/windows/conversation_details.vala:87
-#: main/src/windows/conversation_details.vala:88
+#: main/src/windows/conversation_details.vala:119
+#: main/src/windows/conversation_details.vala:120
 msgid "Mute"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:89
+#: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:92
+#: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:95
-#: main/src/windows/conversation_details.vala:96
+#: main/src/windows/conversation_details.vala:127
+#: main/src/windows/conversation_details.vala:128
 msgid "Muted"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:97
+#: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:124
+#: main/src/windows/conversation_details.vala:156
 msgid "About"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:127
+#: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
 msgstr ""
 
-#: main/src/windows/conversation_details.vala:130
+#: main/src/windows/conversation_details.vala:162
 msgid "Settings"
 msgstr "Preferències"
 
-#: main/src/windows/conversation_details.vala:133
+#: main/src/windows/conversation_details.vala:165
 msgid "Room Configuration"
 msgstr "Configuració de la sala"
 
@@ -192,22 +208,22 @@ msgid "The file exceeds the server's maximum upload size."
 msgstr "El fitxer supera la mida màxima de càrrega del servidor."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:84
+#: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
 msgstr "El missatge és massa llarg"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:110
+#: main/src/ui/conversation_content_view/message_widget.vala:158
 msgid "edited"
 msgstr "editat"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:119
+#: main/src/ui/conversation_content_view/message_widget.vala:167
 msgid "pending…"
 msgstr "pendent…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:132
+#: main/src/ui/conversation_content_view/message_widget.vala:182
 msgid "delivery failed"
 msgstr "l'enviament ha fallat"
 
@@ -786,16 +802,16 @@ msgstr "Configureu un compte"
 msgid "Manage accounts"
 msgstr "Gestiona els comptes"
 
-#: main/src/ui/conversation_details.vala:117
+#: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
 msgstr ""
 
-#: main/src/ui/conversation_details.vala:122
+#: main/src/ui/conversation_details.vala:138
 msgid "Display name"
 msgstr ""
 
-#: main/src/ui/conversation_details.vala:136
+#: main/src/ui/conversation_details.vala:152
 msgid "Topic"
 msgstr ""
 
@@ -865,7 +881,7 @@ msgstr "Registre"
 msgid "Check %s for information on how to sign up"
 msgstr "Mireu %s per obtenir informació sobre com registrar-vos"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:182
+#: main/src/ui/conversation_content_view/message_widget.vala:230
 msgid "Edit message"
 msgstr "Edita el missatge"
 
@@ -1119,7 +1135,7 @@ msgstr "Àlias"
 msgid "Add Contact"
 msgstr "Afegeix el contacte"
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Client de xat XMPP modern"
 
