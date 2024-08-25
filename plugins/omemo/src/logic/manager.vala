@@ -66,6 +66,7 @@ public class Manager : StreamInteractionModule, Object {
         this.trust_manager = trust_manager;
         this.encryptors = encryptors;
 
+        stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
         stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
@@ -182,6 +183,12 @@ public class Manager : StreamInteractionModule, Object {
         StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
         if (module != null) {
             module.request_user_devicelist.begin(stream, account.bare_jid);
+        }
+    }
+
+    private void on_account_added(Account account) {
+        StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
+        if (module != null) {
             module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
             module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
             module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));

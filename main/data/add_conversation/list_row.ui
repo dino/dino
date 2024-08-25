@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0"/>
-    <object class="GtkGrid" id="outer_grid">
-        <property name="margin-start">3</property>
-        <property name="margin-end">3</property>
-        <property name="margin-top">3</property>
-        <property name="margin-bottom">3</property>
-        <property name="column-spacing">10</property>
+    <object class="GtkBox" id="outer_box">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">8</property>
+        <property name="margin-start">6</property>
+        <property name="margin-end">6</property>
+        <property name="margin-top">6</property>
+        <property name="margin-bottom">6</property>
         <child>
             <object class="DinoUiAvatarPicture" id="picture">
                 <property name="height-request">30</property>
@@ -15,34 +16,33 @@
             </object>
         </child>
         <child>
-            <object class="GtkGrid">
-                <property name="valign">center</property>
+            <object class="GtkBox">
                 <property name="orientation">vertical</property>
+                <property name="valign">center</property>
                 <child>
-                    <object class="GtkLabel" id="name_label">
-                        <property name="max_width_chars">1</property>
-                        <property name="ellipsize">end</property>
-                        <property name="hexpand">1</property>
-                        <property name="xalign">0</property>
-                        <layout>
-                            <property name="column">0</property>
-                            <property name="row">0</property>
-                        </layout>
+                    <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">6</property>
+                        <child>
+                            <object class="GtkLabel" id="name_label">
+                                <property name="ellipsize">end</property>
+                                <property name="xalign">0</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkImage" id="status_dot">
+                                <property name="pixel-size">8</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>
                     <object class="GtkLabel" id="via_label">
-                        <property name="max_width_chars">1</property>
                         <property name="ellipsize">end</property>
-                        <property name="hexpand">1</property>
                         <property name="xalign">0</property>
                         <attributes>
                             <attribute name="scale" value="0.8"></attribute>
                         </attributes>
-                        <layout>
-                            <property name="column">0</property>
-                            <property name="row">1</property>
-                        </layout>
                     </object>
                 </child>
             </object>

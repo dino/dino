@@ -40,6 +40,10 @@ public class ChatTextView : Box {
     private uint wait_queue_resize;
     private SmileyConverter smiley_converter;
 
+    private TextTag italic_tag;
+    private TextTag bold_tag;
+    private TextTag strikethrough_tag;
+
     construct {
         valign = Align.CENTER;
         scrolled_window.set_child(text_view);
@@ -48,6 +52,15 @@ public class ChatTextView : Box {
         var text_input_key_events = new EventControllerKey() { name = "dino-text-input-view-key-events" };
         text_input_key_events.key_pressed.connect(on_text_input_key_press);
         text_view.add_controller(text_input_key_events);
+
+        italic_tag = text_view.buffer.create_tag("italic");
+        italic_tag.style = Pango.Style.ITALIC;
+
+        bold_tag = text_view.buffer.create_tag("bold");
+        bold_tag.weight = Pango.Weight.BOLD;
+
+        strikethrough_tag = text_view.buffer.create_tag("strikethrough");
+        strikethrough_tag.strikethrough = true;
 
         smiley_converter = new SmileyConverter(text_view);
 
@@ -58,6 +71,37 @@ public class ChatTextView : Box {
             scrolled_window.get_preferred_size(out minimum_size, null);
             vscrollbar_min_height = minimum_size.height;
         });
+    }
+
+    public void set_text(Message message) {
+        // Get a copy of the markup spans, such that we can modify them
+        var markups = new ArrayList<Xep.MessageMarkup.Span>();
+        foreach (var markup in message.get_markups()) {
+            markups.add(new Xep.MessageMarkup.Span() { types=markup.types, start_char=markup.start_char, end_char=markup.end_char });
+        }
+
+        text_view.buffer.text = Util.remove_fallbacks_adjust_markups(message.body, message.quoted_item_id > 0, message.get_fallbacks(), markups);
+
+        foreach (var markup in markups) {
+            foreach (var ty in markup.types) {
+                TextTag tag = null;
+                switch (ty) {
+                    case Xep.MessageMarkup.SpanType.EMPHASIS:
+                        tag = italic_tag;
+                        break;
+                    case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
+                        tag = bold_tag;
+                        break;
+                    case Xep.MessageMarkup.SpanType.DELETED:
+                        tag = strikethrough_tag;
+                        break;
+                }
+                TextIter start_selection, end_selection;
+                text_view.buffer.get_iter_at_offset(out start_selection, markup.start_char);
+                text_view.buffer.get_iter_at_offset(out end_selection, markup.end_char);
+                text_view.buffer.apply_tag(tag, start_selection, end_selection);
+            }
+        }
     }
 
     public override void dispose() {
@@ -95,6 +139,7 @@ public class ChatTextView : Box {
     }
 
     private bool on_text_input_key_press(EventControllerKey controller, uint keyval, uint keycode, Gdk.ModifierType state) {
+        // Enter pressed -> Send message (except if it was Shift+Enter)
         if (keyval in new uint[]{ Key.Return, Key.KP_Enter }) {
             // Allow the text view to process the event. Needed for IME.
             if (text_view.im_context_filter_keypress(controller.get_current_event())) {
@@ -102,16 +147,102 @@ public class ChatTextView : Box {
             }
 
             if ((state & ModifierType.SHIFT_MASK) > 0) {
-                text_view.buffer.insert_at_cursor("\n", 1);
+                // Let the default handler normally insert a newline if shift was hold
+                return false;
             } else if (text_view.buffer.text.strip() != "") {
                 send_text();
             }
             return true;
         }
+
         if (keyval == Key.Escape) {
             cancel_input();
         }
+
+        // Style text section bold (CTRL + b) or italic (CTRL + i)
+        if ((state & ModifierType.CONTROL_MASK) > 0) {
+            if (keyval in new uint[]{ Key.i, Key.b }) {
+                TextIter start_selection, end_selection;
+                text_view.buffer.get_selection_bounds(out start_selection, out end_selection);
+
+                TextTag tag = null;
+                bool already_formatted = false;
+                var markup_types = get_markup_types_from_iter(start_selection);
+                if (keyval == Key.i) {
+                    tag = italic_tag;
+                    already_formatted = markup_types.contains(Xep.MessageMarkup.SpanType.EMPHASIS);
+                } else if (keyval == Key.b) {
+                    tag = bold_tag;
+                    already_formatted = markup_types.contains(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+                } else if (keyval == Key.s) {
+                    tag = strikethrough_tag;
+                    already_formatted = markup_types.contains(Xep.MessageMarkup.SpanType.DELETED);
+                }
+                if (tag != null) {
+                    if (already_formatted) {
+                        text_view.buffer.remove_tag(tag, start_selection, end_selection);
+                    } else {
+                        text_view.buffer.apply_tag(tag, start_selection, end_selection);
+                    }
+                }
+            }
+        }
+
         return false;
+    }
+
+    public Gee.List<Xep.MessageMarkup.Span> get_markups() {
+        var markups = new HashMap<Xep.MessageMarkup.SpanType, Xep.MessageMarkup.SpanType>();
+        markups[Xep.MessageMarkup.SpanType.EMPHASIS] = Xep.MessageMarkup.SpanType.EMPHASIS;
+        markups[Xep.MessageMarkup.SpanType.STRONG_EMPHASIS] = Xep.MessageMarkup.SpanType.STRONG_EMPHASIS;
+        markups[Xep.MessageMarkup.SpanType.DELETED] = Xep.MessageMarkup.SpanType.DELETED;
+
+        var ended_groups = new ArrayList<Xep.MessageMarkup.Span>();
+        Xep.MessageMarkup.Span current_span = null;
+
+        TextIter iter;
+        text_view.buffer.get_start_iter(out iter);
+        int i = 0;
+        do {
+            var char_markups = get_markup_types_from_iter(iter);
+
+            // Not the same set of markups as last character -> end all spans
+            if (current_span != null && (!char_markups.contains_all(current_span.types) || !current_span.types.contains_all(char_markups))) {
+                ended_groups.add(current_span);
+                current_span = null;
+            }
+
+            if (char_markups.size > 0) {
+                if (current_span == null) {
+                    current_span = new Xep.MessageMarkup.Span() { types=char_markups, start_char=i, end_char=i + 1 };
+                } else {
+                    current_span.end_char = i + 1;
+                }
+            }
+
+            i++;
+        } while (iter.forward_char());
+
+        if (current_span != null) {
+            ended_groups.add(current_span);
+        }
+
+        return ended_groups;
+    }
+
+    private Gee.List<Xep.MessageMarkup.SpanType> get_markup_types_from_iter(TextIter iter) {
+        var ret = new ArrayList<Xep.MessageMarkup.SpanType>();
+
+        foreach (TextTag tag in iter.get_tags()) {
+            if (tag.style == Pango.Style.ITALIC) {
+                ret.add(Xep.MessageMarkup.SpanType.EMPHASIS);
+            } else if (tag.weight == Pango.Weight.BOLD) {
+                ret.add(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+            } else if (tag.strikethrough) {
+                ret.add(Xep.MessageMarkup.SpanType.DELETED);
+            }
+        }
+        return ret;
     }
 }
 

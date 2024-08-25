@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2022-10-17 11:49+0000\n"
 "Language-Team: none\n"
 "Language: ko\n"
@@ -17,31 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.15-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-#, fuzzy
-msgid "Key publishing disabled"
-msgstr "키 게재 비활성화됨"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "GnuPG에 에러가 있음"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "사용 가능한 키 없음. 하나 생성하세요!"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "키 선택"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "로딩중…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
 msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
@@ -51,3 +32,19 @@ msgstr "키가 키체인에 있지 않음"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "암호화"
+
+#, fuzzy
+#~ msgid "Key publishing disabled"
+#~ msgstr "키 게재 비활성화됨"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "GnuPG에 에러가 있음"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "사용 가능한 키 없음. 하나 생성하세요!"
+
+#~ msgid "Select key"
+#~ msgstr "키 선택"
+
+#~ msgid "Loading…"
+#~ msgstr "로딩중…"

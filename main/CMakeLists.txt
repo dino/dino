@@ -49,6 +49,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-status-chat.svg
     icons/scalable/status/dino-status-dnd.svg
     icons/scalable/status/dino-status-online.svg
+    icons/scalable/status/dino-status-offline.svg
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
@@ -59,6 +60,7 @@ set(RESOURCE_LIST
     add_conversation/list_row.ui
     add_conversation/select_jid_fragment.ui
 
+    account_picker_row.ui
     call_widget.ui
     chat_input.ui
     conversation_details.ui
@@ -86,9 +88,11 @@ set(RESOURCE_LIST
     message_item_widget_edit_mode.ui
     occupant_list.ui
     occupant_list_item.ui
+    preferences_window.ui
+    preferences_window_account.ui
+    preferences_window_general.ui
     quote.ui
     search_autocomplete.ui
-    settings_dialog.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 
@@ -155,7 +159,6 @@ SOURCES
     src/ui/global_search.vala
     src/ui/notifier_freedesktop.vala
     src/ui/notifier_gnotifications.vala
-    src/ui/settings_dialog.vala
     src/ui/main_window.vala
     src/ui/main_window_controller.vala
 
@@ -236,10 +239,19 @@ SOURCES
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
 
+    src/view_model/account_details.vala
     src/view_model/conversation_details.vala
     src/view_model/preferences_row.vala
+    src/view_model/preferences_window.vala
 
     src/windows/conversation_details.vala
+
+    src/windows/preferences_window/account_preferences_subpage.vala
+    src/windows/preferences_window/accounts_preferences_page.vala
+    src/windows/preferences_window/encryption_preferences_page.vala
+    src/windows/preferences_window/general_preferences_page.vala
+    src/windows/preferences_window/preferences_window.vala
+
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2021-04-26 15:32+0000\n"
 "Language-Team: none\n"
 "Language: fa\n"
@@ -17,31 +17,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.7-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "انشار کلید غیرفعال‌شده"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "خطا در گنوپی‌جی"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "هیچ کلیدی در دسترس نیست. یکی تولید کنید!"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "انتخاب کلید"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "در حال بارگذاری…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "پرس‌و‌جوی گنوپی‌جی"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -50,3 +32,18 @@ msgstr "کلید در دسته‌کلید نیست"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "رمزگذاری"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "انشار کلید غیرفعال‌شده"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "خطا در گنوپی‌جی"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "هیچ کلیدی در دسترس نیست. یکی تولید کنید!"
+
+#~ msgid "Select key"
+#~ msgstr "انتخاب کلید"
+
+#~ msgid "Loading…"
+#~ msgstr "در حال بارگذاری…"

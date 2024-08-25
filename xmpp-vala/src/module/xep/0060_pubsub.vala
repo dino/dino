@@ -17,11 +17,12 @@ namespace Xmpp.Xep.Pubsub {
 
         private HashMap<string, ItemListenerDelegate> item_listeners = new HashMap<string, ItemListenerDelegate>();
         private HashMap<string, RetractListenerDelegate> retract_listeners = new HashMap<string, RetractListenerDelegate>();
-        private ArrayList<string> pep_subset_listeners = new ArrayList<string>();
+        private HashMap<string, DeleteListenerDelegate> delete_listeners = new HashMap<string, DeleteListenerDelegate>();
 
-        public void add_filtered_notification(XmppStream stream, string node, bool pep_subset,
+        public void add_filtered_notification(XmppStream stream, string node,
                 owned ItemListenerDelegate.ResultFunc? item_listener,
-                owned RetractListenerDelegate.ResultFunc? retract_listener) {
+                owned RetractListenerDelegate.ResultFunc? retract_listener,
+                owned DeleteListenerDelegate.ResultFunc? delete_listener) {
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature_notify(stream, node);
             if (item_listener != null) {
                 item_listeners[node] = new ItemListenerDelegate((owned)item_listener);
@@ -29,8 +30,8 @@ namespace Xmpp.Xep.Pubsub {
             if (retract_listener != null) {
                 retract_listeners[node] = new RetractListenerDelegate((owned)retract_listener);
             }
-            if (pep_subset) {
-                pep_subset_listeners.add(node);
+            if (delete_listener != null) {
+                delete_listeners[node] = new DeleteListenerDelegate((owned)delete_listener);
             }
         }
 
@@ -181,30 +182,41 @@ namespace Xmpp.Xep.Pubsub {
         private void on_received_message(XmppStream stream, MessageStanza message) {
             StanzaNode event_node = message.stanza.get_subnode("event", NS_URI_EVENT);
             if (event_node == null) return;
-            StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT);
-            if (items_node == null) return;
-            string node = items_node.get_attribute("node", NS_URI_EVENT);
 
-            if (!message.from.is_bare() && pep_subset_listeners.contains(node)) {
+            if (!message.from.is_bare()) {
                 warning("Got a PEP message from a full JID (%s), ignoring.", message.from.to_string());
                 return;
             }
 
-            StanzaNode? item_node = items_node.get_subnode("item", NS_URI_EVENT);
-            if (item_node != null) {
-                string id = item_node.get_attribute("id", NS_URI_EVENT);
+            StanzaNode items_node = event_node.get_subnode("items", NS_URI_EVENT);
+            if (items_node != null) {
+                string node = items_node.get_attribute("node", NS_URI_EVENT);
 
-                if (item_listeners.has_key(node)) {
-                    item_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
+                StanzaNode? item_node = items_node.get_subnode("item", NS_URI_EVENT);
+                if (item_node != null) {
+                    string id = item_node.get_attribute("id", NS_URI_EVENT);
+
+                    if (item_listeners.has_key(node)) {
+                        item_listeners[node].on_result(stream, message.from, id, item_node.sub_nodes[0]);
+                    }
+                }
+
+                StanzaNode? retract_node = items_node.get_subnode("retract", NS_URI_EVENT);
+                if (retract_node != null) {
+                    string id = retract_node.get_attribute("id", NS_URI_EVENT);
+
+                    if (retract_listeners.has_key(node)) {
+                        retract_listeners[node].on_result(stream, message.from, id);
+                    }
                 }
             }
 
-            StanzaNode? retract_node = items_node.get_subnode("retract", NS_URI_EVENT);
-            if (retract_node != null) {
-                string id = retract_node.get_attribute("id", NS_URI_EVENT);
+            StanzaNode? delete_node = event_node.get_subnode("delete", NS_URI_EVENT);
+            if (delete_node != null) {
+                string node = delete_node.get_attribute("node", NS_URI_EVENT);
 
-                if (retract_listeners.has_key(node)) {
-                    retract_listeners[node].on_result(stream, message.from, id);
+                if (delete_listeners.has_key(node)) {
+                    delete_listeners[node].on_result(stream, message.from);
                 }
             }
         }
@@ -260,6 +272,15 @@ namespace Xmpp.Xep.Pubsub {
         public ResultFunc on_result { get; private owned set; }
 
         public RetractListenerDelegate(owned ResultFunc on_result) {
+            this.on_result = (owned) on_result;
+        }
+    }
+
+    public class DeleteListenerDelegate {
+        public delegate void ResultFunc(XmppStream stream, Jid jid);
+        public ResultFunc on_result { get; private owned set; }
+
+        public DeleteListenerDelegate(owned ResultFunc on_result) {
             this.on_result = (owned) on_result;
         }
     }

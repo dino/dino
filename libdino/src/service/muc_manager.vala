@@ -84,11 +84,6 @@ public class MucManager : StreamInteractionModule, Object {
         }
         mucs_joining[account].add(jid);
 
-        if (!mucs_todo.has_key(account)) {
-            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
-        }
-        mucs_todo[account].add(jid.with_resource(nick_));
-
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null);
 
         mucs_joining[account].remove(jid);
@@ -126,6 +121,11 @@ public class MucManager : StreamInteractionModule, Object {
             // Join failed
             enter_errors[jid] = res.muc_error;
         }
+
+        if (!mucs_todo.has_key(account)) {
+            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
+        }
+        mucs_todo[account].add(jid.with_resource(res.nick ?? nick_));
 
         return res;
     }
@@ -232,15 +232,8 @@ public class MucManager : StreamInteractionModule, Object {
 
     //the term `private room` is a short hand for members-only+non-anonymous rooms
     public bool is_private_room(Account account, Jid jid) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) {
-            return false;
-        }
-        Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-        if (flag == null) {
-            return false;
-        }
-        return flag.has_room_feature(jid, Xep.Muc.Feature.NON_ANONYMOUS) && flag.has_room_feature(jid, Xep.Muc.Feature.MEMBERS_ONLY);
+        var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
+        return entity_info.has_feature_offline(account, jid, "muc_membersonly") && entity_info.has_feature_offline(account, jid, "muc_nonanonymous");
     }
 
     public bool is_moderated_room(Account account, Jid jid) {

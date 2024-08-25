@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 26;
+    private const int VERSION = 27;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -354,6 +354,29 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class AccountSettingsTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
+        public Column<string> key = new Column.Text("key") { not_null = true };
+        public Column<string> value = new Column.Text("value");
+
+        internal AccountSettingsTable(Database db) {
+            base(db, "account_settings");
+            init({id, account_id, key, value});
+            unique({account_id, key}, "REPLACE");
+        }
+
+        public string? get_value(int account_id, string key) {
+            var row_opt = select({value})
+                .with(this.account_id, "=", account_id)
+                .with(this.key, "=", key)
+                .single()
+                .row();
+            if (row_opt.is_present()) return row_opt[value];
+            return null;
+        }
+    }
+
     public class ConversationSettingsTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> conversation_id = new Column.Integer("conversation_id") {not_null=true};
@@ -388,6 +411,7 @@ public class Database : Qlite.Database {
     public MamCatchupTable mam_catchup { get; private set; }
     public ReactionTable reaction { get; private set; }
     public SettingsTable settings { get; private set; }
+    public AccountSettingsTable account_settings { get; private set; }
     public ConversationSettingsTable conversation_settings { get; private set; }
 
     public Map<int, Jid> jid_table_cache = new HashMap<int, Jid>();
@@ -417,8 +441,9 @@ public class Database : Qlite.Database {
         mam_catchup = new MamCatchupTable(this);
         reaction = new ReactionTable(this);
         settings = new SettingsTable(this);
+        account_settings = new AccountSettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -576,6 +601,9 @@ public class Database : Qlite.Database {
         foreach(Row row in account.select()) {
             try {
                 Account account = new Account.from_row(this, row);
+                if (account_table_cache.has_key(account.id)) {
+                    account = account_table_cache[account.id];
+                }
                 ret.add(account);
                 account_table_cache[account.id] = account;
             } catch (InvalidJidError e) {

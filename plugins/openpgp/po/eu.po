@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2018-04-03 15:27+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/eu/>\n"
@@ -18,31 +18,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.20-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "Gakoa argitaratzea ezgaituta"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "GnuPG akatsa"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "Gakoa hautatu"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "Kargatzen…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "GnuPGri galdetzen"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -51,3 +33,18 @@ msgstr "Gakorik ez giltzatakoan"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Enkriptazioa"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Gakoa argitaratzea ezgaituta"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "GnuPG akatsa"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
+
+#~ msgid "Select key"
+#~ msgstr "Gakoa hautatu"
+
+#~ msgid "Loading…"
+#~ msgstr "Kargatzen…"

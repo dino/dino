@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2024-08-22 19:41+0200\n"
 "PO-Revision-Date: 2021-07-05 16:32+0000\n"
 "Language-Team: none\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Weblate 4.8-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:157
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -26,11 +26,11 @@ msgstr ""
 "%s používá nedůvěryhodné zařízení. Zprávy z nedůvěryhodných zařízení nebudou "
 "zobrazeny."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
 msgstr "Správa zařízení"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:160
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -107,6 +107,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
 #: plugins/omemo/src/ui/contact_details_dialog.vala:269
 msgid "Reject key"
 msgstr "Odmítnout klíč"
@@ -120,6 +121,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
 #: plugins/omemo/src/ui/contact_details_dialog.vala:264
 msgid "Accept key"
 msgstr "Přijmout klíč"
@@ -211,30 +213,69 @@ msgstr "Vyžaduje se rozhodnutí o důvěře OMEMO"
 msgid "Did you add a new device for account %s?"
 msgstr "Přidali jste nové zařízení pro účet %s?"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-#: plugins/omemo/src/ui/account_settings_entry.vala:50
-msgid "Own fingerprint"
-msgstr "Otisk vlastního klíče"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
+msgstr ""
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-msgid "Will be generated on first connection"
-msgstr "Budou generovány při prvním připojení"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+msgid "New keys"
+msgstr "Nové klíče"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
+#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Nové šifrovací klíče z vašich ostatních zařízení budou automaticky přijímány."
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
+#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+msgid "Accepted"
+msgstr "Přijat"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
+#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+msgid "Rejected"
+msgstr "Odmítnut"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
+#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+msgid "Verified"
+msgstr "Ověřen"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+msgid "New device"
+msgstr ""
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:32
+#: plugins/omemo/src/ui/contact_details_dialog.vala:48
+msgid "OMEMO Key Management"
+msgstr "OMEMO Správa klíčů"
+
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 msgid "Encryption"
 msgstr "Šifrování"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
+#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
 msgid "%d OMEMO device"
 msgid_plural "%d OMEMO devices"
 msgstr[0] "%d OMEMO zařízení"
 msgstr[1] "%d OMEMO zařízení"
 msgstr[2] "%d OMEMO zařízení"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO Správa klíčů"
 
 #: plugins/omemo/src/ui/contact_details_dialog.vala:49
 msgid "Automatically accept new keys"
@@ -248,10 +289,6 @@ msgstr "Nové šifrovací klíče od tohoto kontaktu budou automaticky přijím�
 msgid "Own key"
 msgstr "Vlastní klíč"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
-msgid "New keys"
-msgstr "Nové klíče"
-
 #: plugins/omemo/src/ui/contact_details_dialog.vala:53
 msgid "Associated keys"
 msgstr "Přidružené klíče"
@@ -260,24 +297,12 @@ msgstr "Přidružené klíče"
 msgid "Inactive keys"
 msgstr "Neaktivní klíče"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
-msgid ""
-"New encryption keys from your other devices will be accepted automatically."
-msgstr ""
-"Nové šifrovací klíče z vašich ostatních zařízení budou automaticky přijímány."
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
-msgid "Accepted"
-msgstr "Přijat"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
-msgid "Rejected"
-msgstr "Odmítnut"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
-msgid "Verified"
-msgstr "Ověřen"
-
 #: plugins/omemo/src/ui/contact_details_dialog.vala:352
 msgid "Unused"
 msgstr "Nepoužit"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Otisk vlastního klíče"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Budou generovány při prvním připojení"

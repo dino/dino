@@ -77,7 +77,6 @@ sources = files(
     'src/ui/occupant_menu/list.vala',
     'src/ui/occupant_menu/list_row.vala',
     'src/ui/occupant_menu/view.vala',
-    'src/ui/settings_dialog.vala',
     'src/ui/util/accounts_combo_box.vala',
     'src/ui/util/config.vala',
     'src/ui/util/data_forms.vala',
@@ -89,8 +88,15 @@ sources = files(
     'src/ui/widgets/date_separator.vala',
     'src/ui/widgets/fixed_ratio_picture.vala',
     'src/ui/widgets/natural_size_increase.vala',
+    'src/view_model/account_details.vala',
     'src/view_model/conversation_details.vala',
     'src/view_model/preferences_row.vala',
+    'src/view_model/preferences_window.vala',
+    'src/windows/preferences_window/account_preferences_subpage.vala',
+    'src/windows/preferences_window/accounts_preferences_page.vala',
+    'src/windows/preferences_window/encryption_preferences_page.vala',
+    'src/windows/preferences_window/general_preferences_page.vala',
+    'src/windows/preferences_window/preferences_window.vala',
     'src/windows/conversation_details.vala',
 )
 sources += gnome.compile_resources(

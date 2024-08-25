@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiGeneralPreferencesPage" parent="AdwPreferencesPage">
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Send _Typing Notifications</property>
+            <property name="use-underline">True</property>
+            <property name="activatable-widget">typing_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="typing_switch">
+<!--                <property name="active" bind-source="DinoUiGeneralPreferencesPage" bind-property="send-typing" bind-flags="sync-create|bidirectional" />-->
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Send _Read Receipts</property>
+            <property name="use-underline">True</property>
+            <property name="activatable-widget">marker_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="marker_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">_Notifications</property>
+            <property name="subtitle" translatable="yes">Notify when a new message arrives</property>
+            <property name="use-underline">True</property>
+            <property name="activatable-widget">notification_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="notification_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">_Convert Smileys to Emoji</property>
+            <property name="use-underline">True</property>
+            <property name="activatable-widget">emoji_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="emoji_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

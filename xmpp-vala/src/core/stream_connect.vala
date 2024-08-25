@@ -69,7 +69,15 @@ namespace Xmpp {
                     stream.add_module(module);
                 }
 
+                uint connection_timeout_id = Timeout.add_seconds(30, () => {
+                    warning("Connection attempt timed out");
+                    stream.disconnect();
+                    return Source.REMOVE;
+                });
+
                 yield stream.connect();
+
+                Source.remove(connection_timeout_id);
 
                 return new XmppStreamResult() { stream=stream };
             } catch (IOError e) {

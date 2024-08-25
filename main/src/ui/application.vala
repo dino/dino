@@ -113,13 +113,17 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     }
 
     private void create_actions() {
-        SimpleAction accounts_action = new SimpleAction("accounts", null);
-        accounts_action.activate.connect(show_accounts_window);
-        add_action(accounts_action);
+        SimpleAction preferences_action = new SimpleAction("preferences", null);
+        preferences_action.activate.connect(show_preferences_window);
+        add_action(preferences_action);
 
-        SimpleAction settings_action = new SimpleAction("settings", null);
-        settings_action.activate.connect(show_settings_window);
-        add_action(settings_action);
+        SimpleAction preferences_account_action = new SimpleAction("preferences-account", VariantType.INT32);
+        preferences_account_action.activate.connect((variant) => {
+            Account? account = db.get_account_by_id(variant.get_int32());
+            if (account == null) return;
+            show_preferences_account_window(account);
+        });
+        add_action(preferences_account_action);
 
         SimpleAction about_action = new SimpleAction("about", null);
         about_action.activate.connect(show_about_window);
@@ -252,17 +256,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         return Environment.get_variable("GTK_CSD") != "0";
     }
 
-    private void show_accounts_window() {
-        ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interactor, db);
-        dialog.set_transient_for(get_active_window());
-        dialog.account_enabled.connect(add_connection);
-        dialog.account_disabled.connect(remove_connection);
+    private void show_preferences_window() {
+        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        dialog.model.populate(db, stream_interactor);
         dialog.present();
     }
 
-    private void show_settings_window() {
-        SettingsDialog dialog = new SettingsDialog();
-        dialog.set_transient_for(get_active_window());
+    private void show_preferences_account_window(Account account) {
+        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        dialog.model.populate(db, stream_interactor);
+        dialog.accounts_page.account_chosen(account);
         dialog.present();
     }
 

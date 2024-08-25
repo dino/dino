@@ -1,5 +1,6 @@
 subdir('po')
 dependencies = [
+    dep_libadwaita,
     dep_crypto_vala,
     dep_dino,
     dep_gee,
@@ -40,13 +41,13 @@ sources = files(
     'src/signal/store.vala',
     'src/signal/util.vala',
     'src/trust_level.vala',
-    'src/ui/account_settings_entry.vala',
     'src/ui/bad_messages_populator.vala',
     'src/ui/call_encryption_entry.vala',
     'src/ui/contact_details_dialog.vala',
     'src/ui/contact_details_provider.vala',
     'src/ui/device_notification_populator.vala',
     'src/ui/encryption_list_entry.vala',
+    'src/ui/encryption_preferences_entry.vala',
     'src/ui/manage_key_dialog.vala',
     'src/ui/own_notifications.vala',
     'src/ui/util.vala',
@@ -64,5 +65,8 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.2')
+    vala_args += ['-D', 'Adw_1_2']
+endif
 lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_omemo = declare_dependency(link_with: lib_omemo, include_directories: include_directories('.'))

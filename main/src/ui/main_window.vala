@@ -20,7 +20,7 @@ public class MainWindow : Adw.ApplicationWindow {
     public ConversationTitlebar conversation_titlebar;
     public Widget conversation_list_titlebar;
     public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL };
-    public Adw.Leaflet leaflet;
+    private Adw.Leaflet leaflet;
     public Box left_box;
     public Box right_box;
     public Adw.Flap search_flap;
