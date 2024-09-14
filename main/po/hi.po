@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "PO-Revision-Date: 2024-07-22 17:09+0000\n"
 "Language-Team: none\n"
 "Language: hi\n"
@@ -662,7 +662,7 @@ msgid "Today"
 msgstr "आज"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, fuzzy, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -1136,7 +1136,7 @@ msgstr "उपनाम"
 msgid "Add Contact"
 msgstr "संपर्क जोड़ें"
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "आधुनिक XMPP चैट क्लाइंट"
 

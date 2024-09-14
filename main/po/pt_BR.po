@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "PO-Revision-Date: 2022-03-15 23:02+0000\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/dino/"
 "translations/pt_BR/>\n"
@@ -662,7 +662,7 @@ msgid "Today"
 msgstr "Hoje"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
@@ -1138,7 +1138,7 @@ msgstr "Pseudônimo"
 msgid "Add Contact"
 msgstr "Adicionar Contato"
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "Cliente de Chat XMPP Moderno"
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -653,7 +653,7 @@ msgid "Today"
 msgstr ""
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr ""
 
@@ -1127,7 +1127,7 @@ msgstr ""
 msgid "Add Contact"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr ""
 

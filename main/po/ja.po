@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "PO-Revision-Date: 2024-04-20 14:07+0000\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
@@ -663,7 +663,7 @@ msgid "Today"
 msgstr "今日"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, fuzzy, no-c-format
 msgid "%a, %b %d"
 msgstr "%b%d日 (%a)"
 
@@ -1135,7 +1135,7 @@ msgstr "別名"
 msgid "Add Contact"
 msgstr "連絡先を追加"
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "現代的な XMPP チャット クライアント"
 

@@ -28,13 +28,13 @@ public class Dino.Ui.ViewModel.CompatDateSeparatorModel : DateSeparatorModel {
             return _("Yesterday");
         }
         if (time_local.get_year() != now_local.get_year()) {
-            return time_local.format("%x");
+            return /* xgettext:no-c-format */ time_local.format("%x");
         }
         TimeSpan timespan = now_local.difference(time_local);
         if (timespan < 7 * TimeSpan.DAY) {
-            return time_local.format(_("%a, %b %d"));
+            return /* xgettext:no-c-format */ time_local.format(_("%a, %b %d"));
         } else {
-            return time_local.format(_("%b %d"));
+            return /* xgettext:no-c-format */ time_local.format(_("%b %d"));
         }
     }
 

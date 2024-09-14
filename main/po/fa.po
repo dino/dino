@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "PO-Revision-Date: 2022-03-12 11:00+0000\n"
 "Language-Team: none\n"
 "Language: fa\n"
@@ -662,7 +662,7 @@ msgid "Today"
 msgstr "امروز"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a , %b %d"
 
@@ -1136,7 +1136,7 @@ msgstr "نام مستعار"
 msgid "Add Contact"
 msgstr "افزودن مخاطب"
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "کلاینت نوین گپ XMPP"
 

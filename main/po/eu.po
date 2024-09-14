@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
 "PO-Revision-Date: 2022-12-09 11:48+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/translations/"
 "eu/>\n"
@@ -664,7 +664,7 @@ msgid "Today"
 msgstr "Gaur"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
@@ -1138,7 +1138,7 @@ msgstr "Ezizena"
 msgid "Add Contact"
 msgstr "Kontaktua gehitu"
 
-#: main/data/im.dino.Dino.appdata.xml.in:5
+#: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
 msgstr "XMPP txat bezero modernoa"
 

@@ -2,7 +2,7 @@
 <component type="desktop">
   <id>im.dino.Dino</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <name>Dino</name>
+  <name translate="no">Dino</name>
   <summary>Modern XMPP chat client</summary>
   <icon type="stock">im.dino.Dino</icon>
   <icon type="remote" width="128" height="128">https://dino.im/img/appdata/icon-dino-0.4-128x128.png</icon>
@@ -29,22 +29,22 @@
   <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <releases>
     <release date="2023-02-07" version="0.4">
-      <description>
+      <description translate="no">
         <p>The 0.4 release adds support for message reactions and replies. Also, Dino is ported to GTK4.</p>
       </description>
     </release>
     <release date="2022-02-12" version="0.3">
-      <description>
+      <description translate="no">
         <p>The 0.3 release is all about calls. Dino now supports calls between two or more people!</p>
       </description>
     </release>
     <release date="2020-11-12" version="0.2">
-      <description>
+      <description translate="no">
         <p>The 0.2 release adds message correction, improves the file upload functionality and provides more information about message encryption.</p>
       </description>
     </release>
     <release date="2020-01-29" version="0.1">
-      <description>
+      <description translate="no">
         <p>The first Dino release! Dino is a secure and open-source application for decentralized messaging.</p>
       </description>
     </release>
@@ -62,11 +62,11 @@
   </supports>
   <project_license>GPL-3.0+</project_license>
   <developer id="im.dino">
-    <name>Dino Development Team</name>
+    <name translate="no">Dino Development Team</name>
     <url>https://dino.im/</url>
   </developer>
   <!-- Deprecated: -->
-  <developer_name>Dino Development Team</developer_name>
+  <developer_name translate="no">Dino Development Team</developer_name>
   <screenshots>
     <screenshot type="default">
       <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-main-2244x1644@2.png</image>
