@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
 "PO-Revision-Date: 2023-10-04 02:12+0000\n"
 "Language-Team: none\n"
 "Language: si\n"
@@ -1137,7 +1137,7 @@ msgstr ""
 msgid "Add Contact"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr ""
 

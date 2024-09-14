@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2023-07-21 07:03+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-09-06 14:24+0300\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/"
 "translations/ru/>\n"
 "Language: ru\n"
@@ -42,11 +42,11 @@ msgstr "Подключиться"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Отключить учётную запись"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Включить учётную запись"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -73,7 +73,7 @@ msgstr "Все файлы"
 #: main/src/ui/manage_accounts/dialog.vala:116
 #, c-format
 msgid "Remove account %s?"
-msgstr "Удалить аккаунт %s?"
+msgstr "Удалить учётную запись %s?"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:180
 #: main/src/ui/manage_accounts/dialog.vala:119
@@ -123,7 +123,7 @@ msgstr "Учётные записи"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Отключённые учётные записи"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -138,31 +138,31 @@ msgstr "Нет активных учётных записей"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Заблокировать пользователя"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Заблокировать весь домен"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Разблокировать"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Закреплено"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Закрепить"
 
 #: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
-msgstr ""
+msgstr "Заблокировано"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Домен заблокирован"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -171,32 +171,32 @@ msgstr "Заблокировать"
 #: main/src/windows/conversation_details.vala:119
 #: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Выключить звук"
 
 #: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Уведомления включены"
 
 #: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Уведомления для упоминаний"
 
 #: main/src/windows/conversation_details.vala:127
 #: main/src/windows/conversation_details.vala:128
 msgid "Muted"
-msgstr ""
+msgstr "Звук выключен"
 
 #: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Уведомления отключены"
 
 #: main/src/windows/conversation_details.vala:156
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
 #: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
-msgstr ""
+msgstr "Шифрование"
 
 #: main/src/windows/conversation_details.vala:162
 msgid "Settings"
@@ -469,7 +469,7 @@ msgstr "Модерируемый"
 
 #: main/src/ui/util/data_forms.vala:45
 msgid "Only occupants with voice may send messages"
-msgstr "Только посетители с голосом(разрешение) могут отправлять сообщения"
+msgstr "Только посетители с голосом (разрешение) могут отправлять сообщения"
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Members only"
@@ -515,11 +515,11 @@ msgstr "Участники"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Информация о чате"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Закрыть чат"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -665,7 +665,7 @@ msgid "Today"
 msgstr "Сегодня"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -811,15 +811,15 @@ msgstr "Управление учётными записями"
 #: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP-адрес"
 
 #: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Отображаемое имя"
 
 #: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Тема"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -832,7 +832,7 @@ msgstr "Его сертификат безопасности не доверяе
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr "Его сертификат безопасности выдается другому домену."
+msgstr "Его сертификат безопасности выдаётся другому домену."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
@@ -840,7 +840,7 @@ msgstr "Его сертификат безопасности станет дей
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:161
 msgid "Its security certificate is expired."
-msgstr "Срок действия его сертификата безопасности истек."
+msgstr "Срок действия его сертификата безопасности истёк."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:180
 #, c-format
@@ -945,12 +945,12 @@ msgstr "Вы обработали этот звонок на другом уст
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr "Звонок завершен"
+msgstr "Звонок завершён"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr "Завершен в %s"
+msgstr "Завершён в %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
@@ -972,7 +972,7 @@ msgstr "%s пропустил(а) этот звонок"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr "Звонок отклонен"
+msgstr "Звонок отклонён"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
@@ -1060,7 +1060,7 @@ msgstr "Файл"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Новые"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1072,15 +1072,15 @@ msgstr "Редактировать сообщение"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Отправлять _уведомления при наборе сообщения"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Отправлять _уведомления о прочтении"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Уведомления"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1088,7 +1088,7 @@ msgstr "Уведомлять о новых сообщениях"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Преобразовывать смайлики в эмодзи"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1104,11 +1104,11 @@ msgstr "Основные"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Комбинации клавиш"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
-msgstr "Беседа"
+msgstr "Чат"
 
 #: main/data/gtk/help-overlay.ui:50
 msgid "Navigation"
@@ -1142,7 +1142,7 @@ msgstr "Псевдоним"
 msgid "Add Contact"
 msgstr "Добавить контакт"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Современный XMPP клиент"
 
@@ -1152,7 +1152,7 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino - это современный клиент для чатов с открытым исходным кодом, "
+"Dino — это современный клиент для чатов с открытым исходным кодом, "
 "направленный на надёжное и приватное использование Jabber/XMPP на "
 "персональных компьютерах."
 
@@ -1180,11 +1180,11 @@ msgstr "Локальный псевдоним"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Состояние соединения"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Удалить учётную запись"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1220,7 +1220,7 @@ msgstr "Нет настроенных уч. записей"
 
 #: main/data/manage_accounts/dialog.ui:231
 msgid "Add an account"
-msgstr "Добавить аккаунт"
+msgstr "Добавить учётную запись"
 
 #: main/data/manage_accounts/add_account_dialog.ui:35
 msgid "Sign in"
@@ -1229,7 +1229,7 @@ msgstr "Войти"
 #: main/data/manage_accounts/add_account_dialog.ui:75
 #: main/data/manage_accounts/add_account_dialog.ui:284
 msgid "Create account"
-msgstr "Создать аккаунт"
+msgstr "Создать учётную запись"
 
 #: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"

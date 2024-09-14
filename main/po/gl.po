@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2024-07-04 00:09+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-09-10 14:09+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
 "Language: gl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -36,7 +36,7 @@ msgstr "Cancelar"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:75
 #: main/data/manage_accounts/add_account_dialog.ui:245
 msgid "Connect"
-msgstr "Conectar"
+msgstr "Acceder"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
@@ -137,15 +137,15 @@ msgstr "Sen contas activas"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Bloquear usuaria"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Bloquear todo o dominio"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Desbloquear"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
@@ -161,7 +161,7 @@ msgstr "Bloqueada"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Dominio bloqueado"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -663,9 +663,9 @@ msgid "Today"
 msgstr "Hoxe"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, c-format
 msgid "%a, %b %d"
-msgstr "%a, %d %b"
+msgstr "%a, %d de %b"
 
 #: main/src/ui/global_search.vala:179
 #, c-format
@@ -1138,7 +1138,7 @@ msgstr "Alcume"
 msgid "Add Contact"
 msgstr "Engadir contacto"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Cliente moderno para conversas XMPP"
 
@@ -1221,7 +1221,7 @@ msgstr "Engadir unha conta"
 
 #: main/data/manage_accounts/add_account_dialog.ui:35
 msgid "Sign in"
-msgstr "Acceder"
+msgstr "Accede"
 
 #: main/data/manage_accounts/add_account_dialog.ui:75
 #: main/data/manage_accounts/add_account_dialog.ui:284

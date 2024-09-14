@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2024-07-11 03:46+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-08-23 19:09+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -137,15 +137,15 @@ msgstr "无活动账号"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "屏蔽用户"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "屏蔽整个域"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "解除屏蔽"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
@@ -161,7 +161,7 @@ msgstr "已屏蔽"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "域已屏蔽"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -662,6 +662,7 @@ msgid "Today"
 msgstr "今天"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, c-format
 msgid "%a, %b %d"
 msgstr "%a，%b%d日"
 
@@ -788,7 +789,7 @@ msgstr "请求发送消息的权限"
 
 #: main/src/ui/main_window.vala:179
 msgid "Welcome to Dino!"
-msgstr "欢迎来到 Dino！"
+msgstr "欢迎使用 Dino！"
 
 #: main/src/ui/main_window.vala:180
 msgid "Sign in or create an account to get started."
@@ -1132,7 +1133,7 @@ msgstr "别名"
 msgid "Add Contact"
 msgstr "添加联系人"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "现代 XMPP 聊天客户端"
 
@@ -1187,7 +1188,7 @@ msgstr "无匹配消息"
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr "检查拼写或尝试移除过滤器"
+msgstr "检查拼写或尝试移除筛选器"
 
 #: main/data/file_send_overlay.ui:61
 msgid "Send"
@@ -1195,7 +1196,7 @@ msgstr "发送"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr "选项"
+msgstr "首选项"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"

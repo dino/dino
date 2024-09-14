@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2023-04-17 08:54+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-09-06 15:09+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/"
 "translations/hu/>\n"
 "Language: hu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -41,11 +41,11 @@ msgstr "Kapcsolódás"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Fiók letiltása"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Fiók engedélyezése"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -122,7 +122,7 @@ msgstr "Fiókok"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Letiltott fiókok"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -137,31 +137,31 @@ msgstr "Nincsenek aktív fiókok"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Felhasználó tiltása"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Teljes tartomány tiltása"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Tiltás feloldása"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Kitűzve"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Kitűzés"
 
 #: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
-msgstr ""
+msgstr "Tiltva"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Tartomány tiltva"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -170,32 +170,32 @@ msgstr "Tiltás"
 #: main/src/windows/conversation_details.vala:119
 #: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Némítás"
 
 #: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Értesítések engedélyezve"
 
 #: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Értesítések az említésekhez"
 
 #: main/src/windows/conversation_details.vala:127
 #: main/src/windows/conversation_details.vala:128
 msgid "Muted"
-msgstr ""
+msgstr "Némítva"
 
 #: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Értesítések letiltva"
 
 #: main/src/windows/conversation_details.vala:156
 msgid "About"
-msgstr ""
+msgstr "Névjegy"
 
 #: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
-msgstr ""
+msgstr "Titkosítás"
 
 #: main/src/windows/conversation_details.vala:162
 msgid "Settings"
@@ -513,11 +513,11 @@ msgstr "Tagok"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Beszélgetés részletei"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Beszélgetés bezárása"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -665,7 +665,7 @@ msgid "Today"
 msgstr "Ma"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, c-format
 msgid "%a, %b %d"
 msgstr "%b. %e., %a"
 
@@ -810,15 +810,15 @@ msgstr "Fiókok kezelése"
 #: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP-cím"
 
 #: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Megjelenített név"
 
 #: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Téma"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -1058,7 +1058,7 @@ msgstr "Fájl"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Új"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1070,15 +1070,15 @@ msgstr "Üzenet frissítése"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "_Gépelési értesítések küldése"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "_Olvasási visszaigazolások küldése"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "É_rtesítések"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1086,7 +1086,7 @@ msgstr "Értesítés új üzenet érkezésekor"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "Mosolyjelek át_alakítása emodzsivá"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1104,7 +1104,7 @@ msgstr "Általános"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Gyorsbillentyűk"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1142,9 +1142,9 @@ msgstr "Álnév"
 msgid "Add Contact"
 msgstr "Partner hozzáadása"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
-msgstr "Modern XMPP csevegőprogram"
+msgstr "Modern XMPP-csevegési ügyfélprogram"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1181,11 +1181,11 @@ msgstr "Helyi álnév"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Kapcsolat állapota"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Fiók eltávolítása"
 
 #: main/data/global_search.ui:27
 msgid "No active search"

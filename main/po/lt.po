@@ -7,17 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2023-11-04 02:34+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-09-10 14:09+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && (n % 100 < 11 || n % 100 > "
-"19)) ? 0 : ((n % 10 >= 2 && n % 10 <= 9 && (n % 100 < 11 || n % 100 > 19)) ? "
-"1 : 2);\n"
-"X-Generator: Weblate 5.2-dev\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -42,11 +41,11 @@ msgstr "Prisijungti"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Išjungti paskyrą"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Įjungti paskyrą"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -123,7 +122,7 @@ msgstr "Paskyros"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Išjungtos paskyros"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -138,31 +137,31 @@ msgstr "Aktyvių paskyrų nėra"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Užblokuoti naudotoją"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Užblokuoti visą domeną"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Atblokuoti"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Prisegta"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Prisegti"
 
 #: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
-msgstr ""
+msgstr "Užblokuotas"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Domenas užblokuotas"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -171,32 +170,32 @@ msgstr "Blokuoti"
 #: main/src/windows/conversation_details.vala:119
 #: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Nutildyti pranešimus"
 
 #: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Pranešimai įjungti"
 
 #: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Pranešimai apie paminėjimus"
 
 #: main/src/windows/conversation_details.vala:127
 #: main/src/windows/conversation_details.vala:128
 msgid "Muted"
-msgstr ""
+msgstr "Pranešimai nutildyti"
 
 #: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Pranešimai išjungti"
 
 #: main/src/windows/conversation_details.vala:156
 msgid "About"
-msgstr ""
+msgstr "Apie"
 
 #: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
-msgstr ""
+msgstr "Šifravimas"
 
 #: main/src/windows/conversation_details.vala:162
 msgid "Settings"
@@ -515,11 +514,11 @@ msgstr "Nariai"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Išsamiau apie pokalbį"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Užverti pokalbį"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -665,7 +664,7 @@ msgid "Today"
 msgstr "Šiandien"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, c-format
 msgid "%a, %b %d"
 msgstr "%b %d, %a"
 
@@ -811,15 +810,15 @@ msgstr "Tvarkyti paskyras"
 #: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP adresas"
 
 #: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Atvaizduojamas vardas"
 
 #: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Tema"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -832,7 +831,7 @@ msgstr "Jūsų operacinė sistema nepasitiki jo saugumo liudijimu."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:157
 msgid "Its security certificate is issued to another domain."
-msgstr "Jo saugumo liudijimas yra išduotas kitai sričiai."
+msgstr "Jo saugumo liudijimas yra išduotas kitam domenui."
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:159
 msgid "Its security certificate will only become valid in the future."
@@ -1060,7 +1059,7 @@ msgstr "Failas"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nauja"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1072,15 +1071,15 @@ msgstr "Atnaujinti žinutę"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Siųsti pranešimus apie _rašymą"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Siųsti pranešimus apie _skaitymą"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "Pra_nešimai"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1088,7 +1087,7 @@ msgstr "Pranešti, kai gaunama nauja žinutė"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Konvertuoti šypsenėles į šypsniukus"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1104,7 +1103,7 @@ msgstr "Bendri"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Trumpiniai"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1142,7 +1141,7 @@ msgstr "Pseudonimas"
 msgid "Add Contact"
 msgstr "Pridėti adresatą"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Šiuolaikinė XMPP pokalbių kliento programa"
 
@@ -1181,11 +1180,11 @@ msgstr "Vietinis pseudonimas"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Ryšio būsena"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Šalinti paskyrą"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1209,7 +1208,7 @@ msgstr "Siųsti"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "Nuostatos"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"

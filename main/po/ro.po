@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-08-28 09:09+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
 "translations/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -138,15 +138,15 @@ msgstr "Nici un cont activ"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Blochează utilizator"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Blochează întregul domeniu"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Deblochează"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
@@ -162,7 +162,7 @@ msgstr "Blocat"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Domeniu blocat"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -665,7 +665,7 @@ msgid "Today"
 msgstr "Azi"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, c-format
+#, c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -1144,7 +1144,7 @@ msgstr "Alias"
 msgid "Add Contact"
 msgstr "Adaugă contact"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Client XMPP de discuții modern"
 

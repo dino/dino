@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2023-10-09 22:00+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-08-29 12:09+0000\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.1-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -217,19 +217,19 @@ msgstr "Heu afegit un dispositiu nou per al compte %s?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO per defecte"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "Activa l'encriptació OMEMO per a converses noves"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "Encripta a nous dispositius"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "Encripta automàticament a dispositius nous des d'aquest contacte."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
@@ -261,7 +261,7 @@ msgstr "Verificada"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "New device"
-msgstr ""
+msgstr "Nou dispositiu"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:32
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48

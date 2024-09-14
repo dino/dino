@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2020-11-12 17:21+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-08-27 08:09+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "fr/>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -218,19 +218,19 @@ msgstr "Avez-vous ajouté un nouveau client pour le compte %s ?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO par défaut"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "Activer le chiffrement OMEMO pour les nouvelles conversations"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "Chiffrer pour les nouveaux appareils"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "Chiffrer automatiquement pour les nouveaux appareils de ce contact."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 #: plugins/omemo/src/ui/contact_details_dialog.vala:52
@@ -262,7 +262,7 @@ msgstr "Vérifiée"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "New device"
-msgstr ""
+msgstr "Nouvel appareil"
 
 #: plugins/omemo/src/ui/contact_details_provider.vala:32
 #: plugins/omemo/src/ui/contact_details_dialog.vala:48

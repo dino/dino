@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino 20180510\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
-"PO-Revision-Date: 2024-05-17 20:01+0000\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
+"PO-Revision-Date: 2024-08-29 12:09+0000\n"
 "Language-Team: Catalan; Valencian <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:67
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
@@ -39,11 +39,11 @@ msgstr "Connecta"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 #: main/data/preferences_window_account.ui:110
 msgid "Disable account"
-msgstr ""
+msgstr "Desactiva el compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:107
 msgid "Enable account"
-msgstr ""
+msgstr "Activa el compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:150
 #: main/src/ui/manage_accounts/dialog.vala:146
@@ -120,7 +120,7 @@ msgstr "Comptes"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Comptes desactivats"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/ui/manage_accounts/add_account_dialog.vala:82
@@ -135,31 +135,31 @@ msgstr "No hi ha cap compte actiu"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block user"
-msgstr ""
+msgstr "Bloqueja l'usuari"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Block entire domain"
-msgstr ""
+msgstr "Bloqueja tot el domini"
 
 #: main/src/windows/conversation_details.vala:63
 msgid "Unblock"
-msgstr ""
+msgstr "Desbloqueja"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pinned"
-msgstr ""
+msgstr "Fixat"
 
 #: main/src/windows/conversation_details.vala:81
 msgid "Pin"
-msgstr ""
+msgstr "Fixa"
 
 #: main/src/windows/conversation_details.vala:92
 msgid "Blocked"
-msgstr ""
+msgstr "Bloqueja"
 
 #: main/src/windows/conversation_details.vala:96
 msgid "Domain blocked"
-msgstr ""
+msgstr "Domini bloquejat"
 
 #: main/src/windows/conversation_details.vala:100
 msgid "Block"
@@ -168,32 +168,32 @@ msgstr "Bloca"
 #: main/src/windows/conversation_details.vala:119
 #: main/src/windows/conversation_details.vala:120
 msgid "Mute"
-msgstr ""
+msgstr "Silencia"
 
 #: main/src/windows/conversation_details.vala:121
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Notificacions activades"
 
 #: main/src/windows/conversation_details.vala:124
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Notificacions de mencions"
 
 #: main/src/windows/conversation_details.vala:127
 #: main/src/windows/conversation_details.vala:128
 msgid "Muted"
-msgstr ""
+msgstr "Silenciat"
 
 #: main/src/windows/conversation_details.vala:129
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Notificacions desactivades"
 
 #: main/src/windows/conversation_details.vala:156
 msgid "About"
-msgstr ""
+msgstr "Quant a"
 
 #: main/src/windows/conversation_details.vala:159
 msgid "Encryption"
-msgstr ""
+msgstr "Xifratge"
 
 #: main/src/windows/conversation_details.vala:162
 msgid "Settings"
@@ -511,11 +511,11 @@ msgstr "Membres"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Detalls de la conversa"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Tanca la conversa"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -524,11 +524,11 @@ msgstr "Informació de depuració"
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr "Trucant…"
+msgstr "S'està trucant…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr "Sonant…"
+msgstr "Està sonant…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
@@ -591,7 +591,7 @@ msgstr "Següent"
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
 #: main/src/ui/application.vala:289 main/data/join_room_dialog2.ui:190
 msgid "Join"
-msgstr "Uneix-te"
+msgstr "Uneix-me"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:146
 #: main/data/manage_accounts/add_account_dialog.ui:160
@@ -621,7 +621,7 @@ msgstr "No esteu autoritzat a crear una sala"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr "Sala només per membres"
+msgstr "Sala només per a membres"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
@@ -661,6 +661,7 @@ msgid "Today"
 msgstr "Avui"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, c-format
 msgid "%a, %b %d"
 msgstr "%a, %b %d"
 
@@ -703,7 +704,7 @@ msgstr "Trucada de grup entrant"
 #: main/src/ui/notifier_freedesktop.vala:125
 #: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr "Rebutjar"
+msgstr "Rebutja"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
@@ -753,7 +754,7 @@ msgstr "Sol·licitud de permís"
 #: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr "%s demana el permís per a escriure a %s"
+msgstr "%s demana el permís per escriure a %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:28
 msgid "Send typing notifications"
@@ -805,15 +806,15 @@ msgstr "Gestiona els comptes"
 #: main/src/ui/conversation_details.vala:133
 #: main/data/preferences_window_account.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "Adreça XMPP"
 
 #: main/src/ui/conversation_details.vala:138
 msgid "Display name"
-msgstr ""
+msgstr "Nom del contacte"
 
 #: main/src/ui/conversation_details.vala:152
 msgid "Topic"
-msgstr ""
+msgstr "Tema"
 
 #: main/src/ui/manage_accounts/add_account_dialog.vala:153
 #, c-format
@@ -932,7 +933,7 @@ msgstr "S'ha iniciat la trucada"
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr "Iniciat fa %s"
+msgstr "Iniciada fa %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
@@ -945,7 +946,7 @@ msgstr "La trucada ha finalitzat"
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr "Acabat a %s"
+msgstr "Acabada a les %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
@@ -958,7 +959,7 @@ msgstr "Trucada perduda"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr "T'has perdut aquesta trucada"
+msgstr "Us heu perdut aquesta trucada"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
@@ -971,7 +972,7 @@ msgstr "Trucada rebutjada"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr "Has rebutjat aquesta trucada"
+msgstr "Heu rebutjat aquesta trucada"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
@@ -1032,16 +1033,16 @@ msgstr "S'està baixant %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "%s offered: %s"
-msgstr "%s ha oferit: %s"
+msgstr "%s ha ofert: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:79
 #, c-format
 msgid "File offered: %s"
-msgstr "Fitxer oferit: %s"
+msgstr "Fitxer ofert: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 msgid "File offered"
-msgstr "Fitxer oferit"
+msgstr "Fitxer ofert"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 msgid "File transfer failed"
@@ -1053,7 +1054,7 @@ msgstr "Fitxer"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nou"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1065,15 +1066,15 @@ msgstr "Actualitza el missatge"
 
 #: main/data/preferences_window_general.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "_Envia notificacions d'escriptura"
 
 #: main/data/preferences_window_general.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Envia _confirmació de lectura"
 
 #: main/data/preferences_window_general.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Notificacions"
 
 #: main/data/preferences_window_general.ui:39
 msgid "Notify when a new message arrives"
@@ -1081,7 +1082,7 @@ msgstr "Notifica'm quan arriba un missatge nou"
 
 #: main/data/preferences_window_general.ui:55
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "C_onverteix emoticones a emoji"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1097,7 +1098,7 @@ msgstr "General"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Dreceres de teclat"
 
 #: main/data/gtk/help-overlay.ui:33
 msgid "Conversation"
@@ -1135,7 +1136,7 @@ msgstr "Àlias"
 msgid "Add Contact"
 msgstr "Afegeix el contacte"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Client de xat XMPP modern"
 
@@ -1174,11 +1175,11 @@ msgstr "Àlias local"
 
 #: main/data/preferences_window_account.ui:89
 msgid "Connection status"
-msgstr ""
+msgstr "Estat de la connexió"
 
 #: main/data/preferences_window_account.ui:119
 msgid "Remove account"
-msgstr ""
+msgstr "Elimina el compte"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
@@ -1186,7 +1187,7 @@ msgstr "No hi ha cap cerca activa"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr "Teclegeu per a començar una cerca"
+msgstr "Teclegeu per iniciar una cerca"
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
@@ -1227,7 +1228,7 @@ msgstr "Crea un compte"
 
 #: main/data/manage_accounts/add_account_dialog.ui:142
 msgid "Could not establish a secure connection"
-msgstr "No s'ha pogut una connexió segura"
+msgstr "No s'ha pogut establir una connexió segura"
 
 #: main/data/manage_accounts/add_account_dialog.ui:294
 msgid "Choose a public server"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-22 19:41+0200\n"
+"POT-Creation-Date: 2024-09-14 20:33+0200\n"
 "PO-Revision-Date: 2022-08-23 18:21+0000\n"
 "Language-Team: none\n"
 "Language: is\n"
@@ -663,6 +663,7 @@ msgid "Today"
 msgstr "Í dag"
 
 #: main/src/ui/widgets/date_separator.vala:35
+#, c-format
 msgid "%a, %b %d"
 msgstr "%a %b %d"
 
@@ -1136,7 +1137,7 @@ msgstr "Samnefni"
 msgid "Add Contact"
 msgstr "Bæta við"
 
-#: main/data/im.dino.Dino.appdata.xml.in:6
+#: main/data/im.dino.Dino.appdata.xml.in:5
 msgid "Modern XMPP chat client"
 msgstr "Nútímalegt XMPP-spjallforrit"
 
