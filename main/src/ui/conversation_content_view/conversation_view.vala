@@ -301,18 +301,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private Adw.Animation scroll_animation(double target) {
-#if ADW_1_2
         return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 500,
                 new Adw.PropertyAnimationTarget(scrolled.vadjustment, "value")
         );
-#else
-        return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 500,
-                new Adw.CallbackAnimationTarget(value => {
-                    scrolled.vadjustment.value = value;
-                })
-        );
-#endif
-
     }
 
     public void initialize_around_message(Conversation conversation, ContentItem content_item) {

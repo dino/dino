@@ -52,10 +52,8 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
             show_remove_account_dialog();
         });
         enter_password_button.clicked.connect(() => {
-
-        var password = new PasswordEntry() { show_peek_icon=true };
-#if Adw_1_2
             var dialog = new Adw.MessageDialog((Window)this.get_root(), "Enter password for %s".printf(account.bare_jid.to_string()), null);
+            var password = new PasswordEntry() { show_peek_icon=true };
             dialog.response.connect((response) => {
                 if (response == "connect") {
                     account.password = password.text;
@@ -66,23 +64,6 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
             dialog.set_extra_child(password);
             dialog.add_response("cancel", _("Cancel"));
             dialog.add_response("connect", _("Connect"));
-#else
-            Gtk.MessageDialog dialog = new Gtk.MessageDialog (
-                    (Window)this.get_root(),  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
-                    Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL,
-                    "Enter password for %s", account.bare_jid.to_string());
-            Button ok_button = dialog.get_widget_for_response(ResponseType.OK) as Button;
-            ok_button.label = _("Connect");
-
-            dialog.response.connect((response) => {
-                if (response == ResponseType.OK) {
-                    account.password = password.text;
-                    model.reconnect_account(account);
-                }
-                dialog.close();
-            });
-            dialog.get_content_area().append(password);
-#endif
 
             dialog.present();
         });

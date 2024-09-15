@@ -3,7 +3,7 @@ find_package(Gettext)
 include(${GETTEXT_USE_FILE})
 gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
 
-find_package(Adwaita REQUIRED)
+find_package(Adwaita ${Adwaita_GLOBAL_VERSION} REQUIRED)
 find_package(Qrencode REQUIRED)
 find_packages(OMEMO_PACKAGES REQUIRED
     Adwaita
@@ -35,9 +35,6 @@ compile_gresources(
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
 set(OMEMO_DEFINITIONS)
-if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
-    set(OMEMO_DEFINITIONS ${OMEMO_DEFINITIONS} Adw_1_2)
-endif()
 
 vala_precompile(OMEMO_VALA_C
 SOURCES

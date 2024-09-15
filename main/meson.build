@@ -113,9 +113,6 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.2')
-    vala_args += ['-D', 'Adw_1_2']
-endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.6')
     vala_args += ['-D', 'GTK_4_6']
 endif

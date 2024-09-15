@@ -155,15 +155,10 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         copy_button.clicked.connect(() => { copy_button.get_clipboard().set_text(fingerprint); });
         own_action_box.append(copy_button);
 
-        Adw.ActionRow action_row = new Adw.ActionRow();
-
+        Adw.ActionRow action_row = new Adw.ActionRow() { use_markup = true };
         action_row.title = "This device";
-        action_row.subtitle = format_fingerprint(fingerprint_from_base64(own_b64));
-        action_row.add_suffix(own_action_box);
-#if Adw_1_2
-        action_row.use_markup = true;
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(own_b64));
-#endif
+        action_row.add_suffix(own_action_box);
         add_key_row(action_row);
 
         // Create and set QR code popover
@@ -209,7 +204,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         }
 
         if (device[plugin.db.identity_meta.now_active]) {
-            Adw.ActionRow action_row = new Adw.ActionRow();
+            Adw.ActionRow action_row = new Adw.ActionRow() { use_markup = true };
             action_row.activated.connect(() => {
                 Row updated_device = plugin.db.identity_meta.get_device(device[plugin.db.identity_meta.identity_id], device[plugin.db.identity_meta.address_name], device[plugin.db.identity_meta.device_id]);
                 ManageKeyDialog manage_dialog = new ManageKeyDialog(updated_device, plugin.db);
@@ -222,7 +217,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
             });
             action_row.activatable = true;
             action_row.title = "Other device";
-            action_row.subtitle = format_fingerprint(fingerprint_from_base64(key_base64));
+            action_row.subtitle = fingerprint_markup(fingerprint_from_base64(key_base64));
             string trust_str = _("Accepted");
             switch(trust) {
                 case TrustLevel.UNTRUSTED:
@@ -234,10 +229,6 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
             }
 
             action_row.add_suffix(new Label(trust_str));
-#if Adw_1_2
-            action_row.use_markup = true;
-            action_row.subtitle = fingerprint_markup(fingerprint_from_base64(key_base64));
-#endif
             add_key_row(action_row);
         }
         displayed_ids.add(device[plugin.db.identity_meta.device_id]);
@@ -281,14 +272,9 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
     }
 
     private void add_new_fingerprint(Row device) {
-        Adw.ActionRow action_row = new Adw.ActionRow();
+        Adw.ActionRow action_row = new Adw.ActionRow() { use_markup = true };
         action_row.title = _("New device");
-        action_row.subtitle = format_fingerprint(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
-
-#if Adw_1_2
-        action_row.use_markup = true;
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
-#endif
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
         accept_button.set_icon_name("emblem-ok-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
