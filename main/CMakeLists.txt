@@ -66,7 +66,6 @@ set(RESOURCE_LIST
     conversation_details.ui
     conversation_item_widget.ui
     conversation_list_titlebar.ui
-    conversation_list_titlebar_csd.ui
     conversation_row.ui
     conversation_view.ui
     file_default_widget.ui

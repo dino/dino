@@ -233,10 +233,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_action(deny_call_action);
     }
 
-    public bool use_csd() {
-        return Environment.get_variable("GTK_CSD") != "0";
-    }
-
     private void show_preferences_window() {
         Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
         dialog.model.populate(db, stream_interactor);
@@ -272,10 +268,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         about_window.website = "https://dino.im/";
         about_window.copyright = "Copyright © 2016-2023 - Dino Team";
         about_window.license_type = License.GPL_3_0;
-
-        if (!use_csd()) {
-            about_window.set_titlebar(null);
-        }
         about_window.present();
     }
 

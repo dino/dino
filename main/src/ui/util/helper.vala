@@ -394,10 +394,6 @@ public void present_window(Window window) {
 #endif
 }
 
-public bool use_csd() {
-    return ((Application) GLib.Application.get_default()).use_csd();
-}
-
 public Widget? widget_if_tooltips_active(Widget w) {
     return use_tooltips() ? w : null;
 }

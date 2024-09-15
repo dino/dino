@@ -77,19 +77,10 @@ public class MainWindow : Adw.ApplicationWindow {
     }
 
     private void setup_headerbar() {
-        if (Util.use_csd()) {
-            conversation_list_titlebar = get_conversation_list_titlebar_csd();
-            conversation_titlebar = new ConversationTitlebarCsd();
-            leaflet.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
-            leaflet.bind_property("folded", conversation_titlebar.get_widget(), "show-start-title-buttons", BindingFlags.SYNC_CREATE);
-        } else {
-            Label title_label = new Label("Dino");
-            HeaderBar titlebar = new HeaderBar() { title_widget=title_label, show_title_buttons=true };
-            box.prepend(titlebar);
-
-            conversation_list_titlebar = new ConversationListTitlebar();
-            conversation_titlebar = new ConversationTitlebarNoCsd();
-        }
+        conversation_list_titlebar = get_conversation_list_titlebar();
+        conversation_titlebar = new ConversationTitlebar();
+        leaflet.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
+        leaflet.bind_property("folded", conversation_titlebar.get_widget(), "show-start-title-buttons", BindingFlags.SYNC_CREATE);
         left_box.prepend(conversation_list_titlebar);
         right_box.prepend(conversation_titlebar.get_widget());
         leaflet.notify["folded"].connect_after(() => conversation_titlebar.back_button_visible = leaflet.folded);
