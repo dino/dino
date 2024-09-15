@@ -16,7 +16,7 @@ protected class RosterList {
     private ListBox list_box = new ListBox();
     private HashMap<Account, HashMap<Jid, ListBoxRow>> rows = new HashMap<Account, HashMap<Jid, ListBoxRow>>(Account.hash_func, Account.equals_func);
 
-    public RosterList(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
+    public RosterList(StreamInteractor stream_interactor, Gee.List<Account> accounts, bool notes_mode = false) {
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;
 
@@ -34,7 +34,7 @@ protected class RosterList {
             foreach (ulong handler_id in handler_ids) stream_interactor.get_module(RosterManager.IDENTITY).disconnect(handler_id);
         });
 
-        foreach (Account a in accounts) fetch_roster_items(a);
+        foreach (Account a in accounts) fetch_roster_items(a, notes_mode);
     }
 
     private void remove_row(Account account, Jid jid) {
@@ -54,10 +54,17 @@ protected class RosterList {
         list_box.invalidate_filter();
     }
 
-    private void fetch_roster_items(Account account) {
-        rows[account] = new HashMap<Jid, ListBoxRow>(Jid.hash_func, Jid.equals_func);
-        foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
+    private void fetch_roster_items(Account account, bool notes_mode = false) {
+        if (!notes_mode){
+          rows[account] = new HashMap<Jid, ListBoxRow>(Jid.hash_func, Jid.equals_func);
+          foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
             update_row(account, roster_item.jid);
+          }
+        }
+        else {
+          ListRow own_account_row = new ListRow.from_jid(stream_interactor, account.bare_jid, account, accounts.size > 1);
+          ListBoxRow own_account_lbrow = new ListBoxRow() { child=own_account_row };
+          list_box.append(own_account_lbrow);
         }
     }
 
