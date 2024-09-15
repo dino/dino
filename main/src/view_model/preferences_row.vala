@@ -18,6 +18,11 @@ namespace Dino.Ui.ViewModel.PreferencesRow {
         public string text { get; set; }
     }
 
+    public class PrivateText : Any {
+        public signal void changed();
+        public string text { get; set; }
+    }
+
     public class Toggle : Any {
         public string subtitle { get; set; }
         public bool state { get; set; }
