@@ -7,7 +7,7 @@ using Xmpp;
 
 namespace Dino.Ui.ManageAccounts {
 
-[GtkTemplate (ui = "/im/dino/Dino/manage_accounts/add_account_dialog.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/preferences_window/add_account_dialog.ui")]
 public class AddAccountDialog : Adw.Window {
 
     public signal void added(Account account);

@@ -60,6 +60,11 @@ set(RESOURCE_LIST
     add_conversation/list_row.ui
     add_conversation/select_jid_fragment.ui
 
+    preferences_window/account_preferences_subpage.ui
+    preferences_window/add_account_dialog.ui
+    preferences_window/general_preferences_page.ui
+    preferences_window/preferences_window.ui
+
     account_picker_row.ui
     call_widget.ui
     chat_input.ui
@@ -77,9 +82,6 @@ set(RESOURCE_LIST
     join_room_dialog2.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
-    manage_accounts/account_row.ui
-    manage_accounts/add_account_dialog.ui
-    manage_accounts/dialog.ui
     menu_add.ui
     menu_app.ui
     menu_conversation.ui
@@ -87,9 +89,6 @@ set(RESOURCE_LIST
     message_item_widget_edit_mode.ui
     occupant_list.ui
     occupant_list_item.ui
-    preferences_window.ui
-    preferences_window_account.ui
-    preferences_window_general.ui
     quote.ui
     search_autocomplete.ui
     unified_main_content.ui
@@ -214,10 +213,6 @@ SOURCES
     src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/conversation_titlebar.vala
 
-    src/ui/manage_accounts/account_row.vala
-    src/ui/manage_accounts/add_account_dialog.vala
-    src/ui/manage_accounts/dialog.vala
-
     src/ui/occupant_menu/list.vala
     src/ui/occupant_menu/list_row.vala
     src/ui/occupant_menu/view.vala
@@ -245,6 +240,7 @@ SOURCES
 
     src/windows/preferences_window/account_preferences_subpage.vala
     src/windows/preferences_window/accounts_preferences_page.vala
+    src/windows/preferences_window/add_account_dialog.vala
     src/windows/preferences_window/encryption_preferences_page.vala
     src/windows/preferences_window/general_preferences_page.vala
     src/windows/preferences_window/preferences_window.vala

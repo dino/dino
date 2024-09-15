@@ -5,7 +5,7 @@ using Xmpp.Xep;
 using Gee;
 using Gtk;
 
-[GtkTemplate (ui = "/im/dino/Dino/preferences_window.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/preferences_window/preferences_window.ui")]
 public class Dino.Ui.PreferencesWindow : Adw.PreferencesWindow {
     [GtkChild] public unowned Dino.Ui.PreferencesWindowAccounts accounts_page;
     [GtkChild] public unowned Dino.Ui.PreferencesWindowEncryption encryption_page;

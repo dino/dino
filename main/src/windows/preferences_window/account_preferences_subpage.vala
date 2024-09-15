@@ -5,7 +5,7 @@ using Gee;
 using Gtk;
 using Gdk;
 
-[GtkTemplate (ui = "/im/dino/Dino/preferences_window_account.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/preferences_window/account_preferences_subpage.ui")]
 public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
 
     [GtkChild] public unowned Adw.HeaderBar headerbar;

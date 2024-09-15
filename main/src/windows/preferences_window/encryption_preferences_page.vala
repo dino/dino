@@ -4,7 +4,6 @@ using Xmpp.Xep;
 using Gee;
 using Gtk;
 
-//[GtkTemplate (ui = "/im/dino/Dino/preferences_window_encryption.ui")]
 public class Dino.Ui.PreferencesWindowEncryption : Adw.PreferencesPage {
 
     private DropDown drop_down = null;
