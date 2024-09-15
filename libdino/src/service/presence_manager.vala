@@ -77,6 +77,18 @@ public class PresenceManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).cancel_subscription(stream, jid.bare_jid);
     }
 
+    public void send_presence(string? pres_str){
+            foreach(Account account in stream_interactor.get_accounts()) {
+                XmppStream stream = stream_interactor.get_stream(account);
+                Xmpp.Presence.Stanza presence = new Xmpp.Presence.Stanza();
+                if (pres_str != null) presence.show = pres_str;
+                if (stream != null) {
+                    stream.get_module(Xmpp.Presence.Module.IDENTITY).send_presence(stream, presence);
+                }
+            }
+    }
+
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available_show.connect((stream, jid, show) =>
             on_received_available_show(account, jid, show)

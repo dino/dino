@@ -65,6 +65,7 @@
     <file>join_room_dialog2.ui</file>
     <file>menu_add.ui</file>
     <file>menu_app.ui</file>
+    <file>menu_presence.ui</file>
     <file>menu_conversation.ui</file>
     <file>menu_encryption.ui</file>
     <file>message_item_widget_edit_mode.ui</file>

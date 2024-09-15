@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <menu id="menu_presence">
+        <section>
+            <item>
+                <attribute name="action">app.presence_online</attribute>
+                <attribute name="label" translatable="yes">Online</attribute>
+            </item>
+            <item>
+                <attribute name="action">app.presence_dnd</attribute>
+                <attribute name="label" translatable="yes">Do not disturb</attribute>
+            </item>
+            <item>
+                <attribute name="action">app.presence_away</attribute>
+                <attribute name="label" translatable="yes">Away</attribute>
+            </item>
+            <item>
+                <attribute name="action">app.presence_xaway</attribute>
+                <attribute name="label" translatable="yes">Unavailable</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>

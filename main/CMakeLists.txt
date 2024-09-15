@@ -45,6 +45,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-double-tick-symbolic.svg
     icons/scalable/status/dino-party-popper-symbolic.svg
     icons/scalable/status/dino-security-high-symbolic.svg
+    icons/scalable/status/dino-status-xa.svg
     icons/scalable/status/dino-status-away.svg
     icons/scalable/status/dino-status-chat.svg
     icons/scalable/status/dino-status-dnd.svg
@@ -83,6 +84,7 @@ set(RESOURCE_LIST
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
     menu_add.ui
+    menu_presence.ui
     menu_app.ui
     menu_conversation.ui
     menu_encryption.ui

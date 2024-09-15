@@ -67,6 +67,7 @@ public class Stanza : Xmpp.Stanza {
                 StanzaNode? show_node = stanza.get_subnode(NODE_SHOW);
                 if (show_node == null) {
                     show_node = new StanzaNode.build(NODE_SHOW);
+                    show_node.put_node(new StanzaNode.text(value));
                     stanza.put_node(show_node);
                 }
                 show_node.val = value;
