@@ -75,13 +75,8 @@
                       </object>
                     </child>
                     <child>
-                      <object class="AdwActionRow" id="local_alias">
+                      <object class="AdwEntryRow" id="local_alias">
                         <property name="title" translatable="yes">Local alias</property>
-                        <child type="suffix">
-                          <object class="GtkEntry" id="local_alias_entry">
-                            <property name="valign">center</property>
-                          </object>
-                        </child>
                       </object>
                     </child>
                     <child>

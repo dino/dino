@@ -12,8 +12,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     [GtkChild] public unowned Button back_button;
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Adw.ActionRow xmpp_address;
-    [GtkChild] public unowned Adw.ActionRow local_alias; // TODO replace with EntryRow once we require Adw 1.2
-    [GtkChild] public unowned Entry local_alias_entry;
+    [GtkChild] public unowned Adw.EntryRow local_alias;
     [GtkChild] public unowned Adw.ActionRow connection_status;
     [GtkChild] public unowned Button enter_password_button;
     [GtkChild] public unowned Box avatar_menu_box;
@@ -152,25 +151,26 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     }
 
     private void show_remove_account_dialog() {
-        Gtk.MessageDialog msg = new Gtk.MessageDialog (
-                (Window)this.get_root(),  Gtk.DialogFlags.DESTROY_WITH_PARENT | Gtk.DialogFlags.MODAL,
-                Gtk.MessageType.WARNING, Gtk.ButtonsType.OK_CANCEL,
-                _("Remove account %s?"), account.bare_jid.to_string());
-        msg.secondary_text = "You won't be able to access your conversation history anymore."; // TODO remove history!
-        Button ok_button = msg.get_widget_for_response(ResponseType.OK) as Button;
-        ok_button.label = _("Remove");
-        ok_button.add_css_class("destructive-action");
-        msg.response.connect((response) => {
-            if (response == ResponseType.OK) {
+        Adw.MessageDialog dialog = new Adw.MessageDialog (
+                (Window)this.get_root(),
+                _("Remove account %s?".printf(account.bare_jid.to_string())),
+                "You won't be able to access your conversation history anymore."
+        );
+        // TODO remove history!
+        dialog.add_response("cancel", "Cancel");
+        dialog.add_response("remove", "Remove");
+        dialog.set_response_appearance("remove", Adw.ResponseAppearance.DESTRUCTIVE);
+        dialog.response.connect((response) => {
+            if (response == "remove") {
                 model.remove_account(account);
                 // Close the account subpage
                 var window = (Adw.PreferencesWindow) this.get_root();
                 window.close_subpage();
 //                window.pop_subpage();
             }
-            msg.close();
+            dialog.close();
         });
-        msg.present();
+        dialog.present();
     }
 
     private string get_status_label() {
