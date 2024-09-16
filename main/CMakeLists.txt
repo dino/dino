@@ -62,6 +62,7 @@ set(RESOURCE_LIST
 
     preferences_window/account_preferences_subpage.ui
     preferences_window/add_account_dialog.ui
+    preferences_window/change_password_dialog.ui
     preferences_window/general_preferences_page.ui
     preferences_window/preferences_window.ui
 
@@ -241,6 +242,7 @@ SOURCES
     src/windows/preferences_window/account_preferences_subpage.vala
     src/windows/preferences_window/accounts_preferences_page.vala
     src/windows/preferences_window/add_account_dialog.vala
+    src/windows/preferences_window/change_password_dialog.vala
     src/windows/preferences_window/encryption_preferences_page.vala
     src/windows/preferences_window/general_preferences_page.vala
     src/windows/preferences_window/preferences_window.vala

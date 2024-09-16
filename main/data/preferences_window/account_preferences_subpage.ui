@@ -80,6 +80,28 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwActionRow" id="password_change">
+                        <property name="title" translatable="yes">Password</property>
+                        <child type="suffix">
+                          <object class="GtkBox">
+                            <property name="opacity">0.7</property>
+                            <property name="spacing">6</property>
+                            <property name="orientation">horizontal</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label">•••••</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">go-next-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
                       <object class="AdwActionRow" id="connection_status">
                         <property name="title" translatable="yes">Connection status</property>
                         <style>

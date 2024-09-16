@@ -98,12 +98,32 @@ public class Dino.Ui.ViewModel.PreferencesWindow : Object {
         update_data();
     }
 
+    public ChangePasswordDialog get_change_password_dialog_model() {
+        return new ChangePasswordDialog() {
+            account = selected_account.account,
+            stream_interactor = stream_interactor
+        };
+    }
+
     private void bind_general_page() {
         var settings = Dino.Application.get_default().settings;
         settings.bind_property("send-typing", general_page, "send-typing", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         settings.bind_property("send-marker", general_page, "send-marker", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         settings.bind_property("notifications", general_page, "notifications", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         settings.bind_property("convert-utf8-smileys", general_page, "convert-emojis", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+    }
+}
+
+public class Dino.Ui.ViewModel.ChangePasswordDialog : Object {
+    public Entities.Account account { get; set; }
+    public StreamInteractor stream_interactor { get; set; }
+
+    public async string? change_password(string new_password) {
+        var res = yield stream_interactor.get_module(Register.IDENTITY).change_password(account, new_password);
+        if (res == null) {
+            account.password = new_password;
+        }
+        return res;
     }
 }
 

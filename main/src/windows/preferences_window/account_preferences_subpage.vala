@@ -13,6 +13,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Adw.ActionRow xmpp_address;
     [GtkChild] public unowned Adw.EntryRow local_alias;
+    [GtkChild] public unowned Adw.ActionRow password_change;
     [GtkChild] public unowned Adw.ActionRow connection_status;
     [GtkChild] public unowned Button enter_password_button;
     [GtkChild] public unowned Box avatar_menu_box;
@@ -50,6 +51,12 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
         remove_account_button.clicked.connect(() => {
             show_remove_account_dialog();
         });
+        password_change.activatable_widget = new Label("");
+        password_change.activated.connect(() => {
+            var dialog = new ChangePasswordDialog(model.get_change_password_dialog_model());
+            dialog.set_transient_for((Gtk.Window)this.get_root());
+            dialog.present();
+        });
         enter_password_button.clicked.connect(() => {
             var dialog = new Adw.MessageDialog((Window)this.get_root(), "Enter password for %s".printf(account.bare_jid.to_string()), null);
             var password = new PasswordEntry() { show_peek_icon=true };
@@ -76,10 +83,10 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
                 avatar.model = model.selected_account.avatar_model;
                 xmpp_address.subtitle = account.bare_jid.to_string();
 
-                if (alias_entry_changed != 0) local_alias_entry.disconnect(alias_entry_changed);
-                local_alias_entry.text = account.alias ?? "";
-                alias_entry_changed = local_alias_entry.changed.connect(() => {
-                    account.alias = local_alias_entry.text;
+                if (alias_entry_changed != 0) local_alias.disconnect(alias_entry_changed);
+                local_alias.text = account.alias ?? "";
+                alias_entry_changed = local_alias.changed.connect(() => {
+                    account.alias = local_alias.text;
                 });
 
                 bindings += account.bind_property("enabled", disable_account_button, "label", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
@@ -88,6 +95,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
                     return true;
                 });
                 bindings += account.bind_property("enabled", avatar_menu_box, "visible", BindingFlags.SYNC_CREATE);
+                bindings += account.bind_property("enabled", password_change, "visible", BindingFlags.SYNC_CREATE);
                 bindings += account.bind_property("enabled", connection_status, "visible", BindingFlags.SYNC_CREATE);
                 bindings += model.selected_account.bind_property("connection-state", connection_status, "subtitle", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
                     to = get_status_label();
