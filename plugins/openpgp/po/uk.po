@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-12-31 17:29+0000\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"PO-Revision-Date: 2023-02-24 11:39+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -16,41 +16,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-#, fuzzy
-msgid "Key publishing disabled"
-msgstr "Публікація ключа відключена"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#, fuzzy
-msgid "Error in GnuPG"
-msgstr "Помилка у GnuPG"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr ""
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "Вибрати ключ"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "Завантаження…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
+msgstr "Запит до GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
 msgstr ""
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
-#, fuzzy
 msgid "Key not in keychain"
 msgstr "Відсутній ключ у зв’язці"
 
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Шифрування"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Публікація ключа відключена"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "Помилка у GnuPG"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Немає доступних ключей. Сгенеріть!"
+
+#~ msgid "Select key"
+#~ msgstr "Вибрати ключ"
+
+#~ msgid "Loading…"
+#~ msgstr "Завантаження…"

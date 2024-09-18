@@ -160,30 +160,32 @@ public class AvatarManager : StreamInteractionModule, Object {
         }
     }
 
+    public void unset_avatar(Account account) {
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream == null) return;
+        Xmpp.Xep.UserAvatars.unset_avatar(stream);
+    }
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.UserAvatars.Module.IDENTITY).received_avatar_hash.connect((stream, jid, id) =>
-            on_user_avatar_received.begin(account, jid, id)
+            on_user_avatar_received(account, jid, id)
         );
+        stream_interactor.module_manager.get_module(account, Xep.UserAvatars.Module.IDENTITY).avatar_removed.connect((stream, jid) => {
+            on_user_avatar_removed(account, jid);
+        });
         stream_interactor.module_manager.get_module(account, Xep.VCard.Module.IDENTITY).received_avatar_hash.connect((stream, jid, id) =>
-            on_vcard_avatar_received.begin(account, jid, id)
+            on_vcard_avatar_received(account, jid, id)
         );
 
         foreach (var entry in get_avatar_hashes(account, Source.USER_AVATARS).entries) {
-            on_user_avatar_received.begin(account, entry.key, entry.value);
+            on_user_avatar_received(account, entry.key, entry.value);
         }
         foreach (var entry in get_avatar_hashes(account, Source.VCARD).entries) {
-
-            // FIXME: remove. temporary to remove falsely saved avatars.
-            if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(entry.key, account)) {
-                db.avatar.delete().with(db.avatar.jid_id, "=", db.get_jid_id(entry.key)).perform();
-                continue;
-            }
-
-            on_vcard_avatar_received.begin(account, entry.key, entry.value);
+            on_vcard_avatar_received(account, entry.key, entry.value);
         }
     }
 
-    private async void on_user_avatar_received(Account account, Jid jid_, string id) {
+    private void on_user_avatar_received(Account account, Jid jid_, string id) {
         Jid jid = jid_.bare_jid;
 
         if (!user_avatars.has_key(jid) || user_avatars[jid] != id) {
@@ -193,7 +195,14 @@ public class AvatarManager : StreamInteractionModule, Object {
         received_avatar(jid, account);
     }
 
-    private async void on_vcard_avatar_received(Account account, Jid jid_, string id) {
+    private void on_user_avatar_removed(Account account, Jid jid_) {
+        Jid jid = jid_.bare_jid;
+        user_avatars.unset(jid);
+        remove_avatar_hash(account, jid, Source.USER_AVATARS);
+        received_avatar(jid, account);
+    }
+
+    private void on_vcard_avatar_received(Account account, Jid jid_, string id) {
         bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(jid_.bare_jid, account);
         Jid jid = is_gc ? jid_ : jid_.bare_jid;
 
@@ -212,6 +221,14 @@ public class AvatarManager : StreamInteractionModule, Object {
             .value(db.avatar.account_id, account.id)
             .value(db.avatar.hash, hash)
             .value(db.avatar.type_, type)
+            .perform();
+    }
+
+    public void remove_avatar_hash(Account account, Jid jid, int type) {
+        db.avatar.delete()
+            .with(db.avatar.jid_id, "=", db.get_jid_id(jid))
+            .with(db.avatar.account_id, "=", account.id)
+            .with(db.avatar.type_, "=", type)
             .perform();
     }
 

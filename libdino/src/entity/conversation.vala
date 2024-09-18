@@ -34,7 +34,7 @@ public class Conversation : Object {
             }
         }
     }
-    public Encryption encryption { get; set; default = Encryption.NONE; }
+    public Encryption encryption { get; set; default = Encryption.UNKNOWN; }
     public Message? read_up_to { get; set; }
     public int read_up_to_item { get; set; default=-1; }
 

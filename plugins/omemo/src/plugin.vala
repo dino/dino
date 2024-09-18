@@ -30,7 +30,6 @@ public class Plugin : RootInterface, Object {
     public Dino.Application app;
     public Database db;
     public EncryptionListEntry list_entry;
-    public AccountSettingsEntry settings_entry;
     public ContactDetailsProvider contact_details_provider;
     public DeviceNotificationPopulator device_notification_populator;
     public OwnNotifications own_notifications;
@@ -43,13 +42,12 @@ public class Plugin : RootInterface, Object {
         this.app = app;
         this.db = new Database(Path.build_filename(Application.get_storage_dir(), "omemo.db"));
         this.list_entry = new EncryptionListEntry(this);
-        this.settings_entry = new AccountSettingsEntry(this);
         this.contact_details_provider = new ContactDetailsProvider(this);
         this.device_notification_populator = new DeviceNotificationPopulator(this, this.app.stream_interactor);
         this.trust_manager = new TrustManager(this.app.stream_interactor, this.db);
 
         this.app.plugin_registry.register_encryption_list_entry(list_entry);
-        this.app.plugin_registry.register_account_settings_entry(settings_entry);
+        this.app.plugin_registry.register_encryption_preferences_entry(new OmemoPreferencesEntry(this));
         this.app.plugin_registry.register_contact_details_entry(contact_details_provider);
         this.app.plugin_registry.register_notification_populator(device_notification_populator);
         this.app.plugin_registry.register_conversation_addition_populator(new BadMessagesPopulator(this.app.stream_interactor, this));

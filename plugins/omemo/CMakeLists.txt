@@ -3,8 +3,10 @@ find_package(Gettext)
 include(${GETTEXT_USE_FILE})
 gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TARGET_NAME ${GETTEXT_PACKAGE}-translations)
 
+find_package(Adwaita ${Adwaita_GLOBAL_VERSION} REQUIRED)
 find_package(Qrencode REQUIRED)
 find_packages(OMEMO_PACKAGES REQUIRED
+    Adwaita
     Gee
     GLib
     GModule
@@ -19,6 +21,7 @@ find_package(SignalProtocol 2.3.2 REQUIRED)
 
 set(RESOURCE_LIST
     contact_details_dialog.ui
+    encryption_preferences_entry.ui
     manage_key_dialog.ui
 )
 
@@ -31,6 +34,7 @@ compile_gresources(
     PREFIX /im/dino/Dino/omemo
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
 )
+set(OMEMO_DEFINITIONS)
 
 vala_precompile(OMEMO_VALA_C
 SOURCES
@@ -65,7 +69,6 @@ SOURCES
     src/signal/store.vala
     src/signal/util.vala
 
-    src/ui/account_settings_entry.vala
     src/ui/bad_messages_populator.vala
     src/ui/call_encryption_entry.vala
     src/ui/contact_details_provider.vala
@@ -73,6 +76,7 @@ SOURCES
     src/ui/device_notification_populator.vala
     src/ui/own_notifications.vala
     src/ui/encryption_list_entry.vala
+    src/ui/encryption_preferences_entry.vala
     src/ui/manage_key_dialog.vala
     src/ui/util.vala
 CUSTOM_VAPIS
@@ -86,6 +90,8 @@ PACKAGES
     ${OMEMO_PACKAGES}
 GRESOURCES
     ${OMEMO_GRESOURCES_XML}
+DEFINITIONS
+    ${OMEMO_DEFINITIONS}
 GENERATE_VAPI
     omemo
 GENERATE_HEADER

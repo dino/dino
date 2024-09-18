@@ -28,9 +28,6 @@ namespace Dino.Plugins.Omemo {
             StanzaNode? encrypted_node = stanza.stanza.get_subnode("encrypted", NS_URI);
             if (encrypted_node == null || MessageFlag.get_flag(stanza) != null || stanza.from == null) return false;
 
-            if (message.body == null && Xep.ExplicitEncryption.get_encryption_tag(stanza) == NS_URI) {
-                message.body = "[This message is OMEMO encrypted]"; // TODO temporary
-            }
             if (!Plugin.ensure_context()) return false;
             int identity_id = db.identity.get_id(conversation.account.id);
 
@@ -38,7 +35,7 @@ namespace Dino.Plugins.Omemo {
             stanza.add_flag(flag);
 
             Xep.Omemo.ParsedData? data = parse_node(encrypted_node);
-            if (data == null || data.ciphertext == null) return false;
+            if (data == null) return false;
 
 
             foreach (Bytes encr_key in data.our_potential_encrypted_keys.keys) {
@@ -52,14 +49,16 @@ namespace Dino.Plugins.Omemo {
                 foreach (Jid possible_jid in possible_jids) {
                     try {
                         uint8[] key = decrypt_key(data, possible_jid);
-                        string cleartext = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, data.iv, data.ciphertext));
+                        if (data.ciphertext != null) {
+                            string cleartext = arr_to_str(aes_decrypt(Cipher.AES_GCM_NOPADDING, key, data.iv, data.ciphertext));
+                            message.body = cleartext;
+                        }
 
                         // If we figured out which real jid a message comes from due to decryption working, save it
                         if (conversation.type_ == Conversation.Type.GROUPCHAT && message.real_jid == null) {
                             message.real_jid = possible_jid;
                         }
 
-                        message.body = cleartext;
                         message.encryption = Encryption.OMEMO;
 
                         trust_manager.message_device_id_map[message] = data.sid;
@@ -71,7 +70,7 @@ namespace Dino.Plugins.Omemo {
             }
 
             if (
-                encrypted_node.get_deep_string_content("payload") != null && // Ratchet forwarding doesn't contain payload and might not include us, which is ok
+                data.ciphertext != null && // Ratchet forwarding doesn't contain payload and might not include us, which is ok
                 data.our_potential_encrypted_keys.size == 0 && // The message was not encrypted to us
                 stream_interactor.module_manager.get_module(message.account, StreamModule.IDENTITY).store.local_registration_id != data.sid // Message from this device. Never encrypted to itself.
             ) {

@@ -55,14 +55,10 @@ public class ContactDetailsDialog : Gtk.Dialog {
     }
 
     public ContactDetailsDialog(Plugin plugin, Account account, Jid jid) {
-        Object(use_header_bar : Environment.get_variable("GTK_CSD") != "0" ? 1 : 0);
+        Object(use_header_bar : 1);
         this.plugin = plugin;
         this.account = account;
         this.jid = jid;
-
-        if (Environment.get_variable("GTK_CSD") != "0") {
-//            ((HeaderBar) get_header_bar()).set_subtitle(jid.bare_jid.to_string());
-        }
 
         keys_listbox.row_activated.connect(on_key_entry_clicked);
         inactive_keys_listbox.row_activated.connect(on_key_entry_clicked);

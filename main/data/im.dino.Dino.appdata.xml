@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
   <id>im.dino.Dino</id>
-  <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0+</project_license>
   <name>Dino</name>
-  <summary>Modern XMPP Chat Client</summary>
+  <summary>Modern XMPP chat client</summary>
   <summary xml:lang="zh_TW">現代化的 XMPP 用戶端聊天軟件</summary>
   <summary xml:lang="zh_CN">现代 XMPP 聊天客户端</summary>
+  <summary xml:lang="uk">Сучасний кліент XMPP</summary>
   <summary xml:lang="tr">Modern XMPP Sohbet İstemcisi</summary>
   <summary xml:lang="sv">Modern XMPP-chattklient</summary>
   <summary xml:lang="sq">Klient Modern Fjalosjesh XMPP</summary>
@@ -30,19 +29,25 @@
   <summary xml:lang="hu">Modern XMPP csevegőprogram</summary>
   <summary xml:lang="gl">Cliente moderno para conversas XMPP</summary>
   <summary xml:lang="fr">Client de clavardage XMPP moderne</summary>
+  <summary xml:lang="fi">Nykyaikainen XMPP-asiakasohjelma</summary>
   <summary xml:lang="fa">کلاینت نوین گپ XMPP</summary>
   <summary xml:lang="eu">XMPP txat bezero modernoa</summary>
   <summary xml:lang="es">Un cliente de XMPP moderno</summary>
   <summary xml:lang="eo">Moderna XMPP-Retebabililo</summary>
   <summary xml:lang="el">Σύγχρονος XMPP Chat Client</summary>
   <summary xml:lang="de">Modernes XMPP-Chat-Programm</summary>
+  <summary xml:lang="da">Moderne XMPP-Chatklient</summary>
   <summary xml:lang="cs">Moderní XMPP klient</summary>
   <summary xml:lang="ca">Client de xat XMPP modern</summary>
   <summary xml:lang="ar">تطبيق حديث للدردشة عبر XMPP</summary>
+  <icon type="stock">im.dino.Dino</icon>
+  <icon type="remote" width="128" height="128">https://dino.im/img/appdata/icon-dino-0.4-128x128.png</icon>
   <description>
     <p>Dino is a modern open-source chat client for the desktop. It focuses on providing a clean and reliable Jabber/XMPP experience while having your privacy in mind.</p>
     <p xml:lang="zh_TW">Dino 是一個爲桌面打造的現代化開放原始碼用戶端聊天軟件。它致力於提供一份簡洁而可靠的 Jabber/XMPP 體驗，同時亦尊重您的私隱。</p>
-    <p xml:lang="zh_CN">Dino 是一个现代的开源聊天桌面客户端。它致力于提供一个清爽又可靠的 Jabber/XMPP 体验，同时又保护您的隐私。</p>
+    <p xml:lang="zh_CN">Dino 是现代的开源聊天桌面客户端。它致力于提供简洁可靠的 Jabber/XMPP 体验，同时兼顾用户隐私。</p>
+    <p xml:lang="vi">Dino là một ứng dụng chat mã nguồn mở hiện đại cho máy tính. Nó tập trung vào việc cung cấp một trải nghiệm Jabber/XMPP gọn gàng và tin cậy trong khi vẫn quan tâm đến quyền riêng tư của bạn.</p>
+    <p xml:lang="uk">Dino - це сучасний клієнт чату з відкритим вихідним кодом для комп’ютера. Він зосереджений на забезпеченні чистого та надійного досвіду Jabber/XMPP, зважаючи на вашу конфіденційність.</p>
     <p xml:lang="tr">Dino masaüstü bilgisayarlar için modern, açık kaynaklı bir sohbet uygulamasıdır. Gizlilik hassasiyetinizi göz önünde bulundurarak temiz ve güvenilir bir Jabber/XMPP deneyimi sunmaya odaklanır.</p>
     <p xml:lang="sv">Dino är en moden chattklient för skrivbordet med öppen källkod. Den erbjuder en elegant och pålitligt upplevelse av Jabber/XMPP samtidigt som den ser efter din integritet.</p>
     <p xml:lang="sq">Dino është një klient modern fjalosjesh, me burim të hapur, për desktop. Ai përqendrohet në dhënien e një mënyre funksionimi të qartë dhe të qëndrueshme për protokoll Jabber/XMPP, teksa ka në mendje privatësinë tuaj.</p>
@@ -65,19 +70,22 @@
     <p xml:lang="hu">A Dino egy modern, nyílt forráskódú csevegőprogram az asztali gépekre. Arra összpontosít, hogy tiszta és megbízható Jabber/XMPP-élményt nyújtson, miközben a magánszféra megőrzését is fontosnak tartja.</p>
     <p xml:lang="gl">Dino é un cliente moderno e de código aberto para o escritorio. Orientado a fornecer unha experiencia Jabber/XMPP limpa e fiábel tendo a privacidade e seguranza presentes.</p>
     <p xml:lang="fr">Dino est un client de clavardage libre et moderne pour le bureau. Il se concentre sur la fourniture d’une expérience XMPP simple et fiable tout en ayant toujours à l’esprit votre confidentialité.</p>
-    <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin jutteluohjelma työpöydälle. Se keskittyy tarjoamaan selkeän ja luotettavan Jabber/XMPP-kokemuksen unohtamatta yksityisyyttäsi.</p>
+    <p xml:lang="fi">Dino on nykyaikainen avoimen lähdekoodin keskusteluohjelma työpöydälle. Se tarjoaa selkeän ja luotettavan Jabber/XMPP-kokemuksen huomioiden yksityisyytesi.</p>
     <p xml:lang="fa">دینو یک کلاینت چت متن‌باز برای دسکتاپ است. تمرکز آن بر فراهم‌کردن تجربه‌ای شسته‌رفته و قابل‌اتکا از جَبِر/XMPP است درحالی که به حریم خصوصی‌تان اهمیت می‌دهد.</p>
     <p xml:lang="eu">Dino mahaigainerako iturburu irekiko txat bezero moderno bat da. Jabber/XMPP esperientzia garbi eta fidagarri bat ematen du zure pribatutasuna kontuan hartzeaz gain.</p>
     <p xml:lang="es">Dino es un cliente de mensajería moderno y libre para escritorio y móvil. Está enfocado en proveer una experiencia Jabber/XMPP limpia y confiable teniendo la privacidad en mente.</p>
     <p xml:lang="eo">Dino estas moderna malfermfonta retbabililo por la tabla komputilo. Ĝi celas provizi puran kaj fidindan sperton de Jabber/XMPP, protektante vian privatecon.</p>
     <p xml:lang="el">Το Dino είναι ένας σύγχρονος πελάτης συνομιλίας ανοιχτού κώδικα για desktop υπολογιστές. Επικεντρώνεται στην παροχή μιας καθαρής και αξιόπιστης εμπειρίας Jabber/XMPP έχοντας παράλληλα υπόψη την προστασία των προσωπικών δεδομένων σας.</p>
     <p xml:lang="de">Dino ist ein modernes, quelloffenes Chat-Programm für den Desktop. Es bietet ein aufgeräumtes und robustes Jabber-/XMPP-Erlebnis und legt einen Schwerpunkt auf Privatsphäre.</p>
+    <p xml:lang="da">Dino er en moderne open-source chatklient til skrivebordet. Den fokuserer på at give en ren og pålidelig Jabber/XMPP-oplevelse som samtidig har dit privatliv på sinde.</p>
     <p xml:lang="cs">Dino je moderní open-source chatovací klient pro stolní počítače. Jeho cílem je poskytování čistého a spolehlivého prostředí Jabber/XMPP s důrazem na zachování vašeho soukromí.</p>
     <p xml:lang="ca">Dino és un client de xat lliure i modern per a l'escriptori. Està centrat en proveir una experiència neta i fiable de Jabber/XMPP, sempre tenint en compte la vostra privacitat.</p>
     <p xml:lang="ar">إنّ Dino برنامج عصري ومفتوح المصدر للدردشة صُمّم لسطح المكتب. ويُركّز علي تقديم تجربة نظيفة وموثوق منها لجابر/XMPP مع أخذ خصوصيتكم بعين الإعتبار.</p>
     <p>It supports end-to-end encryption with OMEMO and OpenPGP and allows configuring privacy-related features such as read receipts and typing notifications.</p>
     <p xml:lang="zh_TW">它支持 OMEMO 和 OpenPGP 兩種端到端加密方式，並且容許設定私隱相關的特性譬如已讀回條和正在輸入提示。</p>
-    <p xml:lang="zh_CN">它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入提醒。</p>
+    <p xml:lang="zh_CN">它支持 OMEMO 和 OpenPGP 端对端加密并允许配置隐私相关的特性比如已读回执和输入通知。</p>
+    <p xml:lang="vi">Nó hỗ trợ mã hoá đầu cuối với OMEMO và OpenPGP, đồng thời cho phép cấu hình các tính năng liên quan đến quyền riêng tư như thông báo trạng thái tin nhắn và trạng thái đang nhập.</p>
+    <p xml:lang="uk">Він підтримує наскрізне шифрування за допомогою OMEMO та OpenPGP і дозволяє налаштовувати пов’язані з конфіденційністю функції, такі як сповіщення про прочитання та сповіщення про введення тексту.</p>
     <p xml:lang="tr">OMEMO ve OpenPGP ile baştan sona şifreleme destekler ve "okundu" bilgisi, "yazıyor..." bildirimi gibi gizlilikle alakalı özelliklerin ayarlanabilmesini sağlar.</p>
     <p xml:lang="sv">Dino stödjer end-to-end-kryptering med OMEMO och OpenPGP och tillåter konfigurering av funktioner med integritetspåverkan som läsbekräftelser och skriftaviseringar.</p>
     <p xml:lang="sq">Mbulon fshehtëzim skaj-më-skaj me OMEMO dhe OpenPGP dhe lejon formësim veçorish të lidhura me privatësinë, bie fjala, dëshmish leximi dhe njoftime shtypjeje.</p>
@@ -98,21 +106,24 @@
     <p xml:lang="ie">It supporta ciffration terminal per OMEMO e OpenPGP e permisse configurar sensitiv functiones quam confirmation de lectada e notificationes de tippada.</p>
     <p xml:lang="id">Mendukung enkripsi end-to-end dengan OMEMO dan OpenPGP, dan memungkinkan pengaturan fitur terkait privasi seperti tanda pesan dibaca dan pemberitahuan pengetikan.</p>
     <p xml:lang="hu">Támogatja az OMEMO és az OpenPGP használatával történő végpontok közötti titkosítást, és lehetővé teszi a magánszférához kapcsolódó funkciókat, mint például az olvasási visszaigazolást és a gépelési értesítéseket.</p>
-    <p xml:lang="gl">Suporta o cifrado de punto-a-punto con OMEMO e OpenPGP e permite configurar trazos orientados á privacidade tales coma confirmación de lectura e notificacións de escritura.</p>
+    <p xml:lang="gl">Suporta a cifraxe de punto-a-punto con OMEMO e OpenPGP e permite configurar funcións orientadas á privacidade tales coma confirmación de lectura e notificacións de escritura.</p>
     <p xml:lang="fr">Il prend en charge le chiffrement de bout en bout avec OMEMO et OpenPGP et permet de configurer les fonctions liées à la confidentialité telles que les accusés de réception et les notifications d’écriture.</p>
-    <p xml:lang="fi">Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja  mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.</p>
+    <p xml:lang="fi">Se tukee päästä päähän -salausta OMEMO:n ja OpenPGP:n avulla ja mahdollistaa yksityisyyteen liittyvien ominaisuuksien, kuten lukukuittausten ja kirjoitusilmoitusten asetusten määrittämisen.</p>
     <p xml:lang="fa">از رمزگذاری سرتاسر با اُمیمو و اُپن‌پی‌جی‌پی پشتیبانی می‌کند و اجازه تنظیم قابلیت‌های مربوط به حریم خصوصی را می‌دهد، از جمله: رسید خوانده‌شدن پیام‌ها و اعلان در حال نوشتن بودن.</p>
     <p xml:lang="eu">Amaieratik amaierarako enkriptazioa onartzen du OMEMO eta OpenPGPrekin eta pribatutasun ezaugarriak konfiguratzea baimentzen du irakurtze markak eta idazketa jakinarazpenak bezala.</p>
     <p xml:lang="es">Soporta cifrado fin-a-fin a través de OMEMO y OpenPGP y permite configurar características relacionadas con la privacidad, como confirmaciones de lectura y notificaciones de escritura.</p>
     <p xml:lang="eo">Ĝi subtenas fin-al-finan ĉifradon per OMEMO kaj OpenPGP kaj permesas agordi funkciojn pri privateco kiel kvitancojn de legiteco kaj sciigojn pri tajpado.</p>
     <p xml:lang="el">Υποστηρίζει κρυπτογράφηση από άκρο σε άκρο με OMEMO και OpenPGP και επιτρέπει την ρύθμιση λειτουργιών που σχετίζονται με το απόρρητο, όπως αποδείξεις ανάγνωσης και ειδοποιήσεις πληκτρολόγησης.</p>
     <p xml:lang="de">Er unterstützt Ende-zu-Ende Verschlüsselung mit OMEMO und OpenPGP und enthält Privatsphäre-Einstellungen zu Lesebestätigungen und Tippbenachrichtigungen.</p>
+    <p xml:lang="da">Den understøtter end-to-end kryptering med OMEMO og OpenPGP og tillader at konfigurere privatlivs-relaterede features så som læsekvitteringer og besked om skrivning.</p>
     <p xml:lang="cs">Podporuje šifrování end-to-end pomocí OMEMO a OpenPGP a umožňuje konfigurovat funkce související se soukromím, jako jsou potvrzení o přečtení a oznámení o psaní.</p>
     <p xml:lang="ca">Implementa xifratge punt a punt amb OMEMO i OpenPGP, i permet configurar funcionalitats relacionades amb la privacitat com per exemple rebuts de lectura i notificacions d'escriptura.</p>
     <p xml:lang="ar">وهو يدعم التشفير بواسطة OMEMO و OpenPGP يسمح بإعداد ميزات الخصوصية كالإيصالات المقروءة والإخطارات عند الكتابة.</p>
     <p>Dino fetches history from the server and synchronizes messages with other devices.</p>
     <p xml:lang="zh_TW">Dino 從伺服器取得訊息並與其他裝置同步。</p>
     <p xml:lang="zh_CN">Dino 从服务器获取消息并和其他设备同步。</p>
+    <p xml:lang="vi">Dino lấy lịch sử từ server và đồng bộ tin nhắn với các thiết bị khác.</p>
+    <p xml:lang="uk">Dino отримує історію з сервера та синхронізує повідомлення з іншими пристроями.</p>
     <p xml:lang="tr">Dino sunucudan konuşma geçmişini sunucudan çeker ve diğer cihazlara senkronize eder.</p>
     <p xml:lang="sv">Dino hämtar historik från servern och synkroniserar meddelanden med andra enheter.</p>
     <p xml:lang="sq">Dino e sjell historikun prej shërbyesve dhe njëkohëson mesazhet në pajisje të tjera.</p>
@@ -135,35 +146,34 @@
     <p xml:lang="hu">A Dino lekéri az előzményeket a kiszolgálóról, és szinkronizálja az üzeneteket a többi eszközzel.</p>
     <p xml:lang="gl">Dino obtén o histórico dende o servidor e sincroniza as mensaxes con outros dispositivos.</p>
     <p xml:lang="fr">Dino récupère l’historique du serveur et synchronise les messages avec les autres clients.</p>
-    <p xml:lang="fi">Dino hakee historian palvelimelta ja synkronisoi viestit muiden laitteiden kanssa.</p>
+    <p xml:lang="fi">Dino hakee historian palvelimelta ja synkronoi viestit muiden laitteiden kanssa.</p>
     <p xml:lang="fa">دینو تاریخچه را از سرور دریافت می‌کند و پیام‌ها را با دیگر دستگاه‌ها همگام‌سازی می‌کند.</p>
     <p xml:lang="eu">Dinok zerbitzaritik hartzen du historia eta beste gailuekin mezuak sinkronizatzen ditu.</p>
     <p xml:lang="es">Dino recupera el historial de mensajes desde el servidor y sincroniza los mensajes con otros dispositivos.</p>
     <p xml:lang="eo">Dino prenas historion el la servilo kaj sinkronigas mesaĝojn kun aliaj aparatoj.</p>
     <p xml:lang="el">Το Dino ανακτά το ιστορικό από τον διακομιστή και συγχρονίζει τα μηνύματα με άλλες συσκευές.</p>
     <p xml:lang="de">Dino ruft Gesprächsverläufe vom Server ab und synchronisiert Nachrichten mit anderen Geräten.</p>
+    <p xml:lang="da">Dino henter tidligere beskeder fra serveren og synkroniserer beskeder med andre enheder.</p>
     <p xml:lang="cs">Dino načítá historii ze serveru a synchronizuje zprávy s ostatními zařízeními.</p>
     <p xml:lang="ca">Dino recupera l'historial del servidor i sincronitza els missatges amb altres dispositius.</p>
     <p xml:lang="ar">يقوم Dino بجلب السِجلّ مِن السيرفر ثم يُزامِن الرسائل مع الأجهزة الأخرى.</p>
   </description>
-  <screenshots>
-    <screenshot type="default">
-      <image>https://dino.im/img/appdata/2022-02_screenshot-main.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://dino.im/img/appdata/2022-02_screenshot-call.png</image>
-    </screenshot>
-    <screenshot>
-      <image>https://dino.im/img/appdata/start_chat.png</image>
-    </screenshot>
-  </screenshots>
-  <translation type="gettext">dino</translation>
-  <developer_name>Dino Development Team</developer_name>
+  <categories>
+    <category>Network</category>
+    <category>InstantMessaging</category>
+    <category>Chat</category>
+    <category>GTK</category>
+  </categories>
+  <keywords>
+    <keyword translate="no">Jabber</keyword>
+    <keyword translate="no">XMPP</keyword>
+  </keywords>
   <url type="homepage">https://dino.im</url>
   <url type="bugtracker">https://github.com/dino/dino/issues</url>
   <url type="donation">https://dino.im/#donate</url>
+  <url type="vcs-browser">https://github.com/dino/dino</url>
   <url type="translate">https://hosted.weblate.org/projects/dino/</url>
-  <update_contact>appstream@dino.im</update_contact>
+  <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <releases>
     <release date="2023-02-07" version="0.4">
       <description>
@@ -186,8 +196,50 @@
       </description>
     </release>
   </releases>
+  <provides>
+    <mediatype>x-scheme-handler/xmpp</mediatype>
+  </provides>
+  <recommends>
+    <internet>always</internet>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <project_license>GPL-3.0+</project_license>
+  <developer id="im.dino">
+    <name>Dino Development Team</name>
+    <url>https://dino.im/</url>
+  </developer>
+  <!-- Deprecated: -->
+  <developer_name>Dino Development Team</developer_name>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-main-2244x1644@2.png</image>
+      <caption>Main screen</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="1441" height="929" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-call-1441x929@2.png</image>
+      <caption>Video call screen</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-search-2244x1644@2.png</image>
+      <caption>Main screen featuring search overlay</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="964" height="1552" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-mobile-964x1552@2.png</image>
+      <caption>Main screen in mobile size window</caption>
+    </screenshot>
+  </screenshots>
+  <translation type="gettext">dino</translation>
   <content_rating type="oars-1.1">
     <content_attribute id="social-chat">intense</content_attribute>
     <content_attribute id="social-audio">intense</content_attribute>
   </content_rating>
+  <update_contact>appstream@dino.im</update_contact>
+  <branding>
+    <color type="primary" scheme_preference="light">#B2DFDB</color>
+    <color type="primary" scheme_preference="dark">#004D40</color>
+  </branding>
 </component>

@@ -7,43 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-05-13 18:41+0000\n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"PO-Revision-Date: 2024-07-04 00:09+0000\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.7-dev\n"
 
-#: plugins/openpgp/src/account_settings_entry.vala:68
-#: plugins/openpgp/src/account_settings_entry.vala:72
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Key publishing disabled"
-msgstr "Publikowanie kluczy wyłączone"
-
-#: plugins/openpgp/src/account_settings_entry.vala:68
-msgid "Error in GnuPG"
-msgstr "Błąd w GnuPG"
-
-#: plugins/openpgp/src/account_settings_entry.vala:72
-msgid "No keys available. Generate one!"
-msgstr "Brak kluczy. Wygeneruj nowy!"
-
-#: plugins/openpgp/src/account_settings_entry.vala:101
-msgid "Select key"
-msgstr "Wybierz klucz"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
-msgid "Loading…"
-msgstr "Ładowanie…"
-
-#: plugins/openpgp/src/account_settings_entry.vala:114
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Odpytuję GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr "Wyłączono"
 
 #: plugins/openpgp/src/contact_details_provider.vala:28
 msgid "Key not in keychain"
@@ -52,3 +34,18 @@ msgstr "Klucz nie znajduje się w pęku kluczy"
 #: plugins/openpgp/src/contact_details_provider.vala:30
 msgid "Encryption"
 msgstr "Szyfrowanie"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Publikowanie kluczy wyłączone"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "Błąd w GnuPG"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Brak kluczy. Wygeneruj nowy!"
+
+#~ msgid "Select key"
+#~ msgstr "Wybierz klucz"
+
+#~ msgid "Loading…"
+#~ msgstr "Ładowanie…"

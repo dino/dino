@@ -40,7 +40,7 @@ public class ManageKeyDialog : Gtk.Dialog {
     }
 
     public ManageKeyDialog(Row device, Database db) {
-        Object(use_header_bar : Environment.get_variable("GTK_CSD") != "0" ? 1 : 0);
+        Object(use_header_bar : 1);
 
         this.device = device;
         this.db = db;

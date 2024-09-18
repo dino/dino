@@ -20,14 +20,14 @@ protected class RosterList {
         this.stream_interactor = stream_interactor;
         this.accounts = accounts;
 
-        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid, roster_item) => {
+        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).removed_roster_item.connect( (account, jid) => {
             if (accounts.contains(account)) {
-                on_removed_roster_item(account, jid, roster_item);
+                remove_row(account, jid);
             }
         });
-        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid, roster_item) => {
+        handler_ids += stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect( (account, jid) => {
             if (accounts.contains(account)) {
-                on_updated_roster_item(account, jid, roster_item);
+                update_row(account, jid);
             }
         });
         list_box.destroy.connect(() => {
@@ -37,16 +37,16 @@ protected class RosterList {
         foreach (Account a in accounts) fetch_roster_items(a);
     }
 
-    private void on_removed_roster_item(Account account, Jid jid, Roster.Item roster_item) {
+    private void remove_row(Account account, Jid jid) {
         if (rows.has_key(account) && rows[account].has_key(jid)) {
             list_box.remove(rows[account][jid]);
             rows[account].unset(jid);
         }
     }
 
-    private void on_updated_roster_item(Account account, Jid jid, Roster.Item roster_item) {
-        on_removed_roster_item(account, jid, roster_item);
-        ListRow row = new ListRow.from_jid(stream_interactor, roster_item.jid, account, accounts.size > 1);
+    private void update_row(Account account, Jid jid) {
+        remove_row(account, jid);
+        ListRow row = new ListRow.from_jid(stream_interactor, jid, account, accounts.size > 1);
         ListBoxRow list_box_row = new ListBoxRow() { child=row };
         rows[account][jid] = list_box_row;
         list_box.append(list_box_row);
@@ -57,7 +57,7 @@ protected class RosterList {
     private void fetch_roster_items(Account account) {
         rows[account] = new HashMap<Jid, ListBoxRow>(Jid.hash_func, Jid.equals_func);
         foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
-            on_updated_roster_item(account, roster_item.jid, roster_item);
+            update_row(account, roster_item.jid);
         }
     }
 

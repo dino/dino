@@ -46,20 +46,9 @@ public class Dino.FallbackBody : StreamInteractionModule, Object {
             if (fallbacks.is_empty) return false;
 
             foreach (var fallback in fallbacks) {
-                if (fallback.ns_uri != Xep.Replies.NS_URI) continue;
-
-                foreach (var location in fallback.locations) {
-                    db.body_meta.insert()
-                        .value(db.body_meta.message_id, message.id)
-                        .value(db.body_meta.info_type, Xep.FallbackIndication.NS_URI)
-                        .value(db.body_meta.info, fallback.ns_uri)
-                        .value(db.body_meta.from_char, location.from_char)
-                        .value(db.body_meta.to_char, location.to_char)
-                        .perform();
-                }
-
-                message.set_fallbacks(fallbacks);
+                if (fallback.ns_uri != Xep.Replies.NS_URI) continue; // TODO what if it's not
             }
+            message.set_fallbacks(fallbacks);
 
             return false;
         }

@@ -68,8 +68,10 @@ SOURCES
     src/service/util.vala
 
     src/util/display_name.vala
+    src/util/send_message.vala
     src/util/util.vala
     src/util/weak_map.vala
+    src/util/weak_timeout.vala
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
     "${CMAKE_BINARY_DIR}/exports/qlite.vapi"

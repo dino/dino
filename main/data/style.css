@@ -127,13 +127,13 @@ picture.avatar {
 
 /* Overlay Toolbar */
 
-.dino-main .overlay-toolbar {
+.overlay-toolbar {
     padding: 2px;
     border-radius: 6px;
     border-spacing: 0;
 }
 
-.dino-main .overlay-toolbar > * {
+.overlay-toolbar > * {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -282,6 +282,13 @@ window.dino-main .dino-chatinput-button button:checked:backdrop {
     color: alpha(@theme_unfocused_selected_bg_color, 0.8);
 }
 
+.dino-unread-line label {
+    color: @theme_selected_bg_color;
+}
+
+.dino-unread-line separator {
+    background-color: @theme_selected_bg_color;
+}
 
 .dino-chatinput,
 .dino-chatinput textview,

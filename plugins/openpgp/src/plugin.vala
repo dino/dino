@@ -13,18 +13,16 @@ public class Plugin : Plugins.RootInterface, Object {
     public HashMap<Account, Module> modules = new HashMap<Account, Module>(Account.hash_func, Account.equals_func);
 
     private EncryptionListEntry list_entry;
-    private AccountSettingsEntry settings_entry;
     private ContactDetailsProvider contact_details_provider;
 
     public void registered(Dino.Application app) {
         this.app = app;
         this.db = new Database(Path.build_filename(Application.get_storage_dir(), "pgp.db"));
         this.list_entry = new EncryptionListEntry(app.stream_interactor, db);
-        this.settings_entry = new AccountSettingsEntry(this);
         this.contact_details_provider = new ContactDetailsProvider(app.stream_interactor);
 
         app.plugin_registry.register_encryption_list_entry(list_entry);
-        app.plugin_registry.register_account_settings_entry(settings_entry);
+        app.plugin_registry.register_encryption_preferences_entry(new PgpPreferencesEntry(this));
         app.plugin_registry.register_contact_details_entry(contact_details_provider);
         app.stream_interactor.module_manager.initialize_account_modules.connect(on_initialize_account_modules);
 

@@ -55,6 +55,7 @@ SOURCES
 
     "src/module/xep/0048_bookmarks.vala"
     "src/module/xep/0048_conference.vala"
+    "src/module/xep/0394_message_markup.vala"
     "src/module/xep/0402_bookmarks2.vala"
     "src/module/xep/0004_data_forms.vala"
 

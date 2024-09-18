@@ -1,7 +1,9 @@
 using Gee;
 using Gdk;
 using Gtk;
+using Xmpp;
 
+using Xmpp;
 using Dino.Entities;
 
 namespace Dino.Ui {
@@ -135,6 +137,7 @@ public class ChatInputController : Object {
 
         string text = chat_input.chat_text_view.text_view.buffer.text;
         ContentItem? quoted_content_item_bak = quoted_content_item;
+        var markups = chat_input.chat_text_view.get_markups();
 
         // Reset input state. Has do be done before parsing commands, because those directly return.
         chat_input.chat_text_view.text_view.buffer.text = "";
@@ -193,11 +196,8 @@ public class ChatInputController : Object {
                     break;
             }
         }
-        Message out_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(text, conversation);
-        if (quoted_content_item_bak != null) {
-            stream_interactor.get_module(Replies.IDENTITY).set_message_is_reply_to(out_message, quoted_content_item_bak);
-        }
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_message(out_message, conversation);
+
+        Dino.send_message(conversation, text, quoted_content_item_bak != null ? quoted_content_item_bak.id : 0, null, markups);
     }
 
     private void on_text_input_changed() {

@@ -30,13 +30,32 @@ public class Dino.Ui.CallEncryptionButtonController : Object {
         update_opacity();
     }
 
-    public void set_info(string? title, bool show_keys, Xmpp.Xep.Jingle.ContentEncryption? audio_encryption, Xmpp.Xep.Jingle.ContentEncryption? video_encryption) {
+    private static bool bytes_equal(uint8[] a1, uint8[] a2) {
+        return a1.length == a2.length && Memory.cmp(a1, a2, a1.length) == 0;
+    }
+
+    private static bool encryption_equals(Xmpp.Xep.Jingle.ContentEncryption? audio_encryption, Xmpp.Xep.Jingle.ContentEncryption? video_encryption) {
+        if (audio_encryption == null && video_encryption == null) return true;
+        if (audio_encryption == null || video_encryption == null) return false;
+        if (audio_encryption.encryption_ns != video_encryption.encryption_ns) return false;
+        if (audio_encryption.encryption_name != video_encryption.encryption_name) return false;
+        if (!bytes_equal(audio_encryption.our_key,video_encryption.our_key)) return false;
+        if (!bytes_equal(audio_encryption.peer_key,video_encryption.peer_key)) return false;
+        return true;
+    }
+
+    public void set_info(string? title, bool show_keys, bool has_audio, Xmpp.Xep.Jingle.ContentEncryption? audio_encryption, bool has_video, Xmpp.Xep.Jingle.ContentEncryption? video_encryption) {
         Popover popover = new Popover();
         button.set_popover(popover);
 
-        if (audio_encryption == null) {
-            popover.set_child(new Label("This call is unencrypted.") );
-            return;
+        Xmpp.Xep.Jingle.ContentEncryption? single_encryption = null;
+        if (!has_audio || !has_video || encryption_equals(audio_encryption, video_encryption)) {
+            single_encryption = audio_encryption ?? video_encryption;
+
+            if (single_encryption == null) {
+                popover.set_child(new Label("This call is unencrypted.") );
+                return;
+            }
         }
         if (title != null && !show_keys) {
             popover.set_child(new Label(title) { use_markup=true } );
@@ -44,15 +63,19 @@ public class Dino.Ui.CallEncryptionButtonController : Object {
         }
 
         Box box = new Box(Orientation.VERTICAL, 10);
-        box.append(new Label("<b>%s</b>".printf(title ?? "This call is end-to-end encrypted.")) { use_markup=true, xalign=0 });
-
-        if (video_encryption == null) {
-            box.append(create_media_encryption_grid(audio_encryption));
+        if (single_encryption != null) {
+            box.append(new Label("<b>%s</b>".printf(title ?? "This call is end-to-end encrypted.")) { use_markup=true, xalign=0 });
+            box.append(create_media_encryption_grid(single_encryption));
         } else {
-            box.append(new Label("<b>Audio</b>") { use_markup=true, xalign=0 });
-            box.append(create_media_encryption_grid(audio_encryption));
-            box.append(new Label("<b>Video</b>") { use_markup=true, xalign=0 });
-            box.append(create_media_encryption_grid(video_encryption));
+            box.append(new Label("<b>%s</b>".printf(title ?? "This call is partially end-to-end encrypted.")) { use_markup=true, xalign=0 });
+            if (has_audio) {
+                box.append(new Label("<b>Audio</b>") { use_markup=true, xalign=0 });
+                box.append(create_media_encryption_grid(audio_encryption));
+            }
+            if (has_video) {
+                box.append(new Label("<b>Video</b>") { use_markup=true, xalign=0 });
+                box.append(create_media_encryption_grid(video_encryption));
+            }
         }
         popover.set_child(box);
     }
@@ -61,7 +84,10 @@ public class Dino.Ui.CallEncryptionButtonController : Object {
         button.opacity = controls_active && has_been_set ? 1 : 0;
     }
 
-    private Grid create_media_encryption_grid(Xmpp.Xep.Jingle.ContentEncryption? encryption) {
+    private Widget create_media_encryption_grid(Xmpp.Xep.Jingle.ContentEncryption? encryption) {
+        if (encryption == null) {
+            return new Label("This content is unencrypted.") { xalign=0 };
+        }
         Grid ret = new Grid() { row_spacing=3, column_spacing=5 };
         if (encryption.peer_key.length > 0) {
             ret.attach(new Label("Peer call key") { xalign=0 }, 1, 2, 1, 1);

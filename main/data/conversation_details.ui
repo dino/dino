@@ -122,11 +122,11 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton" id="block_button">
+                          <object class="GtkMenuButton" id="block_button">
                             <property name="visible" bind-source="model" bind-property="show-blocked" bind-flags="sync-create"/>
                             <child>
                               <object class="AdwButtonContent" id="block_button_content">
-                                <property name="icon-name">action-unavailable-symbolic</property>
+                                <property name="icon-name">dino-block-symbolic</property>
                                 <property name="label">Block</property>
                               </object>
                             </child>

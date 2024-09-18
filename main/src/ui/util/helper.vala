@@ -297,6 +297,31 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     return s;
 }
 
+    // Modifies `markups`.
+    public string remove_fallbacks_adjust_markups(string text, bool contains_quote, Gee.List<Xep.FallbackIndication.Fallback> fallbacks, Gee.List<Xep.MessageMarkup.Span> markups) {
+        string processed_text = text;
+
+        foreach (var fallback in fallbacks) {
+            if (fallback.ns_uri == Xep.Replies.NS_URI && contains_quote) {
+                foreach (var fallback_location in fallback.locations) {
+                    processed_text = processed_text[0:processed_text.index_of_nth_char(fallback_location.from_char)] +
+                            processed_text[processed_text.index_of_nth_char(fallback_location.to_char):processed_text.length];
+
+                    int length = fallback_location.to_char - fallback_location.from_char;
+                    foreach (Xep.MessageMarkup.Span span in markups) {
+                        if (span.start_char > fallback_location.to_char) {
+                            span.start_char -= length;
+                        }
+                        if (span.end_char > fallback_location.to_char) {
+                            span.end_char -= length;
+                        }
+                    }
+                }
+            }
+        }
+        return processed_text;
+    }
+
 /**
  * This is a heuristic to count emojis in a string {@link http://example.com/}
  *
@@ -367,10 +392,6 @@ public void present_window(Window window) {
 #else
     window.present();
 #endif
-}
-
-public bool use_csd() {
-    return ((Application) GLib.Application.get_default()).use_csd();
 }
 
 public Widget? widget_if_tooltips_active(Widget w) {

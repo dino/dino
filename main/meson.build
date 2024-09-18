@@ -53,6 +53,7 @@ sources = files(
     'src/ui/conversation_content_view/quote_widget.vala',
     'src/ui/conversation_content_view/reactions_widget.vala',
     'src/ui/conversation_content_view/subscription_notification.vala',
+    'src/ui/conversation_content_view/unread_indicator_populator.vala',
     'src/ui/conversation_details.vala',
     'src/ui/conversation_list_titlebar.vala',
     'src/ui/conversation_selector/conversation_selector.vala',
@@ -68,28 +69,33 @@ sources = files(
     'src/ui/global_search.vala',
     'src/ui/main_window.vala',
     'src/ui/main_window_controller.vala',
-    'src/ui/manage_accounts/account_row.vala',
-    'src/ui/manage_accounts/add_account_dialog.vala',
-    'src/ui/manage_accounts/dialog.vala',
     'src/ui/notifier_freedesktop.vala',
     'src/ui/notifier_gnotifications.vala',
     'src/ui/occupant_menu/list.vala',
     'src/ui/occupant_menu/list_row.vala',
     'src/ui/occupant_menu/view.vala',
-    'src/ui/settings_dialog.vala',
     'src/ui/util/accounts_combo_box.vala',
     'src/ui/util/config.vala',
     'src/ui/util/data_forms.vala',
     'src/ui/util/helper.vala',
     'src/ui/util/label_hybrid.vala',
+    'src/ui/util/preference_group.vala',
     'src/ui/util/size_request_box.vala',
     'src/ui/util/sizing_bin.vala',
     'src/ui/widgets/avatar_picture.vala',
     'src/ui/widgets/date_separator.vala',
     'src/ui/widgets/fixed_ratio_picture.vala',
     'src/ui/widgets/natural_size_increase.vala',
+    'src/view_model/account_details.vala',
     'src/view_model/conversation_details.vala',
     'src/view_model/preferences_row.vala',
+    'src/view_model/preferences_window.vala',
+    'src/windows/preferences_window/account_preferences_subpage.vala',
+    'src/windows/preferences_window/accounts_preferences_page.vala',
+    'src/windows/preferences_window/add_account_dialog.vala',
+    'src/windows/preferences_window/encryption_preferences_page.vala',
+    'src/windows/preferences_window/general_preferences_page.vala',
+    'src/windows/preferences_window/preferences_window.vala',
     'src/windows/conversation_details.vala',
 )
 sources += gnome.compile_resources(
@@ -106,9 +112,6 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.2')
-    vala_args += ['-D', 'Adw_1_2']
-endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.6')
     vala_args += ['-D', 'GTK_4_6']
 endif

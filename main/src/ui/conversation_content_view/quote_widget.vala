@@ -41,12 +41,13 @@ namespace Dino.Ui.Quote {
             this.author_jid = content_item.jid;
         }
 
+        private void on_display_time_timeout() {
+            if (display_time_timeout != 0) update_display_time();
+        }
+
         private void update_display_time() {
             this.display_time = ConversationItemSkeleton.get_relative_time(message_time.to_local());
-            display_time_timeout = Timeout.add_seconds((int) ConversationItemSkeleton.get_next_time_change(message_time), () => {
-                if (display_time_timeout != 0) update_display_time();
-                return false;
-            });
+            display_time_timeout = Dino.WeakTimeout.add_seconds_once((int) ConversationItemSkeleton.get_next_time_change(message_time), this, on_display_time_timeout);
         }
 
         public override void dispose() {

@@ -90,6 +90,20 @@ public class EntityInfo : StreamInteractionModule, Object {
         return info_result.features.contains(feature);
     }
 
+    public bool has_feature_offline(Account account, Jid jid, string feature) {
+        int ret = has_feature_cached_int(account, jid, feature);
+        if (ret == -1) {
+            return db.entity.select()
+                    .with(db.entity.account_id, "=", account.id)
+                    .with(db.entity.jid_id, "=", db.get_jid_id(jid))
+                    .with(db.entity.resource, "=", jid.resourcepart ?? "")
+                    .join_with(db.entity_feature, db.entity.caps_hash, db.entity_feature.entity)
+                    .with(db.entity_feature.feature, "=", feature)
+                    .count() > 0;
+        }
+        return ret == 1;
+    }
+
     public bool has_feature_cached(Account account, Jid jid, string feature) {
         return has_feature_cached_int(account, jid, feature) == 1;
     }
@@ -203,13 +217,24 @@ public class EntityInfo : StreamInteractionModule, Object {
         ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid);
         if (info_result == null) return null;
 
-        if (hash != null && EntityCapabilities.Module.compute_hash_for_info_result(info_result) == hash) {
-            store_features(hash, info_result.features);
-            store_identities(hash, info_result.identities);
+        var computed_hash = EntityCapabilities.Module.compute_hash_for_info_result(info_result);
+
+        if (hash == null || computed_hash == hash) {
+            db.entity.upsert()
+                .value(db.entity.account_id, account.id, true)
+                .value(db.entity.jid_id, db.get_jid_id(jid), true)
+                .value(db.entity.resource, jid.resourcepart ?? "", true)
+                .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
+                .value(db.entity.caps_hash, computed_hash)
+                .perform();
+
+            store_features(computed_hash, info_result.features);
+            store_identities(computed_hash, info_result.identities);
         } else {
-            jid_features[jid] = info_result.features;
-            jid_identity[jid] = info_result.identities;
+            warning("Claimed entity caps hash from %s doesn't match computed one", jid.to_string());
         }
+        jid_features[jid] = info_result.features;
+        jid_identity[jid] = info_result.identities;
 
         return info_result;
     }

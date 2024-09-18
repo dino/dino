@@ -82,28 +82,22 @@ public class Settings : Object {
         }
     }
 
-    private bool unread_count_;
-    public bool unread_count {
-        get { return unread_count_; }
-        set {
-            db.settings.upsert()
-                .value(db.settings.key, "unread_count", true)
-                .value(db.settings.value, value.to_string())
-                .perform();
-            unread_count_ = value;
+    public Encryption get_default_encryption(Account account) {
+        string? setting = db.account_settings.get_value(account.id, "default-encryption");
+        if (setting != null) {
+            return (Encryption) int.parse(setting);
         }
+        return Encryption.NONE;
     }
 
-    private bool unread_count_notifications_;
-    public bool unread_count_notifications {
-        get { return unread_count_notifications_; }
-        set {
-            db.settings.upsert()
-                .value(db.settings.key, "unread_count_notifications", true)
-                .value(db.settings.value, value.to_string())
+    public void set_default_encryption(Account account, Encryption encryption) {
+        db.account_settings.upsert()
+                .value(db.account_settings.key, "default-encryption", true)
+                .value(db.account_settings.account_id, account.id, true)
+                .value(db.account_settings.value, ((int)encryption).to_string())
                 .perform();
-            unread_count_notifications_ = value;
-        }
+
+
     }
 }
 

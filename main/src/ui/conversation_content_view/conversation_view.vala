@@ -87,6 +87,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
         app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));
+        app.plugin_registry.register_conversation_addition_populator(new UnreadIndicatorPopulator(stream_interactor));
 
         // Rather than connecting to the leave event of the main_event_box directly,
         // we connect to the parent event box that also wraps the overlaying message_menu_box.
@@ -300,18 +301,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private Adw.Animation scroll_animation(double target) {
-#if ADW_1_2
         return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 500,
                 new Adw.PropertyAnimationTarget(scrolled.vadjustment, "value")
         );
-#else
-        return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 500,
-                new Adw.CallbackAnimationTarget(value => {
-                    scrolled.vadjustment.value = value;
-                })
-        );
-#endif
-
     }
 
     public void initialize_around_message(Conversation conversation, ContentItem content_item) {
@@ -382,6 +374,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         foreach (ContentMetaItem item in items) {
             do_insert_item(item);
         }
+
         Application app = GLib.Application.get_default() as Application;
         foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK4);
@@ -398,6 +391,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 return;
             }
         }
+
         do_insert_item(item);
     }
 

@@ -18,7 +18,7 @@
             <property name="spacing">8</property>
             <child>
               <object class="GtkSearchEntry" id="search_entry">
-                <property name="placeholder-text" translatable="true">Search for channels or enter an XMPP address</property>
+                <property name="placeholder-text">Search for channels or enter an XMPP address</property>
                 <property name="margin-start">16</property>
                 <property name="margin-end">16</property>
 <!--                <signal name="search-changed" object="list" handler="dino_ui_join_room_dialog_view_model_on_search_changed" />-->
@@ -121,8 +121,8 @@
                     <property name="child">
                       <object class="AdwStatusPage">
                         <property name="icon-name">face-uncertain-symbolic</property>
-                        <property name="title" translatable="yes">No channels found</property>
-                        <property name="description" translatable="yes">None of your bookmarks matches your search and the XMPP address could not be resolved.</property>
+                        <property name="title">No channels found</property>
+                        <property name="description">None of your bookmarks matches your search and the XMPP address could not be resolved.</property>
                       </object>
                     </property>
                   </object>
@@ -133,8 +133,8 @@
                     <property name="child">
                       <object class="AdwStatusPage">
                         <property name="icon-name">im.dino.Dino-symbolic</property>
-                        <property name="title" translatable="yes">No known channels</property>
-                        <property name="description" translatable="yes">Discover new channels or enter an XMPP address!</property>
+                        <property name="title">No known channels</property>
+                        <property name="description">Discover new channels or enter an XMPP address!</property>
                       </object>
                     </property>
                   </object>
@@ -145,7 +145,7 @@
                     <property name="child">
                       <object class="AdwStatusPage">
                         <property name="icon-name">im.dino.Dino-symbolic</property>
-                        <property name="title" translatable="yes">You are offline</property>
+                        <property name="title">You are offline</property>
                       </object>
                     </property>
                   </object>

@@ -18,10 +18,6 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] protected unowned Label nick_label;
     [GtkChild] protected unowned Label message_label;
     [GtkChild] protected unowned Label unread_count_label;
-    [GtkChild] protected unowned Button x_button;
-    [GtkChild] protected unowned Revealer time_revealer;
-    [GtkChild] protected unowned Revealer xbutton_revealer;
-    [GtkChild] protected unowned Revealer top_row_revealer;
     [GtkChild] protected unowned Image pinned_image;
     [GtkChild] public unowned Revealer main_revealer;
 
@@ -98,9 +94,6 @@ public class ConversationSelectorRow : ListBoxRow {
 
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
-        x_button.clicked.connect(() => {
-            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
-        });
         picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
         conversation.notify["read-up-to-item"].connect(() => update_read());
         conversation.notify["pinned"].connect(() => { update_pinned_icon(); });
@@ -284,19 +277,6 @@ public class ConversationSelectorRow : ListBoxRow {
             }
             Application app = GLib.Application.get_default() as Application;
             app.set_unread(all_unread);
-        }
-    }
-
-    public override void state_flags_changed(StateFlags flags) {
-        StateFlags curr_flags = get_state_flags();
-        if ((curr_flags & StateFlags.PRELIGHT) != 0) {
-            time_revealer.set_reveal_child(false);
-            top_row_revealer.set_reveal_child(false);
-            xbutton_revealer.set_reveal_child(true);
-        } else {
-            time_revealer.set_reveal_child(true);
-            top_row_revealer.set_reveal_child(true);
-            xbutton_revealer.set_reveal_child(false);
         }
     }
 

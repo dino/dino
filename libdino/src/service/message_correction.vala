@@ -39,27 +39,21 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         });
     }
 
-    public void send_correction(Conversation conversation, Message old_message, string correction_text) {
-        string stanza_id = old_message.edit_to ?? old_message.stanza_id;
+    public void set_correction(Conversation conversation, Message message, Message old_message) {
+        string reference_stanza_id = old_message.edit_to ?? old_message.stanza_id;
 
-        Message out_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(correction_text, conversation);
-        out_message.edit_to = stanza_id;
-        out_message.quoted_item_id = old_message.quoted_item_id;
-        outstanding_correction_nodes[out_message.stanza_id] = stanza_id;
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(out_message, conversation);
+        outstanding_correction_nodes[message.stanza_id] = reference_stanza_id;
 
         db.message_correction.insert()
-            .value(db.message_correction.message_id, out_message.id)
-            .value(db.message_correction.to_stanza_id, stanza_id)
-            .perform();
+                .value(db.message_correction.message_id, message.id)
+                .value(db.message_correction.to_stanza_id, reference_stanza_id)
+                .perform();
 
         db.content_item.update()
-            .with(db.content_item.foreign_id, "=", old_message.id)
-            .with(db.content_item.content_type, "=", 1)
-            .set(db.content_item.foreign_id, out_message.id)
-            .perform();
-
-        on_received_correction(conversation, out_message.id);
+                .with(db.content_item.foreign_id, "=", old_message.id)
+                .with(db.content_item.content_type, "=", 1)
+                .set(db.content_item.foreign_id, message.id)
+                .perform();
     }
 
     public bool is_own_correction_allowed(Conversation conversation, Message message) {
@@ -145,7 +139,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         return false;
     }
 
-    private void on_received_correction(Conversation conversation, int message_id) {
+    public void on_received_correction(Conversation conversation, int message_id) {
         ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, message_id);
         if (content_item != null) {
             received_correction(content_item);

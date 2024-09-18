@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/im/dino/Dino/omemo">
     <file>contact_details_dialog.ui</file>
+    <file>encryption_preferences_entry.ui</file>
     <file>manage_key_dialog.ui</file>
   </gresource>
 </gresources>

@@ -29,6 +29,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
 
             if (i > 0) {
                 Button btn = new Button.from_icon_name("view-list-symbolic") { visible = true, valign = Align.CENTER, has_frame = false };
+                btn.tooltip_text = _("OMEMO Key Management");
                 btn.clicked.connect(() => {
                     btn.activate();
                     ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, conversation.counterpart);

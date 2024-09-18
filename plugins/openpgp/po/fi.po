@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"Language-Team: none\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7-dev\n"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "Kysellään GnuPG:tä"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+msgid "Disabled"
+msgstr "Pois käytöstä"
+
+#: plugins/openpgp/src/contact_details_provider.vala:28
+msgid "Key not in keychain"
+msgstr "Avain ei ole avainnipussa"
+
+#: plugins/openpgp/src/contact_details_provider.vala:30
+msgid "Encryption"
+msgstr "Salaus"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Avaimen julkaiseminen pois käytöstä"
+
+#~ msgid "Error in GnuPG"
+#~ msgstr "Virhe GnuPG:ssä"
+
+#~ msgid "No keys available. Generate one!"
+#~ msgstr "Ei avaimia saatavilla. Luo avain!"
+
+#~ msgid "Select key"
+#~ msgstr "Valitse avain"
+
+#~ msgid "Loading…"
+#~ msgstr "Ladataan…"
