@@ -82,14 +82,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
     }
 
-    public void set_unread(int count) {
-        string title_ = "Dino";
-        if(count>0) {
-            title_ = "Dino ("+count.to_string()+")";
-        }
-        window.set_title(title_);
-    }
-
     public void handle_uri(string jid, string query, Gee.Map<string, string> options) {
         switch (query) {
             case "join":

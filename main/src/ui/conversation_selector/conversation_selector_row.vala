@@ -261,23 +261,6 @@ public class ConversationSelectorRow : ListBoxRow {
             change_label_attribute(nick_label, attr_weight_new(Weight.BOLD));
             change_label_attribute(message_label, attr_weight_new(Weight.BOLD));
         }
-
-        name_label.label = name_label.label; // TODO initializes redrawing, which would otherwise not happen. nicer?
-        time_label.label = time_label.label;
-        nick_label.label = nick_label.label;
-        message_label.label = message_label.label;
-
-        if(Dino.Application.get_default().settings.unread_count) {
-            conversation.unread = num_unread;
-            int all_unread = 0;
-            foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
-                if(conversation.get_notification_setting(stream_interactor) == Conversation.NotifySetting.ON || Dino.Application.get_default().settings.unread_count_notifications) {
-                    all_unread += conversation.unread;
-                }
-            }
-            Application app = GLib.Application.get_default() as Application;
-            app.set_unread(all_unread);
-        }
     }
 
     private static Regex dino_resource_regex = /^dino\.[a-f0-9]{8}$/;

@@ -12,8 +12,6 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
-        unread_count_ = col_to_bool_or_default("unread_count", true);
-        unread_count_notifications_ = col_to_bool_or_default("unread_count_notifications", true);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {

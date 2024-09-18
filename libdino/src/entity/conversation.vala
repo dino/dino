@@ -16,7 +16,6 @@ public class Conversation : Object {
         }
     }
 
-    public int unread { get; set; }
     public int id { get; set; }
     public Type type_ { get; set; }
     public Account account { get; private set; }
