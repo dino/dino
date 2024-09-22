@@ -31,8 +31,13 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
         Gee.List<Xep.ExternalServiceDiscovery.Service> services = yield ExternalServiceDiscovery.request_services(stream);
         foreach (Xep.ExternalServiceDiscovery.Service service in services) {
             if (service.transport == "udp" && (service.ty == "stun" || service.ty == "turn")) {
-                InetAddress ip = yield lookup_ipv4_addess(service.host);
+                InetAddress? ip = yield lookup_ipv4_addess(service.host);
                 if (ip == null) continue;
+
+                if (ip.is_any || ip.is_link_local || ip.is_loopback || ip.is_multicast || ip.is_site_local) {
+                    warning("Ignoring STUN/TURN server at %s", service.host);
+                    continue;
+                }
 
                 if (service.ty == "stun") {
                     debug("Server offers STUN server: %s:%u, resolved to %s", service.host, service.port, ip.to_string());
