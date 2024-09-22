@@ -6,6 +6,8 @@ using Xmpp.Xep;
 private extern const size_t NICE_ADDRESS_STRING_LEN;
 
 public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
+    private HashMap<Account, uint> timeouts = new HashMap<Account, uint>(Account.hash_func, Account.equals_func);
+
     public Dino.Application app;
 
     public void registered(Dino.Application app) {
@@ -28,6 +30,7 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
     private async void external_discovery_refresh_services(Account account, XmppStream stream) {
         Module? ice_udp_module = stream.get_module(JingleIceUdp.Module.IDENTITY) as Module;
         if (ice_udp_module == null) return;
+
         Gee.List<Xep.ExternalServiceDiscovery.Service> services = yield ExternalServiceDiscovery.request_services(stream);
         foreach (Xep.ExternalServiceDiscovery.Service service in services) {
             if (service.transport == "udp" && (service.ty == "stun" || service.ty == "turn")) {
@@ -60,18 +63,23 @@ public class Dino.Plugins.Ice.Plugin : RootInterface, Object {
             ice_udp_module.stun_port = 7886;
         }
 
+        // Refresh TURN credentials before they expire
         if (ice_udp_module.turn_service != null) {
             DateTime? expires = ice_udp_module.turn_service.expires;
             if (expires != null) {
-                uint delay = (uint) (expires.to_unix() - new DateTime.now_utc().to_unix()) / 2;
+                uint refresh_delay = (uint) (expires.to_unix() - new DateTime.now_utc().to_unix()) / 2;
 
-                debug("Next server external service discovery in %us (because of TURN credentials' expiring time)", delay);
+                if (refresh_delay >= 300 && refresh_delay <= (int64) uint.MAX) { // 5 min < refetch < max
+                    debug("Re-fetching TURN credentials in %u sec", refresh_delay);
 
-                Timeout.add_seconds(delay, () => {
-                    if (app.stream_interactor.connection_manager.get_state(account) != ConnectionManager.ConnectionState.CONNECTED) return false;
-                    on_stream_negotiated.begin(account, stream);
-                    return false;
-                });
+                    timeouts.unset(account);
+                    timeouts[account] = Timeout.add_seconds((uint) refresh_delay, () => {
+                        external_discovery_refresh_services.begin(account, stream);
+                        return false;
+                    });
+                } else {
+                    warning("TURN credentials' expiry time = %u, *not* re-fetching", refresh_delay);
+                }
             }
         }
     }
