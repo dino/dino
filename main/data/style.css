@@ -49,7 +49,11 @@ window.dino-main .dino-conversation .message-box.highlight:not(.highlight-once) 
 }
 
 window.dino-main .dino-conversation .message-box {
-    padding: 6px 15px 6px 15px;
+    padding: 3px 15px 3px 15px;
+}
+
+window.dino-main .dino-conversation .has-skeleton {
+    margin-top: 10px;
 }
 
 window.dino-main .dino-conversation .message-box:not(.has-skeleton) {
