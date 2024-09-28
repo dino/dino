@@ -73,34 +73,6 @@ public static string get_cache_dir() {
     return Path.build_filename(Environment.get_user_cache_dir(), "dino");
 }
 
-public void recurse_delete_folder(File file, string space = "", Cancellable? cancellable = null) throws Error {
-	FileEnumerator enumerator = file.enumerate_children (
-		"standard::*",
-		FileQueryInfoFlags.NOFOLLOW_SYMLINKS, 
-		cancellable);
-
-	FileInfo info = null;
-	while (cancellable.is_cancelled () == false && ((info = enumerator.next_file (cancellable)) != null)) {
-		if (info.get_file_type () == FileType.DIRECTORY) {
-			File subdir = file.resolve_relative_path (info.get_name ());
-			recurse_delete_folder(subdir, space + " ", cancellable);
-		} else {
-            FileUtils.remove(file.get_path() + "/" + info.get_name());
-		}
-	}
-    var res = DirUtils.remove(file.get_path());
-    if (res == -1){
-        debug("Error: Folder %s not removed using GLib. Check permissions or ownership ?", file.get_path());
-    }
-    else {
-        debug("Folder %s removed using GLib.", file.get_path());
-    }
-
-	if (cancellable.is_cancelled ()) {
-		throw new IOError.CANCELLED ("I/O Error: Recursive deletion of folder %s was cancelled.", file.get_path());
-	}
-}
-
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
 public static extern unowned string _(string s);
 
