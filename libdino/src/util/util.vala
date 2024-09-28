@@ -69,6 +69,10 @@ public static string get_storage_dir() {
     return Path.build_filename(Environment.get_user_data_dir(), "dino");
 }
 
+public static string get_cache_dir() {
+    return Path.build_filename(Environment.get_user_cache_dir(), "dino");
+}
+
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
 public static extern unowned string _(string s);
 

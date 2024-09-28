@@ -37,8 +37,39 @@ public class AvatarManager : StreamInteractionModule, Object {
     private AvatarManager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
-        this.folder = Path.build_filename(Dino.get_storage_dir(), "avatars");
-        DirUtils.create_with_parents(this.folder, 0700);
+
+        File old_avatars = File.new_build_filename(Dino.get_storage_dir(), "avatars");
+        File new_avatars = File.new_build_filename(Dino.get_cache_dir(), "avatars");
+        this.folder = new_avatars.get_path();
+
+        // Move old avatar location to new one
+        if (old_avatars.query_exists()) {
+            if (!new_avatars.query_exists()) {
+                // Move old avatars folder (~/.local/share/dino) to new location (~/.cache/dino)
+                try {
+                    new_avatars.get_parent().make_directory_with_parents();
+                } catch (Error e) { }
+                try {
+                    old_avatars.move(new_avatars, FileCopyFlags.NONE);
+                    debug("Avatars directory %s moved to %s", old_avatars.get_path(), new_avatars.get_path());
+                } catch (Error e) { }
+            } else {
+                // If both old and new folders exist, remove the old one
+                try {
+                    FileEnumerator enumerator = old_avatars.enumerate_children("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+                    FileInfo info = null;
+                    while ((info = enumerator.next_file()) != null) {
+                        FileUtils.remove(old_avatars.get_path() + "/" + info.get_name());
+                    }
+                    DirUtils.remove(old_avatars.get_path());
+                } catch (Error e) { }
+            }
+        }
+
+        // Create avatar folder
+        try {
+            new_avatars.make_directory_with_parents();
+        } catch (Error e) { }
 
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.module_manager.initialize_account_modules.connect((_, modules) => {
