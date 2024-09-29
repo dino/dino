@@ -211,7 +211,7 @@ public class AddAccountDialog : Adw.Window {
             if (password_group.visible) {
                 // JID + Psw fields were visible: Try to log in
                 string password = password_entry.text;
-                Account account = new Account(login_jid, null, password, null);
+                Account account = new Account(login_jid, password);
 
                 ConnectionManager.ConnectionError.Source? error = yield stream_interactor.get_module(Register.IDENTITY).add_check_account(account);
                 sign_in_continue_spinner.visible = false;
@@ -351,7 +351,7 @@ public class AddAccountDialog : Adw.Window {
                 }
             }
             try {
-                Account account = new Account(new Jid.components(username, server_jid.domainpart, null), null, password, null);
+                Account account = new Account(new Jid.components(username, server_jid.domainpart, null), password);
                 add_activate_account(account);
                 show_success(account);
             } catch (InvalidJidError e) {
