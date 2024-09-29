@@ -8,7 +8,7 @@ public class Account : Object {
     public int id { get; set; }
     public string localpart { get { return full_jid.localpart; } }
     public string domainpart { get { return full_jid.domainpart; } }
-    public string resourcepart { get { return full_jid.resourcepart;} }
+    public string resourcepart { get { return full_jid.resourcepart;} private set {} }
     public Jid bare_jid { owned get { return full_jid.bare_jid; } }
     public Jid full_jid { get; private set; }
     public string? password { get; set; }
@@ -31,11 +31,7 @@ public class Account : Object {
             }
         }
         if (this.full_jid == null) {
-            try {
-                this.full_jid = bare_jid.with_resource("dino." + Random.next_int().to_string("%x"));
-            } catch (InvalidJidError e) {
-                error("Auto-generated resource was invalid (%s)", e.message);
-            }
+            set_random_resource();
         }
         this.password = password;
         this.alias = alias;
@@ -74,6 +70,15 @@ public class Account : Object {
         notify.disconnect(on_update);
         id = -1;
         db = null;
+    }
+
+    public void set_random_resource() {
+        try {
+            this.full_jid = bare_jid.with_resource("dino." + Random.next_int().to_string("%x"));
+            this.resourcepart = ""; // trigger a notify on the property
+        } catch (InvalidJidError e) {
+            error("Auto-generated resource was invalid (%s)", e.message);
+        }
     }
 
     public bool equals(Account acc) {

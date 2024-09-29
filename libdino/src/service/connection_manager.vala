@@ -179,13 +179,12 @@ public class ConnectionManager : Object {
         }
     }
 
-    private async void connect_stream(Account account, string? resource = null) {
+    private async void connect_stream(Account account) {
         if (!connections.has_key(account)) return;
 
         debug("[%s] (Maybe) Establishing a new connection", account.bare_jid.to_string());
 
         connection_errors.unset(account);
-        if (resource == null) resource = account.resourcepart;
 
         XmppStreamResult stream_result;
 
@@ -201,7 +200,7 @@ public class ConnectionManager : Object {
             connection_directly_retry[account] = false;
 
             change_connection_state(account, ConnectionState.CONNECTING);
-            stream_result = yield Xmpp.establish_stream(account.bare_jid, module_manager.get_modules(account, resource), log_options,
+            stream_result = yield Xmpp.establish_stream(account.bare_jid, module_manager.get_modules(account), log_options,
                     (peer_cert, errors) => { return on_invalid_certificate(account.domainpart, peer_cert, errors); }
             );
             connections[account].stream = stream_result.stream;
@@ -226,7 +225,7 @@ public class ConnectionManager : Object {
 
         XmppStream stream = stream_result.stream;
 
-        debug("[%s] New connection with resource %s: %p", account.bare_jid.to_string(), resource, stream);
+        debug("[%s] New connection: %p", account.full_jid.to_string(), stream);
 
         connections[account].established = new DateTime.now_utc();
         stream.attached_modules.connect((stream) => {
@@ -263,7 +262,8 @@ public class ConnectionManager : Object {
                 set_connection_error(account, new ConnectionError(ConnectionError.Source.STREAM_ERROR, flag.error_type));
 
                 if (flag.resource_rejected) {
-                    connect_stream.begin(account, account.resourcepart + "-" + random_uuid());
+                    account.set_random_resource();
+                    connect_stream.begin(account);
                     return;
                 }
             }

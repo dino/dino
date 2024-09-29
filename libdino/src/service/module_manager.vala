@@ -24,7 +24,7 @@ public class ModuleManager {
         return null;
     }
 
-    public ArrayList<XmppStreamModule> get_modules(Account account, string? resource = null) {
+    public ArrayList<XmppStreamModule> get_modules(Account account) {
         ArrayList<XmppStreamModule> modules = new ArrayList<XmppStreamModule>();
 
         lock (module_map) {
@@ -34,7 +34,7 @@ public class ModuleManager {
 
         foreach (XmppStreamModule module in module_map[account]) {
             if (module.get_id() == Bind.Module.IDENTITY.id) {
-                ((Bind.Module) module).requested_resource = resource ?? account.resourcepart;
+                ((Bind.Module) module).requested_resource = account.resourcepart;
             } else if (module.get_id() == Sasl.Module.IDENTITY.id) {
                 ((Sasl.Module) module).password = account.password;
             }
