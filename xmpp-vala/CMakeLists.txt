@@ -135,7 +135,6 @@ SOURCES
     "src/module/xep/0333_chat_markers.vala"
     "src/module/xep/0334_message_processing_hints.vala"
     "src/module/xep/0353_jingle_message_initiation.vala"
-    "src/module/xep/0353_call_invite_message.vala"
     "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
     "src/module/xep/0380_explicit_encryption.vala"
@@ -145,6 +144,7 @@ SOURCES
     "src/module/xep/0428_fallback_indication.vala"
     "src/module/xep/0444_reactions.vala"
     "src/module/xep/0461_replies.vala"
+    "src/module/xep/0482_call_invites.vala"
     "src/module/xep/pixbuf_storage.vala"
 
     "src/util.vala"
