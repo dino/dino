@@ -1,14 +1,24 @@
 namespace Crypto {
 public class SymmetricCipher {
+#if GCRYPT
     private GCrypt.Cipher.Cipher cipher;
+#else
+    bool is_encryption;
+    private OpenSSL.EVP.CipherContext? cipher;
+#endif
 
     public static bool supports(string algo_name) {
+#if GCRYPT
         GCrypt.Cipher.Algorithm algo;
         GCrypt.Cipher.Mode mode;
         GCrypt.Cipher.Flag flags;
         return parse(algo_name, out algo, out mode, out flags);
+#else
+        return algo_name == "AES-GCM";
+#endif
     }
 
+#if GCRYPT
     private static unowned string mode_to_string(GCrypt.Cipher.Mode mode) {
         switch (mode) {
             case GCrypt.Cipher.Mode.ECB: return "ECB";
@@ -95,8 +105,18 @@ public class SymmetricCipher {
             return algo.to_string();
         }
     }
+#endif
 
-    public SymmetricCipher(string algo_name) throws Error {
+    public SymmetricCipher.encryption(string algo_name) throws Error {
+        this.initialize(algo_name, true);
+    }
+
+    public SymmetricCipher.decryption(string algo_name) throws Error {
+        this.initialize(algo_name, false);
+    }
+
+    private SymmetricCipher.initialize(string algo_name, bool is_encryption) throws Error {
+#if GCRYPT
         GCrypt.Cipher.Algorithm algo;
         GCrypt.Cipher.Mode mode;
         GCrypt.Cipher.Flag flags;
@@ -105,48 +125,157 @@ public class SymmetricCipher {
         } else {
             throw new Error.ILLEGAL_ARGUMENTS(@"The algorithm $algo_name is not supported");
         }
+#else
+        if (algo_name == "AES-GCM") {
+            this.openssl(is_encryption);
+        } else {
+            throw new Error.ILLEGAL_ARGUMENTS(@"The algorithm $algo_name is not supported");
+        }
+#endif
     }
 
+#if GCRYPT
     private SymmetricCipher.gcrypt(GCrypt.Cipher.Algorithm algo, GCrypt.Cipher.Mode mode, GCrypt.Cipher.Flag flags) throws Error {
         may_throw_gcrypt_error(GCrypt.Cipher.Cipher.open(out this.cipher, algo, mode, flags));
     }
+#else
+    private SymmetricCipher.openssl(bool is_encryption) throws Error {
+        this.is_encryption = is_encryption;
+        cipher = new OpenSSL.EVP.CipherContext();
+        if (is_encryption) {
+            if (cipher.encrypt_init(OpenSSL.EVP.aes_128_gcm(), null, null, null) != 1) {
+                openssl_error();
+            }
+        } else {
+            if (cipher.decrypt_init(OpenSSL.EVP.aes_128_gcm(), null, null, null) != 1) {
+                openssl_error();
+            }
+        }
+    }
+#endif
 
     public void set_key(uint8[] key) throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.set_key(key));
+#else
+        if (key.length != 16) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("key length must be 16 for AES-GCM");
+        }
+        if (is_encryption) {
+            if (cipher.encrypt_init(null, null, key, null) != 1) {
+                openssl_error();
+            }
+        } else {
+            if (cipher.decrypt_init(null, null, key, null) != 1) {
+                openssl_error();
+            }
+        }
+#endif
     }
 
     public void set_iv(uint8[] iv) throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.set_iv(iv));
-    }
-
-    public void set_counter_vector(uint8[] ctr) throws Error {
-        may_throw_gcrypt_error(cipher.set_counter_vector(ctr));
+#else
+        if (iv.length != 12) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("intialization vector must be of length 16 for AES-GCM");
+        }
+        if (is_encryption) {
+            if (cipher.encrypt_init(null, null, null, iv) != 1) {
+                openssl_error();
+            }
+        } else {
+            if (cipher.decrypt_init(null, null, null, iv) != 1) {
+                openssl_error();
+            }
+        }
+#endif
     }
 
     public void reset() throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.reset());
+#else
+        throw new Crypto.Error.ILLEGAL_ARGUMENTS("can't reset OpenSSL cipher context");
+#endif
     }
 
     public uint8[] get_tag(size_t taglen) throws Error {
         uint8[] tag = new uint8[taglen];
+#if GCRYPT
         may_throw_gcrypt_error(cipher.get_tag(tag));
+#else
+        if (!is_encryption) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("can't call get_tag on decryption context");
+        }
+        uint8[] empty = new uint8[0];
+        int empty_len = 0;
+        if (cipher.encrypt_final(empty, out empty_len) != 1) {
+            openssl_error();
+        }
+        if (empty_len != 0) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("get_tag called on a stream with remaining data");
+        }
+        if (cipher.ctrl(OpenSSL.EVP.CTRL_GCM_GET_TAG, (int)taglen, tag) != 1) {
+            openssl_error();
+        }
+#endif
         return tag;
     }
 
     public void check_tag(uint8[] tag) throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.check_tag(tag));
+#else
+        if (is_encryption) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("can't call check_tag on encryption context");
+        }
+        if (cipher.ctrl(OpenSSL.EVP.CTRL_GCM_SET_TAG, tag.length, tag) != 1) {
+            openssl_error();
+        }
+        uint8[] empty = new uint8[0];
+        int empty_len = 0;
+        if (cipher.decrypt_final(empty, out empty_len) != 1) {
+            openssl_error();
+        }
+        if (empty_len != 0) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("check_tag called on a stream with remaining data");
+        }
+#endif
     }
 
     public void encrypt(uint8[] output, uint8[] input) throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.encrypt(output, input));
+#else
+        if (!is_encryption) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("can't call encrypt on decryption context");
+        }
+        int output_length = output.length;
+        if (cipher.encrypt_update(output, out output_length, input) != 1) {
+            openssl_error();
+        }
+        if (output_length != output.length) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("invalid output array length");
+        }
+#endif
     }
 
     public void decrypt(uint8[] output, uint8[] input) throws Error {
+#if GCRYPT
         may_throw_gcrypt_error(cipher.decrypt(output, input));
-    }
-
-    public void sync() throws Error {
-        may_throw_gcrypt_error(cipher.sync());
+#else
+        if (is_encryption) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("can't call decrypt on encryption context");
+        }
+        int output_length = output.length;
+        if (cipher.decrypt_update(output, out output_length, input) != 1) {
+            openssl_error();
+        }
+        if (output_length != output.length) {
+            throw new Crypto.Error.ILLEGAL_ARGUMENTS("invalid output array length");
+        }
+#endif
     }
 }
 }
