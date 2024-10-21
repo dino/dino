@@ -87,6 +87,13 @@ public class MainWindow : Adw.ApplicationWindow {
         conversation_titlebar.back_pressed.connect(() => leaflet.navigate(Adw.NavigationDirection.BACK));
     }
 
+    public void refresh_presence_button(string presence = "") {
+        conversation_list_titlebar.unparent();
+        conversation_list_titlebar = get_conversation_list_titlebar(presence);
+        leaflet.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
+        left_box.prepend(conversation_list_titlebar);
+    }
+
     private void setup_stack() {
         stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
