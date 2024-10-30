@@ -13,73 +13,65 @@ namespace Xmpp.Xep.CallInvites {
         public signal void call_rejected(Jid from, Jid to, string call_id, string message_type);
         public signal void call_left(Jid from, Jid to, string call_id, string message_type);
 
-        public void send_jingle_propose(XmppStream stream, string call_id, Jid invitee, string sid, bool video) {
-            MessageStanza invite_message = new MessageStanza() { to=invitee, type_=MessageStanza.TYPE_CHAT };
-            invite_message.stanza.put_node(
-                    new StanzaNode.build("invite", NS_URI).add_self_xmlns()
-                            .put_attribute("id", call_id)
-                            .put_attribute("video", video.to_string())
-                            .put_attribute("multi", false.to_string())
-                            .put_node(new StanzaNode.build("jingle", CallInvites.NS_URI).put_attribute("sid", sid))
-            );
-            invite_message.stanza.put_node( // Custom legacy protocol
-                    new StanzaNode.build("propose", NS_URI_CUSTOM).add_self_xmlns()
-                            .put_attribute("id", call_id)
-                            .put_attribute("video", video.to_string())
-                            .put_attribute("multi", false.to_string())
-                            .put_node(new StanzaNode.build("jingle", CallInvites.NS_URI_CUSTOM).put_attribute("sid", sid))
-            );
-            MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
+        public void send_jingle_propose(XmppStream stream, string call_id, Jid invitee, string sid, bool video, string message_type = MessageStanza.TYPE_CHAT) {
+            StanzaNode method = new StanzaNode.build("jingle", CallInvites.NS_URI).put_attribute("sid", sid);
+            StanzaNode legacy_method = new StanzaNode.build("jingle", CallInvites.NS_URI_CUSTOM).put_attribute("sid", sid);
+            send_propose(stream, call_id, invitee, video, false, message_type, method, legacy_method);
         }
 
         public void send_muji_propose(XmppStream stream, string call_id, Jid invitee, Jid muc_jid, bool video, string message_type) {
-            MessageStanza invite_message = new MessageStanza() { to=invitee, type_=MessageStanza.TYPE_CHAT };
+            StanzaNode method = new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns().put_attribute("room", muc_jid.to_string());
+            send_propose(stream, call_id, invitee, video, true, message_type, method, method);
+        }
+
+        public void send_propose(XmppStream stream, string call_id, Jid invitee, bool video, bool multi, string message_type, StanzaNode method, StanzaNode? legacy_method = null) {
+            MessageStanza invite_message = new MessageStanza() { to=invitee, type_=message_type };
             invite_message.stanza.put_node(
                     new StanzaNode.build("invite", NS_URI).add_self_xmlns()
                             .put_attribute("id", call_id)
                             .put_attribute("video", video.to_string())
-                            .put_attribute("multi", false.to_string())
-                            .put_node(new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns().put_attribute("room", muc_jid.to_string()))
+                            .put_attribute("multi", multi.to_string())
+                            .put_node(method)
             );
-            invite_message.stanza.put_node( // Custom legacy protocol
-                    new StanzaNode.build("propose", NS_URI_CUSTOM).add_self_xmlns()
-                    .put_attribute("id", call_id)
-                    .put_attribute("video", video.to_string())
-                    .put_attribute("multi", false.to_string())
-                    .put_node(new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns().put_attribute("room", muc_jid.to_string()))
-            );
+            if (legacy_method != null) {
+                invite_message.stanza.put_node( // Custom legacy protocol
+                        new StanzaNode.build("propose", NS_URI_CUSTOM).add_self_xmlns()
+                                .put_attribute("id", call_id)
+                                .put_attribute("video", video.to_string())
+                                .put_attribute("multi", multi.to_string())
+                                .put_node(legacy_method)
+                );
+            }
             MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
         }
 
         public void send_jingle_accept(XmppStream stream, Jid inviter, string call_id, string sid, string message_type) {
-            StanzaNode accept_node = new StanzaNode.build("accept", NS_URI).add_self_xmlns().put_attribute("id", call_id)
-                    .put_node(new StanzaNode.build("jingle", NS_URI).put_attribute("sid", sid));
-
-            // Custom legacy protocol
-            StanzaNode custom_accept_node = new StanzaNode.build("accept", NS_URI_CUSTOM).add_self_xmlns().put_attribute("id", call_id)
-                    .put_node(new StanzaNode.build("jingle", NS_URI_CUSTOM).put_attribute("sid", sid));
-
-            MessageStanza invite_message = new MessageStanza() { to=inviter, type_=message_type };
-            MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
-            invite_message.stanza.put_node(accept_node);
-            invite_message.stanza.put_node(custom_accept_node);
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
+            StanzaNode method = new StanzaNode.build("jingle", NS_URI).put_attribute("sid", sid);
+            StanzaNode legacy_method = new StanzaNode.build("jingle", NS_URI_CUSTOM).put_attribute("sid", sid);
+            send_accept(stream, inviter, call_id, message_type, method, legacy_method);
         }
 
         public void send_muji_accept(XmppStream stream, Jid inviter, string call_id, Jid room, string message_type) {
-            StanzaNode accept_node = new StanzaNode.build("accept", NS_URI).add_self_xmlns().put_attribute("id", call_id)
-                    .put_node(new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns().put_attribute("room", room.to_string()));
+            StanzaNode method = new StanzaNode.build("muji", Muji.NS_URI).add_self_xmlns().put_attribute("room", room.to_string());
+            send_accept(stream, inviter, call_id, message_type, method, method);
+        }
 
-            // Custom legacy protocol
-            StanzaNode custom_accept_node = new StanzaNode.build("accept", NS_URI_CUSTOM).add_self_xmlns().put_attribute("id", call_id)
-                    .put_node(new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns().put_attribute("room", room.to_string()));
-
+        public void send_accept(XmppStream stream, Jid inviter, string call_id, string message_type, StanzaNode method, StanzaNode? legacy_method = null) {
             MessageStanza invite_message = new MessageStanza() { to=inviter, type_=message_type };
+            invite_message.stanza.put_node(
+                    new StanzaNode.build("accept", NS_URI).add_self_xmlns()
+                            .put_attribute("id", call_id)
+                            .put_node(method)
+            );
+            if (legacy_method != null) {
+                invite_message.stanza.put_node(
+                        new StanzaNode.build("accept", NS_URI_CUSTOM).add_self_xmlns()
+                                .put_attribute("id", call_id)
+                                .put_node(legacy_method)
+                );
+            }
             MessageProcessingHints.set_message_hint(invite_message, MessageProcessingHints.HINT_STORE);
-            invite_message.stanza.put_node(accept_node);
-            invite_message.stanza.put_node(custom_accept_node);
             stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, invite_message);
         }
 
