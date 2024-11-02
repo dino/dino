@@ -285,7 +285,7 @@ public class Dino.Ui.CompatAvatarDrawer {
 
     private Cairo.Surface sub_surface_idx(Cairo.Context ctx, int idx, int width, int height, int font_factor = 1) {
         ViewModel.AvatarPictureTileModel tile = (ViewModel.AvatarPictureTileModel) this.model.tiles.get_item(idx);
-        Gdk.Pixbuf? avatar = new Gdk.Pixbuf.from_file(tile.image_file.get_path());
+        Gdk.Pixbuf? avatar = tile.image_file != null ? new Gdk.Pixbuf.from_file(tile.image_file.get_path()) : null;
         string? name = idx >= 0 ? tile.display_text : "";
         Gdk.RGBA hex_color = tile.background_color;
         return sub_surface(ctx, font_family, avatar, name, hex_color, width, height, font_factor);

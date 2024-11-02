@@ -38,9 +38,10 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (Xep.StatelessFileSharing.MessageFlag.get_flag(stanza) != null) {
-                return true;
+            if (Xep.StatelessFileSharing.get_file_shares(stanza) != null || Xep.StatelessFileSharing.get_source_attachments(stanza) != null) {
+                return false;
             }
+
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
@@ -49,57 +50,6 @@ public class FileProvider : Dino.FileProvider, Object {
                 return true;
             }
             return false;
-        }
-    }
-
-    private class LimitInputStream : InputStream, PollableInputStream {
-        InputStream inner;
-        int64 remaining_size;
-
-        public LimitInputStream(InputStream inner, int64 max_size) {
-            this.inner = inner;
-            this.remaining_size = max_size;
-        }
-
-        public bool can_poll() {
-            return inner is PollableInputStream && ((PollableInputStream)inner).can_poll();
-        }
-
-        public PollableSource create_source(Cancellable? cancellable = null) {
-            if (!can_poll()) throw new IOError.NOT_SUPPORTED("Stream is not pollable");
-            return ((PollableInputStream)inner).create_source(cancellable);
-        }
-
-        public bool is_readable() {
-            if (!can_poll()) throw new IOError.NOT_SUPPORTED("Stream is not pollable");
-            return remaining_size <= 0 || ((PollableInputStream)inner).is_readable();
-        }
-
-        private ssize_t check_limit(ssize_t read) throws IOError {
-            this.remaining_size -= read;
-            if (remaining_size < 0) throw new IOError.FAILED("Stream length exceeded limit");
-            return read;
-        }
-
-        public override ssize_t read(uint8[] buffer, Cancellable? cancellable = null) throws IOError {
-            return check_limit(inner.read(buffer, cancellable));
-        }
-
-        public override async ssize_t read_async(uint8[]? buffer, int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
-            return check_limit(yield inner.read_async(buffer, io_priority, cancellable));
-        }
-
-        public ssize_t read_nonblocking_fn(uint8[] buffer) throws Error {
-            if (!is_readable()) throw new IOError.WOULD_BLOCK("Stream is not readable");
-            return read(buffer);
-        }
-
-        public override bool close(Cancellable? cancellable = null) throws IOError {
-            return inner.close(cancellable);
-        }
-
-        public override async bool close_async(int io_priority = GLib.Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
-            return yield inner.close_async(io_priority, cancellable);
         }
     }
 
@@ -155,7 +105,7 @@ public class FileProvider : Dino.FileProvider, Object {
         return Encryption.NONE;
     }
 
-    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
+    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws IOError {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
 
@@ -166,25 +116,20 @@ public class FileProvider : Dino.FileProvider, Object {
         get_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
 #endif
 
-        try {
 #if SOUP_3_0
-            InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
+        InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
 #else
-            InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
+        InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
 #endif
-            if (file_meta.size != -1) {
-                return new LimitInputStream(stream, file_meta.size);
-            } else {
-                return stream;
-            }
-        } catch (Error e) {
-            throw new FileReceiveError.DOWNLOAD_FAILED("Downloading file error: %s".printf(e.message));
+        if (file_meta.size != -1) {
+            return new LimitInputStream(stream, file_meta.size);
+        } else {
+            return stream;
         }
     }
 
     public FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError {
-        // TODO: replace '2' with constant?
-        if (file_transfer.provider == 2) {
+        if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
             var file_meta = new HttpFileMeta();
             file_meta.size = file_transfer.size;
             file_meta.mime_type = file_transfer.mime_type;
@@ -210,26 +155,19 @@ public class FileProvider : Dino.FileProvider, Object {
         return file_meta;
     }
 
-    public async FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
-        // TODO: replace '2' with constant?
-        if (file_transfer.provider == 2) {
-            Xep.StatelessFileSharing.HttpSource http_source = null;
-            for(int i = 0; i < file_transfer.sfs_sources.get_n_items(); i++) {
-                Object source_object = file_transfer.sfs_sources.get_item(i);
-                FileTransfer.SerializedSfsSource source = source_object as FileTransfer.SerializedSfsSource;
-                if (source.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE) {
-                    http_source = yield Xep.StatelessFileSharing.HttpSource.deserialize(source.data);
-                    assert(source != null);
+    public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+        if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
+            if (!file_transfer.sfs_sources.is_empty) {
+                var http_source = file_transfer.sfs_sources.get(0) as Xep.StatelessFileSharing.HttpSource;
+                if (http_source != null) {
+                    var receive_data = new HttpFileReceiveData();
+                    receive_data.url = http_source.url;
+                    return receive_data;
                 }
             }
-            if (http_source == null) {
-                printerr("Sfs file transfer has no http sources attached!");
-                return null;
-            }
-            var receive_data = new HttpFileReceiveData();
-            receive_data.url = http_source.url;
-            return receive_data;
+            return null;
         }
+
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) return null;
 

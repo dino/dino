@@ -4,6 +4,8 @@ namespace Dino.Entities {
 
 public class FileTransfer : Object {
 
+    public signal void sources_changed();
+
     public const bool DIRECTION_SENT = true;
     public const bool DIRECTION_RECEIVED = false;
 
@@ -14,23 +16,8 @@ public class FileTransfer : Object {
         FAILED
     }
 
-    public class SerializedSfsSource: Object {
-        public string type;
-        public string data;
-
-        public SerializedSfsSource.from_sfs_source(Xep.StatelessFileSharing.SfsSource source) {
-            this.type = source.type();
-            this.data = source.serialize();
-        }
-
-        public async Xep.StatelessFileSharing.SfsSource to_sfs_source() {
-            assert(this.type == Xep.StatelessFileSharing.HttpSource.SOURCE_TYPE);
-            Xep.StatelessFileSharing.HttpSource http_source = yield Xep.StatelessFileSharing.HttpSource.deserialize(this.data);
-            return http_source;
-        }
-    }
-
     public int id { get; set; default=-1; }
+    public string? file_sharing_id { get; set; }
     public Account account { get; set; }
     public Jid counterpart { get; set; }
     public Jid ourpart { get; set; }
@@ -85,13 +72,45 @@ public class FileTransfer : Object {
     public int provider { get; set; }
     public string info { get; set; }
     public Cancellable cancellable { get; default=new Cancellable(); }
+
+    // This value is not persisted
+    public int64 transferred_bytes { get; set; }
+
+    public Xep.FileMetadataElement.FileMetadata file_metadata {
+        owned get {
+            return new Xep.FileMetadataElement.FileMetadata() {
+                name = this.file_name,
+                mime_type = this.mime_type,
+                size = this.size,
+                desc = this.desc,
+                date = this.modification_date,
+                width = this.width,
+                height = this.height,
+                length = this.length,
+                hashes = this.hashes,
+                thumbnails = this.thumbnails
+            };
+        }
+        set {
+            this.file_name = value.name;
+            this.mime_type = value.mime_type;
+            this.size = value.size;
+            this.desc = value.desc;
+            this.modification_date = value.date;
+            this.width = value.width;
+            this.height = value.height;
+            this.length = value.length;
+            this.hashes = value.hashes;
+            this.thumbnails = value.thumbnails;
+        }
+    }
     public string? desc { get; set; }
     public DateTime? modification_date { get; set; }
     public int width { get; set; default=-1; }
     public int height { get; set; default=-1; }
     public int64 length { get; set; default=-1; }
-    public Xep.CryptographicHashes.Hashes hashes { get; set; default=new Xep.CryptographicHashes.Hashes();}
-    public ListStore sfs_sources { get; set; default=new ListStore(typeof(SerializedSfsSource)); }
+    public Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
+    public Gee.List<Xep.StatelessFileSharing.Source> sfs_sources = new Gee.ArrayList<Xep.StatelessFileSharing.Source>(Xep.StatelessFileSharing.Source.equals_func);
     public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
     private Database? db;
@@ -102,6 +121,7 @@ public class FileTransfer : Object {
         this.storage_dir = storage_dir;
 
         id = row[db.file_transfer.id];
+        file_sharing_id = row[db.file_transfer.file_sharing_id];
         account = db.get_account_by_id(row[db.file_transfer.account_id]); // TODO don’t have to generate acc new
 
         counterpart = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
@@ -130,11 +150,12 @@ public class FileTransfer : Object {
         height = row[db.file_transfer.height];
         length = (int64) row[db.file_transfer.length];
 
+        // TODO put those into the initial query
         foreach(var hash_row in db.file_hashes.select().with(db.file_hashes.id, "=", id)) {
             Xep.CryptographicHashes.Hash hash = new Xep.CryptographicHashes.Hash();
             hash.algo = hash_row[db.file_hashes.algo];
             hash.val = hash_row[db.file_hashes.value];
-            hashes.hashes.add(hash);
+            hashes.add(hash);
         }
 
         foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
@@ -146,11 +167,10 @@ public class FileTransfer : Object {
             thumbnails.add(thumbnail);
         }
 
-        foreach(Qlite.Row source_row in db.sfs_sources.select().with(db.sfs_sources.id, "=", id)) {
-            SerializedSfsSource source = new SerializedSfsSource();
-            source.type = source_row[db.sfs_sources.type];
-            source.data = source_row[db.sfs_sources.data];
-            sfs_sources.append(source as Object);
+        foreach(Qlite.Row source_row in db.sfs_sources.select().with(db.sfs_sources.file_transfer_id, "=", id)) {
+            if (source_row[db.sfs_sources.type] == "http") {
+                sfs_sources.add(new Xep.StatelessFileSharing.HttpSource() { url=source_row[db.sfs_sources.data] });
+            }
         }
 
         notify.connect(on_update);
@@ -175,6 +195,7 @@ public class FileTransfer : Object {
             .value(db.file_transfer.provider, provider)
             .value(db.file_transfer.info, info);
 
+        if (file_sharing_id != null) builder.value(db.file_transfer.file_sharing_id, file_sharing_id);
         if (path != null) builder.value(db.file_transfer.path, path);
         if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
         if (path != null) builder.value(db.file_transfer.path, path);
@@ -185,7 +206,7 @@ public class FileTransfer : Object {
 
         id = (int) builder.perform();
 
-        foreach (Xep.CryptographicHashes.Hash hash in hashes.hashes) {
+        foreach (Xep.CryptographicHashes.Hash hash in hashes) {
             db.file_hashes.insert()
                     .value(db.file_hashes.id, id)
                     .value(db.file_hashes.algo, hash.algo)
@@ -202,29 +223,40 @@ public class FileTransfer : Object {
                     .perform();
         }
 
-        for(int i = 0; i < sfs_sources.get_n_items(); i++) {
-            Object source_object = sfs_sources.get_item(i);
-            SerializedSfsSource source = source_object as SerializedSfsSource;
-            db.sfs_sources.insert()
-                    .value(db.sfs_sources.id, id)
-                    .value(db.sfs_sources.type, source.type)
-                    .value(db.sfs_sources.data, source.data)
-                    .perform();
+        foreach (Xep.StatelessFileSharing.Source source in sfs_sources) {
+            add_sfs_source(source);
         }
 
         notify.connect(on_update);
-        sfs_sources.items_changed.connect((position, removed, added) => {
-            on_update_sources_items(this, position, removed, added);
-        });
     }
 
-    public File get_file() {
+    public void add_sfs_source(Xep.StatelessFileSharing.Source source) {
+        if (sfs_sources.contains(source)) return; // Don't add the same source twice. Might happen due to MAM and lacking deduplication.
+
+        sfs_sources.add(source);
+
+        Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
+        if (http_source != null) {
+            db.sfs_sources.insert()
+                    .value(db.sfs_sources.file_transfer_id, id)
+                    .value(db.sfs_sources.type, "http")
+                    .value(db.sfs_sources.data, http_source.url)
+                    .perform();
+        }
+
+        sources_changed();
+    }
+
+    public File? get_file() {
+        if (path == null) return null;
         return File.new_for_path(Path.build_filename(Dino.get_storage_dir(), "files", path));
     }
 
     private void on_update(Object o, ParamSpec sp) {
         Qlite.UpdateBuilder update_builder = db.file_transfer.update().with(db.file_transfer.id, "=", id);
         switch (sp.name) {
+            case "file-sharing-id":
+                update_builder.set(db.file_transfer.file_sharing_id, file_sharing_id); break;
             case "counterpart":
                 update_builder.set(db.file_transfer.counterpart_id, db.get_jid_id(counterpart));
                 update_builder.set(db.file_transfer.counterpart_resource, counterpart.resourcepart); break;
@@ -263,58 +295,6 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.length, (long) length); break;
         }
         update_builder.perform();
-    }
-
-    private void on_update_sources_items(FileTransfer file_transfer, uint position, uint removed, uint added) {
-        for(uint i = position; i < position + added; i++) {
-            Object source_object = file_transfer.sfs_sources.get_item(i);
-            SerializedSfsSource source = source_object as SerializedSfsSource;
-            db.sfs_sources.insert()
-                    .value(db.sfs_sources.id, id)
-                    .value(db.sfs_sources.type, source.type)
-                    .value(db.sfs_sources.data, source.data)
-                    .perform();
-        }
-    }
-
-    public Xep.FileMetadataElement.FileMetadata to_metadata_element() {
-        Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
-        metadata.name = this.file_name;
-        metadata.mime_type = this.mime_type;
-        metadata.size = this.size;
-        metadata.desc = this.desc;
-        metadata.date = this.modification_date;
-        metadata.width = this.width;
-        metadata.height = this.height;
-        metadata.length = this.length;
-        metadata.hashes = this.hashes;
-        metadata.thumbnails = this.thumbnails;
-        return metadata;
-    }
-
-    public async Xep.StatelessFileSharing.SfsElement to_sfs_element() {
-        Xep.StatelessFileSharing.SfsElement sfs_element = new Xep.StatelessFileSharing.SfsElement();
-        sfs_element.metadata = this.to_metadata_element();
-        for(int i = 0; i < sfs_sources.get_n_items(); i++) {
-            Object source_object = sfs_sources.get_item(i);
-            SerializedSfsSource source = source_object as SerializedSfsSource;
-            sfs_element.sources.add(yield source.to_sfs_source());
-        }
-
-        return sfs_element;
-    }
-
-    public void with_metadata_element(Xep.FileMetadataElement.FileMetadata metadata) {
-        this.file_name = metadata.name;
-        this.mime_type = metadata.mime_type;
-        this.size = metadata.size;
-        this.desc = metadata.desc;
-        this.modification_date = metadata.date;
-        this.width = metadata.width;
-        this.height = metadata.height;
-        this.length = metadata.length;
-        this.hashes = metadata.hashes;
-        this.thumbnails = metadata.thumbnails;
     }
 }
 

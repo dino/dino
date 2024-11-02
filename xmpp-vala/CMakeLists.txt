@@ -81,6 +81,7 @@ SOURCES
     "src/module/xep/0082_date_time_profiles.vala"
     "src/module/xep/0084_user_avatars.vala"
     "src/module/xep/0085_chat_state_notifications.vala"
+    "src/module/xep/0104_http_scheme_url_data.vala"
     "src/module/xep/0115_entity_capabilities.vala"
 
     "src/module/xep/0166_jingle/content.vala"
@@ -139,6 +140,7 @@ SOURCES
     "src/module/xep/0353_jingle_message_initiation.vala"
     "src/module/xep/0359_unique_stable_stanza_ids.vala"
     "src/module/xep/0363_http_file_upload.vala"
+    "src/module/xep/0367_message_attaching.vala"
     "src/module/xep/0380_explicit_encryption.vala"
     "src/module/xep/0391_jingle_encrypted_transports.vala"
     "src/module/xep/0410_muc_self_ping.vala"

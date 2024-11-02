@@ -181,6 +181,28 @@ window.dino-main .file-image-widget .file-box-outer button:hover {
     border-radius: 6px;
 }
 
+.dino-main .file-details {
+    color: white;
+    background: alpha(black, 0.3);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.dino-main .circular-loading-indicator {
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-image 0.5s linear;
+}
+
+.dino-main .circular-loading-indicator > * {
+    border-radius: 50%;
+    background: @theme_bg_color;
+}
+
+.dino-main .circular-loading-indicator button {
+    padding: 2px;
+}
+
 /* Call widget */
 
 window.dino-main .call-box-outer.incoming {

@@ -19,6 +19,7 @@ set(RESOURCE_LIST
 
     icons/scalable/actions/dino-emoticon-add-symbolic.svg
     icons/scalable/actions/dino-qr-code-symbolic.svg
+    icons/scalable/actions/small-x-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino.svg
     icons/scalable/apps/im.dino.Dino-symbolic.svg
@@ -185,7 +186,7 @@ SOURCES
     src/ui/conversation_content_view/date_separator_populator.vala
     src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_image_widget.vala
-    src/ui/conversation_content_view/file_preview_widget.vala
+    src/ui/conversation_content_view/file_transmission_progress.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/item_actions.vala
     src/ui/conversation_content_view/message_widget.vala

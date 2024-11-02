@@ -1,225 +1,122 @@
+using Gee;
 using Xmpp;
 
 namespace Xmpp.Xep.StatelessFileSharing {
 
+    public const string NS_URI = "urn:xmpp:sfs:0";
 
-    public const string STANZA_NAME = "file-transfer";
+    public static Gee.List<FileShare> get_file_shares(MessageStanza message) {
+        var ret = new ArrayList<FileShare>();
+        foreach (StanzaNode file_sharing_node in message.stanza.get_subnodes("file-sharing", NS_URI)) {
+            var metadata = Xep.FileMetadataElement.get_file_metadata(file_sharing_node);
+            if (metadata == null) continue;
 
-    public interface SfsSource: Object {
-        public abstract string type();
-        public abstract string serialize();
+            var sources_node = message.stanza.get_subnode("sources", NS_URI);
 
-        public abstract StanzaNode to_stanza_node();
+            ret.add(new FileShare() {
+                id = file_sharing_node.get_attribute("id", NS_URI),
+                metadata = Xep.FileMetadataElement.get_file_metadata(file_sharing_node),
+                sources = sources_node != null ? get_sources(sources_node) : null
+            });
+        }
+
+        if (ret.size == 0) return null;
+
+        return ret;
     }
 
-    public class HttpSource: Object, SfsSource {
-        public string url;
+    public static Gee.List<SourceAttachment>? get_source_attachments(MessageStanza message) {
+        Gee.List<StanzaNode> sources_nodes = message.stanza.get_subnodes("sources", NS_URI);
+        if (sources_nodes.is_empty) return null;
 
-        public const string HTTP_NS_URI = "http://jabber.org/protocol/url-data";
-        public const string HTTP_STANZA_NAME = "url-data";
-        public const string HTTP_URL_ATTRIBUTE = "target";
-        public const string SOURCE_TYPE = "http";
+        string? attach_to_id = MessageAttaching.get_attach_to(message.stanza);
+        if (attach_to_id == null) return null;
+
+        var ret = new ArrayList<SourceAttachment>();
+
+        foreach (StanzaNode sources_node in sources_nodes) {
+            ret.add(new SourceAttachment() {
+                to_message_id = attach_to_id,
+                to_file_transfer_id = sources_node.get_attribute("id", NS_URI),
+                sources = get_sources(sources_node)
+            });
+        }
+        return ret;
+    }
+
+    // Currently only returns a single http source
+    private static Gee.List<Source>? get_sources(StanzaNode sources_node) {
+        string? url = HttpSchemeForUrlData.get_url(sources_node);
+        if (url == null) return null;
+
+        var http_source = new HttpSource() { url=url };
+        var sources = new Gee.ArrayList<Source>();
+        sources.add(http_source);
+
+        return sources;
+    }
+
+    public static void set_sfs_element(MessageStanza message, string file_sharing_id, FileMetadataElement.FileMetadata metadata, Gee.List<Xep.StatelessFileSharing.Source>? sources) {
+        var file_sharing_node = new StanzaNode.build("file-sharing", NS_URI).add_self_xmlns()
+                .put_attribute("id", file_sharing_id, NS_URI)
+                .put_node(metadata.to_stanza_node());
+        if (sources != null && !sources.is_empty) {
+            file_sharing_node.put_node(create_sources_node(file_sharing_id, sources));
+        }
+        message.stanza.put_node(file_sharing_node);
+    }
+
+    public static void set_sfs_attachment(MessageStanza message, string attach_to_id, string attach_to_file_id, Gee.List<Xep.StatelessFileSharing.Source> sources) {
+        message.stanza.put_node(MessageAttaching.to_stanza_node(attach_to_id));
+        message.stanza.put_node(create_sources_node(attach_to_file_id, sources).add_self_xmlns());
+    }
+
+    private static StanzaNode create_sources_node(string file_sharing_id, Gee.List<Xep.StatelessFileSharing.Source> sources) {
+        StanzaNode sources_node = new StanzaNode.build("sources", NS_URI)
+                .put_attribute("id", file_sharing_id, NS_URI);
+        foreach (var source in sources) {
+            sources_node.put_node(source.to_stanza_node());
+        }
+        return sources_node;
+    }
+
+    public class FileShare : Object {
+        public string? id { get; set; }
+        public Xep.FileMetadataElement.FileMetadata metadata { get; set; }
+        public Gee.List<Source>? sources { get; set; }
+    }
+
+    public class SourceAttachment : Object {
+        public string to_message_id { get; set; }
+        public string? to_file_transfer_id { get; set; }
+        public Gee.List<Source>? sources { get; set; }
+    }
+
+    public interface Source: Object {
+        public abstract string type();
+        public abstract StanzaNode to_stanza_node();
+        public abstract bool equals(Source source);
+
+        public static bool equals_func(Source s1, Source s2) {
+            return s1.equals(s2);
+        }
+    }
+
+    public class HttpSource : Object, Source {
+        public string url { get; set; }
 
         public string type() {
-            return SOURCE_TYPE;
-        }
-
-        public string serialize() {
-            return this.to_stanza_node().to_xml();
+            return "http";
         }
 
         public StanzaNode to_stanza_node() {
-            StanzaNode node = new StanzaNode.build(HTTP_STANZA_NAME, HTTP_NS_URI).add_self_xmlns();
-            node.put_attribute(HTTP_URL_ATTRIBUTE, this.url);
-            return node;
+            return HttpSchemeForUrlData.to_stanza_node(url);
         }
 
-        public static async HttpSource deserialize(string data) {
-            StanzaNode node = yield new StanzaReader.for_string(data).read_stanza_node();
-            HttpSource source = HttpSource.from_stanza_node(node);
-            assert(source != null);
-            return source;
+        public bool equals(Source source) {
+            HttpSource? http_source = source as HttpSource;
+            if (http_source == null) return false;
+            return http_source.url == this.url;
         }
-
-        public static HttpSource? from_stanza_node(StanzaNode node) {
-            string? url = node.get_attribute(HTTP_URL_ATTRIBUTE);
-            if (url == null) {
-                return null;
-            }
-            HttpSource source = new HttpSource();
-            source.url = url;
-            return source;
-        }
-
-        public static Gee.List<HttpSource> extract_sources(StanzaNode node) {
-            Gee.List<HttpSource> sources = new Gee.ArrayList<HttpSource>();
-            foreach (StanzaNode http_node in node.get_subnodes(HTTP_STANZA_NAME, HTTP_NS_URI)) {
-                HttpSource? source = HttpSource.from_stanza_node(http_node);
-                if (source != null) {
-                    sources.add(source);
-                }
-            }
-            return sources;
-        }
-    }
-
-    public class SfsElement {
-        public Xep.FileMetadataElement.FileMetadata metadata = new Xep.FileMetadataElement.FileMetadata();
-        public Gee.List<SfsSource> sources = new Gee.ArrayList<SfsSource>();
-
-        public static SfsElement? from_stanza_node(StanzaNode node) {
-            SfsElement element = new SfsElement();
-            StanzaNode? metadata_node = node.get_subnode("file", Xep.FileMetadataElement.NS_URI);
-            if (metadata_node == null) {
-                return null;
-            }
-            Xep.FileMetadataElement.FileMetadata metadata = Xep.FileMetadataElement.FileMetadata.from_stanza_node(metadata_node);
-            if (metadata == null) {
-                return null;
-            }
-            element.metadata = metadata;
-            StanzaNode? sources_node = node.get_subnode("sources");
-            if (sources_node == null) {
-                return null;
-            }
-            Gee.List<HttpSource> sources = HttpSource.extract_sources(sources_node);
-            if (sources.is_empty) {
-                return null;
-            }
-            element.sources = sources;
-            return element;
-        }
-
-        public StanzaNode to_stanza_node() {
-            StanzaNode node = new StanzaNode.build(STANZA_NAME, NS_URI).add_self_xmlns();
-            node.put_node(this.metadata.to_stanza_node());
-            StanzaNode sources_node = new StanzaNode.build("sources", NS_URI);
-            Gee.List<StanzaNode> sources = new Gee.ArrayList<StanzaNode>();
-            foreach (SfsSource source in this.sources) {
-                sources.add(source.to_stanza_node());
-            }
-            sources_node.sub_nodes = sources;
-            node.put_node(sources_node);
-            return node;
-        }
-    }
-
-    public class SfsSourceAttachment {
-        public string sfs_id;
-        public Gee.List<SfsSource> sources = new Gee.ArrayList<SfsSource>();
-
-        public const string ATTACHMENT_NS_URI = "urn:xmpp:message-attaching:1";
-        public const string ATTACH_TO_STANZA_NAME = "attach-to";
-        public const string SOURCES_STANZA_NAME = "sources";
-        public const string ID_ATTRIBUTE_NAME = "id";
-
-
-        public static SfsSourceAttachment? from_message_stanza(MessageStanza stanza) {
-            StanzaNode? attach_to = stanza.stanza.get_subnode(ATTACH_TO_STANZA_NAME, ATTACHMENT_NS_URI);
-            StanzaNode? sources = stanza.stanza.get_subnode(SOURCES_STANZA_NAME, NS_URI);
-            if (attach_to == null || sources == null) {
-                return null;
-            }
-            string? id = attach_to.get_attribute(ID_ATTRIBUTE_NAME, ATTACHMENT_NS_URI);
-            if (id == null) {
-                return null;
-            }
-            SfsSourceAttachment attachment = new SfsSourceAttachment();
-            attachment.sfs_id = id;
-            Gee.List<HttpSource> http_sources = HttpSource.extract_sources(sources);
-            if (http_sources.is_empty) {
-                return null;
-            }
-            attachment.sources = http_sources;
-            return attachment;
-        }
-
-        public MessageStanza to_message_stanza(Jid to, string message_type) {
-            MessageStanza stanza = new MessageStanza() { to=to, type_=message_type };
-            Xep.MessageProcessingHints.set_message_hint(stanza, Xep.MessageProcessingHints.HINT_STORE);
-
-            StanzaNode attach_to = new StanzaNode.build(ATTACH_TO_STANZA_NAME, ATTACHMENT_NS_URI);
-            attach_to.add_attribute(new StanzaAttribute.build(ATTACHMENT_NS_URI, "id", this.sfs_id));
-            stanza.stanza.put_node(attach_to);
-
-            StanzaNode sources = new StanzaNode.build(SOURCES_STANZA_NAME, NS_URI);
-            Gee.List<StanzaNode> sources_nodes = new Gee.ArrayList<StanzaNode>();
-            foreach (SfsSource source in this.sources) {
-                sources_nodes.add(source.to_stanza_node());
-            }
-            sources.sub_nodes = sources_nodes;
-            stanza.stanza.put_node(sources);
-
-            return stanza;
-        }
-    }
-
-    public class MessageFlag : Xmpp.MessageFlag {
-        public const string ID = "stateless_file_sharing";
-
-        public static MessageFlag? get_flag(MessageStanza message) {
-            return (MessageFlag) message.get_flag(NS_URI, ID);
-        }
-
-        public override string get_ns() {
-            return NS_URI;
-        }
-
-        public override string get_id() {
-            return ID;
-        }
-    }
-
-    public class Module : XmppStreamModule {
-        public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "stateless_file_sharing");
-
-        public signal void received_sfs(Jid from, Jid to, SfsElement sfs_element, MessageStanza message);
-        public signal void received_sfs_attachment(Jid from, Jid to, SfsSourceAttachment attachment, MessageStanza message);
-
-        public void send_stateless_file_transfer(XmppStream stream, MessageStanza sfs_message, SfsElement sfs_element) {
-            StanzaNode sfs_node = sfs_element.to_stanza_node();
-            printerr(sfs_node.to_ansi_string(true));
-
-            sfs_message.stanza.put_node(sfs_node);
-            printerr("Sending message:\n");
-            printerr(sfs_message.stanza.to_ansi_string(true));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, sfs_message);
-        }
-
-        public void send_stateless_file_transfer_attachment(XmppStream stream, Jid to, string message_type, SfsSourceAttachment attachment) {
-            MessageStanza message = attachment.to_message_stanza(to, message_type);
-
-            printerr("Sending message:\n");
-            printerr(message.stanza.to_ansi_string(true));
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, message);
-        }
-
-        private void on_received_message(XmppStream stream, MessageStanza message) {
-            StanzaNode? sfs_node = message.stanza.get_subnode(STANZA_NAME, NS_URI);
-            if (sfs_node != null) {
-                SfsElement? sfs_element = SfsElement.from_stanza_node(sfs_node);
-                if (sfs_element == null) {
-                    return;
-                }
-                message.add_flag(new MessageFlag());
-                received_sfs(message.from, message.to, sfs_element, message);
-            }
-            SfsSourceAttachment? attachment = SfsSourceAttachment.from_message_stanza(message);
-            if (attachment != null) {
-                received_sfs_attachment(message.from, message.to, attachment, message);
-            }
-
-        }
-
-        public override void attach(XmppStream stream) {
-            stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
-        }
-
-        public override void detach(XmppStream stream) {
-            stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
-        }
-
-        public override string get_ns() { return NS_URI; }
-        public override string get_id() { return IDENTITY.id; }
     }
 }

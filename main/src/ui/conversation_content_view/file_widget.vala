@@ -27,7 +27,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) {
-        if (file_transfer.provider != 0 || file_transfer.info == null) return null;
+        if ((file_transfer.provider != FileManager.HTTP_PROVIDER_ID && file_transfer.provider != FileManager.SFS_PROVIDER_ID) || file_transfer.info == null) return null;
 
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
 
@@ -43,7 +43,6 @@ public class FileWidget : SizeRequestBox {
 
     enum State {
         IMAGE,
-        IMAGE_PREVIEW,
         DEFAULT
     }
 
@@ -90,13 +89,15 @@ public class FileWidget : SizeRequestBox {
     }
 
     private async void update_widget() {
-        if (show_image() && state != State.IMAGE) {
+        bool show_image = FileImageWidget.can_display(file_transfer);
+
+        if (show_image && state != State.IMAGE) {
             var content_bak = content;
 
             FileImageWidget file_image_widget = null;
             try {
                 file_image_widget = new FileImageWidget();
-                yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
+                yield file_image_widget.set_file_transfer(file_transfer);
 
                 // If the widget changed in the meanwhile, stop
                 if (content != content_bak) return;
@@ -109,26 +110,7 @@ public class FileWidget : SizeRequestBox {
             } catch (Error e) { }
         }
 
-        if (show_preview() && state != State.IMAGE_PREVIEW) {
-            var content_bak = content;
-
-            FilePreviewWidget file_preview_widget = null;
-            try {
-                file_preview_widget = new FilePreviewWidget() { visible=true };
-                yield file_preview_widget.load_from_thumbnail(file_transfer, stream_interactor);
-
-                // If the widget changed in the meanwhile, stop
-                if (content != content_bak) return;
-
-                if (content != null) this.remove(content);
-                content = file_preview_widget;
-                state = State.IMAGE_PREVIEW;
-                this.append(content);
-                return;
-            } catch (Error e) { }
-        }
-
-        if (!show_image() && state != State.DEFAULT && state != State.IMAGE_PREVIEW) {
+        if (!show_image && state != State.DEFAULT) {
             if (content != null) this.remove(content);
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
@@ -137,31 +119,6 @@ public class FileWidget : SizeRequestBox {
             this.state = State.DEFAULT;
             this.append(content);
         }
-    }
-
-    private bool show_image() {
-        if (file_transfer.mime_type == null) return false;
-
-        // If the image is being sent by this client, we already have the file
-        bool in_progress_from_us = file_transfer.direction == FileTransfer.DIRECTION_SENT &&
-                file_transfer.ourpart.equals(file_transfer.account.full_jid) &&
-                file_transfer.state == FileTransfer.State.IN_PROGRESS;
-        if (file_transfer.state != FileTransfer.State.COMPLETE && !in_progress_from_us) {
-            return false;
-        }
-
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string mime_type in pixbuf_format.get_mime_types()) {
-                if (mime_type == file_transfer.mime_type) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private bool show_preview() {
-        return !this.file_transfer.thumbnails.is_empty;
     }
 
     public override void dispose() {

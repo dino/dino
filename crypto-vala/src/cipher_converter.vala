@@ -55,7 +55,7 @@ public class SymmetricCipherEncrypter : SymmetricCipherConverter {
             }
             return ConverterResult.CONVERTED;
         } catch (Crypto.Error e) {
-            throw new IOError.FAILED(@"$(e.domain) error while decrypting: $(e.message)");
+            throw new IOError.FAILED(@"$(e.domain) error while encrypting: $(e.message)");
         }
     }
 }

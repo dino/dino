@@ -1,3 +1,6 @@
+using Gee;
+using Xmpp;
+
 namespace Dino {
 
 private extern const string SYSTEM_LIBDIR_NAME;
@@ -88,6 +91,34 @@ private static extern unowned string? bind_textdomain_codeset(string domainname,
 public static void internationalize(string gettext_package, string locales_dir) {
     Intl.bind_textdomain_codeset(gettext_package, "UTF-8");
     Intl.bindtextdomain(gettext_package, locales_dir);
+}
+
+public static async HashMap<ChecksumType, string> compute_file_hashes(File file, Gee.List<ChecksumType> checksum_types) {
+    var checksums = new Checksum[checksum_types.size];
+
+    for (int i = 0; i < checksum_types.size; i++) {
+        checksums[i] = new Checksum(checksum_types.get(i));
+    }
+
+    FileInputStream stream = yield file.read_async();
+    uint8 fbuf[1024];
+    size_t size;
+    while ((size = yield stream.read_async(fbuf)) > 0) {
+        for (int i = 0; i < checksum_types.size; i++) {
+            checksums[i].update(fbuf, size);
+        }
+    }
+
+    var ret = new HashMap<ChecksumType, string>();
+    for (int i = 0; i < checksum_types.size; i++) {
+        var checksum_type = checksum_types.get(i);
+        uint8[] digest = new uint8[64];
+        size_t length = digest.length;
+        checksums[i].get_digest(digest, ref length);
+        string computed_hash = GLib.Base64.encode(digest[0:length]);
+        ret[checksum_type] = computed_hash;
+    }
+    return ret;
 }
 
 }

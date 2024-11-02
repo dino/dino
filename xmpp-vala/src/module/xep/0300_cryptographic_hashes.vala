@@ -4,67 +4,52 @@ using Gee;
 namespace Xmpp.Xep.CryptographicHashes {
     public const string NS_URI = "urn:xmpp:hashes:2";
 
-    public enum HashCmp {
-        Match,
-        Mismatch,
-        None,
+    public Gee.List<Hash> get_hashes(StanzaNode node) {
+        var hashes = new ArrayList<Hash>();
+        foreach (StanzaNode hash_node in node.get_subnodes("hash", NS_URI)) {
+            hashes.add(new Hash.from_stanza_node(hash_node));
+        }
+        return hashes;
     }
 
-    public class Hash {
+    public Gee.List<Hash> get_supported_hashes(Gee.List<Hash> hashes) {
+        var ret = new ArrayList<Hash>();
+        foreach (Hash hash in hashes) {
+            ChecksumType? hash_type = hash_string_to_type(hash.algo);
+            if (hash_type != null) {
+                ret.add(hash);
+            }
+        }
+        return ret;
+    }
+
+    public bool has_supported_hashes(Gee.List<Hash> hashes) {
+        foreach (Hash hash in hashes) {
+            ChecksumType? hash_type = hash_string_to_type(hash.algo);
+            if (hash_type != null) return true;
+        }
+        return false;
+    }
+
+    public class Hash : Object {
         public string algo;
         // hash encoded in Base64
         public string val;
 
-        public static string hash_name(ChecksumType type) {
-            switch(type) {
-                case ChecksumType.MD5:
-                    return "md5";
-                case ChecksumType.SHA1:
-                    return "sha-1";
-                case ChecksumType.SHA256:
-                    return "sha-256";
-                case ChecksumType.SHA384:
-                    return "sha-384";
-                case ChecksumType.SHA512:
-                    return "sha-512";
-            }
-            return "(null)";
+        public Hash.with_checksum(ChecksumType checksum_type, string hash) {
+            algo = hash_type_to_string(checksum_type);
+            val = hash;
         }
 
-        public static ChecksumType? supported_hash(string hash) {
-            switch (hash) {
-                case "sha-1":
-                    return ChecksumType.SHA1;
-                case "sha-256":
-                    return ChecksumType.SHA256;
-                case "sha-384":
-                    return ChecksumType.SHA384;
-                case "sha-512":
-                    return ChecksumType.SHA512;
-            }
-            return null;
-        }
-
-        public Hash.from_data(GLib.ChecksumType type, uint8[] data) {
+        public Hash.compute(GLib.ChecksumType type, uint8[] data) {
             GLib.Checksum checksum = new GLib.Checksum(type);
             checksum.update(data, data.length);
             // 64 * 8 = 512 (sha-512 is the longest hash variant)
             uint8[] digest = new uint8[64];
             size_t length = digest.length;
             checksum.get_digest(digest, ref length);
-            this.algo = hash_name(type);
+            this.algo = hash_type_to_string(type);
             this.val = GLib.Base64.encode(digest[0:length]);
-        }
-
-        public HashCmp compare(Hash other) {
-            if (this.algo != other.algo) {
-                return HashCmp.None;
-            }
-            if (this.val == other.val) {
-                return HashCmp.Match;
-            } else {
-                return HashCmp.Mismatch;
-            }
         }
 
         public StanzaNode to_stanza_node() {
@@ -79,58 +64,33 @@ namespace Xmpp.Xep.CryptographicHashes {
         }
     }
 
-    public class Hashes {
-        public Gee.List<Hash> hashes = new ArrayList<Hash>();
-
-        public Gee.List<ChecksumType> supported_hashes() {
-            Gee.List<ChecksumType> supported = new ArrayList<ChecksumType>();
-            foreach (Hash hash in this.hashes) {
-                ChecksumType? hash_type = Hash.supported_hash(hash.algo);
-                if (hash_type != null) {
-                    supported.add(hash_type);
-                }
-            }
-            return supported;
+    public static string hash_type_to_string(ChecksumType type) {
+        switch(type) {
+            case ChecksumType.MD5:
+                return "md5";
+            case ChecksumType.SHA1:
+                return "sha-1";
+            case ChecksumType.SHA256:
+                return "sha-256";
+            case ChecksumType.SHA384:
+                return "sha-384";
+            case ChecksumType.SHA512:
+                return "sha-512";
         }
+        return "(null)";
+    }
 
-        public Hashes.from_data(Gee.List<ChecksumType> types, uint8[] data) {
-            foreach (ChecksumType type in types) {
-                this.hashes.add(new Hash.from_data(type, data));
-            }
+    public static ChecksumType? hash_string_to_type(string hash) {
+        switch (hash) {
+            case "sha-1":
+                return ChecksumType.SHA1;
+            case "sha-256":
+                return ChecksumType.SHA256;
+            case "sha-384":
+                return ChecksumType.SHA384;
+            case "sha-512":
+                return ChecksumType.SHA512;
         }
-
-        public HashCmp compare(Hashes other) {
-            HashCmp cmp = HashCmp.None;
-            foreach (Hash this_hash in this.hashes) {
-                foreach (Hash other_hash in other.hashes) {
-                    switch (this_hash.compare(other_hash)) {
-                        case HashCmp.Mismatch:
-                            return HashCmp.Mismatch;
-                        case HashCmp.Match:
-                            cmp = HashCmp.Match;
-                            break;
-                        case HashCmp.None:
-                            continue;
-                    }
-                }
-            }
-            return cmp;
-        }
-
-        public Gee.List<StanzaNode> to_stanza_nodes() {
-            Gee.List<StanzaNode> nodes = new ArrayList<StanzaNode>();
-            foreach (Hash hash in this.hashes) {
-                nodes.add(hash.to_stanza_node());
-            }
-            return nodes;
-        }
-
-        public Hashes.from_stanza_subnodes(StanzaNode node) {
-            Gee.List<StanzaNode> subnodes = node.get_subnodes("hash", NS_URI);
-            this.hashes = new ArrayList<Hash>();
-            foreach (StanzaNode subnode in subnodes) {
-                this.hashes.add(new Hash.from_stanza_node(subnode));
-            }
-        }
+        return null;
     }
 }

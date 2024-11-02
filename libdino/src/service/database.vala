@@ -180,6 +180,7 @@ public class Database : Qlite.Database {
 
     public class FileTransferTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<string> file_sharing_id = new Column.Text("file_sharing_id") { min_version=28 };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
         public Column<int> counterpart_id = new Column.Integer("counterpart_id") { not_null = true };
         public Column<string> counterpart_resource = new Column.Text("counterpart_resource");
@@ -191,7 +192,7 @@ public class Database : Qlite.Database {
         public Column<string> file_name = new Column.Text("file_name");
         public Column<string> path = new Column.Text("path");
         public Column<string> mime_type = new Column.Text("mime_type");
-        public Column<long> size = new Column.Long("size") { default = "-1", min_version=28 };
+        public Column<long> size = new Column.Long("size");
         public Column<int> state = new Column.Integer("state");
         public Column<int> provider = new Column.Integer("provider");
         public Column<string> info = new Column.Text("info");
@@ -202,9 +203,9 @@ public class Database : Qlite.Database {
 
         internal FileTransferTable(Database db) {
             base(db, "file_transfer");
-            init({id, account_id, counterpart_id, counterpart_resource, our_resource, direction, time, local_time,
-                    encryption, file_name, path, mime_type, size, state, provider, info, modification_date, width, height,
-                    length});
+            init({id, file_sharing_id, account_id, counterpart_id, counterpart_resource, our_resource, direction,
+                time, local_time, encryption, file_name, path, mime_type, size, state, provider, info, modification_date,
+                width, height, length});
         }
     }
 
@@ -233,15 +234,15 @@ public class Database : Qlite.Database {
         }
     }
 
-    public class SfsSourcesTable : Table {
-        public Column<int> id = new Column.Integer("id");
+    public class SourcesTable : Table {
+        public Column<int> file_transfer_id = new Column.Integer("file_transfer_id");
         public Column<string> type = new Column.Text("type") { not_null = true };
         public Column<string> data = new Column.Text("data") { not_null = true };
 
-        internal SfsSourcesTable(Database db) {
+        internal SourcesTable(Database db) {
             base(db, "sfs_sources");
-            init({id, type, data});
-            unique({id, type, data}, "REPLACE");
+            init({file_transfer_id, type, data});
+            index("sfs_sources_file_transfer_id_idx", {file_transfer_id});
         }
     }
 
@@ -445,7 +446,7 @@ public class Database : Qlite.Database {
     public FileTransferTable file_transfer { get; private set; }
     public FileHashesTable file_hashes { get; private set; }
     public FileThumbnailsTable file_thumbnails { get; private set; }
-    public SfsSourcesTable sfs_sources { get; private set; }
+    public SourcesTable sfs_sources { get; private set; }
     public CallTable call { get; private set; }
     public CallCounterpartTable call_counterpart { get; private set; }
     public ConversationTable conversation { get; private set; }
@@ -478,7 +479,7 @@ public class Database : Qlite.Database {
         file_transfer = new FileTransferTable(this);
         file_hashes = new FileHashesTable(this);
         file_thumbnails = new FileThumbnailsTable(this);
-        sfs_sources = new SfsSourcesTable(this);
+        sfs_sources = new SourcesTable(this);
         call = new CallTable(this);
         call_counterpart = new CallCounterpartTable(this);
         conversation = new ConversationTable(this);

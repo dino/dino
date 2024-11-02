@@ -307,7 +307,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         public override string[] after_actions { get { return after_actions_const; } }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            return (message.body == null);
+            return message.body == null &&
+                    Xep.StatelessFileSharing.get_file_shares(stanza) == null;
         }
     }
 
@@ -326,8 +327,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-            if (message.body == null || outer.is_duplicate(message, stanza, conversation)) return true;
-
             stream_interactor.get_module(MessageStorage.IDENTITY).add_message(message, conversation);
             return false;
         }
@@ -371,7 +370,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
-    public Entities.Message create_out_message(string text, Conversation conversation) {
+    public Entities.Message create_out_message(string? text, Conversation conversation) {
         Entities.Message message = new Entities.Message(text);
         message.type_ = Util.get_message_type_for_conversation(conversation);
         message.stanza_id = random_uuid();
