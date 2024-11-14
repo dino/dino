@@ -98,15 +98,29 @@ public class StanzaNode : StanzaEntry {
     }
 
     public int get_attribute_int(string name, int def = -1, string? ns_uri = null) {
-        string? res = get_attribute(name, ns_uri);
-        if (res == null) return def;
-        return int.parse((!)res);
+        string? attribute_str = get_attribute(name, ns_uri);
+        if (attribute_str == null) return def;
+
+        int res = def;
+        bool parse_success = int.try_parse(attribute_str, out res);
+        if (!parse_success) {
+            info("Could not parse int attribute %s: %s", name, attribute_str);
+            return def;
+        }
+        return res;
     }
 
     public uint get_attribute_uint(string name, uint def = 0, string? ns_uri = null) {
-        string? res = get_attribute(name, ns_uri);
-        if (res == null) return def;
-        return (uint) long.parse((!)res);
+        string? attribute_str = get_attribute(name, ns_uri);
+        if (attribute_str == null) return def;
+
+        uint res = def;
+        bool parse_success = uint.try_parse(attribute_str, out res);
+        if (!parse_success) {
+            info("Could not parse uint attribute %s: %s", name, attribute_str);
+            return def;
+        }
+        return res;
     }
 
     public bool get_attribute_bool(string name, bool def = false, string? ns_uri = null) {
