@@ -1,3 +1,10 @@
+if crypto_backend == 'openssl'
+    if get_option('plugin-ice').enabled()
+        error('plugin-ice does not work with openssl backend yet')
+    else
+        subdir_done()
+    endif
+endif
 dependencies = [
     dep_crypto_vala,
     dep_dino,
@@ -5,7 +12,7 @@ dependencies = [
     dep_gee,
     dep_glib,
     dep_gmodule,
-    dep_gnutls,
+    dep_gnutls_or_openssl,
     dep_nice,
     dep_qlite,
     dep_xmpp_vala,
