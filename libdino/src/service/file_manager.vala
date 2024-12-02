@@ -152,6 +152,10 @@ public class FileManager : StreamInteractionModule, Object {
 
             // Update current download progress in the FileTransfer
             LimitInputStream? limit_stream = file_transfer.input_stream as LimitInputStream;
+            if (limit_stream == null) {
+                limit_stream = new LimitInputStream(file_transfer.input_stream, file_meta.size);
+                file_transfer.input_stream = limit_stream;
+            }
             if (limit_stream != null) {
                 limit_stream.bind_property("retrieved-bytes", file_transfer, "transferred-bytes", BindingFlags.SYNC_CREATE);
             }
@@ -267,9 +271,6 @@ public class FileManager : StreamInteractionModule, Object {
 
             FileMeta file_meta = yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
 
-
-            InputStream? input_stream = null;
-
             // Download and decrypt file
             file_transfer.state = FileTransfer.State.IN_PROGRESS;
 
@@ -277,13 +278,14 @@ public class FileManager : StreamInteractionModule, Object {
                 file_meta = file_decryptor.prepare_download_file(conversation, file_transfer, receive_data, file_meta);
             }
 
-            input_stream = yield file_provider.download(file_transfer, receive_data, file_meta);
+            InputStream download_input_stream = yield file_provider.download(file_transfer, receive_data, file_meta);
+            InputStream input_stream = download_input_stream;
             if (file_decryptor != null) {
                 input_stream = yield file_decryptor.decrypt_file(input_stream, conversation, file_transfer, receive_data);
             }
 
             // Update current download progress in the FileTransfer
-            LimitInputStream? limit_stream = input_stream as LimitInputStream;
+            LimitInputStream? limit_stream = download_input_stream as LimitInputStream;
             if (limit_stream != null) {
                 limit_stream.bind_property("retrieved-bytes", file_transfer, "transferred-bytes", BindingFlags.SYNC_CREATE);
             }

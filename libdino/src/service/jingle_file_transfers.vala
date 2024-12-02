@@ -103,7 +103,7 @@ public class JingleFileProvider : FileProvider, Object {
             throw new IOError.FAILED("Transfer data not available anymore");
         }
         yield jingle_file_transfer.accept(stream);
-        return jingle_file_transfer.stream;
+        return new LimitInputStream(jingle_file_transfer.stream, file_meta.size);
     }
 
     public int get_id() {
