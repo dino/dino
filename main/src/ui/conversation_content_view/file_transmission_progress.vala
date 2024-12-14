@@ -80,9 +80,10 @@ namespace Dino.Ui {
         }
 
         private void update_progress() {
+            this.get_style_context().remove_provider(css_provider);
             int64 progress_percent = transferred_size * 100 / file_size;
 
-            Util.force_css(this, @"
+            css_provider = Util.force_css(this, @"
                 .circular-loading-indicator {
                   background-image: conic-gradient(@accent_color $(progress_percent)%, transparent $(progress_percent)%);
                 }
