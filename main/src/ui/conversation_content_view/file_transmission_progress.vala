@@ -81,16 +81,14 @@ namespace Dino.Ui {
 
         private void update_progress() {
             this.get_style_context().remove_provider(css_provider);
-            css_provider = new CssProvider();
             int64 progress_percent = transferred_size * 100 / file_size;
 
-            css_provider.load_from_string(@"
+            css_provider = Util.force_css(this, @"
                 .circular-loading-indicator {
                   background-image: conic-gradient(@accent_color $(progress_percent)%, transparent $(progress_percent)%);
                 }
             ");
 
-            this.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
             next_update_time = get_monotonic_time() / 1000 + 500;
             last_progress_percent = progress_percent;
         }
