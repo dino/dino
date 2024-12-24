@@ -25,7 +25,8 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
         SimpleActionGroup action_group = new SimpleActionGroup();
         SimpleAction details_action = new SimpleAction("details", null);
         details_action.activate.connect((parameter) => {
-            open_conversation_details();
+            var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("about")});
+            GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
         action_group.insert(details_action);
         SimpleAction close_action = new SimpleAction("close", null);

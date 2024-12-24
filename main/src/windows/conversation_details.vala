@@ -8,6 +8,7 @@ namespace Dino.Ui.ConversationDetails {
 
     [GtkTemplate (ui = "/im/dino/Dino/conversation_details.ui")]
     public class Dialog : Adw.Window {
+        [GtkChild] public unowned Stack stack;
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;
         [GtkChild] public unowned Adw.ButtonContent pin_button_content;
@@ -21,6 +22,12 @@ namespace Dino.Ui.ConversationDetails {
         [GtkChild] public unowned Adw.ButtonContent notification_button_split_content;
 
         [GtkChild] public unowned ViewModel.ConversationDetails model { get; }
+
+        public StackPage? encryption_stack_page = null;
+        public Box? encryption_box = null;
+
+        public StackPage? member_stack_page = null;
+        public Box? member_box = null;
 
         private SimpleAction block_action = new SimpleAction.stateful("block", VariantType.INT32, new Variant.int32(ViewModel.ConversationDetails.BlockState.UNBLOCK));
 
@@ -44,9 +51,11 @@ namespace Dino.Ui.ConversationDetails {
             model.notify["notification-is-default"].connect(update_notification_button_visibility);
 
             model.about_rows.items_changed.connect(create_preferences_rows);
-            model.encryption_rows.items_changed.connect(create_preferences_rows);
             model.settings_rows.items_changed.connect(create_preferences_rows);
             model.notify["room-configuration-rows"].connect(create_preferences_rows);
+
+            model.notify["members"].connect(create_members);
+            create_members();
 
             // Create block action
             SimpleActionGroup block_action_group = new SimpleActionGroup();
@@ -145,6 +154,30 @@ namespace Dino.Ui.ConversationDetails {
             }
         }
 
+        private void create_members() {
+            if (model.members_sorted.n_items == 0) return;
+
+            var selection_model = new NoSelection(model.members_sorted);
+            var item_factory = new BuilderListItemFactory.from_resource(null, "/im/dino/Dino/muc_member_list_row.ui");
+            var list_view = new ListView(selection_model, item_factory) { single_click_activate = true };
+            list_view.add_css_class("card");
+            list_view.activate.connect((position) => {
+//                var widget = (Gtk.Widget) list_view.observe_children().get_item(position);
+//                var name_label = widget.get_template_child(Type.OBJECT, "name-label");
+//                print(widget.get_type().name());
+
+//                var popover = new Popover();
+//                popover.parent = widget;
+//                popover.popup();
+
+
+                var row_view_model = (Ui.Model.ConferenceMember) model.members_sorted.get_item(position);
+                print(@"$(position) $(row_view_model.name)\n");
+            });
+
+            add_members_tab_element(list_view);
+        }
+
         private void create_preferences_rows() {
             var widget = about_box.get_first_child();
             while (widget != null) {
@@ -155,9 +188,6 @@ namespace Dino.Ui.ConversationDetails {
             if (model.about_rows.get_n_items() > 0) {
                 about_box.append(Util.rows_to_preference_group(model.about_rows, _("About")));
             }
-            if (model.encryption_rows.get_n_items() > 0) {
-                about_box.append(Util.rows_to_preference_group(model.encryption_rows, _("Encryption")));
-            }
             if (model.settings_rows.get_n_items() > 0) {
                 about_box.append(Util.rows_to_preference_group(model.settings_rows, _("Settings")));
             }
@@ -165,5 +195,34 @@ namespace Dino.Ui.ConversationDetails {
                 about_box.append(Util.rows_to_preference_group(model.room_configuration_rows, _("Room Configuration")));
             }
         }
+
+        public void add_encryption_tab_element(Adw.PreferencesGroup preferences_group) {
+            if (encryption_stack_page == null) {
+                encryption_box = new Box(Orientation.VERTICAL, 12) { margin_end = 12, margin_start = 12, margin_top = 18, margin_bottom = 40 };
+                var scrolled_window = new ScrolledWindow() { vexpand = true };
+                var clamp = new Adw.Clamp();
+                clamp.set_child(encryption_box);
+                scrolled_window.set_child(clamp);
+                encryption_stack_page = stack.add_child(scrolled_window);
+                encryption_stack_page.title = _("Encryption");
+                encryption_stack_page.name = "encryption";
+            }
+            encryption_box.append(preferences_group);
+        }
+
+        public void add_members_tab_element(Widget widget) {
+            if (member_stack_page == null) {
+                member_box = new Box(Orientation.VERTICAL, 12) { margin_end = 12, margin_start = 12, margin_top = 18 };
+                member_stack_page = stack.add_child(member_box);
+                member_stack_page.title = _("Members");
+                member_stack_page.name = "member";
+            }
+            member_box.append(widget);
+        }
+    }
+
+    [GtkTemplate (ui = "/im/dino/Dino/muc_member_list_row.ui")]
+    public class Dino.Ui.ConversationDetails.MemberListItem : Gtk.Widget {
+
     }
 }

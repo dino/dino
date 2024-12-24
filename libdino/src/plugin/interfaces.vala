@@ -64,8 +64,10 @@ public abstract class EncryptionPreferencesEntry : Object {
 
 public interface ContactDetailsProvider : Object {
     public abstract string id { get; }
+    public abstract string tab { get; }
 
     public abstract void populate(Conversation conversation, ContactDetails contact_details, WidgetType type);
+    public abstract Object? get_widget(Conversation conversation);
 }
 
 public class ContactDetails : Object {

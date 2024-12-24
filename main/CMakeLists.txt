@@ -89,6 +89,7 @@ set(RESOURCE_LIST
     menu_conversation.ui
     menu_encryption.ui
     message_item_widget_edit_mode.ui
+    muc_member_list_row.ui
     occupant_list.ui
     occupant_list_item.ui
     quote.ui

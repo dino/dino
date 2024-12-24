@@ -6,6 +6,7 @@ namespace Dino.Ui.ContactDetails {
 
 public class PermissionsProvider : Plugins.ContactDetailsProvider, Object {
     public string id { get { return "permissions"; } }
+    public string tab { get { return "about"; } }
 
     private StreamInteractor stream_interactor;
 
@@ -24,6 +25,10 @@ public class PermissionsProvider : Plugins.ContactDetailsProvider, Object {
             voice_request.clicked.connect(()=>stream_interactor.get_module(MucManager.IDENTITY).request_voice(conversation.account, conversation.counterpart));
             contact_details.add("Permissions", _("Request permission to send messages"), "", voice_request);
         }
+    }
+
+    public Object? get_widget(Conversation conversation) {
+        return null;
     }
 }
 

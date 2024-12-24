@@ -70,6 +70,7 @@
     <file>menu_conversation.ui</file>
     <file>menu_encryption.ui</file>
     <file>message_item_widget_edit_mode.ui</file>
+    <file>muc_member_list_row.ui</file>
     <file>occupant_list.ui</file>
     <file>occupant_list_item.ui</file>
     <file>quote.ui</file>

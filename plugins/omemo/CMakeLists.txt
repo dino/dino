@@ -72,7 +72,6 @@ SOURCES
     src/ui/bad_messages_populator.vala
     src/ui/call_encryption_entry.vala
     src/ui/contact_details_provider.vala
-    src/ui/contact_details_dialog.vala
     src/ui/device_notification_populator.vala
     src/ui/own_notifications.vala
     src/ui/encryption_list_entry.vala

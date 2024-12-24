@@ -145,6 +145,20 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
         add_action(open_conversation_action);
 
+        SimpleAction open_conversation_details_action = new SimpleAction("open-conversation-details", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.STRING}));
+        open_conversation_details_action.activate.connect((variant) => {
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null) return;
+
+            string stack_value = variant.get_child_value(1).get_string();
+
+            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, window);
+            conversation_details.stack.visible_child_name = stack_value;
+            conversation_details.present();
+        });
+        add_action(open_conversation_details_action);
+
         SimpleAction deny_subscription_action = new SimpleAction("deny-subscription", VariantType.INT32);
         deny_subscription_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());

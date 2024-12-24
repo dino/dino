@@ -21,7 +21,9 @@
           </object>
         </child>
         <child>
+          <!-- TODO: make this a SwitchRow once we depend on Adwaita 1.4-->
           <object class="AdwActionRow" id="automatically_accept_new_row">
+            <property name="activatable-widget">automatically_accept_new_switch</property>
             <child type="suffix">
               <object class="GtkSwitch" id="automatically_accept_new_switch">
                 <property name="valign">center</property>

@@ -19,7 +19,7 @@ public class OmemoPreferencesEntry : Plugins.EncryptionPreferencesEntry {
     public override Object? get_widget(Account account, WidgetType type) {
         if (type != WidgetType.GTK4) return null;
         var widget  = new OmemoPreferencesWidget(plugin);
-        widget.set_account(account);
+        widget.set_jid(account, account.bare_jid);
         return widget;
     }
 
@@ -59,22 +59,24 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
 
     public OmemoPreferencesWidget(Plugin plugin) {
         this.plugin = plugin;
-        this.account = account;
-        this.jid = jid;
     }
 
-    public void set_account(Account account) {
+    public void set_jid(Account account, Jid jid) {
         this.account = account;
-        this.jid = account.bare_jid;
+        this.jid = jid;
+        this.identity_id = plugin.db.identity.get_id(account.id);
+        if (identity_id <= 0) {
+            warning("OmemoPreferencesWidget missing identity_id");
+            return;
+        }
 
         automatically_accept_new_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true));
         automatically_accept_new_switch.state_set.connect(on_auto_accept_toggled);
 
+        encrypt_by_default_row.visible = account.bare_jid.equals_bare(jid);
         encrypt_by_default_switch.set_active(plugin.app.settings.get_default_encryption(account) != Encryption.NONE);
         encrypt_by_default_switch.state_set.connect(on_omemo_by_default_toggled);
 
-        identity_id = plugin.db.identity.get_id(account.id);
-        if (identity_id < 0) return;
         Dino.Application? app = Application.get_default() as Dino.Application;
         if (app != null) {
             store = app.stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY).store;
@@ -216,7 +218,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
                 });
             });
             action_row.activatable = true;
-            action_row.title = "Other device";
+            action_row.title = account.bare_jid.equals_bare(jid) ? "Other device" : "Device";
             action_row.subtitle = fingerprint_markup(fingerprint_from_base64(key_base64));
             string trust_str = _("Accepted");
             switch(trust) {

@@ -72,18 +72,6 @@ public class Plugin : RootInterface, Object {
 
         Manager.start(this.app.stream_interactor, db, trust_manager, encryptors);
 
-        SimpleAction own_keys_action = new SimpleAction("own-keys", VariantType.INT32);
-        own_keys_action.activate.connect((variant) => {
-            foreach(Dino.Entities.Account account in this.app.stream_interactor.get_accounts()) {
-                if(account.id == variant.get_int32()) {
-                    ContactDetailsDialog dialog = new ContactDetailsDialog(this, account, account.bare_jid);
-                    dialog.set_transient_for(((Gtk.Application) this.app).get_active_window());
-                    dialog.present();
-                }
-            }
-        });
-        this.app.add_action(own_keys_action);
-
         string locales_dir;
         if (app.search_path_generator != null) {
             locales_dir = ((!)app.search_path_generator).get_locale_path(GETTEXT_PACKAGE, LOCALE_INSTALL_DIR);
