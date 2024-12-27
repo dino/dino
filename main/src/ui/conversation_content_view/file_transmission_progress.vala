@@ -113,6 +113,7 @@ namespace Dino.Ui {
                 Source.remove(update_progress_timeout_id);
                 update_progress_timeout_id = -1;
             }
+            base.dispose();
         }
     }
 }

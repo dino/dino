@@ -63,31 +63,41 @@ public class FileImageWidget : Box {
 
         EventControllerMotion this_motion_events = new EventControllerMotion();
         this.add_controller(this_motion_events);
-        this_motion_events.enter.connect(() => {
-            image_overlay_toolbar.visible = show_image_overlay_toolbar;
-            file_size_label.visible = file_transfer != null && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED && file_transfer.state == FileTransfer.State.NOT_STARTED && !file_transfer.sfs_sources.is_empty;
+        this_motion_events.enter.connect((controller, x, y) => {
+            (controller.widget as FileImageWidget).on_motion_event_enter();
         });
-        this_motion_events.leave.connect(() => {
+        attach_on_motion_event_leave(this_motion_events, button);
+    }
+
+    private static void attach_on_motion_event_leave(EventControllerMotion this_motion_events, MenuButton button) {
+        this_motion_events.leave.connect((controller) => {
             if (button.popover != null && button.popover.visible) return;
 
-            image_overlay_toolbar.visible = false;
-            file_size_label.visible = false;
+            (controller.widget as FileImageWidget).image_overlay_toolbar.visible = false;
+            (controller.widget as FileImageWidget).file_size_label.visible = false;
         });
+    }
+
+    private void on_motion_event_enter() {
+        image_overlay_toolbar.visible = show_image_overlay_toolbar;
+        file_size_label.visible = file_transfer != null && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED && file_transfer.state == FileTransfer.State.NOT_STARTED && !file_transfer.sfs_sources.is_empty;
     }
 
     public async void set_file_transfer(FileTransfer file_transfer) {
         this.file_transfer = file_transfer;
 
-        this.file_transfer.bind_property("size", file_size_label, "label", BindingFlags.SYNC_CREATE, (_, from_value, ref to_value) => {
-            to_value = FileDefaultWidget.get_size_string((int64) from_value);
-            return true;
-        });
+        this.file_transfer.bind_property("size", file_size_label, "label", BindingFlags.SYNC_CREATE, file_size_label_transform);
         this.file_transfer.bind_property("size", transmission_progress, "file-size", BindingFlags.SYNC_CREATE);
         this.file_transfer.bind_property("transferred-bytes", transmission_progress, "transferred-size");
 
         file_transfer.notify["state"].connect(refresh_state);
         file_transfer.sources_changed.connect(refresh_state);
         refresh_state();
+    }
+
+    private static bool file_size_label_transform(Binding binding, Value from_value, ref Value to_value) {
+        to_value = FileDefaultWidget.get_size_string((int64) from_value);
+        return true;
     }
 
     private void refresh_state() {
