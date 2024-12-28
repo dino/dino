@@ -12,7 +12,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
     private const string[] KEY_COMBINATION_SHOW_SETTINGS = {"<Ctrl>comma", null};
 
-    private MainWindow window;
+    public MainWindow window;
     public MainWindowController controller;
 
     public Database db { get; set; }

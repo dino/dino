@@ -133,6 +133,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
             .value(db.roster.jid, item.jid.to_string(), true)
             .value(db.roster.handle, item.name)
             .value(db.roster.subscription, item.subscription)
+            .value(db.roster.ask, item.ask)
             .perform();
     }
 
