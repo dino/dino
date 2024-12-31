@@ -56,11 +56,8 @@
         },
         {
             "name": "dino",
-            "buildsystem": "cmake-ninja",
+            "buildsystem": "meson",
             "builddir": true,
-            "config-opts": [
-                "-DSOUP_VERSION=3"
-            ],
             "cleanup": [
                 "/include",
                 "/share/vala"

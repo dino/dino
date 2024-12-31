@@ -10,6 +10,7 @@ dependencies = [
     dep_libgcrypt,
     dep_libqrencode,
     dep_libsignal_protocol_c,
+    dep_m,
     dep_qlite,
     dep_xmpp_vala,
 ]
