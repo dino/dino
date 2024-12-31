@@ -81,7 +81,7 @@ c_args = [
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
-lib_dino = library('dino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true])
+lib_dino = library('libdino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true])
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 
 install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
