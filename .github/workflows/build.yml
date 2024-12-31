@@ -2,39 +2,42 @@ name: Build
 on: [pull_request, push]
 jobs:
   build:
+    name: "Build"
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: sudo apt-get update
-      - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext cmake valac libgee-0.8-dev libsqlite3-dev libgtk-4-dev libnotify-dev libgpgme-dev libsoup2.4-dev libgcrypt20-dev libqrencode-dev libnice-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libsrtp2-dev libwebrtc-audio-processing-dev libadwaita-1-dev libsignal-protocol-c-dev
-      - run: ./configure --with-tests --with-libsignal-in-tree
-      - run: make
-      - run: build/xmpp-vala-test
-      - run: build/omemo-test
-  build-meson:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - run: sudo apt-get update
-      - run: sudo apt-get remove libunwind-14-dev
-      - run: sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
-      - run: meson setup build
-      - run: meson compile -C build
+      - name: "Setup matchers"
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Setup dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get remove libunwind-14-dev
+          sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libsignal-protocol-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
+      - name: "Configure"
+        run: meson setup build
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Test"
+        run: meson test -C build
   build-flatpak:
+    name: "Build flatpak"
     runs-on: ubuntu-24.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-46
       options: --privileged
     steps:
-      - uses: actions/checkout@v2
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6.1
+      - name: "Build"
+        uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
         with:
           manifest-path: im.dino.Dino.json
-          build-bundle: false
+          bundle: im.dino.Dino.flatpak
