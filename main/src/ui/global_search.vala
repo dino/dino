@@ -224,14 +224,15 @@ public class GlobalSearch {
         grid.margin_bottom = 3;
 
         string text = Util.unbreak_space_around_non_spacing_mark(item.message.body.replace("\n", "").replace("\r", ""));
-        if (text.length > 200) {
+        if (text.char_count() > 200) {
             int index = text.index_of(search);
-            if (index + search.length <= 100) {
-                text = text.substring(0, 150) + " … " + text.substring(text.length - 50, 50);
-            } else if (index >= text.length - 100) {
-                text = text.substring(0, 50) + " … " + text.substring(text.length - 150, 150);
+            int char_index = index < 0 ? 0 : text.char_count(index);
+            if (char_index + search.char_count() <= 100) {
+                text = text.substring(0, text.index_of_nth_char(150)) + " … " + text.substring(text.index_of_nth_char(text.char_count() - 50));
+            } else if (char_index >= text.char_count() - 100) {
+                text = text.substring(0, text.index_of_nth_char(50)) + " … " + text.substring(text.index_of_nth_char(text.char_count() - 150));
             } else {
-                text = text.substring(0, 25) + " … " + text.substring(index - 50, 50) + text.substring(index, 100) + " … " + text.substring(text.length - 25, 25);
+                text = text.substring(0, text.index_of_nth_char(25)) + " … " + text.substring(text.index_of_nth_char(char_index - 50), text.index_of_nth_char(char_index + 100)) + " … " + text.substring(text.index_of_nth_char(text.char_count() - 25));
             }
         }
         Label label = new Label("") { use_markup=true, xalign=0, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, vexpand=true };
