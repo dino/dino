@@ -311,7 +311,7 @@ public class AddAccountDialog : Adw.Window {
             register_form_continue.grab_focus();
         } else if (form.fields.size > 0) {
             if (form.instructions != null && form.instructions != "") {
-                string markup_instructions = Util.parse_add_markup(form.instructions, null, true, false);
+                string markup_instructions = Util.parse_add_markup(Util.unbreak_space_around_non_spacing_mark(form.instructions), null, true, false);
                 form_box.append(new Label(markup_instructions) { use_markup=true, xalign=0, margin_top=7,
                     wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR });
             }

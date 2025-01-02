@@ -223,7 +223,7 @@ public class GlobalSearch {
         grid.margin_top = 3;
         grid.margin_bottom = 3;
 
-        string text = item.message.body.replace("\n", "").replace("\r", "");
+        string text = Util.unbreak_space_around_non_spacing_mark(item.message.body.replace("\n", "").replace("\r", ""));
         if (text.length > 200) {
             int index = text.index_of(search);
             if (index + search.length <= 100) {

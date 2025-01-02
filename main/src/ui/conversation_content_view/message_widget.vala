@@ -140,6 +140,9 @@ public class MessageMetaItem : ContentMetaItem {
             }
         }
 
+        // Work around pango bug
+        markup_text = Util.unbreak_space_around_non_spacing_mark((owned) markup_text);
+
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent);
         } else {
