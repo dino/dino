@@ -1,7 +1,11 @@
-![Dino](https://dino.im/img/readme_header.svg)
-=======
+<img src="https://dino.im/img/logo.svg" width="80">
 
-![screenshots](https://dino.im/img/screenshot-main.png)
+# Dino
+
+Dino is an XMPP messaging app for Linux using GTK and Vala.
+It supports calls, encryption, file transfers, group chats and more.
+
+![screenshot](https://dino.im/img/appdata/screenshot-dino-0.4-main-2244x1644@2.png)
 
 Installation
 ------------
@@ -30,8 +34,8 @@ Contribute
 
 License
 -------
-    Dino - Modern Jabber/XMPP Client using GTK+/Vala
-    Copyright (C) 2016-2023 Dino contributors
+    Dino - XMPP messaging app using GTK/Vala
+    Copyright (C) 2016-2025 Dino contributors
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
