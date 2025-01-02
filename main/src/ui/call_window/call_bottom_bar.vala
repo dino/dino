@@ -138,7 +138,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
 
     public void show_counterpart_ended(string text) {
         stack.set_visible_child_name("label");
-        label.label = text;
+        label.label = Util.unbreak_space_around_non_spacing_mark(text);
     }
 
     public bool is_menu_active() {
