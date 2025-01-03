@@ -45,6 +45,7 @@ namespace Dino.Plugins.OpenPgp {
 #else
             var view = new Adw.ActionRow() { title = "Announce key" };
             var drop_down = new DropDown(string_list, null) { valign = Align.CENTER };
+            drop_down.remove_css_class("error");
             view.activatable_widget = drop_down;
             view.add_suffix(drop_down);
             preferences_group.add(view);
@@ -52,14 +53,35 @@ namespace Dino.Plugins.OpenPgp {
 
             string_list.append(_("Disabled"));
             for (int i = 0; i < keys.size; i++) {
-                string_list.append(@"$(keys[i].uids[0].uid)\n$(keys[i].fpr.substring(24, 16))");
+                if(!keys[i].expired && !keys[i].revoked) string_list.append(@"$(keys[i].uids[0].uid)\n$(keys[i].fpr.substring(24, 16))");
                 if (keys[i].fpr == plugin.db.get_account_key(account)) {
-                    drop_down.selected = i + 1;
+                    if(keys[i].expired || keys[i].revoked){
+                        string status = keys[i].expired ? _("Key is expired!") : _("Key is revoked!");
+                        string_list.append(@"$(keys[i].uids[0].uid)\n$(keys[i].fpr.substring(24, 16))\n$(status)");
+                        drop_down.add_css_class("error");
+                        drop_down.selected = string_list.get_n_items() - 1;
+                    }
+                    else{
+                        drop_down.remove_css_class("error");
+                        drop_down.selected = i + 1;
+                    }
                 }
             }
 
             drop_down.notify["selected"].connect(() => {
                 var key_id = drop_down.selected == 0 ? "" : keys[(int)drop_down.selected - 1].fpr;
+                if (drop_down.selected == 0) {
+                    drop_down.remove_css_class("error");
+                }
+                if (drop_down.selected > 0) {
+                    if(keys[(int)drop_down.selected - 1].expired || keys[(int)drop_down.selected - 1].revoked ) {
+                        drop_down.add_css_class("error");
+                    }
+                    else {
+                        drop_down.remove_css_class("error");
+                    }
+                }
+
                 if (plugin.modules.has_key(account)) {
                     plugin.modules[account].set_private_key_id(key_id);
                 }
