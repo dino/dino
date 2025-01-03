@@ -16,7 +16,7 @@ sources = files(
 )
 
 vala_args = [
-    '--define=SOUP_3_0',
+    '-D', 'SOUP_3_0',
 ]
 lib_http_files = shared_library('http-files', sources, name_prefix: '', vala_args: vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_http_files = declare_dependency(link_with: lib_http_files, include_directories: include_directories('.'))

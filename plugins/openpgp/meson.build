@@ -40,5 +40,8 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.4')
+    vala_args += ['-D', 'Adw_1_4']
+endif
 lib_openpgp = shared_library('openpgp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_openpgp = declare_dependency(link_with: lib_openpgp, include_directories: include_directories('.'))
