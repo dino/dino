@@ -71,3 +71,12 @@ endif
 
 lib_rtp = shared_library('rtp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_rtp = declare_dependency(link_with: lib_rtp, include_directories: include_directories('.'))
+summary('Voice/video calls (rtp)', dep_rtp, section: 'Plugins')
+
+if dep_rtp.found()
+    summary('H264 codec', get_option('plugin-rtp-h264').allowed(), section: 'RTP configuration')
+    summary('VP9 codec', get_option('plugin-rtp-vp9').allowed(), section: 'RTP configuration')
+    summary('Intel MediaSDK', get_option('plugin-rtp-msdk').allowed(), section: 'RTP configuration')
+    summary('Video Acceleration API', get_option('plugin-rtp-vaapi').allowed(), section: 'RTP configuration')
+    summary('Voice preprocessing', dep_webrtc_audio_processing.found(), section: 'RTP configuration')
+endif

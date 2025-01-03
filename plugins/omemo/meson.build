@@ -70,6 +70,7 @@ vala_args = [
 ]
 lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_omemo = declare_dependency(link_with: lib_omemo, include_directories: include_directories('.'))
+summary('End-to-end encryption using OMEMO (omemo)', dep_omemo, section: 'Plugins')
 # This is to use the internal vapi instead of the regular
 vapi_omemo_internal = custom_target('omemo-internal-vapi', command: [find_program('touch'), meson.current_build_dir() / 'omemo-internal.vapi'], output: ['omemo-internal.vapi'], depends: lib_omemo)
 dep_omemo_internal = declare_dependency(link_args: [lib_omemo.full_path()], include_directories: include_directories('.', 'src'), sources: [vapi_omemo_internal])
