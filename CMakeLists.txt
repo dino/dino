@@ -52,6 +52,7 @@ list(SORT PLUGINS)
 string(REPLACE ";" ", " PLUGINS_TEXT "${PLUGINS}")
 
 message(STATUS "Configuring Dino ${PROJECT_VERSION} with plugins: ${PLUGINS_TEXT}")
+message(WARNING "Using CMake, ./configure or make to build Dino is deprecated and will be removed before the 0.5 release. Use Meson instead.")
 
 # Prepare instal paths
 macro(set_path what val desc)

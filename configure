@@ -1,5 +1,10 @@
 #!/bin/sh
 
+echo "Warning in ./configure:"
+echo "  Using CMake, ./configure or make to build Dino is deprecated and will be"
+echo "  removed before the 0.5 release.  Use Meson instead."
+echo ""
+
 OPTS=`getopt -o "h" --long \
 help,fetch-only,no-debug,disable-fast-vapi,with-tests,release,with-libsoup3,\
 enable-plugin:,disable-plugin:,\
@@ -235,7 +240,15 @@ cd ..
 
 cat << EOF > Makefile
 default:
+	@echo "Warning in Makefile:"
+	@echo "  Using CMake, ./configure or make to build Dino is deprecated and will be"
+	@echo "  removed before the 0.5 release.  Use Meson instead."
+	@echo ""
 	@sh -c "cd build; $exec_command"
+	@echo ""
+	@echo "Warning in Makefile:"
+	@echo "  Using CMake, ./configure or make to build Dino is deprecated and will be"
+	@echo "  removed before the 0.5 release.  Use Meson instead."
 distclean: clean uninstall
 	
 test: default
@@ -245,3 +258,8 @@ test: default
 EOF
 
 echo "-- Configured. Type 'make' to build, 'make install' to install."
+
+echo ""
+echo "Warning in ./configure:"
+echo "  Using CMake, ./configure or make to build Dino is deprecated and will be"
+echo "  removed before the 0.5 release.  Use Meson instead."
