@@ -288,7 +288,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         }
 
         if (media == "video") {
-            if (!codec_util.is_element_supported("gtksink")) return false;
             if (get_devices("video", false).is_empty) return false;
         }
 
