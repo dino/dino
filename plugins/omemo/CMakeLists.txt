@@ -95,9 +95,11 @@ GENERATE_VAPI
     omemo
 GENERATE_HEADER
     omemo
+DEFINITIONS
+    GCRYPT
 )
 
-add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DG_LOG_DOMAIN="OMEMO")
+add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\" -DG_LOG_DOMAIN="OMEMO" -DGCRYPT)
 add_library(omemo SHARED ${OMEMO_VALA_C} ${OMEMO_GRESOURCES_TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/src/signal/signal_helper.c)
 add_dependencies(omemo ${GETTEXT_PACKAGE}-translations)
 target_include_directories(omemo PUBLIC src)

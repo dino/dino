@@ -7,7 +7,7 @@ dependencies = [
     dep_glib,
     dep_gmodule,
     dep_gtk4,
-    dep_libgcrypt,
+    dep_libgcrypt_or_openssl,
     dep_libqrencode,
     dep_libsignal_protocol_c,
     dep_qlite,
@@ -61,8 +61,24 @@ c_args = [
     '-DGETTEXT_PACKAGE="dino-omemo"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
+if crypto_backend == 'gnutls'
+    c_args += ['-DGCRYPT']
+endif
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+if crypto_backend == 'gnutls'
+    vala_args += ['-D', 'GCRYPT']
+endif
 lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_omemo = declare_dependency(link_with: lib_omemo, include_directories: include_directories('.'))
+
+sources = files(
+    'tests/signal/common.vala',
+    'tests/signal/curve25519.vala',
+    'tests/signal/hkdf.vala',
+    'tests/signal/session_builder.vala',
+    'tests/signal/testcase.vala',
+)
+test_omemo = executable('test_omemo', sources, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies + [dep_omemo])
+test('omemo', test_omemo)

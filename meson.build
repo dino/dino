@@ -8,20 +8,53 @@ python = import('python')
 # plugin_crypto is enabled if any of the crypto plugins is enabled, auto if
 # none of them are explicitly enabled but at least one is set to auto, or
 # disabled if all of them are disabled.
-plugin_crypto = get_option('plugin-ice')
-foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
-    if get_option(plugin).enabled() and not plugin_crypto.enabled()
-        plugin_crypto = get_option(plugin)
-    elif get_option(plugin).allowed() and not plugin_crypto.allowed()
-        plugin_crypto = get_option(plugin)
+#
+# On Windows, it's always required because we need it for glib-networking.
+if host_machine.system() == 'windows'
+    plugin_crypto = true
+else
+    plugin_crypto = get_option('plugin-ice')
+    foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
+        if get_option(plugin).enabled() and not plugin_crypto.enabled()
+            plugin_crypto = get_option(plugin)
+        elif get_option(plugin).allowed() and not plugin_crypto.allowed()
+            plugin_crypto = get_option(plugin)
+        endif
+    endforeach
+endif
+
+if get_option('crypto-backend') == 'auto'
+    # Prefer libgcrypt/gnutls over openssl because glib-networking is usually
+    # built with gnutls anyway.
+    dep_libgcrypt = dependency('libgcrypt', required: false)
+    dep_gnutls = dependency('gnutls', required: false)
+    if dep_libgcrypt.found() and dep_libgcrypt.found()
+        dep_libgcrypt_or_openssl = dep_libgcrypt
+        dep_gnutls_or_openssl = dep_gnutls
+        crypto_backend = 'gnutls'
+    else
+        dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
+        dep_libgcrypt_or_openssl = dep_openssl
+        dep_gnutls_or_openssl = dep_openssl
+        crypto_backend = 'openssl'
     endif
-endforeach
+elif get_option('crypto-backend') == 'openssl'
+    dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
+    dep_libgcrypt_or_openssl = dep_openssl
+    dep_gnutls_or_openssl = dep_openssl
+    crypto_backend = 'openssl'
+elif get_option('crypto-backend') == 'gnutls'
+    dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
+    dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
+    dep_libgcrypt_or_openssl = dep_libgcrypt
+    dep_gnutls_or_openssl = dep_gnutls
+    crypto_backend = 'gnutls'
+endif
 
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
 dep_glib = dependency('glib-2.0')
-dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
 dep_gmodule = dependency('gmodule-2.0')
 dep_gpgme = dependency('gpgme', disabler: true, required: get_option('plugin-openpgp'))
 dep_gstreamer = dependency('gstreamer-1.0', disabler: true, required: get_option('plugin-rtp'))
@@ -33,7 +66,6 @@ dep_gtk4 = dependency('gtk4')
 dep_icu_uc = dependency('icu-uc')
 dep_libadwaita = dependency('libadwaita-1', version: '>=1.2')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
-dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
 dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
 # libsignal-protocol-c has a history of breaking compatibility on the patch level
