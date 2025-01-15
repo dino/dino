@@ -98,6 +98,8 @@ public class GlobalSearch {
     }
 
     private void on_key_released(uint keyval, uint keycode, Gdk.ModifierType state) {
+        if (!auto_complete_overlay.visible) return;
+
         if (keyval == Gdk.Key.Return) {
             auto_complete_list.get_selected_row().activate();
         }
