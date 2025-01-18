@@ -1,4 +1,4 @@
-project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0', license_files: 'LICENSE')
+project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0')
 
 fs = import('fs')
 gnome = import('gnome')
