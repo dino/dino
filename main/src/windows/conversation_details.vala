@@ -155,7 +155,7 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void create_members() {
-#if GTK_4_8
+#if GTK_4_8 && (VALA_0_56_GREATER_5 || VALA_0_58)
             if (model.members_sorted.n_items == 0) return;
 #else
             if (model.members_sorted.model.get_n_items() == 0) return;
