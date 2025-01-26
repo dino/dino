@@ -28,7 +28,7 @@ c_args = [
     '-DG_LOG_DOMAIN="rtp"',
 ]
 vala_args = []
-if dep_webrtc_audio_processing.found()
+if dep_webrtc_audio_processing.found() and get_option('plugin-rtp-webrtc-audio-processing').allowed()
     voice_dependencies = [
         dep_gstreamer_audio,
         dep_webrtc_audio_processing,
@@ -36,13 +36,23 @@ if dep_webrtc_audio_processing.found()
     voice_sources = files(
         'src/voice_processor_native.cpp',
     )
-    lib_rtp_voice_processor = static_library('rtp-voice-processor', voice_sources, c_args: c_args, dependencies: voice_dependencies, install: false)
+    voice_c_args = c_args
+    if dep_webrtc_audio_processing.version().version_compare('>=2.0')
+        voice_c_args += ['-DWEBRTC2']
+    elif dep_webrtc_audio_processing.version().version_compare('>=1.0')
+        voice_c_args += ['-DWEBRTC1']
+    else
+        voice_c_args += ['-DWEBRTC0']
+    endif
+    lib_rtp_voice_processor = static_library('rtp-voice-processor', voice_sources, c_args: voice_c_args, cpp_args: voice_c_args, dependencies: voice_dependencies, install: false)
     dep_rtp_voice_processor = declare_dependency(link_with: lib_rtp_voice_processor)
     vala_args += ['-D', 'WITH_VOICE_PROCESSOR']
     dependencies += [dep_rtp_voice_processor]
     sources += files(
         'src/voice_processor.vala',
     )
+elif get_option('plugin-rtp-webrtc-audio-processing').enabled()
+    error('No compatible webrtc-audio-processing found, but plugin-rtp-webrtc-audio-processing option set.')
 endif
 if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.16')
     vala_args += ['-D', 'GST_1_16']

@@ -44,7 +44,17 @@ dep_libsoup = dependency('libsoup-3.0', disabler: true, required: get_option('pl
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
 dep_m = meson.get_compiler('c').find_library('m', required: false)
 dep_sqlite3 = dependency('sqlite3', version: '>=3.24')
-dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2', '<0.4'], required: get_option('plugin-rtp-webrtc-audio-processing'))
+
+dep_webrtc_audio_processing = dependency('webrtc-audio-processing-1', required: false)
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2'], required: false)
+endif
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = dependency('webrtc-audio-processing-2', required: false)
+endif
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = disabler()
+endif
 
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()
