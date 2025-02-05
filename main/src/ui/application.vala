@@ -248,6 +248,35 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             call_state.reject();
         });
         add_action(deny_call_action);
+
+        SimpleAction p_online_action = new SimpleAction("presence_online", null);
+        p_online_action.activate.connect( () => {
+            stream_interactor.get_module(PresenceManager.IDENTITY).send_presence(Xmpp.Presence.Stanza.SHOW_ONLINE);
+            window.refresh_presence_button(Xmpp.Presence.Stanza.SHOW_ONLINE);
+        });
+        add_action(p_online_action);
+
+        SimpleAction p_dnd_action = new SimpleAction("presence_dnd", null);
+        p_dnd_action.activate.connect( () => {
+            stream_interactor.get_module(PresenceManager.IDENTITY).send_presence(Xmpp.Presence.Stanza.SHOW_DND);
+            window.refresh_presence_button(Xmpp.Presence.Stanza.SHOW_DND);
+        });
+        add_action(p_dnd_action);
+
+        SimpleAction p_away_action = new SimpleAction("presence_away", null);
+        p_away_action.activate.connect( () => {
+            stream_interactor.get_module(PresenceManager.IDENTITY).send_presence(Xmpp.Presence.Stanza.SHOW_AWAY);
+            window.refresh_presence_button(Xmpp.Presence.Stanza.SHOW_AWAY);
+        });
+        add_action(p_away_action);
+
+        SimpleAction p_xaway_action = new SimpleAction("presence_xaway", null);
+        p_xaway_action.activate.connect( () => {
+            stream_interactor.get_module(PresenceManager.IDENTITY).send_presence(Xmpp.Presence.Stanza.SHOW_XA);
+            window.refresh_presence_button(Xmpp.Presence.Stanza.SHOW_XA);
+        });
+        add_action(p_xaway_action);
+
     }
 
     private void show_preferences_window() {

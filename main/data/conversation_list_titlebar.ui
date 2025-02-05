@@ -29,5 +29,18 @@
                 </child>
             </object>
         </child>
+        <child type="end">
+            <object class="GtkMenuButton" id="presence_button">
+                <property name="halign">end</property>
+                <property name="hexpand">True</property>
+                <property name="has-frame">False</property>
+                <child>
+                    <object class="GtkImage">
+                        <property name="icon-name">dino-status-chat</property>
+                        <property name="icon-size">normal</property>
+                    </object>
+                </child>
+            </object>
+        </child>
     </object>
 </interface>
