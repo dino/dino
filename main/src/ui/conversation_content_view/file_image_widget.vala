@@ -157,7 +157,9 @@ public class FileImageWidget : Widget {
 
     public async void load_from_file(File file, string file_name) throws GLib.Error {
         FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
-        image.file = file;
+        Gdk.Pixbuf? pixbuf = new Pixbuf.from_file_at_scale(file.get_path(), image.max_width, image.max_height, true);
+        pixbuf = pixbuf.apply_embedded_orientation();
+        image.paintable = Texture.for_pixbuf(pixbuf);
         stack.add_child(image);
         stack.set_visible_child(image);
     }
