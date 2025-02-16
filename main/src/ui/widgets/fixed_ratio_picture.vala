@@ -62,12 +62,12 @@ class Dino.Ui.FixedRatioPicture : Gtk.Widget {
         measure_target_size(out width, out height);
         if (orientation == Orientation.HORIZONTAL) {
             minimum = min_width;
-            natural = width;
+            natural = int.max(min_width, int.min(width, max_width));
         } else if (for_size == -1) {
             minimum = min_height;
-            natural = height;
+            natural = int.max(min_height, int.min(height, max_height));
         } else {
-            minimum = natural = height * for_size / width;
+            minimum = natural = int.max(min_height, int.min(height * for_size / width, max_height));
         }
     }
 

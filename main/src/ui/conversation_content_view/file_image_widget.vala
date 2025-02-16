@@ -7,7 +7,7 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class FileImageWidget : Box {
+public class FileImageWidget : Widget {
     enum State {
         EMPTY,
         PREVIEW,
@@ -25,6 +25,10 @@ public class FileImageWidget : Box {
     private FileTransfer file_transfer;
 
     private FileTransmissionProgress transmission_progress = new FileTransmissionProgress() { halign=Align.CENTER, valign=Align.CENTER, visible=false };
+
+    construct {
+        layout_manager = new BinLayout();
+    }
 
     public FileImageWidget(int MAX_WIDTH=600, int MAX_HEIGHT=300) {
         this.halign = Align.START;
@@ -54,7 +58,7 @@ public class FileImageWidget : Box {
         overlay.add_overlay(image_overlay_toolbar);
         overlay.set_clip_overlay(image_overlay_toolbar, true);
 
-        this.append(overlay);
+        overlay.insert_after(this, null);
 
         GestureClick gesture_click_controller = new GestureClick();
         gesture_click_controller.button = 1; // listen for left clicks
@@ -259,6 +263,11 @@ public class FileImageWidget : Box {
             }
         }
         return false;
+    }
+
+    public override void dispose() {
+        if (overlay != null && overlay.parent != null) overlay.unparent();
+        base.dispose();
     }
 }
 
