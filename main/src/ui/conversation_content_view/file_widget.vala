@@ -39,7 +39,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     }
 }
 
-public class FileWidget : SizeRequestBox {
+public class FileWidget : SizeRequestBin {
 
     enum State {
         IMAGE,
@@ -100,22 +100,22 @@ public class FileWidget : SizeRequestBox {
                 // If the widget changed in the meanwhile, stop
                 if (content != content_bak) return;
 
-                if (content != null) this.remove(content);
+                if (content != null) content.unparent();
                 content = file_image_widget;
                 state = State.IMAGE;
-                this.append(content);
+                content.insert_after(this, null);
                 return;
             } catch (Error e) { }
         }
 
         if (state != State.DEFAULT) {
-            if (content != null) this.remove(content);
+            if (content != null) content.unparent();
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
             default_widget_controller.set_file_transfer(file_transfer);
             content = default_file_widget;
             this.state = State.DEFAULT;
-            this.append(content);
+            content.insert_after(this, null);
         }
     }
 

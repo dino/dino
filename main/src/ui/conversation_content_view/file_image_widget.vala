@@ -6,7 +6,11 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class FileImageWidget : Box {
+public class FileImageWidget : Widget {
+
+    construct {
+        layout_manager = new BinLayout();
+    }
 
     public FileImageWidget() {
         this.halign = Align.START;
@@ -74,7 +78,12 @@ public class FileImageWidget : Box {
             image_overlay_toolbar.visible = false;
         });
 
-        this.append(overlay);
+        overlay.insert_after(this, null);
+    }
+
+    public override void dispose() {
+        if (get_first_child() != null && get_first_child().parent != null) get_first_child().unparent();
+        base.dispose();
     }
 }
 

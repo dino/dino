@@ -15,14 +15,10 @@
                                 <child>
                                     <object class="GtkOverlay">
                                         <child>
-                                            <object class="GtkBox" id="main_event_box">
-                                                <child>
-                                                    <object class="DinoUiSizeRequestBox" id="main">
-                                                        <property name="margin-bottom">15</property>
-                                                        <property name="orientation">vertical</property>
-                                                        <property name="size-request-mode">height-for-width</property>
-                                                    </object>
-                                                </child>
+                                            <object class="DinoUiSizeRequestBox" id="main">
+                                                <property name="margin-bottom">15</property>
+                                                <property name="orientation">vertical</property>
+                                                <property name="size-request-mode">height-for-width</property>
                                             </object>
                                         </child>
                                         <child type="overlay">

@@ -18,7 +18,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     [GtkChild] private unowned Box message_menu_box;
     [GtkChild] private unowned Box notifications;
     [GtkChild] private unowned Box main;
-    [GtkChild] private unowned Box main_wrap_box;
+    [GtkChild] private unowned Widget main_wrap_box;
 
     private HashMap<string, Widget> action_buttons = new HashMap<string, Widget>();
     private Gee.List<Dino.Plugins.MessageAction>? message_actions = null;
@@ -46,6 +46,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     construct {
         this.layout_manager = new BinLayout();
+        main_wrap_box.layout_manager = new BinLayout();
 
         // Setup all message menu buttons
         var correction_button = new Button() { name="correction" };
