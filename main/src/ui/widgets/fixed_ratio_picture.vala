@@ -67,7 +67,7 @@ class Dino.Ui.FixedRatioPicture : Gtk.Widget {
             minimum = min_height;
             natural = int.max(min_height, int.min(height, max_height));
         } else {
-            minimum = natural = int.max(min_height, int.min(height * for_size / width, max_height));
+            minimum = natural = int.max(min_height, int.min(height * for_size / width, height));
         }
     }
 
