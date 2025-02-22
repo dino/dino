@@ -104,11 +104,16 @@
                                 <property name="maximum-size">400</property>
                                 <property name="tightening-threshold">400</property>
                                 <child>
-                                    <object class="AdwBin" id="search_frame">
-                                        <property name="hexpand">true</property>
-                                        <style>
-                                            <class name="background"/>
-                                        </style>
+                                    <object class="DinoUiNaturalSizeIncrease">
+                                        <property name="min-natural-width">400</property>
+                                        <child>
+                                            <object class="AdwBin" id="search_frame">
+                                                <property name="hexpand">true</property>
+                                                <style>
+                                                    <class name="background"/>
+                                                </style>
+                                            </object>
+                                        </child>
                                     </object>
                                 </child>
                             </object>

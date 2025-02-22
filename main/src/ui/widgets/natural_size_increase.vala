@@ -1,21 +1,31 @@
 using Gtk;
 
 public class Dino.Ui.NaturalSizeIncrease : Gtk.Widget {
-    public int min_natural_height { get; set; default = -1; }
-    public int min_natural_width { get; set; default = -1; }
+    public uint min_natural_height { get; set; default = 0; }
+    public uint min_natural_width { get; set; default = 0; }
 
     construct {
         this.notify.connect(queue_resize);
     }
 
+    public override void compute_expand_internal(out bool hexpand, out bool vexpand) {
+        hexpand = false;
+        vexpand = false;
+        Widget child = get_first_child();
+        while (child != null) {
+            hexpand = hexpand || child.compute_expand(Orientation.HORIZONTAL);
+            vexpand = vexpand || child.compute_expand(Orientation.VERTICAL);
+            child = child.get_next_sibling();
+        }
+    }
+
     public override void measure(Orientation orientation, int for_size, out int minimum, out int natural, out int minimum_baseline, out int natural_baseline) {
         minimum = 0;
         if (orientation == Orientation.HORIZONTAL) {
-            natural = min_natural_width;
+            natural = (int) min_natural_width;
         } else {
-            natural = min_natural_height;
+            natural = (int) min_natural_height;
         }
-        natural = int.max(0, natural);
         minimum_baseline = -1;
         natural_baseline = -1;
         Widget child = get_first_child();
@@ -25,7 +35,7 @@ public class Dino.Ui.NaturalSizeIncrease : Gtk.Widget {
                 int child_nat = 0;
                 int child_min_baseline = -1;
                 int child_nat_baseline = -1;
-                child.measure(orientation, -1, out child_min, out child_nat, out child_min_baseline, out child_nat_baseline);
+                child.measure(orientation, for_size, out child_min, out child_nat, out child_min_baseline, out child_nat_baseline);
                 minimum = int.max(minimum, child_min);
                 natural = int.max(natural, child_nat);
                 if (child_min_baseline > 0) {
@@ -55,5 +65,10 @@ public class Dino.Ui.NaturalSizeIncrease : Gtk.Widget {
             return child.get_request_mode();
         }
         return SizeRequestMode.CONSTANT_SIZE;
+    }
+
+    public override void dispose() {
+        var child = this.get_first_child();
+        if (child != null) child.unparent();
     }
 }
