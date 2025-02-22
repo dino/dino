@@ -7,8 +7,8 @@
         </style>
         <child>
             <object class="DinoUiSizingBin">
-                <property name="target-width">350</property>
-                <property name="max-width">350</property>
+                <property name="target-width">400</property>
+                <property name="max-width">400</property>
                 <property name="hexpand">True</property>
                 <child>
                     <object class="GtkBox">
