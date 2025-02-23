@@ -33,8 +33,8 @@ extern "C" void *dino_plugins_rtp_adjust_to_running_time(GstBaseTransform *trans
 
 extern "C" void *dino_plugins_rtp_voice_processor_init_native(gint stream_delay) {
     auto *native = new _DinoPluginsRtpVoiceProcessorNative();
-    webrtc::Config config;
 #ifdef WEBRTC0
+    webrtc::Config config;
     config.Set<webrtc::ExtendedFilter>(new webrtc::ExtendedFilter(true));
     config.Set<webrtc::ExperimentalAgc>(new webrtc::ExperimentalAgc(true, 85));
     native->apm = webrtc::AudioProcessing::Create(config);
@@ -80,8 +80,6 @@ extern "C" void dino_plugins_rtp_voice_processor_setup_native(void *native_ptr) 
     config.echo_canceller.enabled = true;
     config.noise_suppression.level = webrtc::AudioProcessing::Config::NoiseSuppression::Level::kModerate;
     config.noise_suppression.enabled = true;
-    config.gain_controller1.analog_level_minimum = 0;
-    config.gain_controller1.analog_level_maximum = 255;
     config.gain_controller1.target_level_dbfs = 3;
     config.gain_controller1.compression_gain_db = 9;
     config.gain_controller1.enable_limiter = true;
