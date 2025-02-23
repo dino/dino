@@ -15,9 +15,9 @@ Build
 -----
 Make sure to install all [dependencies](https://github.com/dino/dino/wiki/Build#dependencies).
 
-    ./configure
-    make
-    build/dino
+    meson setup build
+    meson compile -C build
+    build/main/dino
 
 Resources
 ---------
