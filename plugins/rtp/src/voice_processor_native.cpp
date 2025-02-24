@@ -33,19 +33,13 @@ extern "C" void *dino_plugins_rtp_adjust_to_running_time(GstBaseTransform *trans
 
 extern "C" void *dino_plugins_rtp_voice_processor_init_native(gint stream_delay) {
     auto *native = new _DinoPluginsRtpVoiceProcessorNative();
-#ifdef WEBRTC0
+    native->stream_delay = stream_delay;
+#if defined(WEBRTC0)
     webrtc::Config config;
     config.Set<webrtc::ExtendedFilter>(new webrtc::ExtendedFilter(true));
     config.Set<webrtc::ExperimentalAgc>(new webrtc::ExperimentalAgc(true, 85));
     native->apm = webrtc::AudioProcessing::Create(config);
-#endif
-    native->stream_delay = stream_delay;
-    return native;
-}
 
-extern "C" void dino_plugins_rtp_voice_processor_setup_native(void *native_ptr) {
-    auto *native = (_DinoPluginsRtpVoiceProcessorNative *) native_ptr;
-#if defined(WEBRTC0)
     webrtc::AudioProcessing *apm = native->apm;
     webrtc::ProcessingConfig pconfig;
     pconfig.streams[webrtc::ProcessingConfig::kInputStream] =
@@ -90,6 +84,7 @@ extern "C" void dino_plugins_rtp_voice_processor_setup_native(void *native_ptr) 
 #endif
     apm->ApplyConfig(config);
 #endif
+    return native;
 }
 
 extern "C" void

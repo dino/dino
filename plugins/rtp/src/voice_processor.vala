@@ -99,7 +99,6 @@ public class Dino.Plugins.Rtp.VoiceProcessor : Audio.Filter {
     }
 
     private static extern void* init_native(int stream_delay);
-    private static extern void setup_native(void* native);
     private static extern void destroy_native(void* native);
     private static extern void analyze_reverse_stream(void* native, Audio.Info info, Buffer buffer);
     private static extern void process_stream(void* native, Audio.Info info, Buffer buffer);
@@ -115,7 +114,6 @@ public class Dino.Plugins.Rtp.VoiceProcessor : Audio.Filter {
         period_samples = info.rate / 100; // 10ms buffers
         period_size = period_samples * info.bpf;
         adapter.clear();
-        setup_native(native);
         return true;
     }
 
