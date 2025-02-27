@@ -30,8 +30,11 @@ public class SubscriptionNotitication : Object {
         if (conversation.type_ != Conversation.Type.CHAT) return;
 
         if (stream_interactor.get_module(PresenceManager.IDENTITY).exists_subscription_request(conversation.account, conversation.counterpart)) {
+            // Show a notification of a pending subscription request
             show_pending_subscription_request();
-        } else {
+        } else if (!conversation.counterpart.equals_bare(conversation.account.bare_jid)) {
+            // Show a suggestion to request subscription if: We don't have subscription yet and didn't yet request it
+            // Don't show this notification for chats with ourselves
             var roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, conversation.counterpart);
             if (roster_item == null ||
                     (roster_item.subscription == Xmpp.Roster.Item.SUBSCRIPTION_NONE || roster_item.subscription == Xmpp.Roster.Item.SUBSCRIPTION_FROM) &&
