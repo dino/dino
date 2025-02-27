@@ -114,7 +114,7 @@ public class ConnectionManager : Object {
 
         Timeout.add_seconds(60, () => {
             foreach (Account account in connections.keys) {
-                if (connections[account].last_activity != null &&
+                if (connections[account].last_activity == null ||
                         connections[account].last_activity.compare(new DateTime.now_utc().add_minutes(-1)) < 0) {
                     check_reconnect(account);
                 }
