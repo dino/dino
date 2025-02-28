@@ -74,7 +74,13 @@ public class Account : Object {
     }
 
     private static string get_random_resource() {
-        return "dino." + Random.next_int().to_string("%x");
+        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = Random();
+        string resource = "";
+        for (int i = 0; i < 8; i++) {
+            resource += chars[random.next_int_range(0, chars.length)];
+        }
+        return resource;
     }
 
     public bool equals(Account acc) {
