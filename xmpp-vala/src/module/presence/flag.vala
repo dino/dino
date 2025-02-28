@@ -35,6 +35,8 @@ public class Flag : XmppStreamFlag {
     }
 
     public void add_presence(Presence.Stanza presence) {
+        // Ensure client name is not added
+        presence.stanza.remove_subnode("client-name");
         if (!resources.has_key(presence.from)) {
             resources[presence.from] = new ArrayList<Jid>(Jid.equals_func);
         }
