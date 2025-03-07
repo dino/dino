@@ -269,6 +269,9 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     public void close_stream(Stream stream) {
         streams.remove(stream);
         stream.destroy();
+        if (streams.is_empty) {
+            destroy_call_pipe();
+        }
     }
 
     public void shutdown() {
