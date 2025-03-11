@@ -10,6 +10,7 @@ dependencies = [
     dep_m,
     dep_qlite,
     dep_xmpp_vala,
+    meson.get_compiler('vala').find_library('posix'),
 ]
 sources = files(
     'src/main.vala',

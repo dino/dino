@@ -134,12 +134,16 @@ public static bool is_dark_theme(Gtk.Widget widget) {
     return (bg.red > 0.5 && bg.green > 0.5 && bg.blue > 0.5);
 }
 
-private static uint8 is24h = 0;
+private static int8 is24h = 0;
 public static bool is_24h_format() {
     if (is24h == 0) {
-        string p_format = "               "; // Leaving room to be filled by strftime
-        Time.local(0).strftime((char[]) p_format.data, "%p");
-        is24h = p_format.strip() == "" ? 1 : -1;
+        Regex has_ampm = /(^|[^%])%[pP]/;
+        Regex has_t_fmt_ampm = /(^|[^%])%r/;
+        unowned string t_fmt = Posix.nl_langinfo(Posix.NLItem.T_FMT);
+        unowned string t_fmt_ampm = Posix.nl_langinfo(Posix.NLItem.T_FMT_AMPM);
+        bool has_am_str = Posix.nl_langinfo(Posix.NLItem.AM_STR).strip() != "";
+        bool has_pm_str = Posix.nl_langinfo(Posix.NLItem.PM_STR).strip() != "";
+        is24h = ((has_ampm.match(t_fmt) || has_t_fmt_ampm.match(t_fmt) && has_ampm.match(t_fmt_ampm)) && (has_am_str || has_pm_str)) ? -1 : 1;
     }
     return is24h == 1;
 }
