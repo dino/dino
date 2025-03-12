@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2024-08-27 08:09+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/fr/>\n"
@@ -26,13 +26,12 @@ msgstr "Interrogation de GnuPG"
 msgid "Disabled"
 msgstr "Désactivé"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "La clé n’est pas dans le trousseau"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Chiffrement"
+#~ msgid "Encryption"
+#~ msgstr "Chiffrement"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "La publication des clés est désactivée"

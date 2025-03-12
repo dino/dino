@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2024-09-03 22:09+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
@@ -26,13 +26,12 @@ msgstr "Užklausiama GnuPG"
 msgid "Disabled"
 msgstr "Išjungta"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Rakto nėra raktinėje"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Šifravimas"
+#~ msgid "Encryption"
+#~ msgstr "Šifravimas"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Rakto paskelbimas išjungtas"

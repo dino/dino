@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2021-01-09 11:43+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
@@ -25,13 +25,12 @@ msgstr "Bertanya kepada GnuPG"
 msgid "Disabled"
 msgstr ""
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Kunci tidak ada di gantungan kunci"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Enkripsi"
+#~ msgid "Encryption"
+#~ msgstr "Enkripsi"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Penerbitan kunci dinonaktifkan"

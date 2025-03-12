@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
-"PO-Revision-Date: 2024-07-11 03:46+0000\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"PO-Revision-Date: 2025-01-20 04:55+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -80,8 +80,8 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"请验证您正在比较正确的指纹。如果指纹不匹配，%s 的账号可能已被盗用，您应考虑拒"
-"绝使用此密钥。"
+"请验证您正在比较的指纹是否正确。如果指纹不匹配，%s 的账号可能已被盗用，您应考"
+"虑拒绝此密钥。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
@@ -95,8 +95,7 @@ msgstr "将此密钥的指纹与联系人设备上显示的指纹进行比较。
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "拒绝密钥"
 
@@ -107,8 +106,7 @@ msgstr "阻止与使用此密钥的联系人设备的加密交流。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "接受密钥"
 
@@ -178,7 +176,7 @@ msgstr "返回"
 msgid "Manage"
 msgstr "管理"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "此联系人有新设备"
 
@@ -208,73 +206,59 @@ msgid "Automatically encrypt to new devices from this contact."
 msgstr "自动加密此联系人的新设备。"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr "新密钥"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr "将自动接受来自您其他设备的新加密密钥。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "已接受"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "已拒绝"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "已验证"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
 msgid "New device"
 msgstr "新设备"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:32
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO 密钥管理"
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO 密钥管理"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
-msgid "Encryption"
-msgstr "加密"
+#~ msgid "Encryption"
+#~ msgstr "加密"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d 个 OMEMO 设备"
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d 个 OMEMO 设备"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "自动接受新密钥"
+#~ msgid "Automatically accept new keys"
+#~ msgstr "自动接受新密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr "将自动接受来自此联系人的新加密密钥。"
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr "将自动接受来自此联系人的新加密密钥。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "自己的密钥"
+#~ msgid "Own key"
+#~ msgstr "自己的密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "关联的密钥"
+#~ msgid "Associated keys"
+#~ msgstr "关联的密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "非活动密钥"
+#~ msgid "Inactive keys"
+#~ msgstr "非活动密钥"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "不再使用"
+#~ msgid "Unused"
+#~ msgstr "不再使用"
 
 #~ msgid "Own fingerprint"
 #~ msgstr "自己的指纹"

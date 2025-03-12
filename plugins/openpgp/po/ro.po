@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ro/>\n"
@@ -27,13 +27,12 @@ msgstr "Se interoghează GnuPG"
 msgid "Disabled"
 msgstr "Dezactivat"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Cheia nu este în șirul de chei"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Criptare"
+#~ msgid "Encryption"
+#~ msgstr "Criptare"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Cheie publică dezactivată"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2018-04-03 15:27+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/eu/>\n"
@@ -26,13 +26,12 @@ msgstr "GnuPGri galdetzen"
 msgid "Disabled"
 msgstr ""
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Gakorik ez giltzatakoan"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Enkriptazioa"
+#~ msgid "Encryption"
+#~ msgstr "Enkriptazioa"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Gakoa argitaratzea ezgaituta"

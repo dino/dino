@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2020-11-25 11:28+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/it/>\n"
@@ -106,8 +106,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "Chiave rifiutata"
 
@@ -120,8 +119,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "Chiave accettata"
 
@@ -201,7 +199,7 @@ msgstr "Indietro"
 msgid "Manage"
 msgstr "Gestisci"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "Questo contatto ha dei nuovi dispositivi"
 
@@ -231,78 +229,64 @@ msgid "Automatically encrypt to new devices from this contact."
 msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr "Nuove chiavi"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Le nuove chiavi di crittografia dei tuoi altri dispositivi verranno "
 "accettate automaticamente."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "Accettata"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "Rifiutata"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "Verificata"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
 msgid "New device"
 msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:32
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "Gestione delle chiavi OMEMO"
+#~ msgid "OMEMO Key Management"
+#~ msgstr "Gestione delle chiavi OMEMO"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
-msgid "Encryption"
-msgstr "Crittografia"
+#~ msgid "Encryption"
+#~ msgstr "Crittografia"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispositivo OMEMO"
-msgstr[1] "%d dispositivi OMEMO"
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d dispositivo OMEMO"
+#~ msgstr[1] "%d dispositivi OMEMO"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "Accetta automaticamente le nuove chiavi"
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Accetta automaticamente le nuove chiavi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
-"Le nuove chiavi di crittografia di questo contatto verranno accettate "
-"automaticamente."
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Le nuove chiavi di crittografia di questo contatto verranno accettate "
+#~ "automaticamente."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "Proprie chiavi"
+#~ msgid "Own key"
+#~ msgstr "Proprie chiavi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "Chiavi associate"
+#~ msgid "Associated keys"
+#~ msgstr "Chiavi associate"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "Chiavi inattive"
+#~ msgid "Inactive keys"
+#~ msgstr "Chiavi inattive"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "Inutilizzata"
+#~ msgid "Unused"
+#~ msgstr "Inutilizzata"
 
 #~ msgid "Own fingerprint"
 #~ msgstr "Propria impronta"

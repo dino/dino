@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2023-04-28 07:51+0000\n"
 "Language-Team: none\n"
 "Language: vi\n"
@@ -25,13 +25,12 @@ msgstr "Đang truy vấn GnuPG"
 msgid "Disabled"
 msgstr ""
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Khoá không trong chuỗi khoá"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Mã hoá"
+#~ msgid "Encryption"
+#~ msgstr "Mã hoá"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Công khai khoá đã bị vô hiệu hoá"

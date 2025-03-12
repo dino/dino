@@ -1,0 +1,282 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"PO-Revision-Date: 2024-12-20 07:11+0000\n"
+"Language-Team: none\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.9.2-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s நம்பத்தகாத சாதனத்தைப் பயன்படுத்துகின்றன. நீங்கள் நம்பாத சாதனங்களிலிருந்து செய்திகளை "
+"நீங்கள் காண மாட்டீர்கள்."
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "சாதனங்களை நிர்வகிக்கவும்"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr "இந்த சாதனத்தை %s நம்பவில்லை. அதாவது, நீங்கள் செய்திகளைக் காணவில்லை."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "விசையை நிர்வகிக்கவும்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"உங்கள் தொடர்பின் சாதனத்தில் காட்டப்பட்டுள்ள கைரேகை, எழுத்துக்குறி எழுத்துக்குறியை ஒப்பிடுக."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "கைரேகைகள் வேறுபடுகின்றன"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "கைரேகைகள் பொருந்துகின்றன"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+#: plugins/omemo/src/ui/manage_key_dialog.vala:81
+#: plugins/omemo/src/ui/manage_key_dialog.vala:87
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "உறுதிப்படுத்தவும்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "விசையை சரிபார்க்கவும்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"இந்த விசையைப் பயன்படுத்தும் சாதனத்திலிருந்து %s அனுப்பிய எதிர்கால செய்திகள் அரட்டை "
+"சாளரத்தில் அதற்கேற்ப முன்னிலைப்படுத்தப்படும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "கைரேகைகள் பொருந்தவில்லை"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"நீங்கள் சரியான கைரேகையை ஒப்பிடுகிறீர்கள் என்பதை சரிபார்க்கவும். கைரேகைகள் பொருந்தவில்லை "
+"என்றால், %s இன் கணக்கு வேறுபாடின்மை செய்யப்படலாம், மேலும் இந்த விசையை நிராகரிப்பதை நீங்கள் "
+"கருத்தில் கொள்ள வேண்டும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "முக்கிய கைரேகையை சரிபார்க்கவும்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr "இந்த விசையின் கைரேகையை தொடர்பின் சாதனத்தில் காட்டப்படும் கைரேகையுடன் ஒப்பிடுக."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
+msgid "Reject key"
+msgstr "விசையை நிராகரிக்கவும்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"இந்த விசையைப் பயன்படுத்தும் தொடர்புகளின் சாதனத்துடன் மறைகுறியாக்கப்பட்ட தகவல்தொடர்புகளைத் "
+"தடுக்கவும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+#: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
+msgid "Accept key"
+msgstr "சாவியை ஏற்றுக்கொள்"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"இந்த விசையைப் பயன்படுத்தும் தொடர்புகளின் சாதனத்துடன் மறைகுறியாக்கப்பட்ட தகவல்தொடர்புகளை "
+"அனுமதிக்கவும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "இந்த விசை தற்போது %s ஆகும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "ஏற்றுக்கொள்ளப்பட்டது"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"இதன் பொருள் மறைகுறியாக்கப்பட்ட செய்திகளைப் பெறுவதற்கும் அனுப்புவதற்கும் %s ஆல் "
+"பயன்படுத்தப்படலாம்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "சரிபார்க்கப்பட்டது"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr "கூடுதலாக, தொடர்பின் சாதனத்தில் விசையுடன் பொருந்த இது சரிபார்க்கப்பட்டது."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "நிராகரிக்கப்பட்டது"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"இதன் பொருள் உங்கள் செய்திகளைப் புரிந்துகொள்ள %s ஆல் பயன்படுத்த முடியாது, மேலும் அதனுடன் "
+"குறியாக்கம் செய்யப்பட்ட செய்திகளை நீங்கள் காண மாட்டீர்கள்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"இந்த விசையைப் பயன்படுத்தும் %s சாதனத்திலிருந்து மறைகுறியாக்கப்பட்ட செய்திகளை நீங்கள் காண "
+"மாட்டீர்கள். மாறாக, அந்த சாதனம் உங்கள் செய்திகளை இனி புரிந்துகொள்ள முடியாது."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"இந்த விசையைப் பயன்படுத்தும் %s சாதனத்துடன் மறைகுறியாக்கப்பட்ட செய்திகளை நீங்கள் "
+"பரிமாறிக்கொள்ள முடியும்."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:166
+msgid "Back"
+msgstr "பின்"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "நிர்வகிக்கவும்"
+
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "இந்த தொடர்புக்கு புதிய சாதனங்கள் உள்ளன"
+
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "ஓம்மோ நம்பிக்கை முடிவு தேவை"
+
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "கணக்கு %s க்கு புதிய சாதனத்தைச் சேர்த்தீர்களா?"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
+msgstr "இயல்பாக ஓம்மோ"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "புதிய உரையாடல்களுக்கான ஓமமோ குறியாக்கத்தை இயக்கவும்"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr "புதிய சாதனங்களுக்கு குறியாக்கம்"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "இந்த தொடர்பிலிருந்து புதிய சாதனங்களுக்கு தானாக குறியாக்கம் செய்யுங்கள்."
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+msgid "New keys"
+msgstr "புதிய விசைகள்"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr "உங்கள் பிற சாதனங்களிலிருந்து புதிய குறியாக்க விசைகள் தானாக ஏற்றுக்கொள்ளப்படும்."
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
+msgid "Accepted"
+msgstr "ஏற்றுக்கொள்ளப்பட்டது"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
+msgid "Rejected"
+msgstr "நிராகரிக்கப்பட்டது"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
+msgid "Verified"
+msgstr "சரிபார்க்கப்பட்டது"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
+msgid "New device"
+msgstr "புதிய சாதனம்"
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "ஓமமோ முக்கிய மேலாண்மை"
+
+#~ msgid "Encryption"
+#~ msgstr "குறியாக்கம்"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO சாதனம்"
+#~ msgstr[1] "%d OMEMO சாதனங்கள்"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "புதிய விசைகளை தானாக ஏற்றுக்கொள்ளுங்கள்"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr "இந்த தொடர்பிலிருந்து புதிய குறியாக்க விசைகள் தானாக ஏற்றுக்கொள்ளப்படும்."
+
+#~ msgid "Own key"
+#~ msgstr "சொந்த விசை"
+
+#~ msgid "Associated keys"
+#~ msgstr "தொடர்புடைய விசைகள்"
+
+#~ msgid "Inactive keys"
+#~ msgstr "செயலற்ற விசைகள்"
+
+#~ msgid "Unused"
+#~ msgstr "பயன்படுத்தப்படாதது"

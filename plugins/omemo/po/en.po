@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -88,8 +88,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr ""
 
@@ -100,8 +99,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr ""
 
@@ -169,7 +167,7 @@ msgstr ""
 msgid "Manage"
 msgstr ""
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr ""
 
@@ -199,71 +197,26 @@ msgid "Automatically encrypt to new devices from this contact."
 msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr ""
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr ""
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr ""
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr ""
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
 msgid "New device"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:32
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
-msgid "Encryption"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] ""
-msgstr[1] ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
 msgstr ""

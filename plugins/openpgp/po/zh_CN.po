@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hans/>\n"
@@ -21,13 +21,12 @@ msgstr "正在查询 GnuPG"
 msgid "Disabled"
 msgstr "已禁用"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "密钥不在密钥链中"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "加密"
+#~ msgid "Encryption"
+#~ msgstr "加密"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "已禁用密钥发布功能"

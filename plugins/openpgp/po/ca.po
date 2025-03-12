@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp 20180123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2018-01-24 11:24+0100\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
 "Language: ca\n"
@@ -22,13 +22,12 @@ msgstr "S'està consultant al GnuPG"
 msgid "Disabled"
 msgstr ""
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "La clau no està al clauer"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Xifratge"
+#~ msgid "Encryption"
+#~ msgstr "Xifratge"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Publicació de claus inhabilitada"

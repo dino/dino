@@ -7,15 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"PO-Revision-Date: 2024-09-15 20:09+0000\n"
 "Language-Team: none\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"<shirahara@users.noreply.hosted.weblate.org>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -110,8 +111,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:301
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "キーを拒否"
 
@@ -122,8 +122,7 @@ msgstr "このキーを使った連絡先のデバイスとの暗号化された
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:296
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "キーを許可"
 
@@ -197,7 +196,7 @@ msgstr "戻る"
 msgid "Manage"
 msgstr "管理"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "この連絡先に新しいデバイスが追加されました"
 
@@ -212,89 +211,75 @@ msgstr "アカウント %s に新しいデバイスを追加しましたか？"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "OMEMO by default"
-msgstr ""
+msgstr "既定でOMEMO"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "新しい会話にOMEMO暗号化を有効にする"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "新しいデバイスに対して暗号化"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "この連絡先から新しいデバイスに対して自動的に暗号化を行います。"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
 msgid "New keys"
 msgstr "新しいキー"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:99
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "あなたのほかのデバイスから発行された新しい暗号化キーが自動的に許可されます。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "許可"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "拒否"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:232
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "検証済み"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
 msgid "New device"
-msgstr ""
+msgstr "新しいデバイス"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:32
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO キー管理"
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO キー管理"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
-msgid "Encryption"
-msgstr "暗号化"
+#~ msgid "Encryption"
+#~ msgstr "暗号化"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:43
 #, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d 台の OMEMO デバイス"
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d 台の OMEMO デバイス"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "自動的に新しいキーを許可"
+#~ msgid "Automatically accept new keys"
+#~ msgstr "自動的に新しいキーを許可"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr "この連絡先から発行された新しい暗号化キーが自動的に許可されます。"
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr "この連絡先から発行された新しい暗号化キーが自動的に許可されます。"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "自身のキー"
+#~ msgid "Own key"
+#~ msgstr "自身のキー"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "関連付けられたキー"
+#~ msgid "Associated keys"
+#~ msgstr "関連付けられたキー"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "非アクティブなキー"
+#~ msgid "Inactive keys"
+#~ msgstr "非アクティブなキー"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "未使用"
+#~ msgid "Unused"
+#~ msgstr "未使用"
 
 #~ msgid "Own fingerprint"
 #~ msgstr "自身のフィンガープリント"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-14 21:54+0200\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2024-08-25 10:09+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ar/>\n"
@@ -27,13 +27,12 @@ msgstr "استعلام GnuPG"
 msgid "Disabled"
 msgstr "مُعَطَّل"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "المفتاح ليس في سلسلة المفاتيح"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "التعمية"
+#~ msgid "Encryption"
+#~ msgstr "التعمية"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "نشر المفاتيح معطل"
