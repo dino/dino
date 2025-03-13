@@ -283,7 +283,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         about_window.title = _("About Dino");
         about_window.version = version;
         about_window.website = "https://dino.im/";
-        about_window.copyright = "Copyright © 2016-2023 - Dino Team";
+        about_window.copyright = "Copyright © 2016-2025 - Dino Team";
         about_window.license_type = License.GPL_3_0;
         about_window.present();
     }
