@@ -287,7 +287,15 @@ public class MessageMetaItem : ContentMetaItem {
 
     public static bool on_label_activate_link(string uri) {
         // Always handle xmpp URIs with Dino
-        if (!uri.has_prefix("xmpp:")) return false;
+        if (!uri.has_prefix("xmpp:")) {
+#if _WIN32
+            Dino.Util.launch_default_for_uri(uri);
+            return true;
+#else
+            return false;
+#endif
+        }
+
         File file = File.new_for_uri(uri);
         Dino.Application.get_default().open(new File[]{file}, "");
         return true;
