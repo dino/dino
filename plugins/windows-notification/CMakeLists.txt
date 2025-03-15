@@ -47,23 +47,13 @@ set(WINDOWS_API_SOURCES
 
 add_definitions(${VALA_CFLAGS} -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
 add_library(windows-notification SHARED ${WINDOWS_NOTIFICATION_VALA_C} ${WINDOWS_API_SOURCES})
+set_property(TARGET windows-notification PROPERTY CXX_STANDARD 20)
 add_dependencies(windows-notification ${GETTEXT_PACKAGE}-translations)
 
 target_include_directories(windows-notification
     PRIVATE
     ${PROJECT_SOURCE_DIR}/api/include
     ${PROJECT_SOURCE_DIR}/api/include/gobject
-    ${PROJECT_SOURCE_DIR}/yolort/include
-)
-
-add_custom_target(
-    yolort ALL
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/prepare-yolort.sh
-    BYPRODUCTS yolort/include
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    VERBATIM
-    USES_TERMINAL
-    COMMENT "=====> Generating YoloRT Header files for Windows Notification plugin <====="
 )
 
 find_library(shlwapi_LIBRARY shlwapi libshlwapi libshlwapi.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
@@ -76,11 +66,13 @@ if(NOT ntdll_LIBRARY)
     message(FATAL_ERROR "ntdll library not found")
 endif(NOT ntdll_LIBRARY)
 
-target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${ntdll_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
-target_compile_features(windows-notification PRIVATE cxx_std_17)
+find_library(windowsapp_LIBRARY windowsapp libwindowsapp libwindowsapp.a HINTS ${CMAKE_C_IMPLICIT_LINK_DIRECTORIES})
+if(NOT windowsapp_LIBRARY)
+    message(FATAL_ERROR "windowsapp library not found")
+endif(NOT windowsapp_LIBRARY)
+
+target_link_libraries(windows-notification libdino ${shlwapi_LIBRARY} ${ntdll_LIBRARY} ${windowsapp_LIBRARY} ${WINDOWS_NOTIFICATION_PACKAGES})
 target_compile_definitions(windows-notification PRIVATE WINRT_GLIB_H_INSIDE)
-target_compile_options(windows-notification PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-iquote ${PROJECT_SOURCE_DIR}/yolort/include/winrt/yolort_impl>)
-add_dependencies(windows-notification yolort)
 
 set_target_properties(windows-notification PROPERTIES PREFIX "")
 set_target_properties(windows-notification PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins/)
