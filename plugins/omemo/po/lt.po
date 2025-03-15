@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-11-21 18:29+0000\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"PO-Revision-Date: 2024-09-10 14:09+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
 "MIME-Version: 1.0\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "(n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 4.4-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:157
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -27,11 +27,11 @@ msgstr ""
 "%s naudoja nepatikimą įrenginį. Jūs nematysite žinučių iš įrenginių, kuriais "
 "nepasitikite."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
 msgstr "Tvarkyti įrenginius"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:160
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -110,7 +110,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "Atmesti raktą"
 
@@ -122,7 +122,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "Priimti raktą"
 
@@ -199,7 +199,7 @@ msgstr "Atgal"
 msgid "Manage"
 msgstr "Tvarkyti"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "Šis adresatas turi naujų įrenginių"
 
@@ -210,78 +210,87 @@ msgstr "OMEMO reikia pasitikėjimo sprendimo"
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Ar savo paskyrai %s pridėjote naują įrenginį?"
+msgstr "Ar savo %s paskyrai pridėjote naują įrenginį?"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-#: plugins/omemo/src/ui/account_settings_entry.vala:50
-msgid "Own fingerprint"
-msgstr "Nuosavas kontrolinis kodas"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
+msgstr "OMEMO pagal numatymą"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-msgid "Will be generated on first connection"
-msgstr "Bus sugeneruotas pirmojo prisijungimo metu"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Įjungti naujiems pokalbiams OMEMO šifravimą"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Šifravimas"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr "Šifruoti į naujus įrenginius"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO įrenginys"
-msgstr[1] "%d OMEMO įrenginiai"
-msgstr[2] "%d OMEMO įrenginių"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Automatiškai šifruoti į naujus įrenginius iš šio adresato."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO raktų tvarkymas"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "Automatiškai priimti naujus raktus"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr "Nauji šifravimo raktai iš šio kontakto bus priimti automatiškai."
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "Nuosavas raktas"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 msgid "New keys"
 msgstr "Nauji raktai"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "Susieti raktai"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "Neaktyvūs raktai"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Nauji šifravimo raktai iš jūsų kitų įrenginių bus priimti automatiškai."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "Priimtas"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "Atmestas"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "Patikrintas"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "Nenaudojamas"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
+msgid "New device"
+msgstr "Naujas įrenginys"
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO raktų tvarkymas"
+
+#~ msgid "Encryption"
+#~ msgstr "Šifravimas"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO įrenginys"
+#~ msgstr[1] "%d OMEMO įrenginiai"
+#~ msgstr[2] "%d OMEMO įrenginių"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Automatiškai priimti naujus raktus"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr "Nauji šifravimo raktai iš šio kontakto bus priimti automatiškai."
+
+#~ msgid "Own key"
+#~ msgstr "Nuosavas raktas"
+
+#~ msgid "Associated keys"
+#~ msgstr "Susieti raktai"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Neaktyvūs raktai"
+
+#~ msgid "Unused"
+#~ msgstr "Nenaudojamas"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Nuosavas kontrolinis kodas"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Bus sugeneruotas pirmojo prisijungimo metu"
 
 #~ msgid "Your contact"
 #~ msgstr "Jūsų adresatas"

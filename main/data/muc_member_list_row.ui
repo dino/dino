@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="margin-start">7</property>
+        <property name="margin-end">14</property>
+        <child>
+          <object class="DinoUiAvatarPicture" id="picture">
+            <property name="height-request">35</property>
+            <property name="width-request">35</property>
+            <property name="valign">start</property>
+            <binding name="model">
+              <lookup name="avatar" type="DinoUiViewModelConferenceMemberListRow">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="margin-start">10</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkLabel" id="name_label">
+                    <property name="max_width_chars">1</property>
+                    <property name="ellipsize">end</property>
+                    <property name="hexpand">True</property>
+                    <property name="margin-end">7</property>
+                    <property name="xalign">0</property>
+                    <binding name="label">
+                      <lookup name="name" type="DinoUiViewModelConferenceMemberListRow">
+                        <lookup name="item">GtkListItem</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="affiliation_label">
+                    <property name="margin-end">6</property>
+                    <property name="xalign">1</property>
+                    <binding name="label">
+                      <lookup name="affiliation-str" type="DinoUiViewModelConferenceMemberListRow">
+                        <lookup name="item">GtkListItem</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">4</property>
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkLabel" id="jid_label">
+                    <property name="ellipsize">end</property>
+                    <property name="xalign">0</property>
+                    <property name="margin-end">7</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    <attributes>
+                      <attribute name="scale" value="0.8"/>
+                    </attributes>
+                    <binding name="label">
+                      <lookup name="jid" type="DinoUiViewModelConferenceMemberListRow">
+                        <lookup name="item">GtkListItem</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

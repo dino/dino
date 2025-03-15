@@ -199,28 +199,34 @@ public class Dino.Ui.CallWindowController : Object {
                 call_window.set_status(peer_id, "ringing");
             }
         });
-        peer_state.encryption_updated.connect((audio_encryption, video_encryption, same) => {
-            update_encryption_indicator(participant_widgets[peer_id].encryption_button_controller, audio_encryption, video_encryption, same);
+        peer_state.encryption_updated.connect((state, audio_encryption,  video_encryption) => {
+            update_encryption_indicator(participant_widgets[peer_id].encryption_button_controller, peer_states[peer_id].audio_content != null, audio_encryption, peer_states[peer_id].video_content != null, video_encryption);
         });
     }
 
-    private void update_encryption_indicator(CallEncryptionButtonController encryption_button, Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same) {
+    private void update_encryption_indicator(CallEncryptionButtonController encryption_button, bool has_audio, Xep.Jingle.ContentEncryption? audio_encryption, bool has_video, Xep.Jingle.ContentEncryption? video_encryption) {
         string? title = null;
         string? icon_name = null;
         bool show_keys = true;
         Plugins.Registry registry = Dino.Application.get_default().plugin_registry;
-        Plugins.CallEncryptionEntry? encryption_entry = audio_encryption != null ? registry.call_encryption_entries[audio_encryption.encryption_ns] : null;
-        if (encryption_entry != null) {
-            Plugins.CallEncryptionWidget? encryption_widgets = encryption_entry.get_widget(call.account, audio_encryption);
-            if (encryption_widgets != null) {
-                title = encryption_widgets.get_title();
-                icon_name = encryption_widgets.get_icon_name();
-                show_keys = encryption_widgets.show_keys();
+        if (((has_audio && audio_encryption != null) || (has_video && video_encryption != null)) && (!has_audio || !has_video || (audio_encryption != null && video_encryption != null && audio_encryption.encryption_ns == video_encryption.encryption_ns))) {
+            Plugins.CallEncryptionEntry? encryption_entry = audio_encryption != null ? registry.call_encryption_entries[audio_encryption.encryption_ns] : null;
+            if (encryption_entry != null) {
+                Plugins.CallEncryptionWidget? audio_encryption_widgets = encryption_entry.get_widget(call.account, audio_encryption);
+                Plugins.CallEncryptionWidget? video_encryption_widgets = encryption_entry.get_widget(call.account, video_encryption);
+                if (audio_encryption_widgets != null && video_encryption_widgets != null) {
+                    if (audio_encryption_widgets.get_title() == video_encryption_widgets.get_title())
+                        title = audio_encryption_widgets.get_title();
+                    if (audio_encryption_widgets.get_icon_name() == video_encryption_widgets.get_icon_name())
+                        icon_name = audio_encryption_widgets.get_icon_name();
+                    if (audio_encryption_widgets.show_keys() == video_encryption_widgets.show_keys())
+                        show_keys = audio_encryption_widgets.show_keys();
+                }
             }
         }
 
-        encryption_button.set_info(title, show_keys, audio_encryption, same ? null : video_encryption);
-        encryption_button.set_icon(audio_encryption != null, icon_name);
+        encryption_button.set_info(title, show_keys, has_audio, audio_encryption, has_video, video_encryption);
+        encryption_button.set_icon((!has_audio || audio_encryption != null) && (!has_video || video_encryption != null), icon_name);
     }
 
     private void add_new_participant(string participant_id, Jid jid) {

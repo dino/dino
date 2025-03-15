@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/im/dino/Dino">
+    <file>account_picker_row.ui</file>
     <file>add_conversation/add_contact_dialog.ui</file>
     <file>add_conversation/add_groupchat_dialog.ui</file>
     <file>add_conversation/conference_details_fragment.ui</file>
@@ -10,10 +11,10 @@
     <file>chat_input.ui</file>
     <file>conversation_content_view/item_metadata_header.ui</file>
     <file>conversation_content_view/view.ui</file>
+    <file>conversation_details.css</file>
     <file>conversation_details.ui</file>
     <file>conversation_item_widget.ui</file>
     <file>conversation_list_titlebar.ui</file>
-    <file>conversation_list_titlebar_csd.ui</file>
     <file>conversation_row.ui</file>
     <file>conversation_view.ui</file>
     <file>dino-conversation-list-placeholder-arrow.svg</file>
@@ -23,6 +24,7 @@
     <file>gtk/help-overlay.ui</file>
     <file>icons/scalable/actions/dino-emoticon-add-symbolic.svg</file>
     <file>icons/scalable/actions/dino-qr-code-symbolic.svg</file>
+    <file>icons/scalable/actions/small-x-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino.svg</file>
     <file>icons/scalable/devices/dino-device-desktop-symbolic.svg</file>
@@ -49,25 +51,30 @@
     <file>icons/scalable/status/dino-status-chat.svg</file>
     <file>icons/scalable/status/dino-status-dnd.svg</file>
     <file>icons/scalable/status/dino-status-online.svg</file>
+    <file>icons/scalable/status/dino-status-offline.svg</file>
     <file>icons/scalable/status/dino-tick-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-off-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-symbolic.svg</file>
+
+    <file>preferences_window/account_preferences_subpage.ui</file>
+    <file>preferences_window/add_account_dialog.ui</file>
+    <file>preferences_window/change_password_dialog.ui</file>
+    <file>preferences_window/general_preferences_page.ui</file>
+    <file>preferences_window/preferences_window.ui</file>
+
     <file>join_room_dialog.ui</file>
     <file>join_room_dialog1.ui</file>
     <file>join_room_dialog2.ui</file>
-    <file>manage_accounts/account_row.ui</file>
-    <file>manage_accounts/add_account_dialog.ui</file>
-    <file>manage_accounts/dialog.ui</file>
     <file>menu_add.ui</file>
     <file>menu_app.ui</file>
     <file>menu_conversation.ui</file>
     <file>menu_encryption.ui</file>
     <file>message_item_widget_edit_mode.ui</file>
+    <file>muc_member_list_row.ui</file>
     <file>occupant_list.ui</file>
     <file>occupant_list_item.ui</file>
     <file>quote.ui</file>
     <file>search_autocomplete.ui</file>
-    <file>settings_dialog.ui</file>
     <file>style-dark.css</file>
     <file>style.css</file>
     <file>unified_main_content.ui</file>

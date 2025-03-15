@@ -53,7 +53,12 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         Manager omemo_manager = plugin.app.stream_interactor.get_module(Manager.IDENTITY);
 
         if (muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-            foreach (Jid offline_member in muc_manager.get_offline_members(conversation.counterpart, conversation.account)) {
+            var offline_members = muc_manager.get_offline_members(conversation.counterpart, conversation.account);
+            if (offline_members == null) {
+                // We don't store offline members yet, and it'll be null if we're offline
+                return;
+            }
+            foreach (Jid offline_member in offline_members) {
                 bool ok = yield omemo_manager.ensure_get_keys_for_jid(conversation.account, offline_member);
                 if (!ok) {
                     input_status_callback(new Plugins.InputFieldStatus("A member does not support OMEMO: %s".printf(offline_member.to_string()), Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));

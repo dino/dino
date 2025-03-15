@@ -5,6 +5,17 @@ using Dino.Entities;
 using Xmpp.Xep;
 
 namespace Dino.Ui.Util {
+    public static GLib.ListStore get_data_form_view_model(DataForms.DataForm data_form) {
+        var list_store = new GLib.ListStore(typeof(ViewModel.PreferencesRow.Any));
+
+        foreach (var field in data_form.fields) {
+            var field_view_model = Util.get_data_form_field_view_model(field);
+            if (field_view_model != null) {
+                list_store.append(field_view_model);
+            }
+        }
+        return list_store;
+    }
 
 public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataForms.DataForm.Field field) {
     if (field.type_ == null) return null;
@@ -58,6 +69,11 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
     if (label == null) label = field.label;
 
     switch (field.type_) {
+        case DataForms.DataForm.Type.FIXED:
+            var fixed_field = field as DataForms.DataForm.FixedField;
+            var fixed_model = new ViewModel.PreferencesRow.Text() { text=fixed_field.value };
+            view_model = fixed_model;
+            break;
         case DataForms.DataForm.Type.BOOLEAN:
             DataForms.DataForm.BooleanField boolean_field = field as DataForms.DataForm.BooleanField;
             var toggle_model = new ViewModel.PreferencesRow.Toggle() { subtitle = desc, state = boolean_field.value };
@@ -84,7 +100,11 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
         case DataForms.DataForm.Type.LIST_MULTI:
             return null;
         case DataForms.DataForm.Type.TEXT_PRIVATE:
-            return null;
+            DataForms.DataForm.TextPrivateField text_private_field = field as DataForms.DataForm.TextPrivateField;
+            var private_entry_model = new ViewModel.PreferencesRow.PrivateText() { text = text_private_field.value };
+            text_private_field.bind_property("value", private_entry_model, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+            view_model = private_entry_model;
+            break;
         case DataForms.DataForm.Type.TEXT_SINGLE:
             DataForms.DataForm.TextSingleField text_single_field = field as DataForms.DataForm.TextSingleField;
             var entry_model = new ViewModel.PreferencesRow.Entry() { text = text_single_field.value };
@@ -98,47 +118,4 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
     view_model.title = label;
     return view_model;
 }
-
-public static Widget? get_data_form_field_widget(DataForms.DataForm.Field field) {
-    if (field.type_ == null) return null;
-    switch (field.type_) {
-        case DataForms.DataForm.Type.BOOLEAN:
-            DataForms.DataForm.BooleanField boolean_field = field as DataForms.DataForm.BooleanField;
-            Switch sw = new Switch() { active=boolean_field.value, halign=Align.START, valign=Align.CENTER };
-            sw.state_set.connect((state) => {
-                boolean_field.value = state;
-                return false;
-            });
-            return sw;
-        case DataForms.DataForm.Type.JID_MULTI:
-            return null;
-        case DataForms.DataForm.Type.LIST_SINGLE:
-            DataForms.DataForm.ListSingleField list_single_field = field as DataForms.DataForm.ListSingleField;
-            ComboBoxText combobox = new ComboBoxText() { valign=Align.CENTER };
-            for (int i = 0; i < list_single_field.options.size; i++) {
-                DataForms.DataForm.Option option = list_single_field.options[i];
-                combobox.append(option.value, option.label);
-                if (option.value == list_single_field.value) combobox.active = i;
-            }
-            combobox.changed.connect(() => {
-                list_single_field.value = combobox.get_active_id();
-            });
-            return combobox;
-        case DataForms.DataForm.Type.LIST_MULTI:
-            return null;
-        case DataForms.DataForm.Type.TEXT_PRIVATE:
-            DataForms.DataForm.TextPrivateField text_private_field = field as DataForms.DataForm.TextPrivateField;
-            PasswordEntry entry = new PasswordEntry() { text=text_private_field.value ?? "", valign=Align.CENTER };
-            entry.changed.connect(() => { text_private_field.value = entry.text; });
-            return entry;
-        case DataForms.DataForm.Type.TEXT_SINGLE:
-            DataForms.DataForm.TextSingleField text_single_field = field as DataForms.DataForm.TextSingleField;
-            Entry entry = new Entry() { text=text_single_field.value ?? "", valign=Align.CENTER };
-            entry.changed.connect(() => { text_single_field.value = entry.text; });
-            return entry;
-        default:
-            return null;
-    }
-}
-
 }

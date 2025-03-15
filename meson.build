@@ -1,4 +1,4 @@
-project('xmpp-vala', 'c', 'cpp', 'vala')
+project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0')
 
 fs = import('fs')
 gnome = import('gnome')
@@ -31,7 +31,7 @@ dep_gstreamer_rtp = dependency('gstreamer-rtp-1.0', disabler: true, required: ge
 dep_gstreamer_video = dependency('gstreamer-video-1.0', disabler: true, required: get_option('plugin-rtp'))
 dep_gtk4 = dependency('gtk4')
 dep_icu_uc = dependency('icu-uc')
-dep_libadwaita = dependency('libadwaita-1')
+dep_libadwaita = dependency('libadwaita-1', version: '>=1.2')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
 dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
@@ -44,7 +44,17 @@ dep_libsoup = dependency('libsoup-3.0', disabler: true, required: get_option('pl
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
 dep_m = meson.get_compiler('c').find_library('m', required: false)
 dep_sqlite3 = dependency('sqlite3', version: '>=3.24')
-dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2', '<0.4'], required: get_option('plugin-rtp-webrtc-audio-processing'))
+
+dep_webrtc_audio_processing = dependency('webrtc-audio-processing-1', required: false)
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2'], required: false)
+endif
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = dependency('webrtc-audio-processing-2', required: false)
+endif
+if not dep_webrtc_audio_processing.found()
+    dep_webrtc_audio_processing = disabler()
+endif
 
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()

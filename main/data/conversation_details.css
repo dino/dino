@@ -1,7 +1,31 @@
-.extended-headerbar {
-    background-color: @headerbar_bg_color;
-}
 .extended-headerbar-end {
     padding-bottom: 24px;
     border-bottom: 1px solid @borders;
+}
+
+.extended-headerbar {
+    background-color: @headerbar_bg_color;
+    padding-bottom: 0;
+}
+
+.dino-underlined-tabs .toggle {
+    background: none;
+    padding: 0;
+    margin: 0 12px 0 0;
+    border-left: none;
+    min-width: 0;
+}
+
+.dino-underlined-tabs .toggle label {
+    border-bottom: 2px solid transparent;
+    margin: 0;
+    padding: 6px;
+}
+
+.dino-underlined-tabs .toggle:checked label {
+    border-bottom-color: @accent_color;
+}
+
+.dino-underlined-tabs .toggle:hover:not(:checked) label {
+    border-bottom-color: alpha(@accent_color, 0.25);
 }

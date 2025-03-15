@@ -6,7 +6,7 @@ namespace Dino {
 public class Util {
     #if _WIN32
     [CCode (cname = "ShellExecuteA", cheader_filename = "windows.h")]
-    private static extern int ShellExecuteA(int* hwnd, string operation, string file, string parameters, string directory, int showCmd);
+    private static extern int ShellExecuteA(void* hwnd, string operation, string file, string parameters, string directory, int showCmd);
 
     [CCode (cname = "CoInitialize", cheader_filename = "windows.h")]
     private static extern int CoInitialize(void* reserved);
@@ -16,7 +16,7 @@ public class Util {
 
     private static int ShellExecute(string operation, string file) {
         CoInitialize(null);
-        var result = ShellExecuteA(null, operation, file, null, null, 1);
+        var result = (int)ShellExecuteA(null, operation, file, null, null, 1);
         CoUninitialize();
 
         return result;

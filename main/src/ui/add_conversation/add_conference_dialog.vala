@@ -21,7 +21,7 @@ public class AddConferenceDialog : Gtk.Dialog {
     private StreamInteractor stream_interactor;
 
     public AddConferenceDialog(StreamInteractor stream_interactor) {
-        Object(use_header_bar : Util.use_csd() ? 1 : 0);
+        Object(use_header_bar : 1);
         this.title = _("Join Channel");
         this.modal = true;
         this.default_width = 460;
@@ -39,36 +39,30 @@ public class AddConferenceDialog : Gtk.Dialog {
     }
 
     private void show_jid_add_view() {
-        // Rewire headerbar (if CSD)
-        if (Util.use_csd()) {
-            cancel_button.set_label(_("Cancel"));
-            cancel_button.clicked.disconnect(show_jid_add_view);
-            cancel_button.clicked.connect(on_cancel);
-            ok_button.label = _("Next");
-            ok_button.sensitive = select_fragment.done;
-            ok_button.clicked.connect(on_next_button_clicked);
-            details_fragment.fragment_active = false;
-            details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
-            select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
-        }
+        cancel_button.set_label(_("Cancel"));
+        cancel_button.clicked.disconnect(show_jid_add_view);
+        cancel_button.clicked.connect(on_cancel);
+        ok_button.label = _("Next");
+        ok_button.sensitive = select_fragment.done;
+        ok_button.clicked.connect(on_next_button_clicked);
+        details_fragment.fragment_active = false;
+        details_fragment.notify["done"].disconnect(set_ok_sensitive_from_details);
+        select_fragment.notify["done"].connect(set_ok_sensitive_from_select);
 
         stack.transition_type = StackTransitionType.SLIDE_RIGHT;
         stack.set_visible_child_name("select");
     }
 
     private void show_conference_details_view() {
-        // Rewire headerbar (if CSD)
-        if (Util.use_csd()) {
-            cancel_button.set_icon_name("go-previous-symbolic");
-            cancel_button.clicked.disconnect(on_cancel);
-            cancel_button.clicked.connect(show_jid_add_view);
-            ok_button.label = _("Join");
-            ok_button.sensitive = details_fragment.done;
-            ok_button.clicked.disconnect(on_next_button_clicked);
-            details_fragment.fragment_active = true;
-            select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
-            details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
-        }
+        cancel_button.set_icon_name("go-previous-symbolic");
+        cancel_button.clicked.disconnect(on_cancel);
+        cancel_button.clicked.connect(show_jid_add_view);
+        ok_button.label = _("Join");
+        ok_button.sensitive = details_fragment.done;
+        ok_button.clicked.disconnect(on_next_button_clicked);
+        details_fragment.fragment_active = true;
+        select_fragment.notify["done"].disconnect(set_ok_sensitive_from_select);
+        details_fragment.notify["done"].connect(set_ok_sensitive_from_details);
 
         stack.transition_type = StackTransitionType.SLIDE_LEFT;
         stack.set_visible_child_name("details");
@@ -79,15 +73,11 @@ public class AddConferenceDialog : Gtk.Dialog {
         ok_button = new Button() { can_focus=true };
         ok_button.add_css_class("suggested-action");
 
-        if (Util.use_csd()) {
-            HeaderBar header_bar = get_header_bar() as HeaderBar;
-            header_bar.show_title_buttons = false;
+        HeaderBar header_bar = get_header_bar() as HeaderBar;
+        header_bar.show_title_buttons = false;
 
-            header_bar.pack_start(cancel_button);
-            header_bar.pack_end(ok_button);
-
-//            ok_button.has_default = true;
-        }
+        header_bar.pack_start(cancel_button);
+        header_bar.pack_end(ok_button);
     }
 
     private void setup_jid_add_view() {
@@ -110,22 +100,6 @@ public class AddConferenceDialog : Gtk.Dialog {
         Box wrap_box = new Box(Orientation.VERTICAL, 0);
         wrap_box.append(select_fragment);
         stack.add_named(wrap_box, "select");
-
-        if (!Util.use_csd()) {
-            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80 };
-
-            Button ok_button = new Button.with_label(_("Next")) { sensitive=false, halign = Align.END, can_focus=true };
-            ok_button.add_css_class("suggested-action");
-            ok_button.clicked.connect(on_next_button_clicked);
-            select_fragment.notify["done"].connect(() => { ok_button.sensitive = select_fragment.done; });
-            Button cancel_button = new Button.with_label(_("Cancel")) { halign=Align.START };
-            cancel_button.clicked.connect(on_cancel);
-            box.append(cancel_button);
-            box.append(ok_button);
-            wrap_box.append(box);
-
-//            ok_button.has_default = true;
-        }
     }
 
     private void setup_conference_details_view() {
@@ -135,21 +109,6 @@ public class AddConferenceDialog : Gtk.Dialog {
         Box wrap_box = new Box(Orientation.VERTICAL, 0);
         wrap_box.append(details_fragment);
 
-        if (!Util.use_csd()) {
-            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80 };
-
-            Button ok_button = new Button.with_label(_("Join")) { halign = Align.END, can_focus=true };
-            ok_button.add_css_class("suggested-action");
-            details_fragment.notify["done"].connect(() => { ok_button.sensitive = select_fragment.done; });
-            details_fragment.ok_button = ok_button;
-
-            Button cancel_button = new Button.with_label(_("Back")) { halign=Align.START };
-            cancel_button.clicked.connect(show_jid_add_view);
-            box.append(cancel_button);
-            box.append(ok_button);
-
-            wrap_box.append(box);
-        }
         stack.add_named(wrap_box, "details");
     }
 
@@ -165,7 +124,7 @@ public class AddConferenceDialog : Gtk.Dialog {
         details_fragment.clear();
 
         ListRow? row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row().get_child() as ListRow : null;
-        ConferenceListRow? conference_row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row() as ConferenceListRow : null;
+        ConferenceListRow? conference_row = conference_list_box.get_selected_row() != null ? conference_list_box.get_selected_row().get_child() as ConferenceListRow : null;
         if (conference_row != null) {
             details_fragment.account = conference_row.account;
             details_fragment.jid = conference_row.bookmark.jid.to_string();

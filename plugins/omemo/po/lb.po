@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
 "PO-Revision-Date: 2020-04-12 20:01+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/lb/>\n"
@@ -13,18 +13,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.0-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:157
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
 msgstr "Geräter managen"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:160
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -103,7 +103,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "Schlëssel ofleenen"
 
@@ -116,7 +116,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "Schlëssel acceptéieren"
 
@@ -196,7 +196,7 @@ msgstr "Zeréck"
 msgid "Manage"
 msgstr "Verwalten"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "Dëse Kontakt huet nei Geräter"
 
@@ -209,77 +209,87 @@ msgstr "OMEMO Vertrauens Entscheedung noutwenneg"
 msgid "Did you add a new device for account %s?"
 msgstr "Hues du een neit Gerät fir %s dobäi gemaach?"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-#: plugins/omemo/src/ui/account_settings_entry.vala:50
-msgid "Own fingerprint"
-msgstr "Eegene Fangerofdrock"
-
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-msgid "Will be generated on first connection"
-msgstr "Gett bei der éischter Connectioun generéiert"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Verschlësselung"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO Gerät"
-msgstr[1] "%d OMEMO Geräter"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "OMEMO Schlësselenverwaltung"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "Automatesch nei Schlësselen akzeptéieren"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
 msgstr ""
-"Nei Verschlësslungs Schlëssele vun dem Kontakt ginn automatesch akzeptéiert."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "Eegene Schlëssel"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr ""
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 msgid "New keys"
 msgstr "Nei Schlësselen"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "Zougehéiereg Schlësselen"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "Inaktiv Schlësselen"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Nei Verschlësslungs Schlëssele vun ären aneren Apparater ginn automatesch "
 "akzeptéiert."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "Akzeptéiert"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "Ofgeleent"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "Verifizéiert"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "Onbenotzt"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
+msgid "New device"
+msgstr ""
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO Schlësselenverwaltung"
+
+#~ msgid "Encryption"
+#~ msgstr "Verschlësselung"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO Gerät"
+#~ msgstr[1] "%d OMEMO Geräter"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Automatesch nei Schlësselen akzeptéieren"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Nei Verschlësslungs Schlëssele vun dem Kontakt ginn automatesch "
+#~ "akzeptéiert."
+
+#~ msgid "Own key"
+#~ msgstr "Eegene Schlëssel"
+
+#~ msgid "Associated keys"
+#~ msgstr "Zougehéiereg Schlësselen"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Inaktiv Schlësselen"
+
+#~ msgid "Unused"
+#~ msgstr "Onbenotzt"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Eegene Fangerofdrock"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Gett bei der éischter Connectioun generéiert"
 
 #~ msgid "Not matching"
 #~ msgstr "Stemmt net iwwerteneen"

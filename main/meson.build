@@ -47,6 +47,7 @@ sources = files(
     'src/ui/conversation_content_view/date_separator_populator.vala',
     'src/ui/conversation_content_view/file_default_widget.vala',
     'src/ui/conversation_content_view/file_image_widget.vala',
+    'src/ui/conversation_content_view/file_transmission_progress.vala',
     'src/ui/conversation_content_view/file_widget.vala',
     'src/ui/conversation_content_view/item_actions.vala',
     'src/ui/conversation_content_view/message_widget.vala',
@@ -69,28 +70,35 @@ sources = files(
     'src/ui/global_search.vala',
     'src/ui/main_window.vala',
     'src/ui/main_window_controller.vala',
-    'src/ui/manage_accounts/account_row.vala',
-    'src/ui/manage_accounts/add_account_dialog.vala',
-    'src/ui/manage_accounts/dialog.vala',
     'src/ui/notifier_freedesktop.vala',
     'src/ui/notifier_gnotifications.vala',
     'src/ui/occupant_menu/list.vala',
     'src/ui/occupant_menu/list_row.vala',
     'src/ui/occupant_menu/view.vala',
-    'src/ui/settings_dialog.vala',
     'src/ui/util/accounts_combo_box.vala',
     'src/ui/util/config.vala',
     'src/ui/util/data_forms.vala',
+    'src/ui/util/file_metadata_providers.vala',
     'src/ui/util/helper.vala',
     'src/ui/util/label_hybrid.vala',
+    'src/ui/util/preference_group.vala',
     'src/ui/util/size_request_box.vala',
     'src/ui/util/sizing_bin.vala',
     'src/ui/widgets/avatar_picture.vala',
     'src/ui/widgets/date_separator.vala',
     'src/ui/widgets/fixed_ratio_picture.vala',
     'src/ui/widgets/natural_size_increase.vala',
+    'src/view_model/account_details.vala',
     'src/view_model/conversation_details.vala',
     'src/view_model/preferences_row.vala',
+    'src/view_model/preferences_window.vala',
+    'src/windows/preferences_window/account_preferences_subpage.vala',
+    'src/windows/preferences_window/accounts_preferences_page.vala',
+    'src/windows/preferences_window/add_account_dialog.vala',
+    'src/windows/preferences_window/change_password_dialog.vala',
+    'src/windows/preferences_window/encryption_preferences_page.vala',
+    'src/windows/preferences_window/general_preferences_page.vala',
+    'src/windows/preferences_window/preferences_window.vala',
     'src/windows/conversation_details.vala',
 )
 sources += gnome.compile_resources(
@@ -107,19 +115,37 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.2')
-    vala_args += ['-D', 'Adw_1_2']
-endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.6')
     vala_args += ['-D', 'GTK_4_6']
 endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.8')
     vala_args += ['-D', 'GTK_4_8']
 endif
+if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.12')
+    vala_args += ['-D', 'GTK_4_12']
+endif
+if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.3')
+    vala_args += ['-D', 'Adw_1_3']
+endif
+if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.4')
+    vala_args += ['-D', 'Adw_1_4']
+endif
+if meson.get_compiler('vala').version().version_compare('>=0.56.5') and meson.get_compiler('vala').version().version_compare('<0.58')
+    vala_args += ['-D', 'VALA_0_56_GREATER_5']
+endif
+if meson.get_compiler('vala').version().version_compare('>=0.56.11') and meson.get_compiler('vala').version().version_compare('<0.58')
+    vala_args += ['-D', 'VALA_0_56_GREATER_11']
+endif
+if meson.get_compiler('vala').version().version_compare('=0.56.11')
+    vala_args += ['-D', 'VALA_0_56_11']
+endif
+if meson.get_compiler('vala').version().version_compare('=0.56.12')
+    vala_args += ['-D', 'VALA_0_56_12']
+endif
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true)
 
-install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'hicolor/symbolic/apps')
-install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'hicolor/scalable/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
 install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')

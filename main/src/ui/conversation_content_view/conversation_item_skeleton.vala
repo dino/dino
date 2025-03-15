@@ -173,14 +173,14 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         set_widget(widget, Plugins.WidgetType.GTK4, 3);
     }
 
+    private void on_time_update_timeout() {
+        if (main_grid.parent != null) update_time();
+    }
+
     private void update_time() {
         time_label.label = get_relative_time(item.time.to_local()).to_string();
 
-        time_update_timeout = Timeout.add_seconds((int) get_next_time_change(item.time), () => {
-            if (this.main_grid.parent == null) return false;
-            update_time();
-            return false;
-        });
+        time_update_timeout = Dino.WeakTimeout.add_seconds_once((int) get_next_time_change(item.time), this, on_time_update_timeout);
     }
 
     private void update_name_label() {

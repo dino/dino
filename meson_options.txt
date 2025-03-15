@@ -1,11 +1,11 @@
 option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
 
 option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
-option('plugin-ice', type: 'feature', description: '')
-option('plugin-notification-sound', type: 'feature', description: 'Sound for chat notifications')
-option('plugin-omemo', type: 'feature', description: 'End-to-end encryption')
+option('plugin-ice', type: 'feature', description: 'Peer-to-peer communication')
+option('plugin-omemo', type: 'feature', description: 'End-to-end encryption using OMEMO')
 option('plugin-openpgp', type: 'feature', description: 'End-to-end encryption using PGP')
 option('plugin-rtp', type: 'feature', description: 'Voice/video calls')
+option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
 
 option('plugin-rtp-h264', type: 'feature', value: 'disabled', description: 'H264 codec')
 option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Intel MediaSDK')

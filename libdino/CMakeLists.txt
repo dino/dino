@@ -64,12 +64,17 @@ SOURCES
     src/service/registration.vala
     src/service/roster_manager.vala
     src/service/search_processor.vala
+    src/service/sfs_metadata.vala
+    src/service/stateless_file_sharing.vala
     src/service/stream_interactor.vala
     src/service/util.vala
 
     src/util/display_name.vala
+    src/util/limit_input_stream.vala
+    src/util/send_message.vala
     src/util/util.vala
     src/util/weak_map.vala
+    src/util/weak_timeout.vala
 CUSTOM_VAPIS
     "${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi"
     "${CMAKE_BINARY_DIR}/exports/qlite.vapi"

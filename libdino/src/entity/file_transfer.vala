@@ -4,6 +4,8 @@ namespace Dino.Entities {
 
 public class FileTransfer : Object {
 
+    public signal void sources_changed();
+
     public const bool DIRECTION_SENT = true;
     public const bool DIRECTION_RECEIVED = false;
 
@@ -15,6 +17,7 @@ public class FileTransfer : Object {
     }
 
     public int id { get; set; default=-1; }
+    public string? file_sharing_id { get; set; }
     public Account account { get; set; }
     public Jid counterpart { get; set; }
     public Jid ourpart { get; set; }
@@ -64,13 +67,51 @@ public class FileTransfer : Object {
     }
     public string path { get; set; }
     public string? mime_type { get; set; }
-    // TODO(hrxi): expand to 64 bit
-    public int size { get; set; default=-1; }
-
+    public int64 size { get; set; }
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
     public string info { get; set; }
     public Cancellable cancellable { get; default=new Cancellable(); }
+
+    // This value is not persisted
+    public int64 transferred_bytes { get; set; }
+
+    public Xep.FileMetadataElement.FileMetadata file_metadata {
+        owned get {
+            return new Xep.FileMetadataElement.FileMetadata() {
+                name = this.file_name,
+                mime_type = this.mime_type,
+                size = this.size,
+                desc = this.desc,
+                date = this.modification_date,
+                width = this.width,
+                height = this.height,
+                length = this.length,
+                hashes = this.hashes,
+                thumbnails = this.thumbnails
+            };
+        }
+        set {
+            this.file_name = value.name;
+            this.mime_type = value.mime_type;
+            this.size = value.size;
+            this.desc = value.desc;
+            this.modification_date = value.date;
+            this.width = value.width;
+            this.height = value.height;
+            this.length = value.length;
+            this.hashes = value.hashes;
+            this.thumbnails = value.thumbnails;
+        }
+    }
+    public string? desc { get; set; }
+    public DateTime? modification_date { get; set; }
+    public int width { get; set; default=-1; }
+    public int height { get; set; default=-1; }
+    public int64 length { get; set; default=-1; }
+    public Gee.List<Xep.CryptographicHashes.Hash> hashes = new Gee.ArrayList<Xep.CryptographicHashes.Hash>();
+    public Gee.List<Xep.StatelessFileSharing.Source> sfs_sources = new Gee.ArrayList<Xep.StatelessFileSharing.Source>(Xep.StatelessFileSharing.Source.equals_func);
+    public Gee.List<Xep.JingleContentThumbnails.Thumbnail> thumbnails = new Gee.ArrayList<Xep.JingleContentThumbnails.Thumbnail>();
 
     private Database? db;
     private string storage_dir;
@@ -80,6 +121,7 @@ public class FileTransfer : Object {
         this.storage_dir = storage_dir;
 
         id = row[db.file_transfer.id];
+        file_sharing_id = row[db.file_transfer.file_sharing_id];
         account = db.get_account_by_id(row[db.file_transfer.account_id]); // TODO don’t have to generate acc new
 
         counterpart = db.get_jid_by_id(row[db.file_transfer.counterpart_id]);
@@ -99,10 +141,37 @@ public class FileTransfer : Object {
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];
         mime_type = row[db.file_transfer.mime_type];
-        size = row[db.file_transfer.size];
+        size = (int64) row[db.file_transfer.size];
         state = (State) row[db.file_transfer.state];
         provider = row[db.file_transfer.provider];
         info = row[db.file_transfer.info];
+        modification_date = new DateTime.from_unix_utc(row[db.file_transfer.modification_date]);
+        width = row[db.file_transfer.width];
+        height = row[db.file_transfer.height];
+        length = (int64) row[db.file_transfer.length];
+
+        // TODO put those into the initial query
+        foreach(var hash_row in db.file_hashes.select().with(db.file_hashes.id, "=", id)) {
+            Xep.CryptographicHashes.Hash hash = new Xep.CryptographicHashes.Hash();
+            hash.algo = hash_row[db.file_hashes.algo];
+            hash.val = hash_row[db.file_hashes.value];
+            hashes.add(hash);
+        }
+
+        foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
+            Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
+            thumbnail.uri = thumbnail_row[db.file_thumbnails.uri];
+            thumbnail.media_type = thumbnail_row[db.file_thumbnails.mime_type];
+            thumbnail.width = thumbnail_row[db.file_thumbnails.width];
+            thumbnail.height = thumbnail_row[db.file_thumbnails.height];
+            thumbnails.add(thumbnail);
+        }
+
+        foreach(Qlite.Row source_row in db.sfs_sources.select().with(db.sfs_sources.file_transfer_id, "=", id)) {
+            if (source_row[db.sfs_sources.type] == "http") {
+                sfs_sources.add(new Xep.StatelessFileSharing.HttpSource() { url=source_row[db.sfs_sources.data] });
+            }
+        }
 
         notify.connect(on_update);
     }
@@ -121,26 +190,73 @@ public class FileTransfer : Object {
             .value(db.file_transfer.local_time, (long) local_time.to_unix())
             .value(db.file_transfer.encryption, encryption)
             .value(db.file_transfer.file_name, file_name)
-            .value(db.file_transfer.size, size)
+            .value(db.file_transfer.size, (long) size)
             .value(db.file_transfer.state, state)
             .value(db.file_transfer.provider, provider)
             .value(db.file_transfer.info, info);
 
-        if (file_name != null) builder.value(db.file_transfer.file_name, file_name);
+        if (file_sharing_id != null) builder.value(db.file_transfer.file_sharing_id, file_sharing_id);
         if (path != null) builder.value(db.file_transfer.path, path);
         if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
+        if (path != null) builder.value(db.file_transfer.path, path);
+        if (modification_date != null) builder.value(db.file_transfer.modification_date, (long) modification_date.to_unix());
+        if (width != -1) builder.value(db.file_transfer.width, width);
+        if (height != -1) builder.value(db.file_transfer.height, height);
+        if (length != -1) builder.value(db.file_transfer.length, (long) length);
 
         id = (int) builder.perform();
+
+        foreach (Xep.CryptographicHashes.Hash hash in hashes) {
+            db.file_hashes.insert()
+                    .value(db.file_hashes.id, id)
+                    .value(db.file_hashes.algo, hash.algo)
+                    .value(db.file_hashes.value, hash.val)
+                    .perform();
+        }
+        foreach (Xep.JingleContentThumbnails.Thumbnail thumbnail in thumbnails) {
+            db.file_thumbnails.insert()
+                    .value(db.file_thumbnails.id, id)
+                    .value(db.file_thumbnails.uri, thumbnail.uri)
+                    .value(db.file_thumbnails.mime_type, thumbnail.media_type)
+                    .value(db.file_thumbnails.width, thumbnail.width)
+                    .value(db.file_thumbnails.height, thumbnail.height)
+                    .perform();
+        }
+
+        foreach (Xep.StatelessFileSharing.Source source in sfs_sources) {
+            add_sfs_source(source);
+        }
+
         notify.connect(on_update);
     }
 
-    public File get_file() {
+    public void add_sfs_source(Xep.StatelessFileSharing.Source source) {
+        if (sfs_sources.contains(source)) return; // Don't add the same source twice. Might happen due to MAM and lacking deduplication.
+
+        sfs_sources.add(source);
+
+        Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
+        if (http_source != null) {
+            db.sfs_sources.insert()
+                    .value(db.sfs_sources.file_transfer_id, id)
+                    .value(db.sfs_sources.type, "http")
+                    .value(db.sfs_sources.data, http_source.url)
+                    .perform();
+        }
+
+        sources_changed();
+    }
+
+    public File? get_file() {
+        if (path == null) return null;
         return File.new_for_path(Path.build_filename(Dino.get_storage_dir(), "files", path));
     }
 
     private void on_update(Object o, ParamSpec sp) {
         Qlite.UpdateBuilder update_builder = db.file_transfer.update().with(db.file_transfer.id, "=", id);
         switch (sp.name) {
+            case "file-sharing-id":
+                update_builder.set(db.file_transfer.file_sharing_id, file_sharing_id); break;
             case "counterpart":
                 update_builder.set(db.file_transfer.counterpart_id, db.get_jid_id(counterpart));
                 update_builder.set(db.file_transfer.counterpart_resource, counterpart.resourcepart); break;
@@ -161,7 +277,7 @@ public class FileTransfer : Object {
             case "mime-type":
                 update_builder.set(db.file_transfer.mime_type, mime_type); break;
             case "size":
-                update_builder.set(db.file_transfer.size, size); break;
+                update_builder.set(db.file_transfer.size, (long) size); break;
             case "state":
                 if (state == State.IN_PROGRESS) return;
                 update_builder.set(db.file_transfer.state, state); break;
@@ -169,6 +285,14 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.provider, provider); break;
             case "info":
                 update_builder.set(db.file_transfer.info, info); break;
+            case "modification-date":
+                update_builder.set(db.file_transfer.modification_date, (long) modification_date.to_unix()); break;
+            case "width":
+                update_builder.set(db.file_transfer.width, width); break;
+            case "height":
+                update_builder.set(db.file_transfer.height, height); break;
+            case "length":
+                update_builder.set(db.file_transfer.length, (long) length); break;
         }
         update_builder.perform();
     }

@@ -100,17 +100,12 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            StanzaNode? inner_node = null;
             if (group_call != null) {
-                inner_node = new StanzaNode.build("muji", Xep.Muji.NS_URI).add_self_xmlns()
-                        .put_attribute("room", group_call.muc_jid.to_string());
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_accept(stream, cim_counterpart, cim_call_id, group_call.muc_jid, cim_message_type);
             } else if (peers.size == 1) {
-                foreach (PeerState peer in peers.values) {
-                    inner_node = new StanzaNode.build("jingle", Xep.CallInvites.NS_URI)
-                            .put_attribute("sid", peer.sid);
-                }
+                string sid = peers.values.to_array()[0].sid;
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_jingle_accept(stream, cim_counterpart, cim_call_id, sid, cim_message_type);
             }
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_accept(stream, cim_counterpart, cim_call_id, inner_node, cim_message_type);
         } else {
             foreach (PeerState peer in peers.values) {
                 peer.accept();
@@ -156,7 +151,7 @@ public class Dino.CallState : Object {
             if (use_cim) {
                 XmppStream stream = stream_interactor.get_stream(call.account);
                 if (stream == null) return;
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_finish(stream, cim_counterpart, cim_call_id, cim_message_type);
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_left(stream, cim_counterpart, cim_call_id, cim_message_type);
             }
             call.state = Call.State.ENDED;
         } else if (call.state == Call.State.RINGING) {

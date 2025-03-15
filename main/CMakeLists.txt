@@ -19,6 +19,7 @@ set(RESOURCE_LIST
 
     icons/scalable/actions/dino-emoticon-add-symbolic.svg
     icons/scalable/actions/dino-qr-code-symbolic.svg
+    icons/scalable/actions/small-x-symbolic.svg
 
     icons/scalable/apps/im.dino.Dino.svg
     icons/scalable/apps/im.dino.Dino-symbolic.svg
@@ -49,6 +50,7 @@ set(RESOURCE_LIST
     icons/scalable/status/dino-status-chat.svg
     icons/scalable/status/dino-status-dnd.svg
     icons/scalable/status/dino-status-online.svg
+    icons/scalable/status/dino-status-offline.svg
     icons/scalable/status/dino-tick-symbolic.svg
     icons/scalable/status/dino-video-off-symbolic.svg
     icons/scalable/status/dino-video-symbolic.svg
@@ -59,12 +61,18 @@ set(RESOURCE_LIST
     add_conversation/list_row.ui
     add_conversation/select_jid_fragment.ui
 
+    preferences_window/account_preferences_subpage.ui
+    preferences_window/add_account_dialog.ui
+    preferences_window/change_password_dialog.ui
+    preferences_window/general_preferences_page.ui
+    preferences_window/preferences_window.ui
+
+    account_picker_row.ui
     call_widget.ui
     chat_input.ui
     conversation_details.ui
     conversation_item_widget.ui
     conversation_list_titlebar.ui
-    conversation_list_titlebar_csd.ui
     conversation_row.ui
     conversation_view.ui
     file_default_widget.ui
@@ -76,19 +84,16 @@ set(RESOURCE_LIST
     join_room_dialog2.ui
     conversation_content_view/item_metadata_header.ui
     conversation_content_view/view.ui
-    manage_accounts/account_row.ui
-    manage_accounts/add_account_dialog.ui
-    manage_accounts/dialog.ui
     menu_add.ui
     menu_app.ui
     menu_conversation.ui
     menu_encryption.ui
     message_item_widget_edit_mode.ui
+    muc_member_list_row.ui
     occupant_list.ui
     occupant_list_item.ui
     quote.ui
     search_autocomplete.ui
-    settings_dialog.ui
     unified_main_content.ui
     unified_window_placeholder.ui
 
@@ -121,9 +126,6 @@ endif()
 if(GTK4_VERSION VERSION_GREATER_EQUAL "4.12")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} GTK_4_12)
 endif()
-if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.2")
-    set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_2)
-endif()
 if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.3")
     set(MAIN_DEFINITIONS ${MAIN_DEFINITIONS} Adw_1_3)
 endif()
@@ -155,7 +157,6 @@ SOURCES
     src/ui/global_search.vala
     src/ui/notifier_freedesktop.vala
     src/ui/notifier_gnotifications.vala
-    src/ui/settings_dialog.vala
     src/ui/main_window.vala
     src/ui/main_window_controller.vala
 
@@ -186,6 +187,7 @@ SOURCES
     src/ui/conversation_content_view/date_separator_populator.vala
     src/ui/conversation_content_view/file_default_widget.vala
     src/ui/conversation_content_view/file_image_widget.vala
+    src/ui/conversation_content_view/file_transmission_progress.vala
     src/ui/conversation_content_view/file_widget.vala
     src/ui/conversation_content_view/item_actions.vala
     src/ui/conversation_content_view/message_widget.vala
@@ -215,10 +217,6 @@ SOURCES
     src/ui/conversation_titlebar/search_entry.vala
     src/ui/conversation_titlebar/conversation_titlebar.vala
 
-    src/ui/manage_accounts/account_row.vala
-    src/ui/manage_accounts/add_account_dialog.vala
-    src/ui/manage_accounts/dialog.vala
-
     src/ui/occupant_menu/list.vala
     src/ui/occupant_menu/list_row.vala
     src/ui/occupant_menu/view.vala
@@ -226,8 +224,10 @@ SOURCES
     src/ui/util/accounts_combo_box.vala
     src/ui/util/config.vala
     src/ui/util/data_forms.vala
+    src/ui/util/file_metadata_providers.vala
     src/ui/util/helper.vala
     src/ui/util/label_hybrid.vala
+    src/ui/util/preference_group.vala
     src/ui/util/sizing_bin.vala
     src/ui/util/size_request_box.vala
 
@@ -236,10 +236,21 @@ SOURCES
     src/ui/widgets/fixed_ratio_picture.vala
     src/ui/widgets/natural_size_increase.vala
 
+    src/view_model/account_details.vala
     src/view_model/conversation_details.vala
     src/view_model/preferences_row.vala
+    src/view_model/preferences_window.vala
 
     src/windows/conversation_details.vala
+
+    src/windows/preferences_window/account_preferences_subpage.vala
+    src/windows/preferences_window/accounts_preferences_page.vala
+    src/windows/preferences_window/add_account_dialog.vala
+    src/windows/preferences_window/change_password_dialog.vala
+    src/windows/preferences_window/encryption_preferences_page.vala
+    src/windows/preferences_window/general_preferences_page.vala
+    src/windows/preferences_window/preferences_window.vala
+
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/xmpp-vala.vapi
     ${CMAKE_BINARY_DIR}/exports/qlite.vapi

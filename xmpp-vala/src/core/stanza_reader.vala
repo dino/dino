@@ -13,7 +13,7 @@ public class StanzaReader {
     private uint8[] buffer;
     private int buffer_fill = 0;
     private int buffer_pos = 0;
-    private Cancellable cancellable = new Cancellable();
+    private Cancellable? cancellable;
 
     private NamespaceState ns_state = new NamespaceState();
 
@@ -26,20 +26,21 @@ public class StanzaReader {
         this.for_buffer(s.data);
     }
 
-    public StanzaReader.for_stream(InputStream input) {
+    public StanzaReader.for_stream(InputStream input, Cancellable? cancellable = null) {
         this.input = input;
+        this.cancellable = cancellable;
         buffer = new uint8[BUFFER_MAX];
-    }
-
-    public void cancel() {
-        cancellable.cancel();
     }
 
     private async void update_buffer() throws IOError {
         InputStream? input = this.input;
         if (input == null) throw new IOError.CLOSED("No input stream specified and end of buffer reached.");
-        if (cancellable.is_cancelled()) throw new IOError.CANCELLED("Input stream is canceled.");
-        buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
+        if (cancellable != null && cancellable.is_cancelled()) throw new IOError.CANCELLED("Input stream is canceled.");
+        try {
+            buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
+        } catch (TlsError.EOF e) {
+            throw new IOError.CLOSED("End of TLS stream reached");
+        }
         if (buffer_fill == 0) throw new IOError.CLOSED("End of input stream reached.");
         buffer_pos = 0;
     }

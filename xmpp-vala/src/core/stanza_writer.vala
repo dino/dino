@@ -1,19 +1,19 @@
 namespace Xmpp {
 
 public class StanzaWriter {
-    public signal void cancel();
-
+    private Cancellable? connection_cancellable;
     private OutputStream output;
 
     private Queue<SourceFuncWrapper> queue = new Queue<SourceFuncWrapper>();
     private bool running = false;
 
-    public StanzaWriter.for_stream(OutputStream output) {
+    public StanzaWriter.for_stream(OutputStream output, Cancellable? cancellable = null) {
         this.output = output;
+        this.connection_cancellable = cancellable;
     }
 
     public async void write_node(StanzaNode node, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
-        yield write_data(node.to_xml().data, io_priority, cancellable);
+        yield write_data(node.to_xml().data, io_priority, cancellable ?? connection_cancellable);
     }
 
     public async void write_nodes(StanzaNode node1, StanzaNode node2, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
@@ -29,11 +29,11 @@ public class StanzaWriter {
             concat[i++] = datum;
         }
 
-        yield write_data(concat, io_priority, cancellable);
+        yield write_data(concat, io_priority, cancellable ?? connection_cancellable);
     }
 
     public async void write(string s, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
-        yield write_data(s.data, io_priority, cancellable);
+        yield write_data(s.data, io_priority, cancellable ?? connection_cancellable);
     }
 
     private async void write_data(owned uint8[] data, int io_priority = Priority.DEFAULT, Cancellable? cancellable = null) throws IOError {
@@ -45,10 +45,12 @@ public class StanzaWriter {
         try {
             yield output.write_all_async(data, io_priority, cancellable, null);
         } catch (IOError e) {
-            cancel();
+            if (!(e is IOError.CANCELLED)) {
+                connection_cancellable.cancel();
+            }
             throw e;
         } catch (GLib.Error e) {
-            cancel();
+            connection_cancellable.cancel();
             throw new IOError.FAILED("Error in GLib: %s".printf(e.message));
         } finally {
             SourceFuncWrapper? sfw = queue.pop_head();

@@ -1,3 +1,4 @@
+using Dino;
 using Dino.Entities;
 using Xmpp;
 using Xmpp.Xep;
@@ -10,6 +11,7 @@ namespace Dino.Ui.ConversationDetails {
         model.conversation = conversation;
         model.display_name = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
         model.blocked = stream_interactor.get_module(BlockingManager.IDENTITY).is_blocked(model.conversation.account, model.conversation.counterpart);
+        model.domain_blocked = stream_interactor.get_module(BlockingManager.IDENTITY).is_blocked(model.conversation.account, model.conversation.counterpart.domain_jid);
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             stream_interactor.get_module(MucManager.IDENTITY).get_config_form.begin(conversation.account, conversation.counterpart, (_, res) => {
@@ -23,6 +25,25 @@ namespace Dino.Ui.ConversationDetails {
     public void bind_dialog(Model.ConversationDetails model, ViewModel.ConversationDetails view_model, StreamInteractor stream_interactor) {
         view_model.avatar = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(model.conversation);
         view_model.show_blocked = model.conversation.type_ == Conversation.Type.CHAT && stream_interactor.get_module(BlockingManager.IDENTITY).is_supported(model.conversation.account);
+        view_model.members_sorted.set_model(model.members);
+        view_model.members.set_map_func((item) => {
+            var conference_member = (Ui.Model.ConferenceMember) item;
+            Jid? nick_jid = stream_interactor.get_module(MucManager.IDENTITY).get_occupant_jid(model.conversation.account, model.conversation.counterpart, conference_member.jid);
+            return new Ui.ViewModel.ConferenceMemberListRow() {
+                avatar = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(model.conversation, conference_member.jid),
+                name = nick_jid != null ? nick_jid.resourcepart : conference_member.jid.localpart,
+                jid = conference_member.jid.to_string(),
+                affiliation = conference_member.affiliation
+            };
+        });
+
+        if (model.domain_blocked) {
+            view_model.blocked = DOMAIN;
+        } else if (model.blocked) {
+            view_model.blocked = USER;
+        } else {
+            view_model.blocked = UNBLOCK;
+        }
 
         model.display_name.bind_property("display-name", view_model, "name", BindingFlags.SYNC_CREATE);
         model.conversation.bind_property("notify-setting", view_model, "notification", BindingFlags.SYNC_CREATE, (_, from, ref to) => {
@@ -57,7 +78,6 @@ namespace Dino.Ui.ConversationDetails {
             to = ty == Conversation.Type.GROUPCHAT ? ViewModel.ConversationDetails.NotificationOptions.ON_HIGHLIGHT_OFF : ViewModel.ConversationDetails.NotificationOptions.ON_OFF;
             return true;
         });
-        model.bind_property("blocked", view_model, "blocked", BindingFlags.SYNC_CREATE);
         model.bind_property("data-form", view_model, "room-configuration-rows", BindingFlags.SYNC_CREATE, (_, from, ref to) => {
             var data_form = (DataForms.DataForm) from;
             if (data_form == null) return true;
@@ -77,13 +97,21 @@ namespace Dino.Ui.ConversationDetails {
         view_model.pin_changed.connect(() => {
             model.conversation.pinned = model.conversation.pinned == 1 ? 0 : 1;
         });
-        view_model.block_changed.connect(() => {
-            if (view_model.blocked) {
-                stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart);
-            } else {
-                stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart);
+        view_model.block_changed.connect((action) => {
+            switch (action) {
+                case USER:
+                    stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart);
+                    stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart.domain_jid);
+                    break;
+                case DOMAIN:
+                    stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart.domain_jid);
+                    break;
+                case UNBLOCK:
+                    stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart);
+                    stream_interactor.get_module(BlockingManager.IDENTITY).unblock(model.conversation.account, model.conversation.counterpart.domain_jid);
+                    break;
             }
-            view_model.blocked = !view_model.blocked;
+            view_model.blocked = action;
         });
         view_model.notification_changed.connect((setting) => {
             switch (setting) {
@@ -107,10 +135,11 @@ namespace Dino.Ui.ConversationDetails {
         });
     }
 
-    public Window setup_dialog(Conversation conversation, StreamInteractor stream_interactor, Window parent) {
+    public Dialog setup_dialog(Conversation conversation, StreamInteractor stream_interactor, Window parent) {
         var dialog = new Dialog() { transient_for = parent };
         var model = new Model.ConversationDetails();
-        populate_dialog(model, conversation, stream_interactor);
+        model.populate(stream_interactor, conversation);
+//        populate_dialog(model, conversation, stream_interactor);
         bind_dialog(model, dialog.model, stream_interactor);
 
         dialog.model.about_rows.append(new ViewModel.PreferencesRow.Text() {
@@ -155,6 +184,10 @@ namespace Dino.Ui.ConversationDetails {
         app.plugin_registry.register_contact_details_entry(new ContactDetails.PermissionsProvider(stream_interactor));
 
         foreach (Plugins.ContactDetailsProvider provider in app.plugin_registry.contact_details_entries) {
+            var preferences_group = (Adw.PreferencesGroup) provider.get_widget(conversation);
+            if (preferences_group != null) {
+                dialog.add_encryption_tab_element((Adw.PreferencesGroup) provider.get_widget(conversation));
+            }
             provider.populate(conversation, contact_details, Plugins.WidgetType.GTK4);
         }
 
@@ -179,13 +212,12 @@ namespace Dino.Ui.ConversationDetails {
         };
 
         switch (category) {
-            case "Encryption":
-                dialog.model.encryption_rows.append(view_model);
-                break;
             case "Permissions":
             case "Local Settings":
             case "Settings":
                 dialog.model.settings_rows.append(view_model);
+                break;
+            default:
                 break;
         }
     }

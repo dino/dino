@@ -99,6 +99,14 @@ public class MessageStorage : StreamInteractionModule, Object {
         return create_message_from_row_opt(row_option, conversation);
     }
 
+    public Message? get_message_by_referencing_id(string id, Conversation conversation) {
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(id, conversation);
+        } else {
+            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(id, conversation);
+        }
+    }
+
     public Message? get_message_by_stanza_id(string stanza_id, Conversation conversation) {
         if (messages_by_stanza_id.has_key(conversation)) {
             Message? message = messages_by_stanza_id[conversation][stanza_id];
@@ -189,6 +197,16 @@ public class MessageStorage : StreamInteractionModule, Object {
         message_refs.insert(0, message);
         if (message_refs.size > 300) {
             message_refs.remove_at(message_refs.size - 1);
+        }
+    }
+
+    public static string? get_reference_id(Message message) {
+        if (message.edit_to != null) return message.edit_to;
+
+        if (message.type_ == Message.Type.CHAT) {
+            return message.stanza_id;
+        } else {
+            return message.server_id;
         }
     }
 }

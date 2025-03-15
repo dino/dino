@@ -9,7 +9,7 @@ public class Dino.PeerState : Object {
 
     public signal void connection_ready();
     public signal void session_terminated(bool we_terminated, string? reason_name, string? reason_text);
-    public signal void encryption_updated(Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption, bool same);
+    public signal void encryption_updated(Xep.Jingle.ContentEncryption? audio_encryption, Xep.Jingle.ContentEncryption? video_encryption);
 
     public StreamInteractor stream_interactor;
     public CallState call_state;
@@ -412,7 +412,7 @@ public class Dino.PeerState : Object {
 
         if ((audio_encryptions != null && audio_encryptions.is_empty) || (video_encryptions != null && video_encryptions.is_empty)) {
             call.encryption = Encryption.NONE;
-            encryption_updated(null, null, true);
+            encryption_updated(null, null);
             return;
         }
 
@@ -462,7 +462,7 @@ public class Dino.PeerState : Object {
             encryption_keys_same = true;
         }
 
-        encryption_updated(audio_encryption, video_encryption, encryption_keys_same);
+        encryption_updated(audio_encryption, video_encryption);
     }
 }
 

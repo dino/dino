@@ -1,3 +1,6 @@
+using Gee;
+using Xmpp;
+
 namespace Dino {
 
 private extern const string SYSTEM_LIBDIR_NAME;
@@ -33,10 +36,30 @@ public class SearchPathGenerator {
             if (!exec_path.contains(Path.DIR_SEPARATOR_S)) {
                 exec_path = Environment.find_program_in_path(this.exec_path);
             }
-            if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
+            string dirname = Path.get_dirname(exec_path);
+            // Does our environment look like a CMake build dir?
+            if (dirname.contains("dino") || dirname == "." || dirname.contains("build") || Path.get_basename(dirname) == "main") {
                 search_paths += Path.build_filename(Path.get_dirname(exec_path), "plugins");
             }
-            if (Path.get_basename(Path.get_dirname(exec_path)) == "bin") {
+            // Does our environment look like a meson build dir?
+            if (dirname == "." || Path.get_basename(dirname) == "main") {
+                try {
+                    Dir plugin_dir = Dir.open(Path.build_path(Path.DIR_SEPARATOR_S, dirname, "..", "plugins"));
+                    string? entry = null;
+                    while ((entry = plugin_dir.read_name()) != null) {
+                        string plugin_subdir = Path.build_path(Path.DIR_SEPARATOR_S, dirname, "..", "plugins", entry);
+                        try {
+                            Dir.open(plugin_subdir);
+                            search_paths += plugin_subdir;
+                        } catch (FileError e) {
+                            // ignore
+                        }
+                    }
+                } catch (FileError e) {
+                    // ignore
+                }
+            }
+            if (Path.get_basename(dirname) == "bin") {
                 search_paths += Path.build_filename(Path.get_dirname(Path.get_dirname(exec_path)), SYSTEM_LIBDIR_NAME, "dino", "plugins");
             }
         }
@@ -47,6 +70,10 @@ public class SearchPathGenerator {
 
 public static string get_storage_dir() {
     return Path.build_filename(Environment.get_user_data_dir(), "dino");
+}
+
+public static string get_cache_dir() {
+    return Path.build_filename(Environment.get_user_cache_dir(), "dino");
 }
 
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
@@ -64,6 +91,34 @@ private static extern unowned string? bind_textdomain_codeset(string domainname,
 public static void internationalize(string gettext_package, string locales_dir) {
     Intl.bind_textdomain_codeset(gettext_package, "UTF-8");
     Intl.bindtextdomain(gettext_package, locales_dir);
+}
+
+public static async HashMap<ChecksumType, string> compute_file_hashes(File file, Gee.List<ChecksumType> checksum_types) {
+    var checksums = new Checksum[checksum_types.size];
+
+    for (int i = 0; i < checksum_types.size; i++) {
+        checksums[i] = new Checksum(checksum_types.get(i));
+    }
+
+    FileInputStream stream = yield file.read_async();
+    uint8 fbuf[1024];
+    size_t size;
+    while ((size = yield stream.read_async(fbuf)) > 0) {
+        for (int i = 0; i < checksum_types.size; i++) {
+            checksums[i].update(fbuf, size);
+        }
+    }
+
+    var ret = new HashMap<ChecksumType, string>();
+    for (int i = 0; i < checksum_types.size; i++) {
+        var checksum_type = checksum_types.get(i);
+        uint8[] digest = new uint8[64];
+        size_t length = digest.length;
+        checksums[i].get_digest(digest, ref length);
+        string computed_hash = GLib.Base64.encode(digest[0:length]);
+        ret[checksum_type] = computed_hash;
+    }
+    return ret;
 }
 
 }

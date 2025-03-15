@@ -1,18 +1,11 @@
 # version_vala
 dot_git = meson.current_source_dir() / '../.git'
 version_file = meson.current_source_dir() / '../VERSION'
-command = [prog_python, files('version.py'), version_file, '@OUTPUT@', '--git-repo', meson.current_source_dir()]
+command = [prog_python, files('version.py'), version_file, '--git-repo', meson.current_source_dir()]
 if prog_git.found()
     command += ['--git', prog_git]
 endif
-depend_files = []
-if fs.exists(dot_git)
-    depend_files += [dot_git]
-endif
-if fs.exists(version_file)
-    depend_files += [version_file]
-endif
-version_vala = custom_target('libdino_version_vala', command: command, output: 'version.vala', depend_files: depend_files)
+version_vala = vcs_tag(command: command, input: 'src/version.vala.in', output: 'version.vala', replace_string: '%VERSION%')
 
 # libdino
 dependencies = [
@@ -71,11 +64,16 @@ sources = files(
     'src/service/registration.vala',
     'src/service/roster_manager.vala',
     'src/service/search_processor.vala',
+    'src/service/sfs_metadata.vala',
+    'src/service/stateless_file_sharing.vala',
     'src/service/stream_interactor.vala',
     'src/service/util.vala',
     'src/util/display_name.vala',
+    'src/util/limit_input_stream.vala',
+    'src/util/send_message.vala',
     'src/util/util.vala',
     'src/util/weak_map.vala',
+    'src/util/weak_timeout.vala',
 )
 sources += [version_vala]
 c_args = [
@@ -83,7 +81,11 @@ c_args = [
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
-lib_dino = library('dino', sources, c_args: c_args, include_directories: include_directories('src'), dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true])
+vala_args = []
+if meson.get_compiler('vala').version().version_compare('=0.56.11')
+    vala_args += ['-D', 'VALA_0_56_11']
+endif
+lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true])
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 
 install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756

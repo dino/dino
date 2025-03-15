@@ -10,8 +10,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     private const string[] KEY_COMBINATION_ADD_CONFERENCE = {"<Ctrl>G", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS = {"<Ctrl>Tab", null};
     private const string[] KEY_COMBINATION_LOOP_CONVERSATIONS_REV = {"<Ctrl><Shift>Tab", null};
+    private const string[] KEY_COMBINATION_SHOW_SETTINGS = {"<Ctrl>comma", null};
 
-    private MainWindow window;
+    public MainWindow window;
     public MainWindowController controller;
 
     public Database db { get; set; }
@@ -68,6 +69,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                     }
                 }
             });
+            stream_interactor.get_module(FileManager.IDENTITY).add_metadata_provider(new Util.AudioVideoFileMetadataProvider());
         });
 
         activate.connect(() => {
@@ -113,13 +115,18 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     }
 
     private void create_actions() {
-        SimpleAction accounts_action = new SimpleAction("accounts", null);
-        accounts_action.activate.connect(show_accounts_window);
-        add_action(accounts_action);
+        SimpleAction preferences_action = new SimpleAction("preferences", null);
+        preferences_action.activate.connect(show_preferences_window);
+        add_action(preferences_action);
+        set_accels_for_action("app.preferences", KEY_COMBINATION_SHOW_SETTINGS);
 
-        SimpleAction settings_action = new SimpleAction("settings", null);
-        settings_action.activate.connect(show_settings_window);
-        add_action(settings_action);
+        SimpleAction preferences_account_action = new SimpleAction("preferences-account", VariantType.INT32);
+        preferences_account_action.activate.connect((variant) => {
+            Account? account = db.get_account_by_id(variant.get_int32());
+            if (account == null) return;
+            show_preferences_account_window(account);
+        });
+        add_action(preferences_account_action);
 
         SimpleAction about_action = new SimpleAction("about", null);
         about_action.activate.connect(show_about_window);
@@ -137,6 +144,20 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             Util.present_window(window);
         });
         add_action(open_conversation_action);
+
+        SimpleAction open_conversation_details_action = new SimpleAction("open-conversation-details", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.STRING}));
+        open_conversation_details_action.activate.connect((variant) => {
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null) return;
+
+            string stack_value = variant.get_child_value(1).get_string();
+
+            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, window);
+            conversation_details.stack.visible_child_name = stack_value;
+            conversation_details.present();
+        });
+        add_action(open_conversation_details_action);
 
         SimpleAction deny_subscription_action = new SimpleAction("deny-subscription", VariantType.INT32);
         deny_subscription_action.activate.connect((variant) => {
@@ -229,21 +250,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_action(deny_call_action);
     }
 
-    public bool use_csd() {
-        return Environment.get_variable("GTK_CSD") != "0";
-    }
-
-    private void show_accounts_window() {
-        ManageAccounts.Dialog dialog = new ManageAccounts.Dialog(stream_interactor, db);
-        dialog.set_transient_for(get_active_window());
-        dialog.account_enabled.connect(add_connection);
-        dialog.account_disabled.connect(remove_connection);
+    private void show_preferences_window() {
+        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        dialog.model.populate(db, stream_interactor);
         dialog.present();
     }
 
-    private void show_settings_window() {
-        SettingsDialog dialog = new SettingsDialog();
-        dialog.set_transient_for(get_active_window());
+    private void show_preferences_account_window(Account account) {
+        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        dialog.model.populate(db, stream_interactor);
+        dialog.accounts_page.account_chosen(account);
         dialog.present();
     }
 
@@ -256,17 +272,11 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 case "0.4": version = @"$version - Ilulissat"; break;
             }
         }
-#if Adw_1_2
+
         Adw.AboutWindow about_window = new Adw.AboutWindow();
         about_window.application_icon = "im.dino.Dino";
         about_window.application_name = "Dino";
         about_window.issue_url = "https://github.com/dino/dino/issues";
-#else
-        Gtk.AboutDialog about_window = new Gtk.AboutDialog();
-        about_window.logo_icon_name = "im.dino.Dino";
-        about_window.program_name = "Dino";
-        about_window.website_label = "dino.im";
-#endif
         about_window.destroy_with_parent = true;
         about_window.transient_for = window;
         about_window.modal = true;
@@ -275,10 +285,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         about_window.website = "https://dino.im/";
         about_window.copyright = "Copyright © 2016-2023 - Dino Team";
         about_window.license_type = License.GPL_3_0;
-
-        if (!use_csd()) {
-            about_window.set_titlebar(null);
-        }
         about_window.present();
     }
 

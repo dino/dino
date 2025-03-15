@@ -17,3 +17,4 @@ vala_args = [
 ]
 lib_notification_sound = shared_library('notification-sound', sources, name_prefix: '', vala_args: vala_args, dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_notification_sound = declare_dependency(link_with: lib_notification_sound, include_directories: include_directories('.'))
+summary('Sound for chat notifications (notification-sound)', dep_notification_sound, section: 'Plugins')

@@ -4,19 +4,8 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-[GtkTemplate (ui = "/im/dino/Dino/conversation_list_titlebar.ui")]
-public class ConversationListTitlebar : Gtk.Box {
-
-    [GtkChild] private unowned MenuButton add_button;
-    [GtkChild] private unowned MenuButton menu_button;
-
-    public ConversationListTitlebar() {
-        create_add_menu(add_button, menu_button);
-    }
-}
-
-public static Adw.HeaderBar get_conversation_list_titlebar_csd() {
-    Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_list_titlebar_csd.ui");
+public static Adw.HeaderBar get_conversation_list_titlebar() {
+    Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_list_titlebar.ui");
     MenuButton add_button = (MenuButton) builder.get_object("add_button");
     MenuButton menu_button = (MenuButton) builder.get_object("menu_button");
     create_add_menu(add_button, menu_button);

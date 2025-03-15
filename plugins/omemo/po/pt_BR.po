@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-07 21:31+0100\n"
-"PO-Revision-Date: 2020-10-22 03:26+0000\n"
+"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"PO-Revision-Date: 2024-09-15 20:09+0000\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.3.1\n"
+"X-Generator: Weblate 5.8-dev\n"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:157
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
@@ -26,11 +26,11 @@ msgstr ""
 "%s tem usado um dispositivo não confiável. Você não verá mensagens de "
 "dispositivos que você não confia."
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:158
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
 msgstr "Gerenciar dispositivos"
 
-#: plugins/omemo/src/ui/bad_messages_populator.vala:160
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
@@ -110,7 +110,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/contact_details_dialog.vala:269
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
 msgid "Reject key"
 msgstr "Rejeitar chave"
 
@@ -123,7 +123,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/contact_details_dialog.vala:264
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
 msgid "Accept key"
 msgstr "Aceitar chave"
 
@@ -204,7 +204,7 @@ msgstr "Voltar"
 msgid "Manage"
 msgstr "Gerenciar"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "Esse contato possui novos dispositivos"
 
@@ -217,77 +217,86 @@ msgstr "Decisão de confiança OMEMO necessária"
 msgid "Did you add a new device for account %s?"
 msgstr "Você adicionou um novo dispositivo para a conta %s?"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-#: plugins/omemo/src/ui/account_settings_entry.vala:50
-msgid "Own fingerprint"
-msgstr "Impressão digital própria"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "OMEMO by default"
+msgstr "OMEMO por padrão"
 
-#: plugins/omemo/src/ui/account_settings_entry.vala:47
-msgid "Will be generated on first connection"
-msgstr "Será gerada na primeira conexão"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Ativar a criptografia OMEMO em novas conversas"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Criptografia"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Encrypt to new devices"
+msgstr "Criptografar para novos dispositivos"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-#, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispositivo OMEMO"
-msgstr[1] "%d dispositivos OMEMO"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Automaticamente criptografar para novos dispositivos deste contato."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "OMEMO Key Management"
-msgstr "Gerenciamento de Chave OMEMO"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Automatically accept new keys"
-msgstr "Aceitar novas chaves automaticamente"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
-"Novas chaves de criptografia desse contato serão aceitas automaticamente."
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Own key"
-msgstr "Chave própria"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 msgid "New keys"
 msgstr "Chaves novas"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:53
-msgid "Associated keys"
-msgstr "Chaves associadas"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:54
-msgid "Inactive keys"
-msgstr "Chaves inativas"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:86
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Novas chaves de criptografia de seus outros dispositivos serão aceitas "
 "automaticamente."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:335
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
 msgid "Accepted"
 msgstr "Aceita"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:340
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
 msgid "Rejected"
 msgstr "Rejeitada"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:345
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
 msgid "Verified"
 msgstr "Verificada"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:352
-msgid "Unused"
-msgstr "Não usada"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
+msgid "New device"
+msgstr "Dispositivo novo"
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "Gerenciamento de Chave OMEMO"
+
+#~ msgid "Encryption"
+#~ msgstr "Criptografia"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d dispositivo OMEMO"
+#~ msgstr[1] "%d dispositivos OMEMO"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Aceitar novas chaves automaticamente"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Novas chaves de criptografia desse contato serão aceitas automaticamente."
+
+#~ msgid "Own key"
+#~ msgstr "Chave própria"
+
+#~ msgid "Associated keys"
+#~ msgstr "Chaves associadas"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Chaves inativas"
+
+#~ msgid "Unused"
+#~ msgstr "Não usada"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Impressão digital própria"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Será gerada na primeira conexão"
 
 #~ msgid "Your contact"
 #~ msgstr "Seu contato"

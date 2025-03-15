@@ -39,7 +39,7 @@ public class FileDefaultWidget : Box {
         });
     }
 
-    public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
+    public void update_file_info(string? mime_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
         this.state = state;
 
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
@@ -61,7 +61,17 @@ public class FileDefaultWidget : Box {
                 popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.IN_PROGRESS:
-                mime_label.label = _("Downloading %s…").printf(get_size_string(size));
+                if (direction == FileTransfer.DIRECTION_RECEIVED) {
+                    if (size > 0) {
+                        int64 progress = transferred_bytes * 100 / size;
+                        mime_label.label = _("Downloading %s… (%u%%)").printf(get_size_string(size), progress);
+                    } else {
+                        mime_label.label = _("Downloading %s…").printf(get_size_string(size));
+                    }
+                } else {
+                    int64 progress = transferred_bytes * 100 / size;
+                    mime_label.label = _("Uploading %s… (%u%%)").printf(get_size_string(size), progress);
+                }
                 spinner.start();
                 image_stack.set_visible_child_name("spinner");
 
@@ -132,7 +142,7 @@ public class FileDefaultWidget : Box {
         }
     }
 
-    private static string get_size_string(long size) {
+    public static string get_size_string(int64 size) {
         if (size < 1024) {
             return @"$(size) B";
         } else if (size < 1000 * 1000) {

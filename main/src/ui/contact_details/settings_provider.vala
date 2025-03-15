@@ -6,6 +6,7 @@ namespace Dino.Ui.ContactDetails {
 
 public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
     public string id { get { return "chat_settings"; } }
+    public string tab { get { return "about"; } }
 
     private StreamInteractor stream_interactor;
 
@@ -68,6 +69,10 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
         combobox.append("on", _("On"));
         combobox.append("off", _("Off"));
         return combobox;
+    }
+
+    public Object? get_widget(Conversation conversation) {
+        return null;
     }
 }
 

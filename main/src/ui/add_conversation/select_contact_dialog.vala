@@ -20,7 +20,7 @@ public class SelectContactDialog : Gtk.Dialog {
     private Gee.List<Account> accounts;
 
     public SelectContactDialog(StreamInteractor stream_interactor, Gee.List<Account> accounts) {
-        Object(use_header_bar : Util.use_csd() ? 1 : 0);
+        Object(use_header_bar : 1);
         modal = true;
         this.default_width = 460;
         this.default_height = 550;
@@ -46,22 +46,10 @@ public class SelectContactDialog : Gtk.Dialog {
         ok_button.sensitive = false;
         ok_button.visible = true;
 
-        if (Util.use_csd()) {
-            HeaderBar header_bar = get_header_bar() as HeaderBar;
-            header_bar.show_title_buttons = false;
-
-            header_bar.pack_start(cancel_button);
-            header_bar.pack_end(ok_button);
-        } else {
-            Box box = new Box(Orientation.HORIZONTAL, 5) { halign=Align.END, margin_bottom=15, margin_start=80, margin_end=80 };
-
-            cancel_button.halign = Align.START;
-            ok_button.halign = Align.END;
-            box.append(cancel_button);
-            box.append(ok_button);
-
-            get_content_area().append(box);
-        }
+        HeaderBar header_bar = get_header_bar() as HeaderBar;
+        header_bar.show_title_buttons = false;
+        header_bar.pack_start(cancel_button);
+        header_bar.pack_end(ok_button);
 
         cancel_button.clicked.connect(() => { close(); });
         ok_button.clicked.connect(() => {

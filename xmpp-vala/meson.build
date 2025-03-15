@@ -55,6 +55,7 @@ sources = files(
     'src/module/xep/0047_in_band_bytestreams.vala',
     'src/module/xep/0048_bookmarks.vala',
     'src/module/xep/0048_conference.vala',
+    'src/module/xep/0394_message_markup.vala',
     'src/module/xep/0049_private_xml_storage.vala',
     'src/module/xep/0054_vcard/module.vala',
     'src/module/xep/0059_result_set_management.vala',
@@ -65,6 +66,7 @@ sources = files(
     'src/module/xep/0082_date_time_profiles.vala',
     'src/module/xep/0084_user_avatars.vala',
     'src/module/xep/0085_chat_state_notifications.vala',
+    'src/module/xep/0104_http_scheme_url_data.vala',
     'src/module/xep/0115_entity_capabilities.vala',
     'src/module/xep/0166_jingle/component.vala',
     'src/module/xep/0166_jingle/content.vala',
@@ -98,19 +100,21 @@ sources = files(
     'src/module/xep/0249_direct_muc_invitations.vala',
     'src/module/xep/0260_jingle_socks5_bytestreams.vala',
     'src/module/xep/0261_jingle_in_band_bytestreams.vala',
+    'src/module/xep/0264_jingle_content_thumbnails.vala',
     'src/module/xep/0272_muji.vala',
     'src/module/xep/0280_message_carbons.vala',
     'src/module/xep/0297_stanza_forwarding.vala',
     'src/module/xep/0298_coin.vala',
+    'src/module/xep/0300_cryptographic_hashes.vala',
     'src/module/xep/0308_last_message_correction.vala',
     'src/module/xep/0313_2_message_archive_management.vala',
     'src/module/xep/0313_message_archive_management.vala',
     'src/module/xep/0333_chat_markers.vala',
     'src/module/xep/0334_message_processing_hints.vala',
-    'src/module/xep/0353_call_invite_message.vala',
     'src/module/xep/0353_jingle_message_initiation.vala',
     'src/module/xep/0359_unique_stable_stanza_ids.vala',
     'src/module/xep/0363_http_file_upload.vala',
+    'src/module/xep/0367_message_attaching.vala',
     'src/module/xep/0380_explicit_encryption.vala',
     'src/module/xep/0384_omemo/omemo_decryptor.vala',
     'src/module/xep/0384_omemo/omemo_encryptor.vala',
@@ -122,7 +126,10 @@ sources = files(
     'src/module/xep/0421_occupant_ids.vala',
     'src/module/xep/0428_fallback_indication.vala',
     'src/module/xep/0444_reactions.vala',
+    'src/module/xep/0446_file_metadata_element.vala',
+    'src/module/xep/0447_stateless_file_sharing.vala',
     'src/module/xep/0461_replies.vala',
+    'src/module/xep/0482_call_invites.vala',
     'src/module/xep/pixbuf_storage.vala',
     'src/util.vala',
 )
@@ -132,7 +139,23 @@ c_args = [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+if meson.get_compiler('vala').version().version_compare('=0.56.11')
+    vala_args += ['-D', 'VALA_0_56_11']
+endif
+
 lib_xmpp_vala = library('xmpp-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.1', install: true, install_dir: [true, true, true])
 dep_xmpp_vala = declare_dependency(link_with: lib_xmpp_vala, include_directories: include_directories('.'))
 
 install_data('xmpp-vala.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
+
+test_sources = [
+    'tests/common.vala',
+    'tests/testcase.vala',
+
+    'tests/jid.vala',
+    'tests/stanza.vala',
+    'tests/color.vala',
+    'tests/util.vala',
+]
+exe_xmpp_vala_test = executable('xmpp-vala-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_xmpp_vala, install: false)
+test('Tests for xmpp-vala', exe_xmpp_vala_test)

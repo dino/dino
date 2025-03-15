@@ -55,6 +55,7 @@ list(SORT PLUGINS)
 string(REPLACE ";" ", " PLUGINS_TEXT "${PLUGINS}")
 
 message(STATUS "Configuring Dino ${PROJECT_VERSION} with plugins: ${PLUGINS_TEXT}")
+message(WARNING "Using CMake, ./configure or make to build Dino is deprecated and will be removed before the 0.5 release. Use Meson instead.")
 
 # Prepare instal paths
 macro(set_path what val desc)
@@ -189,6 +190,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(GLib_GLOBAL_VERSION 2.38)
 set(ICU_GLOBAL_VERSION 57)
+set(Adwaita_GLOBAL_VERSION 1.2)
 
 if (NOT VALA_EXECUTABLE)
     unset(VALA_EXECUTABLE CACHE)

@@ -3,7 +3,7 @@
   <Project>
     <name>Dino</name>
     <short-name>dino</short-name>
-    <shortdesc xml:lang="en">Modern XMPP Chat Client</shortdesc>
+    <shortdesc xml:lang="en">Modern XMPP chat client</shortdesc>
     <shortdesc xml:lang="zh-TW">現代化的 XMPP 用戶端聊天軟件</shortdesc>
     <shortdesc xml:lang="zh-CN">现代 XMPP 聊天客户端</shortdesc>
     <shortdesc xml:lang="tr">Modern XMPP Sohbet İstemcisi</shortdesc>
@@ -474,6 +474,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0260.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.0.3</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -481,6 +482,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0261.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.0</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -488,6 +490,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0272.html"/>
         <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.2.0</xmpp:version>
         <xmpp:since>0.3</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -495,6 +498,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0280.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.0.1</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -502,6 +506,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0293.html"/>
         <xmpp:status>partial</xmpp:status>
+        <xmpp:version>1.0.2</xmpp:version>
         <xmpp:since>0.3</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -509,14 +514,15 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0294.html"/>
         <xmpp:status>partial</xmpp:status>
+        <xmpp:version>1.1.2</xmpp:version>
         <xmpp:since>0.3</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
     <implements>
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0297.html"/>
-        <xmpp:status>complete</xmpp:status>
-        <xmpp:note>For use with XEP-0280</xmpp:note>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>1.0</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -588,8 +594,17 @@
     </implements>
     <implements>
       <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0367.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.3</xmpp:version>
+        <xmpp:since>0.5</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0368.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.1.0</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -613,6 +628,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0391.html"/>
         <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.1.2</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -620,6 +636,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0392.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.0.0</xmpp:version>
         <xmpp:since>0.5</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -627,7 +644,16 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0393.html"/>
         <xmpp:status>partial</xmpp:status>
+        <xmpp:version>1.1.1</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0394.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.3.0</xmpp:version>
+        <xmpp:since>0.5</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -648,6 +674,7 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0402.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>1.2.0</xmpp:version>
         <xmpp:since>0.1</xmpp:since>
       </xmpp:SupportedXep>
     </implements>
@@ -662,7 +689,22 @@
       <xmpp:SupportedXep>
         <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0421.html"/>
         <xmpp:status>complete</xmpp:status>
+        <xmpp:version>0.2.0</xmpp:version>
         <xmpp:since>0.4</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0426.html"/>
+        <xmpp:status>complete</xmpp:status>
+        <xmpp:version>0.3.0</xmpp:version>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0428.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.2.1</xmpp:version>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -671,6 +713,29 @@
         <xmpp:status>complete</xmpp:status>
         <xmpp:version>0.1.1</xmpp:version>
         <xmpp:since>0.4</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0446.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.2.0</xmpp:version>
+        <xmpp:since>0.5</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0447.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.3.0</xmpp:version>
+        <xmpp:since>0.5</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0453.html"/>
+        <xmpp:status>complete</xmpp:status>
+        <xmpp:version>0.1.2</xmpp:version>
       </xmpp:SupportedXep>
     </implements>
     <implements>
@@ -687,6 +752,21 @@
         <xmpp:status>complete</xmpp:status>
         <xmpp:version>0.2.0</xmpp:version>
         <xmpp:since>0.4</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0482.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.1.0</xmpp:version>
+        <xmpp:since>0.5</xmpp:since>
+      </xmpp:SupportedXep>
+    </implements>
+    <implements>
+      <xmpp:SupportedXep>
+        <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0486.html"/>
+        <xmpp:status>partial</xmpp:status>
+        <xmpp:version>0.1.0</xmpp:version>
       </xmpp:SupportedXep>
     </implements>
   </Project>

@@ -7,6 +7,7 @@ gettext_compile(${GETTEXT_PACKAGE} SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/po TAR
 
 
 find_packages(OPENPGP_PACKAGES REQUIRED
+    Adwaita
     Gee
     GLib
     GModule
@@ -14,19 +15,10 @@ find_packages(OPENPGP_PACKAGES REQUIRED
     GTK4
 )
 
-set(RESOURCE_LIST
-    account_settings_item.ui
-)
-
-compile_gresources(
-    OPENPGP_GRESOURCES_TARGET
-    OPENPGP_GRESOURCES_XML
-    TARGET ${CMAKE_CURRENT_BINARY_DIR}/resources/resources.c
-    TYPE EMBED_C
-    RESOURCES ${RESOURCE_LIST}
-    PREFIX /im/dino/Dino/openpgp
-    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data
-)
+set(OPENPGP_DEFINITIONS)
+if(Adwaita_VERSION VERSION_GREATER_EQUAL "1.4")
+    set(OPENPGP_DEFINITIONS ${OPENPGP_DEFINITIONS} Adw_1_4)
+endif()
 
 vala_precompile(OPENPGP_VALA_C
 SOURCES
@@ -35,10 +27,10 @@ SOURCES
     src/file_transfer/file_decryptor.vala
     src/file_transfer/file_encryptor.vala
 
-    src/account_settings_entry.vala
     src/contact_details_provider.vala
     src/database.vala
     src/encryption_list_entry.vala
+    src/encryption_preferences_entry.vala
     src/manager.vala
     src/plugin.vala
     src/register_plugin.vala
@@ -53,12 +45,12 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/exports/dino.vapi
 PACKAGES
     ${OPENPGP_PACKAGES}
-GRESOURCES
-    ${OPENPGP_GRESOURCES_XML}
+DEFINITIONS
+    ${OPENPGP_DEFINITIONS}
 )
 
 add_definitions(${VALA_CFLAGS} -DG_LOG_DOMAIN="OpenPGP" -DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" -DLOCALE_INSTALL_DIR=\"${LOCALE_INSTALL_DIR}\")
-add_library(openpgp SHARED ${OPENPGP_VALA_C} ${OPENPGP_GRESOURCES_TARGET} src/gpgme_fix.c)
+add_library(openpgp SHARED ${OPENPGP_VALA_C} src/gpgme_fix.c)
 add_dependencies(openpgp ${GETTEXT_PACKAGE}-translations)
 target_include_directories(openpgp PRIVATE src)
 target_link_libraries(openpgp libdino gpgme ${OPENPGP_PACKAGES})

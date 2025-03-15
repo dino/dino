@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="DinoUiViewModelPreferencesWindow" id="model" />
+  <template class="DinoUiPreferencesWindow">
+    <property name="default-width">700</property>
+    <property name="default-height">550</property>
+    <property name="modal">True</property>
+    <child>
+      <object class="DinoUiPreferencesWindowAccounts" id="accounts_page">
+        <property name="title">Accounts</property>
+        <property name="name">accounts</property>
+        <property name="icon-name">system-users-symbolic</property>
+      </object>
+    </child>
+    <child>
+      <object class="DinoUiPreferencesWindowEncryption" id="encryption_page">
+        <property name="title">Encryption</property>
+        <property name="name">encryption</property>
+        <property name="icon-name">changes-prevent-symbolic</property>
+      </object>
+    </child>
+    <child>
+      <object class="DinoUiGeneralPreferencesPage" id="general_page">
+        <property name="title">General</property>
+        <property name="name">general</property>
+        <property name="icon-name">preferences-system-symbolic</property>
+        <property name="model" bind-source="model" bind-property="general-page" bind-flags="sync-create" />
+      </object>
+    </child>
+  </template>
+</interface>

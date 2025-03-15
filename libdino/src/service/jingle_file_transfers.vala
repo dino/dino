@@ -95,19 +95,15 @@ public class JingleFileProvider : FileProvider, Object {
         return Encryption.NONE;
     }
 
-    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
+    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws IOError {
         // TODO(hrxi) What should happen if `stream == null`?
         XmppStream? stream = stream_interactor.get_stream(file_transfer.account);
         Xmpp.Xep.JingleFileTransfer.FileTransfer? jingle_file_transfer = file_transfers[file_transfer.info];
         if (jingle_file_transfer == null) {
-            throw new FileReceiveError.DOWNLOAD_FAILED("Transfer data not available anymore");
+            throw new IOError.FAILED("Transfer data not available anymore");
         }
-        try {
-            yield jingle_file_transfer.accept(stream);
-        } catch (IOError e) {
-            throw new FileReceiveError.DOWNLOAD_FAILED("Establishing connection did not work");
-        }
-        return jingle_file_transfer.stream;
+        yield jingle_file_transfer.accept(stream);
+        return new LimitInputStream(jingle_file_transfer.stream, file_meta.size);
     }
 
     public int get_id() {

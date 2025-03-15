@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <template class="DinoUiManageAccountsAddAccountDialog">
+        <property name="default_width">450</property>
+        <property name="default_height">260</property>
+        <property name="modal">True</property>
+        <child>
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">20</property>
+                <child>
+                    <object class="AdwHeaderBar">
+                        <style>
+                            <class name="flat"/>
+                        </style>
+                        <child>
+                            <object class="GtkButton" id="back_button">
+                                <property name="icon-name">go-previous-symbolic</property>
+                                <property name="visible">False</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="AdwClamp">
+                        <property name="maximum-size">400</property>
+                        <property name="tightening-threshold">200</property>
+                        <property name="margin-bottom">24</property>
+                        <child>
+                            <object class="GtkOverlay">
+                                <property name="child">
+                                    <object class="GtkStack" id="stack">
+                                        <property name="transition_type">slide-left</property>
+                                        <property name="hexpand">1</property>
+                                        <property name="vexpand">1</property>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">login_jid</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="sign_in_box">
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="spacing">20</property>
+                                                        <child>
+                                                            <object class="AdwPreferencesGroup">
+                                                                <child>
+                                                                    <object class="AdwEntryRow" id="jid_entry">
+                                                                        <property name="title">XMPP Address</property>
+                                                                        <property name="activates_default">1</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="AdwPreferencesGroup" id="password_group">
+                                                                <property name="visible">False</property>
+                                                                <child>
+                                                                    <object class="AdwPasswordEntryRow" id="password_entry">
+                                                                        <property name="title">Password</property>
+                                                                        <property name="activates_default">1</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="sign_in_error_label">
+                                                                <property name="visible">False</property>
+                                                                <style>
+                                                                    <class name="error"/>
+                                                                </style>
+                                                                <attributes>
+                                                                    <attribute name="scale" value="0.9"></attribute>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox">
+                                                                <property name="halign">center</property>
+                                                                <property name="spacing">8</property>
+                                                                <property name="orientation">vertical</property>
+                                                                <property name="margin-top">16</property>
+                                                                <child>
+                                                                    <object class="GtkButton" id="sign_in_continue_button">
+                                                                        <property name="sensitive">False</property>
+                                                                        <child>
+                                                                            <object class="GtkBox">
+                                                                                <property name="spacing">4</property>
+                                                                                <property name="halign">center</property>
+                                                                                <property name="orientation">horizontal</property>
+                                                                                <child>
+                                                                                    <object class="GtkLabel">
+                                                                                        <property name="label" translatable="1">Login</property>
+                                                                                    </object>
+                                                                                </child>
+                                                                                <child>
+                                                                                    <object class="GtkSpinner" id="sign_in_continue_spinner">
+                                                                                        <property name="visible">false</property>
+                                                                                        <property name="spinning">True</property>
+                                                                                    </object>
+                                                                                </child>
+                                                                            </object>
+                                                                        </child>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                            <class name="suggested-action"/>
+                                                                        </style>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="sign_in_serverlist_button">
+                                                                        <property name="label" translatable="1">Create account</property>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                            <class name="flat"/>
+                                                                        </style>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">tls_error</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="sign_in_tls_box">
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="margin-top">30</property>
+                                                        <property name="margin-bottom">20</property>
+                                                        <property name="margin-start">50</property>
+                                                        <property name="margin-end">50</property>
+                                                        <property name="spacing">20</property>
+                                                        <child>
+                                                            <object class="GtkImage">
+                                                                <property name="icon-name">channel-insecure-symbolic</property>
+                                                                <property name="pixel-size">72</property>
+                                                                <property name="margin-top">10</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label" translatable="1">Could not establish a secure connection</property>
+                                                                <attributes>
+                                                                    <attribute name="scale" value="1.1"></attribute>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="sign_in_tls_label">
+                                                                <property name="justify">fill</property>
+                                                                <property name="wrap">1</property>
+                                                                <property name="use-markup">1</property>
+                                                                <property name="hexpand">1</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox">
+                                                                <child>
+                                                                    <object class="GtkButton" id="sign_in_tls_back_button">
+                                                                        <property name="label" translatable="1">Back</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">server</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="create_account_box">
+                                                        <property name="orientation">vertical</property>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="xalign">0</property>
+                                                                <property name="label" translatable="1">Choose a public server</property>
+                                                                <attributes>
+                                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkFrame">
+                                                                <property name="child">
+                                                                    <object class="GtkScrolledWindow">
+                                                                        <property name="max_content_height">300</property>
+                                                                        <property name="propagate_natural_height">1</property>
+                                                                        <property name="hscrollbar_policy">never</property>
+                                                                        <property name="child">
+                                                                            <object class="GtkListBox" id="server_list_box"/>
+                                                                        </property>
+                                                                    </object>
+                                                                </property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="xalign">0</property>
+                                                                <property name="margin-top">20</property>
+                                                                <property name="label" translatable="1">Or specify a server address</property>
+                                                                <attributes>
+                                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
+                                                                </attributes>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkEntry" id="server_entry">
+                                                                <property name="activates_default">1</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox">
+                                                                <property name="halign">center</property>
+                                                                <property name="spacing">8</property>
+                                                                <property name="margin-top">30</property>
+                                                                <child>
+                                                                    <object class="GtkButton" id="login_button">
+                                                                        <property name="label" translatable="1">Sign in instead</property>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                        </style>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="select_server_continue">
+                                                                        <property name="hexpand">True</property>
+                                                                        <property name="halign">center</property>
+                                                                        <property name="sensitive">0</property>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                            <class name="suggested-action"/>
+                                                                        </style>
+                                                                        <child>
+                                                                            <object class="GtkBox">
+                                                                                <property name="spacing">4</property>
+                                                                                <property name="orientation">horizontal</property>
+                                                                                <child>
+                                                                                    <object class="GtkLabel">
+                                                                                        <property name="label" translatable="1">Next</property>
+                                                                                    </object>
+                                                                                </child>
+                                                                                <child>
+                                                                                    <object class="GtkSpinner" id="select_server_continue_spinner">
+                                                                                        <property name="spinning">True</property>
+                                                                                        <property name="visible">False</property>
+                                                                                    </object>
+                                                                                </child>
+                                                                            </object>
+                                                                        </child>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">form</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="register_box">
+                                                        <property name="spacing">30</property>
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="valign">center</property>
+                                                        <child>
+                                                            <object class="GtkBox" id="form_box">
+                                                                <property name="spacing">12</property>
+                                                                <property name="orientation">vertical</property>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkButton" id="register_form_continue">
+                                                                <property name="halign">center</property>
+                                                                <property name="hexpand">True</property>
+                                                                <style>
+                                                                    <class name="pill"/>
+                                                                    <class name="suggested-action"/>
+                                                                </style>
+                                                                <child>
+                                                                    <object class="GtkBox">
+                                                                        <property name="spacing">4</property>
+                                                                        <property name="halign">center</property>
+                                                                        <property name="orientation">horizontal</property>
+                                                                        <child>
+                                                                            <object class="GtkLabel" id="register_form_continue_label">
+                                                                                <property name="label" translatable="1">Register</property>
+                                                                            </object>
+                                                                        </child>
+                                                                        <child>
+                                                                            <object class="GtkSpinner" id="register_form_continue_spinner">
+                                                                                <property name="spinning">True</property>
+                                                                                <property name="visible">False</property>
+                                                                            </object>
+                                                                        </child>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkStackPage">
+                                                <property name="name">success</property>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="success_box">
+                                                        <property name="orientation">vertical</property>
+                                                        <property name="valign">center</property>
+                                                        <child>
+                                                            <object class="GtkImage">
+                                                                <property name="icon-name">dino-party-popper-symbolic</property>
+                                                                <property name="pixel-size">72</property>
+                                                                <property name="margin-bottom">10</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel">
+                                                                <property name="label" translatable="1">All set up!</property>
+                                                                <attributes>
+                                                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
+                                                                    <attribute name="scale" value="1.3"></attribute>
+                                                                </attributes>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkLabel" id="success_description">
+                                                                <property name="wrap">1</property>
+                                                                <property name="margin-top">5</property>
+                                                                <property name="margin-bottom">5</property>
+                                                                <property name="use-markup">1</property>
+                                                                <property name="justify">center</property>
+                                                                <style>
+                                                                    <class name="dim-label"/>
+                                                                </style>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="GtkBox">
+                                                                <property name="halign">center</property>
+                                                                <property name="margin-top">20</property>
+                                                                <property name="margin-bottom">10</property>
+                                                                <child>
+                                                                    <object class="GtkButton" id="success_continue_button">
+                                                                        <property name="label" translatable="1">Finish</property>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                            <class name="suggested-action"/>
+                                                                        </style>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </property>
+                                <child type="overlay">
+                                    <object class="GtkRevealer" id="notification_revealer">
+                                        <property name="halign">center</property>
+                                        <property name="valign">start</property>
+                                        <property name="child">
+                                            <object class="GtkFrame" id="frame2">
+                                                <style>
+                                                    <class name="app-notification"/>
+                                                </style>
+                                                <property name="child">
+                                                    <object class="GtkBox" id="box2">
+                                                        <property name="spacing">20</property>
+                                                        <child>
+                                                            <object class="GtkLabel" id="notification_label"/>
+                                                        </child>
+                                                    </object>
+                                                </property>
+                                                <child type="label_item">
+                                                    <placeholder/>
+                                                </child>
+                                            </object>
+                                        </property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

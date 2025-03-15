@@ -1,0 +1,5 @@
+namespace Dino {
+
+public const string VERSION = "%VERSION%";
+
+}

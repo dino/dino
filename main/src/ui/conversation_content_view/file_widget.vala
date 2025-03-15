@@ -27,7 +27,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     }
 
     public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) {
-        if (file_transfer.provider != 0 || file_transfer.info == null) return null;
+        if ((file_transfer.provider != FileManager.HTTP_PROVIDER_ID && file_transfer.provider != FileManager.SFS_PROVIDER_ID) || file_transfer.info == null) return null;
 
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
 
@@ -39,7 +39,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     }
 }
 
-public class FileWidget : SizeRequestBox {
+public class FileWidget : SizeRequestBin {
 
     enum State {
         IMAGE,
@@ -89,55 +89,36 @@ public class FileWidget : SizeRequestBox {
     }
 
     private async void update_widget() {
-        if (show_image() && state != State.IMAGE) {
+        bool show_image = FileImageWidget.can_display(file_transfer);
+
+        if (show_image && state != State.IMAGE) {
             var content_bak = content;
 
             FileImageWidget file_image_widget = null;
             try {
                 file_image_widget = new FileImageWidget();
-                yield file_image_widget.load_from_file(file_transfer.get_file(), file_transfer.file_name);
+                yield file_image_widget.set_file_transfer(file_transfer);
 
                 // If the widget changed in the meanwhile, stop
                 if (content != content_bak) return;
 
-                if (content != null) this.remove(content);
+                if (content != null) content.unparent();
                 content = file_image_widget;
                 state = State.IMAGE;
-                this.append(content);
+                content.insert_after(this, null);
                 return;
             } catch (Error e) { }
         }
 
-        if (!show_image() && state != State.DEFAULT) {
-            if (content != null) this.remove(content);
+        if (!show_image && state != State.DEFAULT) {
+            if (content != null) content.unparent();
             FileDefaultWidget default_file_widget = new FileDefaultWidget();
             default_widget_controller = new FileDefaultWidgetController(default_file_widget);
             default_widget_controller.set_file_transfer(file_transfer);
             content = default_file_widget;
             this.state = State.DEFAULT;
-            this.append(content);
+            content.insert_after(this, null);
         }
-    }
-
-    private bool show_image() {
-        if (file_transfer.mime_type == null) return false;
-
-        // If the image is being sent by this client, we already have the file
-        bool in_progress_from_us = file_transfer.direction == FileTransfer.DIRECTION_SENT &&
-                file_transfer.ourpart.equals(file_transfer.account.full_jid) &&
-                file_transfer.state == FileTransfer.State.IN_PROGRESS;
-        if (file_transfer.state != FileTransfer.State.COMPLETE && !in_progress_from_us) {
-            return false;
-        }
-
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string mime_type in pixbuf_format.get_mime_types()) {
-                if (mime_type == file_transfer.mime_type) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public override void dispose() {
@@ -215,6 +196,7 @@ public class FileDefaultWidgetController : Object {
     private FileTransfer? file_transfer;
     public string file_transfer_state { get; set; }
     public string file_transfer_mime_type { get; set; }
+    public int64 file_transfer_transferred_bytes { get; set; }
 
     private FileTransfer.State state;
 
@@ -225,6 +207,7 @@ public class FileDefaultWidgetController : Object {
 
         this.notify["file-transfer-state"].connect(update_file_info);
         this.notify["file-transfer-mime-type"].connect(update_file_info);
+        this.notify["file-transfer-transferred-bytes"].connect(update_file_info);
     }
 
     public void set_file_transfer(FileTransfer file_transfer) {
@@ -234,13 +217,14 @@ public class FileDefaultWidgetController : Object {
 
         file_transfer.bind_property("state", this, "file-transfer-state");
         file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+        file_transfer.bind_property("transferred-bytes", this, "file-transfer-transferred-bytes");
 
         update_file_info();
     }
 
     private void update_file_info() {
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.size);
+        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes);
     }
 
     private void on_clicked() {

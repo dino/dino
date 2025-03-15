@@ -35,7 +35,7 @@ public class DeviceNotificationPopulator : NotificationPopulator, Object {
 
     private void display_notification() {
         if (notification == null) {
-            notification = new ConversationNotification(plugin, current_conversation.account, current_conversation.counterpart);
+            notification = new ConversationNotification(plugin, current_conversation);
             notification.should_hide.connect(should_hide);
             notification_collection.add_meta_notification(notification);
         }
@@ -64,7 +64,7 @@ private class ConversationNotification : MetaConversationNotification {
     private Account account;
     public signal void should_hide();
 
-    public ConversationNotification(Plugin plugin, Account account, Jid jid) {
+    public ConversationNotification(Plugin plugin, Conversation conversation) {
         this.plugin = plugin;
         this.jid = jid;
         this.account = account;
@@ -73,12 +73,9 @@ private class ConversationNotification : MetaConversationNotification {
         Button manage_button = new Button.with_label(_("Manage"));
         manage_button.clicked.connect(() => {
             manage_button.activate();
-            ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, account, jid);
-            dialog.set_transient_for((Window) manage_button.get_root());
-            dialog.response.connect((response_type) => {
-                should_hide();
-            });
-            dialog.present();
+
+            var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("encryption")});
+            GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
         box.append(new Label(_("This contact has new devices")) { margin_end=10 });
         box.append(manage_button);

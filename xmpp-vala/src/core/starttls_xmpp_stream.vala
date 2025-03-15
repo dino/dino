@@ -17,7 +17,7 @@ public class Xmpp.StartTlsXmppStream : TlsXmppStream {
         try {
             SocketClient client = new SocketClient();
             debug("Connecting to %s:%i (starttls)", host, port);
-            IOStream stream = yield client.connect_to_host_async(host, port);
+            IOStream stream = yield client.connect_to_host_async(host, port, cancellable);
             reset_stream(stream);
 
             yield setup();

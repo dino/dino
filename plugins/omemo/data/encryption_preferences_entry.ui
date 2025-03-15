@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoPluginsOmemoOmemoPreferencesWidget">
+    <child>
+      <object class="AdwPreferencesGroup" id="keys_preferences_group">
+        <property name="title">OMEMO</property>
+        <property name="description">Each device has its own OMEMO key. Messages can only be decrypted by a device if they are encrypted to its key. Messages are only encrypted to accepted devices.</property>
+        <property name="margin-bottom">12</property>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwActionRow" id="encrypt_by_default_row">
+            <child type="suffix">
+              <object class="GtkSwitch" id="encrypt_by_default_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <!-- TODO: make this a SwitchRow once we depend on Adwaita 1.4-->
+          <object class="AdwActionRow" id="automatically_accept_new_row">
+            <property name="activatable-widget">automatically_accept_new_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="automatically_accept_new_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="new_keys_container">
+        <property name="visible">0</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkLabel" id="new_keys_label">
+            <property name="halign">start</property>
+            <attributes>
+              <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFrame">
+            <property name="child">
+              <object class="GtkScrolledWindow">
+                <property name="hscrollbar_policy">never</property>
+                <property name="propagate_natural_height">1</property>
+                <property name="child">
+                  <object class="GtkListBox" id="new_keys_listbox">
+                    <property name="selection-mode">none</property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="GtkPopover" id="qrcode_popover">
+    <property name="position">left</property>
+    <property name="child">
+      <object class="GtkBox">
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <child>
+          <object class="GtkPicture" id="qrcode_picture">
+            <property name="can-shrink">False</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </object>
+</interface>

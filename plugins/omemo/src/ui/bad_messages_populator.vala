@@ -180,9 +180,8 @@ public class BadMessagesWidget : Box {
     }
 
     private bool on_label_activate_link() {
-        ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
-        dialog.set_transient_for((Window) get_root());
-        dialog.present();
+        var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("encryption")});
+        GLib.Application.get_default().activate_action("open-conversation-details", variant);
         return false;
     }
 

@@ -8,7 +8,10 @@ public class Account : Object {
     public int id { get; set; }
     public string localpart { get { return full_jid.localpart; } }
     public string domainpart { get { return full_jid.domainpart; } }
-    public string resourcepart { get { return full_jid.resourcepart;} }
+    public string resourcepart {
+        get { return full_jid.resourcepart; }
+        private set { full_jid.resourcepart = value; }
+    }
     public Jid bare_jid { owned get { return full_jid.bare_jid; } }
     public Jid full_jid { get; private set; }
     public string? password { get; set; }
@@ -21,24 +24,14 @@ public class Account : Object {
 
     private Database? db;
 
-    public Account(Jid bare_jid, string? resourcepart, string? password, string? alias) {
+    public Account(Jid bare_jid, string password) {
         this.id = -1;
-        if (resourcepart != null) {
-            try {
-                this.full_jid = bare_jid.with_resource(resourcepart);
-            } catch (InvalidJidError e) {
-                warning("Tried to create account with invalid resource (%s), defaulting to auto generated", e.message);
-            }
-        }
-        if (this.full_jid == null) {
-            try {
-                this.full_jid = bare_jid.with_resource("dino." + Random.next_int().to_string("%x"));
-            } catch (InvalidJidError e) {
-                error("Auto-generated resource was invalid (%s)", e.message);
-            }
+        try {
+            this.full_jid = bare_jid.with_resource(get_random_resource());
+        } catch (InvalidJidError e) {
+            error("Auto-generated resource was invalid (%s)", e.message);
         }
         this.password = password;
-        this.alias = alias;
     }
 
     public Account.from_row(Database db, Qlite.Row row) throws InvalidJidError {
@@ -74,6 +67,14 @@ public class Account : Object {
         notify.disconnect(on_update);
         id = -1;
         db = null;
+    }
+
+    public void set_random_resource() {
+        this.resourcepart = get_random_resource();
+    }
+
+    private static string get_random_resource() {
+        return "dino." + Random.next_int().to_string("%x");
     }
 
     public bool equals(Account acc) {

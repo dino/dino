@@ -121,13 +121,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Message? message = get_message_for_content_item(conversation, content_item);
         if (message == null) return null;
 
-        if (message.edit_to != null) return message.edit_to;
-
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            return message.stanza_id;
-        } else {
-            return message.server_id;
-        }
+        return MessageStorage.get_reference_id(message);
     }
 
     public Jid? get_message_sender_for_content_item(Conversation conversation, ContentItem content_item) {

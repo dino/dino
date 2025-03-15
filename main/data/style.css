@@ -49,7 +49,11 @@ window.dino-main .dino-conversation .message-box.highlight:not(.highlight-once) 
 }
 
 window.dino-main .dino-conversation .message-box {
-    padding: 6px 15px 6px 15px;
+    padding: 3px 15px 3px 15px;
+}
+
+window.dino-main .dino-conversation .has-skeleton {
+    margin-top: 10px;
 }
 
 window.dino-main .dino-conversation .message-box:not(.has-skeleton) {
@@ -127,13 +131,13 @@ picture.avatar {
 
 /* Overlay Toolbar */
 
-.dino-main .overlay-toolbar {
+.overlay-toolbar {
     padding: 2px;
     border-radius: 6px;
     border-spacing: 0;
 }
 
-.dino-main .overlay-toolbar > * {
+.overlay-toolbar > * {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -175,6 +179,28 @@ window.dino-main .file-image-widget .file-box-outer button:hover {
 
 .dino-main .file-image-widget picture {
     border-radius: 6px;
+}
+
+.dino-main .file-details {
+    color: white;
+    background: alpha(black, 0.3);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.dino-main .circular-loading-indicator {
+    border-radius: 50%;
+    padding: 5px;
+    transition: background-image 0.5s linear;
+}
+
+.dino-main .circular-loading-indicator > * {
+    border-radius: 50%;
+    background: @theme_bg_color;
+}
+
+.dino-main .circular-loading-indicator button {
+    padding: 2px;
 }
 
 /* Call widget */

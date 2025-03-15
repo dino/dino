@@ -8,10 +8,11 @@ namespace Dino.Ui.ConversationDetails {
 
     [GtkTemplate (ui = "/im/dino/Dino/conversation_details.ui")]
     public class Dialog : Adw.Window {
+        [GtkChild] public unowned Stack stack;
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;
         [GtkChild] public unowned Adw.ButtonContent pin_button_content;
-        [GtkChild] public unowned Button block_button;
+        [GtkChild] public unowned MenuButton block_button;
         [GtkChild] public unowned Adw.ButtonContent block_button_content;
         [GtkChild] public unowned Button notification_button_toggle;
         [GtkChild] public unowned Adw.ButtonContent notification_button_toggle_content;
@@ -22,6 +23,14 @@ namespace Dino.Ui.ConversationDetails {
 
         [GtkChild] public unowned ViewModel.ConversationDetails model { get; }
 
+        public StackPage? encryption_stack_page = null;
+        public Box? encryption_box = null;
+
+        public StackPage? member_stack_page = null;
+        public Box? member_box = null;
+
+        private SimpleAction block_action = new SimpleAction.stateful("block", VariantType.INT32, new Variant.int32(ViewModel.ConversationDetails.BlockState.UNBLOCK));
+
         class construct {
             install_action("notification.on", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.ON); } );
             install_action("notification.off", null, (widget, action_name) => { ((Dialog) widget).model.notification_changed(ViewModel.ConversationDetails.NotificationSetting.OFF); } );
@@ -31,7 +40,6 @@ namespace Dino.Ui.ConversationDetails {
 
         construct {
             pin_button.clicked.connect(() => { model.pin_changed(); });
-            block_button.clicked.connect(() => { model.block_changed(); });
             notification_button_toggle.clicked.connect(() => { model.notification_flipped(); });
             notification_button_split.clicked.connect(() => { model.notification_flipped(); });
 
@@ -43,14 +51,38 @@ namespace Dino.Ui.ConversationDetails {
             model.notify["notification-is-default"].connect(update_notification_button_visibility);
 
             model.about_rows.items_changed.connect(create_preferences_rows);
-            model.encryption_rows.items_changed.connect(create_preferences_rows);
             model.settings_rows.items_changed.connect(create_preferences_rows);
             model.notify["room-configuration-rows"].connect(create_preferences_rows);
+
+            model.notify["members"].connect(create_members);
+            create_members();
+
+            // Create block action
+            SimpleActionGroup block_action_group = new SimpleActionGroup();
+            block_action = new SimpleAction.stateful("block", VariantType.INT32, new Variant.int32(0));
+            block_action.activate.connect((parameter) => {
+                block_action.set_state(parameter);
+                model.block_changed((ViewModel.ConversationDetails.BlockState) parameter.get_int32());
+            });
+            block_action_group.insert(block_action);
+            this.insert_action_group("block", block_action_group);
+
+            // Create block menu model
+            Menu block_menu_model = new Menu();
+            string[] menu_labels = new string[] { _("Block user"), _("Block entire domain"), _("Unblock") };
+            ViewModel.ConversationDetails.BlockState[] menu_states = new ViewModel.ConversationDetails.BlockState[] { ViewModel.ConversationDetails.BlockState.USER, ViewModel.ConversationDetails.BlockState.DOMAIN, ViewModel.ConversationDetails.BlockState.UNBLOCK };
+            for (int i = 0; i < menu_labels.length; i++) {
+                MenuItem item = new MenuItem(menu_labels[i], null);
+                item.set_action_and_target_value("block.block", new Variant.int32(menu_states[i]));
+                block_menu_model.append_item(item);
+            }
+            block_button.menu_model = block_menu_model;
 
 #if Adw_1_4
             // TODO: replace with putting buttons in new line on small screens
             notification_button_menu_content.can_shrink = true;
 #endif
+            update_blocked_button();
         }
 
         private void update_pinned_button() {
@@ -64,13 +96,22 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void update_blocked_button() {
-            block_button_content.icon_name = "dino-block-symbolic";
-            block_button_content.label = model.blocked ? _("Blocked") : _("Block");
-            if (model.blocked) {
-                block_button.add_css_class("error");
-            } else {
-                block_button.remove_css_class("error");
+            switch (model.blocked) {
+                case USER:
+                    block_button_content.label = _("Blocked");
+                    block_button.add_css_class("error");
+                    break;
+                case DOMAIN:
+                    block_button_content.label = _("Domain blocked");
+                    block_button.add_css_class("error");
+                    break;
+                case UNBLOCK:
+                    block_button_content.label = _("Block");
+                    block_button.remove_css_class("error");
+                    break;
             }
+
+            block_action.set_state(new Variant.int32(model.blocked));
         }
 
         private void update_notification_button() {
@@ -113,6 +154,34 @@ namespace Dino.Ui.ConversationDetails {
             }
         }
 
+        private void create_members() {
+#if GTK_4_8 && (VALA_0_56_GREATER_5 || VALA_0_58)
+            if (model.members_sorted.n_items == 0) return;
+#else
+            if (model.members_sorted.model.get_n_items() == 0) return;
+#endif
+
+            var selection_model = new NoSelection(model.members_sorted);
+            var item_factory = new BuilderListItemFactory.from_resource(null, "/im/dino/Dino/muc_member_list_row.ui");
+            var list_view = new ListView(selection_model, item_factory) { single_click_activate = true };
+            list_view.add_css_class("card");
+            list_view.activate.connect((position) => {
+//                var widget = (Gtk.Widget) list_view.observe_children().get_item(position);
+//                var name_label = widget.get_template_child(Type.OBJECT, "name-label");
+//                print(widget.get_type().name());
+
+//                var popover = new Popover();
+//                popover.parent = widget;
+//                popover.popup();
+
+
+                var row_view_model = (Ui.Model.ConferenceMember) model.members_sorted.get_item(position);
+                print(@"$(position) $(row_view_model.name)\n");
+            });
+
+            add_members_tab_element(list_view);
+        }
+
         private void create_preferences_rows() {
             var widget = about_box.get_first_child();
             while (widget != null) {
@@ -121,112 +190,43 @@ namespace Dino.Ui.ConversationDetails {
             }
 
             if (model.about_rows.get_n_items() > 0) {
-                about_box.append(rows_to_preference_group(model.about_rows, _("About")));
-            }
-            if (model.encryption_rows.get_n_items() > 0) {
-                about_box.append(rows_to_preference_group(model.encryption_rows, _("Encryption")));
+                about_box.append(Util.rows_to_preference_group(model.about_rows, _("About")));
             }
             if (model.settings_rows.get_n_items() > 0) {
-                about_box.append(rows_to_preference_group(model.settings_rows, _("Settings")));
+                about_box.append(Util.rows_to_preference_group(model.settings_rows, _("Settings")));
             }
             if (model.room_configuration_rows != null && model.room_configuration_rows.get_n_items() > 0) {
-                about_box.append(rows_to_preference_group(model.room_configuration_rows, _("Room Configuration")));
+                about_box.append(Util.rows_to_preference_group(model.room_configuration_rows, _("Room Configuration")));
             }
         }
 
-        private Adw.PreferencesGroup rows_to_preference_group(GLib.ListStore row_view_models, string title) {
-            var preference_group = new Adw.PreferencesGroup() { title=title };
-
-            for (int preference_group_i = 0; preference_group_i < row_view_models.get_n_items(); preference_group_i++) {
-                var preferences_row = (ViewModel.PreferencesRow.Any) row_view_models.get_item(preference_group_i);
-
-                Widget? w = null;
-
-                var entry_view_model = preferences_row as ViewModel.PreferencesRow.Entry;
-                if (entry_view_model != null) {
-#if Adw_1_2
-                    Adw.EntryRow view = new Adw.EntryRow() { title = entry_view_model.title, show_apply_button=true };
-                    entry_view_model.bind_property("text", view, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL, (_, from, ref to) => {
-                        var str = (string) from;
-                        to = str ?? "";
-                        return true;
-                    });
-                    view.apply.connect(() => {
-                        entry_view_model.changed();
-                    });
-#else
-                    var view = new Adw.ActionRow() { title = entry_view_model.title };
-                    var entry = new Entry() { text=entry_view_model.text, valign=Align.CENTER };
-                    entry_view_model.bind_property("text", entry, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-                    entry.changed.connect(() => {
-                        entry_view_model.changed();
-                    });
-                    view.activatable_widget = entry;
-                    view.add_suffix(entry);
-#endif
-                    w = view;
-                }
-
-                var row_text = preferences_row as ViewModel.PreferencesRow.Text;
-                if (row_text != null) {
-                    w = new Adw.ActionRow() {
-                        title = row_text.title,
-                        subtitle = row_text.text,
-#if Adw_1_3
-                            subtitle_selectable = true
-#endif
-                };
-                    w.add_css_class("property");
-
-                    Util.force_css(w, "row.property > box.header > box.title > .title { font-weight: 400; font-size: 9pt; opacity: 0.55; }");
-                    Util.force_css(w, "row.property > box.header > box.title > .subtitle { font-size: inherit; opacity: 1; }");
-                }
-
-                var toggle_view_model = preferences_row as ViewModel.PreferencesRow.Toggle;
-                if (toggle_view_model != null) {
-                    var view = new Adw.ActionRow() { title = toggle_view_model.title, subtitle = toggle_view_model.subtitle };
-                    var toggle = new Switch() { valign = Align.CENTER };
-                    view.activatable_widget = toggle;
-                    view.add_suffix(toggle);
-                    toggle_view_model.bind_property("state", toggle, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-                    w = view;
-                }
-
-                var combobox_view_model = preferences_row as ViewModel.PreferencesRow.ComboBox;
-                if (combobox_view_model != null) {
-                    var string_list = new StringList(null);
-                    foreach (string text in combobox_view_model.items) {
-                        string_list.append(text);
-                    }
-#if Adw_1_4
-                    var view = new Adw.ComboRow() { title = combobox_view_model.title };
-                    view.model = string_list;
-                    combobox_view_model.bind_property("active-item", view, "selected", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-#else
-                    var view = new Adw.ActionRow() { title = combobox_view_model.title };
-                    var drop_down = new DropDown(string_list, null) { valign = Align.CENTER };
-                    combobox_view_model.bind_property("active-item", drop_down, "selected", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-                    view.activatable_widget = drop_down;
-                    view.add_suffix(drop_down);
-#endif
-                    w = view;
-                }
-
-                var widget_view_model = preferences_row as ViewModel.PreferencesRow.WidgetDeprecated;
-                if (widget_view_model != null) {
-                    var view = new Adw.ActionRow() { title = widget_view_model.title };
-                    view.add_suffix(widget_view_model.widget);
-                    w = view;
-                }
-
-                if (w == null) {
-                    continue;
-                }
-
-                preference_group.add(w);
+        public void add_encryption_tab_element(Adw.PreferencesGroup preferences_group) {
+            if (encryption_stack_page == null) {
+                encryption_box = new Box(Orientation.VERTICAL, 12) { margin_end = 12, margin_start = 12, margin_top = 18, margin_bottom = 40 };
+                var scrolled_window = new ScrolledWindow() { vexpand = true };
+                var clamp = new Adw.Clamp();
+                clamp.set_child(encryption_box);
+                scrolled_window.set_child(clamp);
+                encryption_stack_page = stack.add_child(scrolled_window);
+                encryption_stack_page.title = _("Encryption");
+                encryption_stack_page.name = "encryption";
             }
-
-            return preference_group;
+            encryption_box.append(preferences_group);
         }
+
+        public void add_members_tab_element(Widget widget) {
+            if (member_stack_page == null) {
+                member_box = new Box(Orientation.VERTICAL, 12) { margin_end = 12, margin_start = 12, margin_top = 18 };
+                member_stack_page = stack.add_child(member_box);
+                member_stack_page.title = _("Members");
+                member_stack_page.name = "member";
+            }
+            member_box.append(widget);
+        }
+    }
+
+    [GtkTemplate (ui = "/im/dino/Dino/muc_member_list_row.ui")]
+    public class Dino.Ui.ConversationDetails.MemberListItem : Gtk.Widget {
+
     }
 }

@@ -67,9 +67,10 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
-    public int quoted_item_id = 0;
+    public int quoted_item_id { get; private set; default=0; }
 
     private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
+    private Gee.List<Xep.MessageMarkup.Span> markups = null;
 
     private Database? db;
 
@@ -142,18 +143,71 @@ public class Message : Object {
         notify.connect(on_update);
     }
 
+    public void set_quoted_item(int quoted_content_item_id) {
+        if (id == -1) {
+            warning("Message needs to be persisted before setting quoted item");
+            return;
+        }
+
+        this.quoted_item_id = quoted_content_item_id;
+
+        db.reply.upsert()
+                .value(db.reply.message_id, id, true)
+                .value(db.reply.quoted_content_item_id, quoted_content_item_id)
+                .value_null(db.reply.quoted_message_stanza_id)
+                .value_null(db.reply.quoted_message_from)
+                .perform();
+    }
+
     public Gee.List<Xep.FallbackIndication.Fallback> get_fallbacks() {
         if (fallbacks != null) return fallbacks;
+        fetch_body_meta();
 
-        var fallbacks_by_ns = new HashMap<string, ArrayList<Xep.FallbackIndication.FallbackLocation>>();
-        foreach (Qlite.Row row in db.body_meta.select().with(db.body_meta.message_id, "=", id)) {
-            if (row[db.body_meta.info_type] != Xep.FallbackIndication.NS_URI) continue;
+        return fallbacks;
+    }
 
-            string ns_uri = row[db.body_meta.info];
-            if (!fallbacks_by_ns.has_key(ns_uri)) {
-                fallbacks_by_ns[ns_uri] = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
+    public Gee.List<Xep.MessageMarkup.Span> get_markups() {
+        if (markups != null) return markups;
+        fetch_body_meta();
+
+        return markups;
+    }
+
+    public void persist_markups(Gee.List<Xep.MessageMarkup.Span> markups, int message_id) {
+        this.markups = markups;
+
+        foreach (var span in markups) {
+            foreach (var ty in span.types) {
+                db.body_meta.insert()
+                        .value(db.body_meta.info_type, Xep.MessageMarkup.NS_URI)
+                        .value(db.body_meta.message_id, message_id)
+                        .value(db.body_meta.info, Xep.MessageMarkup.span_type_to_str(ty))
+                        .value(db.body_meta.from_char, span.start_char)
+                        .value(db.body_meta.to_char, span.end_char)
+                        .perform();
             }
-            fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation(row[db.body_meta.from_char], row[db.body_meta.to_char]));
+        }
+    }
+
+    private void fetch_body_meta() {
+        var fallbacks_by_ns = new HashMap<string, ArrayList<Xep.FallbackIndication.FallbackLocation>>();
+        var markups = new ArrayList<Xep.MessageMarkup.Span>();
+
+        foreach (Qlite.Row row in db.body_meta.select().with(db.body_meta.message_id, "=", id)) {
+            switch (row[db.body_meta.info_type]) {
+                case Xep.FallbackIndication.NS_URI:
+                    string ns_uri = row[db.body_meta.info];
+                    if (!fallbacks_by_ns.has_key(ns_uri)) {
+                        fallbacks_by_ns[ns_uri] = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
+                    }
+                    fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation(row[db.body_meta.from_char], row[db.body_meta.to_char]));
+                    break;
+                case Xep.MessageMarkup.NS_URI:
+                    var types = new ArrayList<Xep.MessageMarkup.SpanType>();
+                    types.add(Xep.MessageMarkup.str_to_span_type(row[db.body_meta.info]));
+                    markups.add(new Xep.MessageMarkup.Span() { types=types, start_char=row[db.body_meta.from_char], end_char=row[db.body_meta.to_char] });
+                    break;
+            }
         }
 
         var fallbacks = new ArrayList<Xep.FallbackIndication.Fallback>();
@@ -161,11 +215,29 @@ public class Message : Object {
             fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri].to_array()));
         }
         this.fallbacks = fallbacks;
-        return fallbacks;
+        this.markups = markups;
     }
 
     public void set_fallbacks(Gee.List<Xep.FallbackIndication.Fallback> fallbacks) {
+        if (id == -1) {
+            warning("Message needs to be persisted before setting fallbacks");
+            return;
+        }
+
         this.fallbacks = fallbacks;
+
+        foreach (var fallback in fallbacks) {
+            foreach (var location in fallback.locations) {
+                db.body_meta.insert()
+                        .value(db.body_meta.message_id, id)
+                        .value(db.body_meta.info_type, Xep.FallbackIndication.NS_URI)
+                        .value(db.body_meta.info, fallback.ns_uri)
+                        .value(db.body_meta.from_char, location.from_char)
+                        .value(db.body_meta.to_char, location.to_char)
+                        .perform();
+            }
+        }
+
     }
 
     public void set_type_string(string type) {
@@ -202,6 +274,7 @@ public class Message : Object {
     }
 
     public static uint hash_func(Message message) {
+        if (message.body == null) return 0;
         return message.body.hash();
     }
 

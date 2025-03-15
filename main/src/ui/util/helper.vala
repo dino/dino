@@ -170,6 +170,41 @@ public static Map<unichar, unichar> get_matching_chars() {
     return MATCHING_CHARS;
 }
 
+/**
+ * This replaces spaces with non-breaking spaces when they are adjacent to a non-spacing mark.
+ *
+ * We do this to work-around a bug in Pango. See https://gitlab.gnome.org/GNOME/pango/-/issues/798 and
+ * https://gitlab.gnome.org/GNOME/pango/-/issues/832
+ *
+ * This is zero-copy iff no space is adjacent to a non-spacing mark, otherwise the provided string will be destroyed
+ * and the returned string should be used instead.
+ */
+public static string unbreak_space_around_non_spacing_mark(owned string s) {
+    int current_index = 0;
+    unichar current_char = 0;
+    int prev_index = 0;
+    unichar prev_char = 0;
+    bool is_non_spacing_mark = false;
+    while (s.get_next_char(ref current_index, out current_char)) {
+        int replace_index = -1;
+        if (is_non_spacing_mark && current_char == ' ') {
+            replace_index = prev_index;
+            current_char = ' ';
+        }
+        is_non_spacing_mark = ICU.get_int_property_value(current_char, ICU.Property.BIDI_CLASS) == ICU.CharDirection.DIR_NON_SPACING_MARK;
+        if (prev_char == ' ' && is_non_spacing_mark) {
+            replace_index = prev_index - 1;
+        }
+        if (replace_index != -1) {
+            s = s[0:replace_index] + " " + s[(replace_index + 1):s.length];
+            current_index += 1;
+        }
+        prev_index = current_index;
+        prev_char = current_char;
+    }
+    return (owned) s;
+}
+
 public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup) {
     bool ignore_out_var = false;
     return parse_add_markup_theme(s_, highlight_word, parse_links, parse_text_markup, parse_text_markup, false, ref ignore_out_var);
@@ -297,6 +332,31 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     return s;
 }
 
+    // Modifies `markups`.
+    public string remove_fallbacks_adjust_markups(string text, bool contains_quote, Gee.List<Xep.FallbackIndication.Fallback> fallbacks, Gee.List<Xep.MessageMarkup.Span> markups) {
+        string processed_text = text;
+
+        foreach (var fallback in fallbacks) {
+            if (fallback.ns_uri == Xep.Replies.NS_URI && contains_quote) {
+                foreach (var fallback_location in fallback.locations) {
+                    processed_text = processed_text[0:processed_text.index_of_nth_char(fallback_location.from_char)] +
+                            processed_text[processed_text.index_of_nth_char(fallback_location.to_char):processed_text.length];
+
+                    int length = fallback_location.to_char - fallback_location.from_char;
+                    foreach (Xep.MessageMarkup.Span span in markups) {
+                        if (span.start_char > fallback_location.to_char) {
+                            span.start_char -= length;
+                        }
+                        if (span.end_char > fallback_location.to_char) {
+                            span.end_char -= length;
+                        }
+                    }
+                }
+            }
+        }
+        return processed_text;
+    }
+
 /**
  * This is a heuristic to count emojis in a string {@link http://example.com/}
  *
@@ -367,10 +427,6 @@ public void present_window(Window window) {
 #else
     window.present();
 #endif
-}
-
-public bool use_csd() {
-    return ((Application) GLib.Application.get_default()).use_csd();
 }
 
 public Widget? widget_if_tooltips_active(Widget w) {

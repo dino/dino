@@ -17,7 +17,7 @@ public class HttpFileSender : FileSender, Object {
 
         session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
-        stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_oob);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_sfs_element);
     }
 
     public async FileSendData? prepare_send_file(Conversation conversation, FileTransfer file_transfer, FileMeta file_meta) throws FileSendError {
@@ -43,13 +43,56 @@ public class HttpFileSender : FileSender, Object {
         HttpFileSendData? send_data = file_send_data as HttpFileSendData;
         if (send_data == null) return;
 
-        yield upload(file_transfer, send_data, file_meta);
+        bool can_reference_element = !conversation.type_.is_muc_semantic() || stream_interactor.get_module(EntityInfo.IDENTITY).has_feature_cached(conversation.account, conversation.counterpart, Xep.UniqueStableStanzaIDs.NS_URI);
 
-        Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
-        file_transfer.info = message.id.to_string();
+        // Share unencrypted files via SFS (only if we'll be able to reference messages)
+        if (conversation.encryption == Encryption.NONE && can_reference_element) {
+            // Announce the file share
+            Entities.Message file_share_message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(null, conversation);
+            file_transfer.info = file_share_message.id.to_string();
+            file_transfer.file_sharing_id = Xmpp.random_uuid();
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(file_share_message, conversation);
 
-        message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
-        stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
+            // Upload file
+            yield upload(file_transfer, send_data, file_meta);
+
+            // Wait until we know the server id of the file share message (in MUCs; we get that from the reflected message)
+            if (conversation.type_.is_muc_semantic()) {
+                if (file_share_message.server_id == null) {
+                    ulong server_id_notify_id = file_share_message.notify["server-id"].connect(() => {
+                        Idle.add(send_file.callback);
+                    });
+                    yield;
+                    file_share_message.disconnect(server_id_notify_id);
+                }
+            }
+
+            file_transfer.sfs_sources.add(new Xep.StatelessFileSharing.HttpSource() { url=send_data.url_down } );
+
+            // Send source attachment
+            MessageStanza stanza = new MessageStanza() { to = conversation.counterpart, type_ = conversation.type_ == GROUPCHAT ? MessageStanza.TYPE_GROUPCHAT : MessageStanza.TYPE_CHAT };
+            stanza.body = send_data.url_down;
+            Xep.OutOfBandData.add_url_to_message(stanza, send_data.url_down);
+            var sources = new ArrayList<Xep.StatelessFileSharing.Source>();
+            sources.add(new Xep.StatelessFileSharing.HttpSource() { url = send_data.url_down });
+            string attach_to_id = MessageStorage.get_reference_id(file_share_message);
+            Xep.StatelessFileSharing.set_sfs_attachment(stanza, attach_to_id, file_transfer.file_sharing_id, sources);
+
+            var stream = stream_interactor.get_stream(conversation.account);
+            if (stream == null) throw new FileSendError.UPLOAD_FAILED("No stream");
+
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, stanza);
+        }
+        // Share encrypted files without SFS
+        else {
+            yield upload(file_transfer, send_data, file_meta);
+
+            Entities.Message message = stream_interactor.get_module(MessageProcessor.IDENTITY).create_out_message(send_data.url_down, conversation);
+            file_transfer.info = message.id.to_string();
+
+            message.encryption = send_data.encrypt_message ? conversation.encryption : Encryption.NONE;
+            stream_interactor.get_module(MessageProcessor.IDENTITY).send_xmpp_message(message, conversation);
+        }
     }
 
     public async bool can_send(Conversation conversation, FileTransfer file_transfer) {
@@ -94,7 +137,10 @@ public class HttpFileSender : FileSender, Object {
         if (stream == null) return;
 
         var put_message = new Soup.Message("PUT", file_send_data.url_up);
+
 #if SOUP_3_0
+        string transfer_host = Uri.parse(file_send_data.url_up, UriFlags.NONE).get_host();
+        put_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
         put_message.set_request_body(file_meta.mime_type, file_transfer.input_stream, (ssize_t) file_meta.size);
 #else
         put_message.request_headers.set_content_type(file_meta.mime_type, null);
@@ -129,10 +175,15 @@ public class HttpFileSender : FileSender, Object {
         });
     }
 
-    private void check_add_oob(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
-        if (message.encryption == Encryption.NONE && message.body.has_prefix("http") && message_is_file(db, message)) {
-            Xep.OutOfBandData.add_url_to_message(message_stanza, message_stanza.body);
-        }
+    private void check_add_sfs_element(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
+        if (message.encryption != Encryption.NONE) return;
+
+        FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_message_id(message.id, conversation);
+        if (file_transfer == null) return;
+
+        Xep.StatelessFileSharing.set_sfs_element(message_stanza, file_transfer.file_sharing_id, file_transfer.file_metadata, file_transfer.sfs_sources);
+
+        Xep.MessageProcessingHints.set_message_hint(message_stanza, Xep.MessageProcessingHints.HINT_STORE);
     }
 
     public int get_id() { return 0; }
