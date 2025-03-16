@@ -6,5 +6,4 @@ Currently supports:
 
 # Special thanks
 - GObject wrapper based on https://github.com/endlessm/xapian-glib/
-- YoloRT which allows compilation on GCC https://github.com/Yuubi-san/YoloRT
 - Notification builder inspired by https://gitlab.gnome.org/Philipp/glib/-/commits/windows_toast_notification_backend
