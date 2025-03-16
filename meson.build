@@ -1,5 +1,10 @@
 project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0')
 
+if host_machine.system() == 'windows'
+    add_project_arguments('-D_POSIX_C_SOURCE=1', language: 'c')
+    add_project_arguments('--define=_WIN32"', language: 'vala')
+endif
+
 fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')
