@@ -42,11 +42,16 @@ jobs:
           manifest-path: im.dino.Dino.json
           bundle: im.dino.Dino.flatpak
   build-windows:
-    name: "Build Windows 64-bit"
+    name: "Build Windows"
     runs-on: windows-latest
     defaults:
       run:
         shell: msys2 {0}
+    strategy:
+      matrix:
+        include:
+          - { sys: ucrt64,  env: ucrt-x86_64 }
+          - { sys: clangarm64, env: clang-aarch64 }
     steps:
       - shell: powershell
         run: git config --global core.autocrlf input
@@ -57,7 +62,7 @@ jobs:
       - name: "Setup MSYS2"
         uses: msys2/setup-msys2@v2
         with:
-          msystem: UCRT64
+          msystem: ${{matrix.sys}}
           update: true
           install: >-
             git
@@ -65,36 +70,36 @@ jobs:
             zip
             unzip
             curl
-            mingw-w64-ucrt-x86_64-toolchain
-            mingw-w64-ucrt-x86_64-gcc
-            mingw-w64-ucrt-x86_64-cmake
-            mingw-w64-ucrt-x86_64-ninja
-            mingw-w64-ucrt-x86_64-libsoup3
-            mingw-w64-ucrt-x86_64-gtk4
-            mingw-w64-ucrt-x86_64-sqlite3
-            mingw-w64-ucrt-x86_64-gobject-introspection
-            mingw-w64-ucrt-x86_64-glib2
-            mingw-w64-ucrt-x86_64-glib-networking
-            mingw-w64-ucrt-x86_64-openssl
-            mingw-w64-ucrt-x86_64-libgcrypt
-            mingw-w64-ucrt-x86_64-libgee
-            mingw-w64-ucrt-x86_64-vala
-            mingw-w64-ucrt-x86_64-gsettings-desktop-schemas
-            mingw-w64-ucrt-x86_64-qrencode
-            mingw-w64-ucrt-x86_64-ntldd-git
-            mingw-w64-ucrt-x86_64-gpgme
-            mingw-w64-ucrt-x86_64-nsis
-            mingw-w64-ucrt-x86_64-libadwaita
-            mingw-w64-ucrt-x86_64-gspell
-            mingw-w64-ucrt-x86_64-enchant
-            mingw-w64-ucrt-x86_64-hunspell
-            mingw-w64-ucrt-x86_64-iso-codes
-            mingw-w64-ucrt-x86_64-gst-plugins-base
-            mingw-w64-ucrt-x86_64-gst-plugins-good
-            mingw-w64-ucrt-x86_64-gst-plugins-bad
-            mingw-w64-ucrt-x86_64-cppwinrt
-            mingw-w64-ucrt-x86_64-meson
-            mingw-w64-ucrt-x86_64-webrtc-audio-processing-1
+            mingw-w64-${{matrix.env}}-toolchain
+            mingw-w64-${{matrix.env}}-gcc
+            mingw-w64-${{matrix.env}}-cmake
+            mingw-w64-${{matrix.env}}-ninja
+            mingw-w64-${{matrix.env}}-libsoup3
+            mingw-w64-${{matrix.env}}-gtk4
+            mingw-w64-${{matrix.env}}-sqlite3
+            mingw-w64-${{matrix.env}}-gobject-introspection
+            mingw-w64-${{matrix.env}}-glib2
+            mingw-w64-${{matrix.env}}-glib-networking
+            mingw-w64-${{matrix.env}}-openssl
+            mingw-w64-${{matrix.env}}-libgcrypt
+            mingw-w64-${{matrix.env}}-libgee
+            mingw-w64-${{matrix.env}}-vala
+            mingw-w64-${{matrix.env}}-gsettings-desktop-schemas
+            mingw-w64-${{matrix.env}}-qrencode
+            mingw-w64-${{matrix.env}}-ntldd-git
+            mingw-w64-${{matrix.env}}-gpgme
+            mingw-w64-${{matrix.env}}-nsis
+            mingw-w64-${{matrix.env}}-libadwaita
+            mingw-w64-${{matrix.env}}-gspell
+            mingw-w64-${{matrix.env}}-enchant
+            mingw-w64-${{matrix.env}}-hunspell
+            mingw-w64-${{matrix.env}}-iso-codes
+            mingw-w64-${{matrix.env}}-gst-plugins-base
+            mingw-w64-${{matrix.env}}-gst-plugins-good
+            mingw-w64-${{matrix.env}}-gst-plugins-bad
+            mingw-w64-${{matrix.env}}-cppwinrt
+            mingw-w64-${{matrix.env}}-meson
+            mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
       - name: "Setup matchers"
         run: |
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
