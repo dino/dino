@@ -111,5 +111,39 @@ jobs:
         run: meson setup build
       - name: "Build"
         run: meson compile -C build
+      - name: "Build Package"
+        run: |
+          mkdir dist && \
+            cd dist && \
+            mkdir ./bin ./etc ./lib ./share && \
+            mkdir ./lib/dino && \
+            mv ../build/plugins ./lib/dino/ && \
+            find ../build -type f -name "*.dll" -exec cp {} ./bin/ \; && \
+            find ../build -type f -name "dino.exe" -exec cp {} ./bin/ \; && \
+            cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
+            cp /${{matrix.sys}}/bin/gspawn-win64-helper.exe ./bin && \
+            cp -r /${{matrix.sys}}/share/xml ./share && \
+            cp -r /${{matrix.sys}}/lib/enchant-2 ./lib && \
+            cp -r /${{matrix.sys}}/lib/gstreamer-1.0 ./lib && \
+            mkdir -p ./lib/gdk-pixbuf-2.0/ && cp -r /${{matrix.sys}}/lib/gdk-pixbuf-2.0 ./lib/ && \
+            mkdir -p ./lib/gio/ && cp -r /${{matrix.sys}}/lib/gio ./lib/ && \
+            mkdir -p ./share/icons && cp -r /${{matrix.sys}}/share/icons ./share/ && \
+            mkdir -p ./share/locale && cp -r /${{matrix.sys}}/share/locale ./share/ && \
+            mkdir -p ./share/glib-2.0/schemas && cp -r /${{matrix.sys}}/share/glib-2.0/schemas ./share/glib-2.0/ && \
+            cp /${{matrix.sys}}/bin/libcrypto-*-x64.dll . && \
+            find . -iname "*.dll.a" -exec rm {} + && \
+            find . -iname "*.exe" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
+            find . -iname "*.dll" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
+            find . -iname "*.exe" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
+            find . -iname "*.dll" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
+            find . -iname "*.exe" -exec strip -s {} + && \
+            find . -iname "*.dll" -exec strip -s {} + && \
+            mv *.dll ./bin
+      - name: "Upload Dino for Windows"
+        uses: actions/upload-artifact@v2
+        with:
+          name: dino-windows
+          path: dist/
+          if-no-files-found: error
       - name: "Test"
         run: meson test -C build
