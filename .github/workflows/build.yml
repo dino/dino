@@ -88,7 +88,6 @@ jobs:
             mingw-w64-${{matrix.env}}-qrencode
             mingw-w64-${{matrix.env}}-ntldd-git
             mingw-w64-${{matrix.env}}-gpgme
-            mingw-w64-${{matrix.env}}-nsis
             mingw-w64-${{matrix.env}}-libadwaita
             mingw-w64-${{matrix.env}}-gspell
             mingw-w64-${{matrix.env}}-enchant
@@ -100,6 +99,9 @@ jobs:
             mingw-w64-${{matrix.env}}-cppwinrt
             mingw-w64-${{matrix.env}}-meson
             mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
+      - name: "Setup installer"
+        if: success() && ${{matrix.sys}} != 'clangarm64'
+        run: pacman -S --needed --noconfirm mingw-w64-${{matrix.env}}-nsis
       - name: "Setup matchers"
         run: |
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
