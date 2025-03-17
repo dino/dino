@@ -99,9 +99,9 @@ jobs:
             mingw-w64-${{matrix.env}}-cppwinrt
             mingw-w64-${{matrix.env}}-meson
             mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
-      - name: "Setup installer"
-        if: success() && ${{matrix.sys}} == ucrt64
-        run: pacman -S --needed --noconfirm mingw-w64-${{matrix.env}}-nsis
+      # - name: "Setup installer"
+      #   if: success() && ${{matrix.sys}} == ucrt64
+      #   run: pacman -S --needed --noconfirm mingw-w64-${{matrix.env}}-nsis
       - name: "Setup matchers"
         run: |
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
