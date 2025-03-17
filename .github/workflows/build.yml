@@ -140,7 +140,7 @@ jobs:
       - name: "Upload Dino for Windows"
         uses: actions/upload-artifact@v4
         with:
-          name: dino-windows
+          name: dino-windows-${{matrix.env}}
           path: dist/
           if-no-files-found: error
       - name: "Test"
