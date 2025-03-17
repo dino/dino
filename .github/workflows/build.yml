@@ -48,7 +48,8 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-      - run: git config --global core.autocrlf input
+      - shell: powershell
+        run: git config --global core.autocrlf input
       - name: "Checkout sources"
         uses: actions/checkout@v4
         with:
