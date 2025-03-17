@@ -41,3 +41,66 @@ jobs:
         with:
           manifest-path: im.dino.Dino.json
           bundle: im.dino.Dino.flatpak
+  build-windows:
+    name: "Build Windows 64-bit"
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - run: git config --global core.autocrlf input
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup MSYS2"
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            make
+            zip
+            unzip
+            curl
+            mingw-w64-ucrt-x86_64-toolchain
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-libsoup3
+            mingw-w64-ucrt-x86_64-gtk4
+            mingw-w64-ucrt-x86_64-sqlite3
+            mingw-w64-ucrt-x86_64-gobject-introspection
+            mingw-w64-ucrt-x86_64-glib2
+            mingw-w64-ucrt-x86_64-glib-networking
+            mingw-w64-ucrt-x86_64-openssl
+            mingw-w64-ucrt-x86_64-libgcrypt
+            mingw-w64-ucrt-x86_64-libgee
+            mingw-w64-ucrt-x86_64-vala
+            mingw-w64-ucrt-x86_64-gsettings-desktop-schemas
+            mingw-w64-ucrt-x86_64-qrencode
+            mingw-w64-ucrt-x86_64-ntldd-git
+            mingw-w64-ucrt-x86_64-gpgme
+            mingw-w64-ucrt-x86_64-nsis
+            mingw-w64-ucrt-x86_64-libadwaita
+            mingw-w64-ucrt-x86_64-gspell
+            mingw-w64-ucrt-x86_64-enchant
+            mingw-w64-ucrt-x86_64-hunspell
+            mingw-w64-ucrt-x86_64-iso-codes
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-cppwinrt
+            mingw-w64-ucrt-x86_64-meson
+      - name: "Setup matchers"
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Configure"
+        run: meson setup build
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Test"
+        run: meson test -C build
