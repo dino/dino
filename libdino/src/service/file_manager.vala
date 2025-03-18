@@ -330,6 +330,10 @@ public class FileManager : StreamInteractionModule, Object {
             }
 
             file_transfer.path = file.get_basename();
+            
+            FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
+            file_transfer.mime_type = Dino.Util.get_content_type(file_info);
+
             file_transfer.state = FileTransfer.State.COMPLETE;
 
 #if _WIN32 // Add Zone.Identifier so Windows knows this file was downloaded from the internet
