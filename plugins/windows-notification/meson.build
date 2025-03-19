@@ -61,4 +61,4 @@ includes = include_directories(
 )
 lib_windows_notification = shared_library('windows-notification', sources, cpp_args: cpp_args, name_prefix: '', vala_args: vala_args, c_args: c_args, dependencies: dependencies, include_directories: includes, install: true, install_dir: get_option('libdir') / 'dino/plugins')
 dep_windows_notification = declare_dependency(link_with: lib_windows_notification, include_directories: include_directories('.'))
-summary('Add native notifications support for Windows', dep_windows_notification, section: 'Plugins')
+summary('Native notifications support for Windows', dep_windows_notification, section: 'Plugins')
