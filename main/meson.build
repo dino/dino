@@ -106,6 +106,12 @@ sources += gnome.compile_resources(
     'data/gresource.xml',
     source_dir: 'data',
 )
+if host_machine.system() == 'windows'
+    win = import('windows')
+    sources += win.compile_resources(
+        'dino-info.rc',
+    )
+endif
 
 c_args = [
     '-DG_LOG_DOMAIN="dino"',
