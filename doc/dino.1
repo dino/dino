@@ -1,0 +1,39 @@
+.TH dino 1 "2019-04-23" "Dino 0.0"
+.SH NAME
+dino \- modern XMPP chat client
+.SH SYNOPSIS
+.B dino
+.RI [ option ]
+.SH DESCRIPTION
+.B dino
+is a modern open source chat client for the desktop. It focuses on providing a clean and reliable XMPP experience while having your privacy in mind.
+.SH OPTIONS
+.TP
+.B -h, --help
+Show the avalaible command-line options then exit.
+.TP
+.BI --print-xmpp= filter
+.RI "Print XMPP stanzas to stderr. You can choose which type of stanzas will be displayed by using the appropriate " "filter" ". Using the keyword all will display any stanzas."
+.SH EXAMPLES
+.TP
+.B dino --print-xmpp=all
+Print all the stanzas.
+.TP
+.B dino --print-xmpp=message|iq
+Print all the message and IQ stanzas.
+.TP
+.BI "dino --print-xmpp=message[to=" "JID" "]"
+.RI "Print all the message stanzas where the to attribute is set to a specific " "JID" "."
+.TP
+.B dino --print-xmpp=message.body
+Print all the message stanzas having a body child node.
+.SH FILES
+.TP
+.IR $XDG_DATA_HOME /dino/
+Per-user configuration files and data.
+.SH SECURITY
+As of today, Dino doesn't use a keyring to safely save passwords. They are currently stored unencrypted in the user's personal database.
+.SH BUGS
+If you find any bugs, please report them at the Dino bug tracker on GitHub: https://github.com/dino/dino/issues.
+.SH AUTHORS
+fiaxh and others. See https://github.com/dino/dino/graphs/contributors for details.
