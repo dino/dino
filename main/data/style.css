@@ -129,6 +129,10 @@ picture.avatar {
     border-radius: 3px;
 }
 
+picture.avatar .unavailable {
+    filter: grayscale(100%);
+}
+
 /* Overlay Toolbar */
 
 .overlay-toolbar {

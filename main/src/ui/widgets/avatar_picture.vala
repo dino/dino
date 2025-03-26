@@ -21,6 +21,8 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
     private Jid? secondary_avatar_jid;
     private Jid? display_name_jid;
 
+    public signal void availability_changed(bool available);
+
     public ConversationParticipantAvatarPictureTileModel(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
@@ -44,6 +46,10 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
         string display = Util.get_participant_display_name(stream_interactor, conversation, display_name_jid);
         display_text = display.get_char(0).toupper().to_string();
         stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
+        if(conversation.type_ == Conversation.Type.CHAT) {
+            stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect(on_presence_available);
+            stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect(on_presence_offline);
+        }
 
         float[] rgbf = color_id != null ? Xep.ConsistentColor.string_to_rgbf(color_id) : new float[] {0.5f, 0.5f, 0.5f};
         background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f};
@@ -71,6 +77,18 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
         if (account.equals(conversation.account) && jid.equals(display_name_jid)) {
             string display = Util.get_participant_display_name(stream_interactor, conversation, display_name_jid);
             display_text = display.get_char(0).toupper().to_string();
+        }
+    }
+
+    private void on_presence_available(Jid jid, Account account) {
+        if (account.equals(conversation.account) && conversation.counterpart.equals_bare(jid)) {
+            availability_changed(true);
+        }
+    }
+
+    private void on_presence_offline(Jid jid, Account account) {
+        if (account.equals(conversation.account) && conversation.counterpart.equals_bare(jid)) {
+            availability_changed(false);
         }
     }
 }
@@ -468,6 +486,9 @@ public class Dino.Ui.AvatarPicture : Gtk.Widget {
             if (display_text_binding != null) display_text_binding.unbind();
             if (image_file_binding != null) image_file_binding.unbind();
             if (model != null) {
+                if (model is Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel) {
+                    ((Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel) model).availability_changed.connect(on_availability_changed);
+                }
                 background_color_binding = model.bind_property("background-color", this, "background-color", BindingFlags.SYNC_CREATE);
                 display_text_binding = model.bind_property("display-text", this, "display-text", BindingFlags.SYNC_CREATE);
                 image_file_binding = model.bind_property("image-file", this, "image-file", BindingFlags.SYNC_CREATE);
@@ -475,6 +496,14 @@ public class Dino.Ui.AvatarPicture : Gtk.Widget {
                 background_color_binding = null;
                 display_text_binding = null;
                 image_file_binding = null;
+            }
+        }
+
+        public void on_availability_changed(bool available) {
+            if (available) {
+                remove_css_class("unavailable");
+            } else {
+                add_css_class("unavailable");
             }
         }
 
