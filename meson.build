@@ -59,7 +59,7 @@ endif
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()
 
-installdir_plugins = get_option('libdir') / 'dino/plugins'
+installdir_plugins = get_option('prefix') / get_option('libdir') / 'dino/plugins'
 
 subdir('qlite')
 subdir('xmpp-vala')
