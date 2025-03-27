@@ -295,7 +295,8 @@ namespace Dino {
             CallState call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
             call_state.invited_to_group_call = muc_jid;
-            call_state.parent_muc = inviter_jid.bare_jid;
+            call_state.use_cim = true;
+            call_state.cim_jids_to_inform.add(inviter_jid.bare_jid);
 
             debug("[%s] on_muji_call_received accepting", account.bare_jid.to_string());
 
@@ -456,7 +457,7 @@ namespace Dino {
 
                 call_state.use_cim = true;
                 call_state.cim_call_id = call_id;
-                call_state.cim_counterpart = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? from_jid.bare_jid : from_jid;
+                call_state.cim_jids_to_inform.add(message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? from_jid.bare_jid : from_jid);
                 call_state.cim_message_type = message_stanza.type_;
 
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, to_jid, account, message_stanza.type_);
