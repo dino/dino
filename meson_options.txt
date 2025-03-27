@@ -1,5 +1,3 @@
-option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
-
 option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
 option('plugin-ice', type: 'feature', description: 'Peer-to-peer communication')
 option('plugin-omemo', type: 'feature', description: 'End-to-end encryption using OMEMO')

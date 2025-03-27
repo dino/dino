@@ -78,7 +78,7 @@ sources = files(
 sources += [version_vala]
 c_args = [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
-    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
+    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(installdir_plugins),
     '-DG_LOG_DOMAIN="libdino"',
 ]
 vala_args = []
