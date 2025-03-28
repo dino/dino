@@ -87,6 +87,9 @@ namespace Dino.Ui {
             GLib.Application.get_default().withdraw_notification(call.id.to_string());
         }
 
+        public async void notify_dialing(){}
+        public async void retract_dialing(){}
+
         public async void notify_subscription_request(Conversation conversation) {
             Notification notification = new Notification(_("Subscription request"));
             notification.set_body(conversation.counterpart.to_string());
