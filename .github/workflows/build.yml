@@ -118,6 +118,8 @@ jobs:
             cd dist && \
             mkdir ./bin ./etc ./lib ./share && \
             mkdir ./lib/dino && \
+            find ../build/plugins -type f ! -name "*.dll" -exec rm {} \; \
+            find ../build/plugins -type d -empty -delete \
             mv ../build/plugins ./lib/dino/ && \
             find ../build -type f -name "*.dll" -exec cp {} ./bin/ \; && \
             find ../build -type f -name "dino.exe" -exec cp {} ./bin/ \; && \
