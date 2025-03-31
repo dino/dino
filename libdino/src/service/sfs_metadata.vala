@@ -22,7 +22,7 @@ namespace Dino {
             FileInfo info = file.query_info("*", FileQueryInfoFlags.NONE);
 
             metadata.name = info.get_display_name();
-            metadata.mime_type = info.get_content_type();
+            metadata.mime_type = Dino.Util.get_content_type(info);
             metadata.size = info.get_size();
             metadata.date = info.get_modification_date_time();
 
@@ -36,7 +36,7 @@ namespace Dino {
 
     public class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
         public bool supports_file(File file) {
-            return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
+            return Util.get_content_type(file.query_info("*", FileQueryInfoFlags.NONE)).has_prefix("image");
         }
 
         private const int[] THUMBNAIL_DIMS = { 1, 2, 3, 4, 8 };
