@@ -109,7 +109,7 @@ jobs:
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
       - name: "Configure"
-        run: meson setup build
+        run: meson setup build --buildtype=release
       - name: "Build"
         run: meson compile -C build
       - name: "Build Package"
