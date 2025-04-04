@@ -20,4 +20,4 @@ vala_args = [
 lib_crypto_vala = library('crypto-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_crypto_vala = declare_dependency(link_with: lib_crypto_vala, include_directories: include_directories('.'))
 
-install_data('crypto-vala.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
+install_data('crypto-vala.deps', install_dir: get_option('datadir') / 'vala/vapi', install_tag: 'devel') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
