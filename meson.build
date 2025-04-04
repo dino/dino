@@ -59,6 +59,11 @@ endif
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()
 
+default_install_rpath = ''
+if get_option('set-install-rpath')
+    default_install_rpath = get_option('prefix') / get_option('libdir')
+endif
+
 subdir('qlite')
 subdir('xmpp-vala')
 subdir('libdino')
