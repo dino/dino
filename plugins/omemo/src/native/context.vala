@@ -1,4 +1,4 @@
-namespace Signal {
+namespace Omemo {
 
 public class Context {
     internal NativeContext native_context;
@@ -30,7 +30,7 @@ public class Context {
     }
 
     public void randomize(uint8[] data) throws Error {
-        throw_by_code(Signal.native_random(data));
+        throw_by_code(native_random(data));
     }
 
     public SignedPreKeyRecord generate_signed_pre_key(IdentityKeyPair identity_key_pair, int32 id, uint64 timestamp = 0) throws Error {
@@ -75,27 +75,39 @@ public class Context {
         return signature.data;
     }
 
-    public SignalMessage deserialize_signal_message(uint8[] data) throws Error {
-        SignalMessage res;
-        throw_by_code(signal_message_deserialize(out res, data, native_context));
+    public OmemoMessage deserialize_signal_message(uint8[] data) throws Error {
+        OmemoMessage res;
+        throw_by_code(message_deserialize(out res, data, native_context));
         return res;
     }
 
-    public SignalMessage copy_signal_message(CiphertextMessage original) throws Error {
-        SignalMessage res;
-        throw_by_code(signal_message_copy(out res, (SignalMessage) original, native_context));
+    public OmemoMessage deserialize_omemo_message(uint8[] data) throws Error {
+        OmemoMessage res;
+        throw_by_code(message_deserialize_omemo(out res, data, native_context));
         return res;
     }
 
-    public PreKeySignalMessage deserialize_pre_key_signal_message(uint8[] data) throws Error {
-        PreKeySignalMessage res;
-        throw_by_code(pre_key_signal_message_deserialize(out res, data, native_context));
+    public OmemoMessage copy_message(CiphertextMessage original) throws Error {
+        OmemoMessage res;
+        throw_by_code(message_copy(out res, (OmemoMessage) original, native_context));
         return res;
     }
 
-    public PreKeySignalMessage copy_pre_key_signal_message(CiphertextMessage original) throws Error {
-        PreKeySignalMessage res;
-        throw_by_code(pre_key_signal_message_copy(out res, (PreKeySignalMessage) original, native_context));
+    public PreKeyOmemoMessage deserialize_signal_pre_key_message(uint8[] data) throws Error {
+        PreKeyOmemoMessage res;
+        throw_by_code(pre_key_message_deserialize(out res, data, native_context));
+        return res;
+    }
+
+    public PreKeyOmemoMessage deserialize_omemo_pre_key_message(uint8[] data, uint32 remote_registration_id) throws Error {
+        PreKeyOmemoMessage res;
+        throw_by_code(pre_key_message_deserialize_omemo(out res, data, remote_registration_id, native_context));
+        return res;
+    }
+
+    public PreKeyOmemoMessage copy_pre_key_message(CiphertextMessage original) throws Error {
+        PreKeyOmemoMessage res;
+        throw_by_code(pre_key_message_copy(out res, (PreKeyOmemoMessage) original, native_context));
         return res;
     }
 }

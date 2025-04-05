@@ -36,10 +36,7 @@ dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option
 dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
 dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
-# libsignal-protocol-c has a history of breaking compatibility on the patch level
-# we'll have to check compatibility for every new release
-# distro maintainers may update this dependency after compatibility tests
-dep_libsignal_protocol_c = dependency('libsignal-protocol-c', version: ['>=2.3.2', '<2.3.4'], disabler: true, required: get_option('plugin-omemo'))
+dep_libomemo_c = dependency('libomemo-c', disabler: true, required: get_option('plugin-omemo'))
 dep_libsoup = dependency('libsoup-3.0', disabler: true, required: get_option('plugin-http-files'))
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
 dep_m = meson.get_compiler('c').find_library('m', required: false)

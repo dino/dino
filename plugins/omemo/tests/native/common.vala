@@ -1,4 +1,4 @@
-namespace Signal.Test {
+namespace Omemo.Test {
 
 int main(string[] args) {
     GLib.Test.init(ref args);

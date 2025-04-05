@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Signal {
+namespace Omemo {
 
 public class SimpleSessionStore : SessionStore {
 

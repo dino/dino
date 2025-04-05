@@ -1,4 +1,4 @@
-namespace Signal.Test {
+namespace Omemo.Test {
 
 class SessionBuilderTest : Gee.TestCase {
     Address alice_address;
@@ -9,6 +9,7 @@ class SessionBuilderTest : Gee.TestCase {
 
         add_test("basic_pre_key_v2", test_basic_pre_key_v2);
         add_test("basic_pre_key_v3", test_basic_pre_key_v3);
+        add_test("basic_pre_key_omemo", test_basic_pre_key_omemo);
         add_test("bad_signed_pre_key_signature", test_bad_signed_pre_key_signature);
         add_test("repeat_bundle_message_v2", test_repeat_bundle_message_v2);
     }
@@ -89,7 +90,7 @@ class SessionBuilderTest : Gee.TestCase {
             fail_if_not_eq_int(outgoing_message.type, CiphertextType.PREKEY);
 
             /* Convert to an incoming message for Bob */
-            PreKeySignalMessage incoming_message = global_context.deserialize_pre_key_signal_message(outgoing_message.serialized);
+            PreKeyOmemoMessage incoming_message = global_context.deserialize_signal_pre_key_message(outgoing_message.serialized);
 
             /* Save the pre key and signed pre key in Bob's data store */
             PreKeyRecord bob_pre_key_record;
@@ -97,7 +98,7 @@ class SessionBuilderTest : Gee.TestCase {
             bob_store.store_pre_key(bob_pre_key_record);
 
             SignedPreKeyRecord bob_signed_pre_key_record;
-            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature, null));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /* Create Bob's session cipher and decrypt the message from Alice */
@@ -107,7 +108,7 @@ class SessionBuilderTest : Gee.TestCase {
             //int callback_context = 1234;
             //bob_session_cipher.user_data =
             //bob_session_cipher.decryption_callback =
-            uint8[] plaintext = bob_session_cipher.decrypt_pre_key_signal_message(incoming_message);
+            uint8[] plaintext = bob_session_cipher.decrypt_pre_key_message(incoming_message);
 
             /* Clean up callback data */
             bob_session_cipher.user_data = null;
@@ -129,9 +130,9 @@ class SessionBuilderTest : Gee.TestCase {
             fail_if_not_eq_int(bob_outgoing_message.type, CiphertextType.SIGNAL);
 
             /* Verify that Alice can decrypt it */
-            SignalMessage bob_outgoing_message_copy = global_context.copy_signal_message(bob_outgoing_message);
+            OmemoMessage bob_outgoing_message_copy = global_context.copy_message(bob_outgoing_message);
 
-            uint8[] alice_plaintext = alice_session_cipher.decrypt_signal_message(bob_outgoing_message_copy);
+            uint8[] alice_plaintext = alice_session_cipher.decrypt_message(bob_outgoing_message_copy);
 
             fail_if_not_eq_uint8_arr(original_message.data, alice_plaintext);
 
@@ -165,7 +166,7 @@ class SessionBuilderTest : Gee.TestCase {
             throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
             bob_store.store_pre_key(bob_pre_key_record);
 
-            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 23, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 23, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature, null));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /* Have Alice process Bob's pre key bundle */
@@ -176,19 +177,178 @@ class SessionBuilderTest : Gee.TestCase {
             fail_if_not_eq_int(outgoing_message.type, CiphertextType.PREKEY);
 
             /* Have Bob try to decrypt the message */
-            PreKeySignalMessage outgoing_message_copy = global_context.copy_pre_key_signal_message(outgoing_message);
+            PreKeyOmemoMessage outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
 
             /* The decrypt should fail with a specific error */
-            fail_if_not_error_code(() => bob_session_cipher.decrypt_pre_key_signal_message(outgoing_message_copy), ErrorCode.UNTRUSTED_IDENTITY);
+            fail_if_not_error_code(() => bob_session_cipher.decrypt_pre_key_message(outgoing_message_copy), ErrorCode.UNTRUSTED_IDENTITY);
 
-            outgoing_message_copy = global_context.copy_pre_key_signal_message(outgoing_message);
+            outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
 
             /* Save the identity key to Bob's store */
             bob_store.save_identity(alice_address, outgoing_message_copy.identity_key);
 
             /* Try the decrypt again, this time it should succeed */
-            outgoing_message_copy = global_context.copy_pre_key_signal_message(outgoing_message);
-            plaintext = bob_session_cipher.decrypt_pre_key_signal_message(outgoing_message_copy);
+            outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
+            plaintext = bob_session_cipher.decrypt_pre_key_message(outgoing_message_copy);
+
+            fail_if_not_eq_uint8_arr(original_message.data, plaintext);
+
+            /* Create a new pre key for Bob */
+            ECPublicKey test_public_key = create_test_ec_public_key(global_context);
+
+            IdentityKeyPair alice_identity_key_pair = alice_store.identity_key_pair;
+
+            bob_pre_key = create_pre_key_bundle(bob_local_registration_id, 1, 31337, test_public_key, 23, bob_signed_pre_key_pair.public, bob_signed_pre_key_signature, alice_identity_key_pair.public);
+
+            /* Have Alice process Bob's new pre key bundle, which should fail */
+            fail_if_not_error_code(() => alice_session_builder.process_pre_key_bundle(bob_pre_key), ErrorCode.UNTRUSTED_IDENTITY);
+
+            GLib.Test.message("Post-interaction tests complete");
+        } catch(Error e) {
+            fail_if_reached(@"Unexpected error: $(e.message)");
+        }
+    }
+
+
+    void test_basic_pre_key_omemo() {
+        try {
+            /* Create Alice's data store and session builder */
+            Store alice_store = setup_test_store_context(global_context);
+            SessionBuilder alice_session_builder = alice_store.create_session_builder(bob_address);
+            alice_session_builder.version = 4;
+
+            /* Create Bob's data store and pre key bundle */
+            Store bob_store = setup_test_store_context(global_context);
+            uint32 bob_local_registration_id = bob_store.local_registration_id;
+            ECKeyPair bob_pre_key_pair = global_context.generate_key_pair();
+            ECKeyPair bob_signed_pre_key_pair = global_context.generate_key_pair();
+            IdentityKeyPair bob_identity_key_pair = bob_store.identity_key_pair;
+
+            uint8[] bob_signed_pre_key_signature = global_context.calculate_signature(bob_identity_key_pair.private, bob_signed_pre_key_pair.public.serialize_omemo());
+
+            PreKeyBundle bob_pre_key = create_pre_key_bundle(bob_local_registration_id, 1, 31337, bob_pre_key_pair.public, 22, bob_signed_pre_key_pair.public, bob_signed_pre_key_signature, bob_identity_key_pair.public);
+
+            /* Have Alice process Bob's pre key bundle */
+            alice_session_builder.process_pre_key_bundle(bob_pre_key);
+
+            /* Check that we can load the session state and verify its version */
+            fail_if_not(alice_store.contains_session(bob_address));
+
+            SessionRecord loaded_record = alice_store.load_session(bob_address);
+            fail_if_not_eq_int((int)loaded_record.state.session_version, 4);
+
+            /* Encrypt an outgoing message to send to Bob */
+            string original_message = "L'homme est condamné à être libre";
+            SessionCipher alice_session_cipher = alice_store.create_session_cipher(bob_address);
+            alice_session_cipher.version = 4;
+
+            CiphertextMessage outgoing_message = alice_session_cipher.encrypt(original_message.data);
+            fail_if_not_eq_int(outgoing_message.type, CiphertextType.PREKEY);
+
+            /* Convert to an incoming message for Bob */
+            PreKeyOmemoMessage incoming_message = global_context.deserialize_omemo_pre_key_message(outgoing_message.serialized, bob_local_registration_id);
+
+            /* Save the pre key and signed pre key in Bob's data store */
+            PreKeyRecord bob_pre_key_record;
+            throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
+            bob_store.store_pre_key(bob_pre_key_record);
+
+            SignedPreKeyRecord bob_signed_pre_key_record;
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, new uint8[1], bob_signed_pre_key_signature));
+            bob_store.store_signed_pre_key(bob_signed_pre_key_record);
+
+            /* Create Bob's session cipher and decrypt the message from Alice */
+            SessionCipher bob_session_cipher = bob_store.create_session_cipher(alice_address);
+            bob_session_cipher.version = 4;
+
+            /* Prepare the data for the callback test */
+            //int callback_context = 1234;
+            //bob_session_cipher.user_data =
+            //bob_session_cipher.decryption_callback =
+            uint8[] plaintext = bob_session_cipher.decrypt_pre_key_message(incoming_message);
+
+            /* Clean up callback data */
+            bob_session_cipher.user_data = null;
+            bob_session_cipher.decryption_callback = null;
+
+            /* Verify Bob's session state and the decrypted message */
+            fail_if_not(bob_store.contains_session(alice_address));
+
+            SessionRecord alice_recipient_session_record = bob_store.load_session(alice_address);
+
+            SessionState alice_recipient_session_state = alice_recipient_session_record.state;
+            fail_if_not_eq_int((int)alice_recipient_session_state.session_version, 4);
+            fail_if_null(alice_recipient_session_state.alice_base_key);
+
+            fail_if_not_eq_uint8_arr(original_message.data, plaintext);
+
+            /* Have Bob send a reply to Alice */
+            CiphertextMessage bob_outgoing_message = bob_session_cipher.encrypt(original_message.data);
+            fail_if_not_eq_int(bob_outgoing_message.type, CiphertextType.SIGNAL);
+
+            /* Verify that Alice can decrypt it */
+            OmemoMessage bob_outgoing_message_copy = global_context.copy_message(bob_outgoing_message);
+
+            uint8[] alice_plaintext = alice_session_cipher.decrypt_message(bob_outgoing_message_copy);
+
+            fail_if_not_eq_uint8_arr(original_message.data, alice_plaintext);
+
+            GLib.Test.message("Pre-interaction tests complete");
+
+            /* Interaction tests */
+            run_interaction(alice_store, bob_store, 4);
+
+            /* Cleanup state from previous tests that we need to replace */
+            alice_store = null;
+            bob_pre_key_pair = null;
+            bob_signed_pre_key_pair = null;
+            bob_identity_key_pair = null;
+            bob_signed_pre_key_signature = null;
+            bob_pre_key_record = null;
+            bob_signed_pre_key_record = null;
+
+            /* Create Alice's new session data */
+            alice_store = setup_test_store_context(global_context);
+            alice_session_builder = alice_store.create_session_builder(bob_address);
+            alice_session_builder.version = 4;
+            alice_session_cipher = alice_store.create_session_cipher(bob_address);
+            alice_session_cipher.version = 4;
+
+            /* Create Bob's new pre key bundle */
+            bob_pre_key_pair = global_context.generate_key_pair();
+            bob_signed_pre_key_pair = global_context.generate_key_pair();
+            bob_identity_key_pair = bob_store.identity_key_pair;
+            bob_signed_pre_key_signature = global_context.calculate_signature(bob_identity_key_pair.private, bob_signed_pre_key_pair.public.serialize_omemo());
+            bob_pre_key = create_pre_key_bundle(bob_local_registration_id, 1, 31338, bob_pre_key_pair.public, 23, bob_signed_pre_key_pair.public, bob_signed_pre_key_signature, bob_identity_key_pair.public);
+
+            /* Save the new pre key and signed pre key in Bob's data store */
+            throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
+            bob_store.store_pre_key(bob_pre_key_record);
+
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 23, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, new uint8[1], bob_signed_pre_key_signature));
+            bob_store.store_signed_pre_key(bob_signed_pre_key_record);
+
+            /* Have Alice process Bob's pre key bundle */
+            alice_session_builder.process_pre_key_bundle(bob_pre_key);
+
+            /* Have Alice encrypt a message for Bob */
+            outgoing_message = alice_session_cipher.encrypt(original_message.data);
+            fail_if_not_eq_int(outgoing_message.type, CiphertextType.PREKEY);
+
+            /* Have Bob try to decrypt the message */
+            PreKeyOmemoMessage outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
+
+            /* The decrypt should fail with a specific error */
+            fail_if_not_error_code(() => bob_session_cipher.decrypt_pre_key_message(outgoing_message_copy), ErrorCode.UNTRUSTED_IDENTITY);
+
+            outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
+
+            /* Save the identity key to Bob's store */
+            bob_store.save_identity(alice_address, outgoing_message_copy.identity_key);
+
+            /* Try the decrypt again, this time it should succeed */
+            outgoing_message_copy = global_context.copy_pre_key_message(outgoing_message);
+            plaintext = bob_session_cipher.decrypt_pre_key_message(outgoing_message_copy);
 
             fail_if_not_eq_uint8_arr(original_message.data, plaintext);
 
@@ -266,7 +426,7 @@ class SessionBuilderTest : Gee.TestCase {
             throw_by_code(PreKeyRecord.create(out bob_pre_key_record, bob_pre_key.pre_key_id, bob_pre_key_pair));
             bob_store.store_pre_key(bob_pre_key_record);
             SignedPreKeyRecord bob_signed_pre_key_record;
-            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature));
+            throw_by_code(SignedPreKeyRecord.create(out bob_signed_pre_key_record, 22, new DateTime.now_utc().to_unix(), bob_signed_pre_key_pair, bob_signed_pre_key_signature, null));
             bob_store.store_signed_pre_key(bob_signed_pre_key_record);
 
             /*
@@ -287,11 +447,13 @@ class SessionBuilderTest : Gee.TestCase {
         }
     }
 
-    void run_interaction(Store alice_store, Store bob_store) throws Error {
+    void run_interaction(Store alice_store, Store bob_store, uint32 version = 3) throws Error {
 
         /* Create the session ciphers */
         SessionCipher alice_session_cipher = alice_store.create_session_cipher(bob_address);
+        alice_session_cipher.version = version;
         SessionCipher bob_session_cipher = bob_store.create_session_cipher(alice_address);
+        bob_session_cipher.version = version;
 
         /* Create a test message */
         string original_message = "smert ze smert";
@@ -300,8 +462,8 @@ class SessionBuilderTest : Gee.TestCase {
         CiphertextMessage alice_message = alice_session_cipher.encrypt(original_message.data);
         fail_if_not_eq_int(alice_message.type, CiphertextType.SIGNAL);
 
-        SignalMessage alice_message_copy = global_context.copy_signal_message(alice_message);
-        uint8[] plaintext = bob_session_cipher.decrypt_signal_message(alice_message_copy);
+        OmemoMessage alice_message_copy = global_context.copy_message(alice_message);
+        uint8[] plaintext = bob_session_cipher.decrypt_message(alice_message_copy);
         fail_if_not_eq_uint8_arr(original_message.data, plaintext);
 
         GLib.Test.message("Interaction complete: Alice -> Bob");
@@ -310,8 +472,8 @@ class SessionBuilderTest : Gee.TestCase {
         CiphertextMessage bob_message = bob_session_cipher.encrypt(original_message.data);
         fail_if_not_eq_int(alice_message.type, CiphertextType.SIGNAL);
 
-        SignalMessage bob_message_copy = global_context.copy_signal_message(bob_message);
-        plaintext = alice_session_cipher.decrypt_signal_message(bob_message_copy);
+        OmemoMessage bob_message_copy = global_context.copy_message(bob_message);
+        plaintext = alice_session_cipher.decrypt_message(bob_message_copy);
         fail_if_not_eq_uint8_arr(original_message.data, plaintext);
 
         GLib.Test.message("Interaction complete: Bob -> Alice");
@@ -320,8 +482,8 @@ class SessionBuilderTest : Gee.TestCase {
         for (int i = 0; i < 10; i++) {
             uint8[] looping_message = create_looping_message(i);
             CiphertextMessage alice_looping_message = alice_session_cipher.encrypt(looping_message);
-            SignalMessage alice_looping_message_copy = global_context.copy_signal_message(alice_looping_message);
-            uint8[] looping_plaintext = bob_session_cipher.decrypt_signal_message(alice_looping_message_copy);
+            OmemoMessage alice_looping_message_copy = global_context.copy_message(alice_looping_message);
+            uint8[] looping_plaintext = bob_session_cipher.decrypt_message(alice_looping_message_copy);
             fail_if_not_eq_uint8_arr(looping_message, looping_plaintext);
         }
         GLib.Test.message("Interaction complete: Alice -> Bob (looping)");
@@ -330,8 +492,8 @@ class SessionBuilderTest : Gee.TestCase {
         for (int i = 0; i < 10; i++) {
             uint8[] looping_message = create_looping_message(i);
             CiphertextMessage bob_looping_message = bob_session_cipher.encrypt(looping_message);
-            SignalMessage bob_looping_message_copy = global_context.copy_signal_message(bob_looping_message);
-            uint8[] looping_plaintext = alice_session_cipher.decrypt_signal_message(bob_looping_message_copy);
+            OmemoMessage bob_looping_message_copy = global_context.copy_message(bob_looping_message);
+            uint8[] looping_plaintext = alice_session_cipher.decrypt_message(bob_looping_message_copy);
             fail_if_not_eq_uint8_arr(looping_message, looping_plaintext);
         }
         GLib.Test.message("Interaction complete: Bob -> Alice (looping)");
@@ -359,8 +521,8 @@ class SessionBuilderTest : Gee.TestCase {
         for (int i = 0; i < 10; i++) {
             uint8[] looping_message = create_looping_message(i);
             CiphertextMessage alice_looping_message = alice_session_cipher.encrypt(looping_message);
-            SignalMessage alice_looping_message_copy = global_context.copy_signal_message(alice_looping_message);
-            uint8[] looping_plaintext = bob_session_cipher.decrypt_signal_message(alice_looping_message_copy);
+            OmemoMessage alice_looping_message_copy = global_context.copy_message(alice_looping_message);
+            uint8[] looping_plaintext = bob_session_cipher.decrypt_message(alice_looping_message_copy);
             fail_if_not_eq_uint8_arr(looping_message, looping_plaintext);
         }
         GLib.Test.message("Interaction complete: Alice -> Bob (looping, repeated)");
@@ -369,16 +531,18 @@ class SessionBuilderTest : Gee.TestCase {
         for (int i = 0; i < 10; i++) {
             uint8[] looping_message = create_looping_message(i);
             CiphertextMessage bob_looping_message = bob_session_cipher.encrypt(looping_message);
-            SignalMessage bob_looping_message_copy = global_context.copy_signal_message(bob_looping_message);
-            uint8[] looping_plaintext = alice_session_cipher.decrypt_signal_message(bob_looping_message_copy);
+            OmemoMessage bob_looping_message_copy = global_context.copy_message(bob_looping_message);
+            uint8[] looping_plaintext = alice_session_cipher.decrypt_message(bob_looping_message_copy);
             fail_if_not_eq_uint8_arr(looping_message, looping_plaintext);
         }
         GLib.Test.message("Interaction complete: Bob -> Alice (looping, repeated)");
 
         /* Shuffled Alice -> Bob */
         for (int i = 0; i < 10; i++) {
-            SignalMessage ooo_message_deserialized = global_context.deserialize_signal_message(alice_ooo_ciphertext[i].data);
-            uint8[] ooo_plaintext = bob_session_cipher.decrypt_signal_message(ooo_message_deserialized);
+            OmemoMessage ooo_message_deserialized = version >= 4
+                ? global_context.deserialize_omemo_message(alice_ooo_ciphertext[i].data)
+                : global_context.deserialize_signal_message(alice_ooo_ciphertext[i].data);
+            uint8[] ooo_plaintext = bob_session_cipher.decrypt_message(ooo_message_deserialized);
             fail_if_not_eq_uint8_arr(alice_ooo_plaintext[i].data, ooo_plaintext);
         }
         GLib.Test.message("Interaction complete: Alice -> Bob (shuffled)");

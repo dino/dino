@@ -4,6 +4,7 @@ using Gee;
 using Xmpp;
 using Dino.Entities;
 using Gtk;
+using Omemo;
 
 namespace Dino.Plugins.Omemo {
 
@@ -32,7 +33,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
     private Account account;
     private Jid jid;
     private int identity_id = 0;
-    private Signal.Store store;
+    private Store store;
     private Set<uint32> displayed_ids = new HashSet<uint32>();
 
     [GtkChild] private unowned Adw.ActionRow automatically_accept_new_row;
@@ -190,8 +191,8 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         bool key_active = device[plugin.db.identity_meta.now_active];
         if (store != null) {
             try {
-                Signal.Address address = new Signal.Address(jid.to_string(), device[plugin.db.identity_meta.device_id]);
-                Signal.SessionRecord? session = null;
+                Address address = new Address(jid.to_string(), device[plugin.db.identity_meta.device_id]);
+                SessionRecord? session = null;
                 if (store.contains_session(address)) {
                     session = store.load_session(address);
                     string session_key_base64 = Base64.encode(session.state.remote_identity_key.serialize());

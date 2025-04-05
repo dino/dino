@@ -1,6 +1,6 @@
-namespace Signal {
+namespace Omemo {
 
-    [CCode (cname = "int", cprefix = "SG_ERR_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_ERR_", cheader_filename = "omemo/signal_protocol.h", has_type_id = false)]
     public enum ErrorCode {
         [CCode (cname = "SG_SUCCESS")]
         SUCCESS,
@@ -23,10 +23,10 @@ namespace Signal {
         FP_IDENT_MISMATCH;
     }
 
-    [CCode (cname = "SG_ERR_MINIMUM", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "SG_ERR_MINIMUM", cheader_filename = "omemo/signal_protocol.h")]
     public const int MIN_ERROR_CODE;
 
-    [CCode (cname = "int", cprefix = "SG_LOG_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_LOG_", cheader_filename = "omemo/signal_protocol.h", has_type_id = false)]
     public enum LogLevel {
         ERROR,
         WARNING,
@@ -35,15 +35,15 @@ namespace Signal {
         DEBUG
     }
 
-    [CCode (cname = "signal_throw_gerror_by_code_", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_throw_gerror_by_code_", cheader_filename = "omemo/signal_protocol.h")]
     private int throw_by_code(int code, string? message = null) throws GLib.Error {
         if (code < 0 && code > MIN_ERROR_CODE) {
-            throw new GLib.Error(-1, code, "%s: %s", message ?? "Signal error", ((ErrorCode)code).to_string());
+            throw new GLib.Error(-1, code, "%s: %s", message ?? "libomemo-c error", ((ErrorCode)code).to_string());
         }
         return code;
     }
 
-    [CCode (cname = "int", cprefix = "SG_CIPHER_", cheader_filename = "signal/signal_protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cprefix = "SG_CIPHER_", cheader_filename = "omemo/signal_protocol.h", has_type_id = false)]
     public enum Cipher {
         AES_CTR_NOPADDING,
         AES_CBC_PKCS5,
@@ -51,12 +51,12 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="signal/signal_protocol_types.h,signal/signal_helper.h")]
+    [CCode (cname = "signal_type_base", ref_function="signal_type_ref_vapi", unref_function="signal_type_unref_vapi", cheader_filename="omemo/signal_protocol_types.h,native/helper.h")]
     public class TypeBase {
     }
 
     [Compact]
-    [CCode (cname = "signal_buffer", cheader_filename = "signal/signal_protocol_types.h", free_function="signal_buffer_free")]
+    [CCode (cname = "signal_buffer", cprefix = "signal_buffer_", cheader_filename = "omemo/signal_protocol_types.h", free_function="signal_buffer_free")]
     public class Buffer {
         [CCode (cname = "signal_buffer_alloc")]
         public Buffer(size_t len);
@@ -78,7 +78,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_int_list", cheader_filename = "signal/signal_protocol_types.h", free_function="signal_int_list_free")]
+    [CCode (cname = "signal_int_list", cheader_filename = "omemo/signal_protocol_types.h", free_function="signal_int_list_free")]
     public class IntList {
         [CCode (cname = "signal_int_list_alloc")]
         public IntList();
@@ -90,7 +90,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_builder", cprefix = "session_builder_", free_function="session_builder_free", cheader_filename = "signal/session_builder.h")]
+    [CCode (cname = "session_builder", cprefix = "session_builder_", free_function="session_builder_free", cheader_filename = "omemo/session_builder.h")]
     public class SessionBuilder {
         [CCode (cname = "session_builder_process_pre_key_bundle")]
         private int process_pre_key_bundle_(PreKeyBundle pre_key_bundle);
@@ -98,10 +98,11 @@ namespace Signal {
         public void process_pre_key_bundle(PreKeyBundle pre_key_bundle) throws GLib.Error {
             throw_by_code(process_pre_key_bundle_(pre_key_bundle));
         }
+        public int version { get; set; }
     }
 
     [Compact]
-    [CCode (cname = "session_pre_key_bundle", cprefix = "session_pre_key_bundle_", cheader_filename = "signal/session_pre_key.h")]
+    [CCode (cname = "session_pre_key_bundle", cprefix = "session_pre_key_bundle_", cheader_filename = "omemo/session_pre_key.h")]
     public class PreKeyBundle : TypeBase {
         public static int create(out PreKeyBundle bundle, uint32 registration_id, int device_id, uint32 pre_key_id, ECPublicKey? pre_key_public,
                 uint32 signed_pre_key_id, ECPublicKey? signed_pre_key_public, uint8[]? signed_pre_key_signature, ECPublicKey? identity_key);
@@ -116,7 +117,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_pre_key", cprefix = "session_pre_key_", cheader_filename = "signal/session_pre_key.h,signal/signal_helper.h")]
+    [CCode (cname = "session_pre_key", cprefix = "session_pre_key_", cheader_filename = "omemo/session_pre_key.h,native/helper.h")]
     public class PreKeyRecord : TypeBase {
         public static int create(out PreKeyRecord pre_key, uint32 id, ECKeyPair key_pair);
         //public static int deserialize(out PreKeyRecord pre_key, uint8[] data, NativeContext global_context);
@@ -127,14 +128,14 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "signal/signal_protocol_types.h")]
+    [CCode (cname = "session_record", cprefix = "session_record_", cheader_filename = "omemo/signal_protocol_types.h")]
     public class SessionRecord : TypeBase {
         public SessionState state { get; }
         public Buffer user_record { get; }
     }
 
     [Compact]
-    [CCode (cname = "session_state", cprefix = "session_state_", cheader_filename = "signal/session_state.h")]
+    [CCode (cname = "session_state", cprefix = "session_state_", cheader_filename = "omemo/session_state.h")]
     public class SessionState : TypeBase {
         //public static int create(out SessionState state, NativeContext context);
         //public static int deserialize(out SessionState state, uint8[] data, NativeContext context);
@@ -157,27 +158,31 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "session_signed_pre_key", cprefix = "session_signed_pre_key_", cheader_filename = "signal/session_pre_key.h")]
+    [CCode (cname = "session_signed_pre_key", cprefix = "session_signed_pre_key_", cheader_filename = "omemo/session_pre_key.h")]
     public class SignedPreKeyRecord : TypeBase {
-        public static int create(out SignedPreKeyRecord pre_key, uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature);
+        public static int create(out SignedPreKeyRecord pre_key, uint32 id, uint64 timestamp, ECKeyPair key_pair, uint8[] signature, uint8[]? signature_omemo);
         [CCode (instance_pos = 2)]
-        public int serialze(out Buffer buffer);
+        public int serialize(out Buffer buffer);
 
         public uint32 id { get; }
         public uint64 timestamp { get; }
         public ECKeyPair key_pair { get; }
         public uint8[] signature { [CCode (cname = "session_signed_pre_key_get_signature_")] get { int x = (int)get_signature_len(); unowned uint8[] res = get_signature(); res.length = x; return res; } }
+        public uint8[] signature_omemo { [CCode (cname = "session_signed_pre_key_get_signature_omemo_")] get { int x = (int)get_signature_omemo_len(); unowned uint8[] res = get_signature_omemo(); res.length = x; return res; } }
 
         [CCode (array_length = false, cname = "session_signed_pre_key_get_signature")]
         private unowned uint8[] get_signature();
         private size_t get_signature_len();
+        [CCode (array_length = false, cname = "session_signed_pre_key_get_signature_omemo")]
+        private unowned uint8[] get_signature_omemo();
+        private size_t get_signature_omemo_len();
     }
 
     /**
-     * Address of an Signal Protocol message recipient
+     * Address of an OMEMO message recipient
      */
     [Compact]
-    [CCode (cname = "signal_protocol_address", cprefix = "signal_protocol_address_", cheader_filename = "signal/signal_protocol.h,signal/signal_helper.h")]
+    [CCode (cname = "signal_protocol_address", cprefix = "signal_protocol_address_", cheader_filename = "omemo/signal_protocol.h,native/helper.h")]
     public class Address {
         public Address(string name, int32 device_id);
         public int32 device_id { get; set; }
@@ -197,7 +202,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ec_public_key", cprefix = "ec_public_key_", cheader_filename = "signal/curve.h,signal/signal_helper.h")]
+    [CCode (cname = "ec_public_key", cprefix = "ec_public_key_", cheader_filename = "omemo/curve.h,native/helper.h")]
     public class ECPublicKey : TypeBase {
         [CCode (cname = "curve_generate_public_key")]
         public static int generate(out ECPublicKey public_key, ECPrivateKey private_key);
@@ -213,12 +218,26 @@ namespace Signal {
             }
             return buffer.data;
         }
+        [CCode (instance_pos = 1, cname = "ec_public_key_serialize_omemo")]
+        private int serialize_omemo_([CCode (pos = 0)] out Buffer buffer);
+        [CCode (cname = "ec_public_key_serialize_omemo_")]
+        public uint8[] serialize_omemo() {
+            Buffer buffer;
+            int code = serialize_omemo_(out buffer);
+            if (code < 0 && code > MIN_ERROR_CODE) {
+                // Can only throw for invalid arguments or out of memory.
+                GLib.assert_not_reached();
+            }
+            return buffer.data;
+        }
+        public Buffer ed { owned get; }
+        public Buffer mont { owned get; }
         public int compare(ECPublicKey other);
         public int memcmp(ECPublicKey other);
     }
 
     [Compact]
-    [CCode (cname = "ec_private_key", cprefix = "ec_private_key_", cheader_filename = "signal/curve.h,signal/signal_helper.h")]
+    [CCode (cname = "ec_private_key", cprefix = "ec_private_key_", cheader_filename = "omemo/curve.h,native/helper.h")]
     public class ECPrivateKey : TypeBase {
         [CCode (instance_pos = 1, cname = "ec_private_key_serialize")]
         private int serialize_([CCode (pos = 0)] out Buffer buffer);
@@ -236,19 +255,19 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ec_key_pair", cprefix="ec_key_pair_", cheader_filename = "signal/curve.h,signal/signal_helper.h")]
+    [CCode (cname = "ec_key_pair", cprefix="ec_key_pair_", cheader_filename = "omemo/curve.h,native/helper.h")]
     public class ECKeyPair : TypeBase {
         public static int create(out ECKeyPair key_pair, ECPublicKey public_key, ECPrivateKey private_key);
         public ECPublicKey public { get; }
         public ECPrivateKey private { get; }
     }
 
-    [CCode (cname = "ratchet_message_keys", cheader_filename = "signal/ratchet.h")]
+    [CCode (cname = "ratchet_message_keys", cheader_filename = "omemo/ratchet.h")]
     public class MessageKeys {
     }
 
     [Compact]
-    [CCode (cname = "ratchet_identity_key_pair", cprefix = "ratchet_identity_key_pair_", cheader_filename = "signal/ratchet.h,signal/signal_helper.h")]
+    [CCode (cname = "ratchet_identity_key_pair", cprefix = "ratchet_identity_key_pair_", cheader_filename = "omemo/ratchet.h,native/helper.h")]
     public class IdentityKeyPair : TypeBase {
         public static int create(out IdentityKeyPair key_pair, ECPublicKey public_key, ECPrivateKey private_key);
         public int serialze(out Buffer buffer);
@@ -261,14 +280,14 @@ namespace Signal {
     public class PublicKeyList {}
 
     /**
-     * The main entry point for Signal Protocol encrypt/decrypt operations.
+     * The main entry point for OMEMO encrypt/decrypt operations.
      *
      * Once a session has been established with session_builder,
      * this class can be used for all encrypt/decrypt operations within
      * that session.
      */
     [Compact]
-    [CCode (cname = "session_cipher", cprefix = "session_cipher_", cheader_filename = "signal/session_cipher.h", free_function = "session_cipher_free")]
+    [CCode (cname = "session_cipher", cprefix = "session_cipher_", cheader_filename = "omemo/session_cipher.h", free_function = "session_cipher_free")]
     public class SessionCipher {
         public void* user_data { get; set; }
         public DecryptionCallback decryption_callback { set; }
@@ -281,29 +300,37 @@ namespace Signal {
             return res;
         }
         [CCode (cname = "session_cipher_decrypt_pre_key_signal_message")]
-        private int decrypt_pre_key_signal_message_(PreKeySignalMessage ciphertext, void* decrypt_context, out Buffer plaintext);
+        private int decrypt_pre_key_message_(PreKeyOmemoMessage ciphertext, void* decrypt_context, out Buffer plaintext);
         [CCode (cname = "session_cipher_decrypt_pre_key_signal_message_")]
-        public uint8[] decrypt_pre_key_signal_message(PreKeySignalMessage ciphertext, void* decrypt_context = null) throws GLib.Error {
+        public uint8[] decrypt_pre_key_message(PreKeyOmemoMessage ciphertext, void* decrypt_context = null) throws GLib.Error {
             Buffer res;
-            throw_by_code(decrypt_pre_key_signal_message_(ciphertext, decrypt_context, out res));
+            throw_by_code(decrypt_pre_key_message_(ciphertext, decrypt_context, out res));
             return res.data;
         }
         [CCode (cname = "session_cipher_decrypt_signal_message")]
-        private int decrypt_signal_message_(SignalMessage ciphertext, void* decrypt_context, out Buffer plaintext);
+        private int decrypt_message_(OmemoMessage ciphertext, void* decrypt_context, out Buffer plaintext);
         [CCode (cname = "session_cipher_decrypt_signal_message_")]
-        public uint8[] decrypt_signal_message(SignalMessage ciphertext, void* decrypt_context = null) throws GLib.Error {
+        public uint8[] decrypt_message(OmemoMessage ciphertext, void* decrypt_context = null) throws GLib.Error {
             Buffer res;
-            throw_by_code(decrypt_signal_message_(ciphertext, decrypt_context, out res));
+            throw_by_code(decrypt_message_(ciphertext, decrypt_context, out res));
             return res.data;
         }
         public int get_remote_registration_id(out uint32 remote_id);
-        public int get_session_version(uint32 version);
+        [CCode (cname = "session_cipher_get_session_version")]
+        private int get_session_version_(out uint32 version);
+        [CCode (cname = "session_cipher_get_session_version_")]
+        public uint32 get_session_version() throws GLib.Error {
+            uint32 res;
+            throw_by_code(get_session_version_(out res));
+            return res;
+        }
+        public uint32 version { get; set; }
 
         [CCode (has_target = false)]
         public delegate int DecryptionCallback(SessionCipher cipher, Buffer plaintext, void* decrypt_context);
     }
 
-    [CCode (cname = "int", cheader_filename = "signal/protocol.h", has_type_id = false)]
+    [CCode (cname = "int", cheader_filename = "omemo/protocol.h", has_type_id = false)]
     public enum CiphertextType {
         [CCode (cname = "CIPHERTEXT_SIGNAL_TYPE")]
         SIGNAL,
@@ -316,7 +343,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "ciphertext_message", cprefix = "ciphertext_message_", cheader_filename = "signal/protocol.h,signal/signal_helper.h")]
+    [CCode (cname = "ciphertext_message", cprefix = "ciphertext_message_", cheader_filename = "omemo/protocol.h,native/helper.h")]
     public abstract class CiphertextMessage : TypeBase {
         public CiphertextType type { get; }
         [CCode (cname = "ciphertext_message_get_serialized")]
@@ -326,8 +353,8 @@ namespace Signal {
         }}
     }
     [Compact]
-    [CCode (cname = "signal_message", cprefix = "signal_message_", cheader_filename = "signal/protocol.h,signal/signal_helper.h")]
-    public class SignalMessage : CiphertextMessage {
+    [CCode (cname = "signal_message", cprefix = "signal_message_", cheader_filename = "omemo/protocol.h,native/helper.h")]
+    public class OmemoMessage : CiphertextMessage {
         public ECPublicKey sender_ratchet_key { get; }
         public uint8 message_version { get; }
         public uint32 counter { get; }
@@ -336,25 +363,25 @@ namespace Signal {
         public static int is_legacy(uint8[] data);
     }
     [Compact]
-    [CCode (cname = "pre_key_signal_message", cprefix = "pre_key_signal_message_", cheader_filename = "signal/protocol.h,signal/signal_helper.h")]
-    public class PreKeySignalMessage : CiphertextMessage {
+    [CCode (cname = "pre_key_signal_message", cprefix = "pre_key_signal_message_", cheader_filename = "omemo/protocol.h,native/helper.h")]
+    public class PreKeyOmemoMessage : CiphertextMessage {
         public uint8 message_version { get; }
         public ECPublicKey identity_key { get; }
         public uint32 registration_id { get; }
         public uint32 pre_key_id { get; }
         public uint32 signed_pre_key_id { get; }
         public ECPublicKey base_key { get; }
-        public SignalMessage signal_message { get; }
+        public OmemoMessage message { get; }
     }
     [Compact]
-    [CCode (cname = "sender_key_message", cprefix = "sender_key_message_", cheader_filename = "signal/protocol.h,signal/signal_helper.h")]
+    [CCode (cname = "sender_key_message", cprefix = "sender_key_message_", cheader_filename = "omemo/protocol.h,native/helper.h")]
     public class SenderKeyMessage : CiphertextMessage {
         public uint32 key_id { get; }
         public uint32 iteration { get; }
         public Buffer ciphertext { get; }
     }
     [Compact]
-    [CCode (cname = "sender_key_distribution_message", cprefix = "sender_key_distribution_message_", cheader_filename = "signal/protocol.h,signal/signal_helper.h")]
+    [CCode (cname = "sender_key_distribution_message", cprefix = "sender_key_distribution_message_", cheader_filename = "omemo/protocol.h,native/helper.h")]
     public class SenderKeyDistributionMessage : CiphertextMessage {
         public uint32 id { get; }
         public uint32 iteration { get; }
@@ -362,7 +389,7 @@ namespace Signal {
         public ECPublicKey signature_key { get; }
     }
 
-    [CCode (cname = "signal_vala_encrypt", cheader_filename = "signal/signal_helper.h")]
+    [CCode (cname = "signal_vala_encrypt", cheader_filename = "native/helper.h")]
     private static int aes_encrypt_(out Buffer output, int cipher, uint8[] key, uint8[] iv, uint8[] plaintext, void *user_data);
 
     [CCode (cname = "signal_vala_encrypt_")]
@@ -372,7 +399,7 @@ namespace Signal {
         return buf.data;
     }
 
-    [CCode (cname = "signal_vala_decrypt", cheader_filename = "signal/signal_helper.h")]
+    [CCode (cname = "signal_vala_decrypt", cheader_filename = "native/helper.h")]
     private static int aes_decrypt_(out Buffer output, int cipher, uint8[] key, uint8[] iv, uint8[] ciphertext, void *user_data);
 
     [CCode (cname = "signal_vala_decrypt_")]
@@ -383,7 +410,7 @@ namespace Signal {
     }
 
     [Compact]
-    [CCode (cname = "signal_context", cprefix="signal_context_", free_function="signal_context_destroy", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_context", cprefix="signal_context_", free_function="signal_context_destroy", cheader_filename = "omemo/signal_protocol.h")]
     public class NativeContext {
         public static int create(out NativeContext context, void* user_data);
         public int set_crypto_provider(NativeCryptoProvider crypto_provider);
@@ -396,7 +423,7 @@ namespace Signal {
     public delegate void LogFunc(LogLevel level, string message, size_t len, void* user_data);
 
     [Compact]
-    [CCode (cname = "signal_crypto_provider", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_crypto_provider", cheader_filename = "omemo/signal_protocol.h")]
     public struct NativeCryptoProvider {
         public RandomFunc random_func;
         public HmacSha256Init hmac_sha256_init_func;
@@ -433,7 +460,7 @@ namespace Signal {
     public delegate int CryptFunc(out Buffer output, Cipher cipher, uint8[] key, uint8[] iv, uint8[] content, void* user_data);
 
     [Compact]
-    [CCode (cname = "signal_protocol_session_store", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_protocol_session_store", cheader_filename = "omemo/signal_protocol.h")]
     public struct NativeSessionStore {
         public LoadSessionFunc load_session_func;
         public GetSubDeviceSessionsFunc get_sub_device_sessions_func;
@@ -458,7 +485,7 @@ namespace Signal {
     public delegate int DeleteAllSessionsFunc([CCode (array_length_type = "size_t")] char[] name, void* user_data);
 
     [Compact]
-    [CCode (cname = "signal_protocol_identity_key_store", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_protocol_identity_key_store", cheader_filename = "omemo/signal_protocol.h")]
     public struct NativeIdentityKeyStore {
         GetIdentityKeyPairFunc get_identity_key_pair;
         GetLocalRegistrationIdFunc get_local_registration_id;
@@ -477,7 +504,7 @@ namespace Signal {
     public delegate int IsTrustedIdentityFunc(Address address, [CCode (array_length_type = "size_t")] uint8[] key, void* user_data);
 
     [Compact]
-    [CCode (cname = "signal_protocol_pre_key_store", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_protocol_pre_key_store", cheader_filename = "omemo/signal_protocol.h")]
     public struct NativePreKeyStore {
         LoadPreKeyFunc load_pre_key;
         StorePreKeyFunc store_pre_key;
@@ -497,7 +524,7 @@ namespace Signal {
 
 
     [Compact]
-    [CCode (cname = "signal_protocol_signed_pre_key_store", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_protocol_signed_pre_key_store", cheader_filename = "omemo/signal_protocol.h")]
     public struct NativeSignedPreKeyStore {
         LoadPreKeyFunc load_signed_pre_key;
         StorePreKeyFunc store_signed_pre_key;
@@ -525,7 +552,7 @@ namespace Signal {
     public delegate void DestroyFunc(void* user_data);
 
     [Compact]
-    [CCode (cname = "signal_protocol_store_context", cprefix = "signal_protocol_store_context_", free_function="signal_protocol_store_context_destroy", cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cname = "signal_protocol_store_context", cprefix = "signal_protocol_store_context_", free_function="signal_protocol_store_context_destroy", cheader_filename = "omemo/signal_protocol.h")]
     public class NativeStoreContext {
         public static int create(out NativeStoreContext context, NativeContext global_context);
         public int set_session_store(NativeSessionStore store);
@@ -536,7 +563,7 @@ namespace Signal {
     }
 
 
-    [CCode (cheader_filename = "signal/signal_protocol.h")]
+    [CCode (cheader_filename = "omemo/signal_protocol.h")]
     namespace Protocol {
 
         /**
@@ -545,7 +572,7 @@ namespace Signal {
          * signal_protocol_store_context instance and operate in terms of higher level
          * library data structures.
          */
-        [CCode (cprefix = "signal_protocol_pre_key_")]
+        [CCode (lower_case_cprefix = "signal_protocol_pre_key_")]
         namespace PreKey {
             public int load_key(NativeStoreContext context, out PreKeyRecord pre_key, uint32 pre_key_id);
             public int store_key(NativeStoreContext context, PreKeyRecord pre_key);
@@ -553,7 +580,7 @@ namespace Signal {
             public int remove_key(NativeStoreContext context, uint32 pre_key_id);
         }
 
-        [CCode (cprefix = "signal_protocol_signed_pre_key_")]
+        [CCode (lower_case_cprefix = "signal_protocol_signed_pre_key_")]
         namespace SignedPreKey {
             public int load_key(NativeStoreContext context, out SignedPreKeyRecord pre_key, uint32 pre_key_id);
             public int store_key(NativeStoreContext context, SignedPreKeyRecord pre_key);
@@ -567,9 +594,9 @@ namespace Signal {
          * signal_protocol_store_context instance and operate in terms of higher level
          * library data structures.
          */
-        [CCode (cprefix = "signal_protocol_session_")]
+        [CCode (lower_case_cprefix = "signal_protocol_session_")]
         namespace Session {
-             public int load_session(NativeStoreContext context, out SessionRecord record, Address address);
+             public int load_session(NativeStoreContext context, out SessionRecord record, Address address, int32 version = 3);
              public int get_sub_device_sessions(NativeStoreContext context, out IntList sessions, char[] name);
              public int store_session(NativeStoreContext context, Address address, SessionRecord record);
              public int contains_session(NativeStoreContext context, Address address);
@@ -577,6 +604,7 @@ namespace Signal {
              public int delete_all_sessions(NativeStoreContext context, char[] name);
         }
 
+        [CCode (lower_case_cprefix = "signal_protocol_identity_")]
         namespace Identity {
             public int get_key_pair(NativeStoreContext store_context, out IdentityKeyPair key_pair);
             public int get_local_registration_id(NativeStoreContext store_context, out uint32 registration_id);
@@ -584,7 +612,7 @@ namespace Signal {
             public int is_trusted_identity(NativeStoreContext store_context, Address address, ECPublicKey identity_key);
         }
 
-        [CCode (cheader_filename = "signal/key_helper.h", cprefix = "signal_protocol_key_helper_")]
+        [CCode (cheader_filename = "omemo/key_helper.h", lower_case_cprefix = "signal_protocol_key_helper_")]
         namespace KeyHelper {
             [Compact]
             [CCode (cname = "signal_protocol_key_helper_pre_key_list_node", cprefix = "signal_protocol_key_helper_key_list_", free_function="signal_protocol_key_helper_key_list_free")]
@@ -599,13 +627,14 @@ namespace Signal {
             public int generate_pre_keys(out PreKeyListNode head, uint start, uint count, NativeContext global_context);
             public int generate_last_resort_pre_key(out PreKeyRecord pre_key, NativeContext global_context);
             public int generate_signed_pre_key(out SignedPreKeyRecord signed_pre_key, IdentityKeyPair identity_key_pair, uint32 signed_pre_key_id, uint64 timestamp, NativeContext global_context);
+            public int upgrade_signed_pre_key(ref SignedPreKeyRecord signed_pre_key, IdentityKeyPair identity_key_pair, NativeContext global_context);
             public int generate_sender_signing_key(out ECKeyPair key_pair, NativeContext global_context);
             public int generate_sender_key(out Buffer key_buffer, NativeContext global_context);
             public int generate_sender_key_id(out int32 key_id, NativeContext global_context);
         }
     }
 
-    [CCode (cheader_filename = "signal/curve.h")]
+    [CCode (cheader_filename = "omemo/curve.h")]
     namespace Curve {
         [CCode (cname = "curve_calculate_agreement")]
         public int calculate_agreement([CCode (array_length = false)] out uint8[] shared_key_data, ECPublicKey public_key, ECPrivateKey private_key);
@@ -615,43 +644,51 @@ namespace Signal {
         public int verify_signature(ECPublicKey signing_key, uint8[] message, uint8[] signature);
     }
 
-    [CCode (cname = "session_builder_create", cheader_filename = "signal/session_builder.h")]
+    [CCode (cname = "session_builder_create", cheader_filename = "omemo/session_builder.h")]
     public static int session_builder_create(out SessionBuilder builder, NativeStoreContext store, Address remote_address, NativeContext global_context);
-    [CCode (cname = "session_cipher_create", cheader_filename = "signal/session_cipher.h")]
+    [CCode (cname = "session_cipher_create", cheader_filename = "omemo/session_cipher.h")]
     public static int session_cipher_create(out SessionCipher cipher, NativeStoreContext store, Address remote_address, NativeContext global_context);
-    [CCode (cname = "pre_key_signal_message_deserialize", cheader_filename = "signal/protocol.h")]
-    public static int pre_key_signal_message_deserialize(out PreKeySignalMessage message, uint8[] data, NativeContext global_context);
-    [CCode (cname = "pre_key_signal_message_copy", cheader_filename = "signal/protocol.h")]
-    public static int pre_key_signal_message_copy(out PreKeySignalMessage message, PreKeySignalMessage other_message, NativeContext global_context);
-    [CCode (cname = "signal_message_create", cheader_filename = "signal/protocol.h")]
-    public static int signal_message_create(out SignalMessage message, uint8 message_version, uint8[] mac_key, ECPublicKey sender_ratchet_key, uint32 counter, uint32 previous_counter, uint8[] ciphertext, ECPublicKey sender_identity_key, ECPublicKey receiver_identity_key, NativeContext global_context);
-    [CCode (cname = "signal_message_deserialize", cheader_filename = "signal/protocol.h")]
-    public static int signal_message_deserialize(out SignalMessage message, uint8[] data, NativeContext global_context);
-    [CCode (cname = "signal_message_copy", cheader_filename = "signal/protocol.h")]
-    public static int signal_message_copy(out SignalMessage message, SignalMessage other_message, NativeContext global_context);
-    [CCode (cname = "curve_generate_key_pair", cheader_filename = "signal/curve.h")]
+    [CCode (cname = "pre_key_signal_message_deserialize", cheader_filename = "omemo/protocol.h")]
+    public static int pre_key_message_deserialize(out PreKeyOmemoMessage message, uint8[] data, NativeContext global_context);
+    [CCode (cname = "pre_key_signal_message_deserialize_omemo", cheader_filename = "omemo/protocol.h")]
+    public static int pre_key_message_deserialize_omemo(out PreKeyOmemoMessage message, uint8[] data, uint32 remote_registration_id, NativeContext global_context);
+    [CCode (cname = "pre_key_signal_message_copy", cheader_filename = "omemo/protocol.h")]
+    public static int pre_key_message_copy(out PreKeyOmemoMessage message, PreKeyOmemoMessage other_message, NativeContext global_context);
+    [CCode (cname = "signal_message_create", cheader_filename = "omemo/protocol.h")]
+    public static int message_create(out OmemoMessage message, uint8 message_version, uint8[] mac_key, ECPublicKey sender_ratchet_key, uint32 counter, uint32 previous_counter, uint8[] ciphertext, ECPublicKey sender_identity_key, ECPublicKey receiver_identity_key, NativeContext global_context);
+    [CCode (cname = "signal_message_deserialize", cheader_filename = "omemo/protocol.h")]
+    public static int message_deserialize(out OmemoMessage message, uint8[] data, NativeContext global_context);
+    [CCode (cname = "signal_message_deserialize_omemo", cheader_filename = "omemo/protocol.h")]
+    public static int message_deserialize_omemo(out OmemoMessage message, uint8[] data, NativeContext global_context);
+    [CCode (cname = "signal_message_copy", cheader_filename = "omemo/protocol.h")]
+    public static int message_copy(out OmemoMessage message, OmemoMessage other_message, NativeContext global_context);
+    [CCode (cname = "curve_generate_key_pair", cheader_filename = "omemo/curve.h")]
     public static int curve_generate_key_pair(NativeContext context, out ECKeyPair key_pair);
-    [CCode (cname = "curve_decode_private_point", cheader_filename = "signal/curve.h")]
+    [CCode (cname = "curve_decode_private_point", cheader_filename = "omemo/curve.h")]
     public static int curve_decode_private_point(out ECPrivateKey public_key, uint8[] key, NativeContext global_context);
-    [CCode (cname = "curve_decode_point", cheader_filename = "signal/curve.h")]
+    [CCode (cname = "curve_decode_point", cheader_filename = "omemo/curve.h")]
     public static int curve_decode_point(out ECPublicKey public_key, uint8[] key, NativeContext global_context);
-    [CCode (cname = "curve_generate_private_key", cheader_filename = "signal/curve.h")]
+    [CCode (cname = "curve_decode_point_ed", cheader_filename = "omemo/curve.h")]
+    public static int curve_decode_point_ed(out ECPublicKey public_key, uint8[] key, NativeContext global_context);
+    [CCode (cname = "curve_decode_point_mont", cheader_filename = "omemo/curve.h")]
+    public static int curve_decode_point_mont(out ECPublicKey public_key, uint8[] key, NativeContext global_context);
+    [CCode (cname = "curve_generate_private_key", cheader_filename = "omemo/curve.h")]
     public static int curve_generate_private_key(NativeContext context, out ECPrivateKey private_key);
-    [CCode (cname = "ratchet_identity_key_pair_deserialize", cheader_filename = "signal/ratchet.h")]
+    [CCode (cname = "ratchet_identity_key_pair_deserialize", cheader_filename = "omemo/ratchet.h")]
     public static int ratchet_identity_key_pair_deserialize(out IdentityKeyPair key_pair, uint8[] data, NativeContext global_context);
-    [CCode (cname = "session_signed_pre_key_deserialize", cheader_filename = "signal/signed_pre_key.h")]
+    [CCode (cname = "session_signed_pre_key_deserialize", cheader_filename = "omemo/signed_pre_key.h")]
     public static int session_signed_pre_key_deserialize(out SignedPreKeyRecord pre_key, uint8[] data, NativeContext global_context);
 
     [Compact]
-    [CCode (cname = "hkdf_context", cprefix = "hkdf_", free_function = "hkdf_destroy", cheader_filename = "signal/hkdf.h")]
+    [CCode (cname = "hkdf_context", cprefix = "hkdf_", free_function = "hkdf_destroy", cheader_filename = "omemo/hkdf.h")]
     public class NativeHkdfContext {
         public static int create(out NativeHkdfContext context, int message_version, NativeContext global_context);
         public int compare(NativeHkdfContext other);
         public ssize_t derive_secrets([CCode (array_length = false)] out uint8[] output, uint8[] input_key_material, uint8[] salt, uint8[] info, size_t output_len);
     }
 
-    [CCode (cname = "setup_signal_vala_crypto_provider", cheader_filename = "signal/signal_helper.h")]
+    [CCode (cname = "setup_signal_vala_crypto_provider", cheader_filename = "native/helper.h")]
     public static void setup_crypto_provider(NativeContext context);
-    [CCode (cname = "signal_vala_randomize", cheader_filename = "signal/signal_helper.h")]
+    [CCode (cname = "signal_vala_randomize", cheader_filename = "native/helper.h")]
     public static int native_random(uint8[] data);
 }

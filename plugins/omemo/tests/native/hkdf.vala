@@ -1,4 +1,4 @@
-namespace Signal.Test {
+namespace Omemo.Test {
 
 class HKDF : Gee.TestCase {
 
