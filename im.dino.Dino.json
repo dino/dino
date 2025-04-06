@@ -1,7 +1,7 @@
 {
     "id": "im.dino.Dino",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "47",
+    "runtime-version": "48",
     "sdk": "org.gnome.Sdk",
     "command": "dino",
     "finish-args": [
@@ -17,20 +17,59 @@
     ],
     "modules": [
         {
-            "name": "libsignal-protocol-c",
+            "name": "protobuf",
             "buildsystem": "cmake-ninja",
-            "config-opts": [
-                "-DCMAKE_C_FLAGS=-fPIC"
-            ],
             "cleanup": [
-                "/include",
-                "/lib"
+                "*"
+            ],
+            "config-opts": [
+                "-Dprotobuf_BUILD_TESTS=OFF",
+                "-Dprotobuf_BUILD_LIBUPB=OFF"
             ],
             "sources": [
                 {
                     "type": "git",
-                    "url": "https://github.com/mar-v-in/libsignal-protocol-c.git",
-                    "tag": "v2.3.3.1"
+                    "url": "https://github.com/protocolbuffers/protobuf.git",
+                    "tag": "v29.4"
+                }
+            ]
+        },
+        {
+            "name": "libprotobuf-c",
+            "buildsystem": "autotools",
+            "config-opts": [
+                "CFLAGS=-fPIC"
+            ],
+            "post-install": [
+                "rm /app/lib/*.so"
+            ],
+            "cleanup": [
+                "*"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/protobuf-c/protobuf-c.git",
+                    "tag": "v1.5.1"
+                }
+            ]
+        },
+        {
+            "name": "libomemo-c",
+            "buildsystem": "meson",
+            "cleanup": [
+                "/lib/pkgconfig",
+                "/include"
+            ],
+            "config-opts": [
+                "-Dtests=false",
+                "-Ddefault_library=static"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/dino/libomemo-c.git",
+                    "tag": "v0.5.1"
                 }
             ]
         },
@@ -38,10 +77,7 @@
             "name": "qrencode",
             "buildsystem": "cmake-ninja",
             "cleanup": [
-                "/bin",
-                "/include",
-                "/lib",
-                "/share/man"
+                "*"
             ],
             "config-opts": [
                 "-DCMAKE_C_FLAGS=-fPIC"
