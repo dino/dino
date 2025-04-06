@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2025-01-20 04:55+0000\n"
+"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"PO-Revision-Date: 2025-03-17 10:14+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -11,14 +11,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
-msgstr "%s 使用的是未受信任的设备。您不会看到来自您不信任的设备的消息。"
+msgstr "%s 正在使用未受信任的设备。您将无法查看来自您未信任的设备的消息。"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
@@ -28,7 +28,7 @@ msgstr "管理设备"
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr "%s 不信任此设备，这意味着您可能会丢失消息。"
+msgstr "%s 未信任此设备，这意味着您可能会丢失消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
@@ -38,7 +38,7 @@ msgstr "管理密钥"
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
-msgstr "将指纹逐个字符与联系人设备上显示的指纹进行比较。"
+msgstr "请将指纹逐个字符与对方设备上显示的指纹进行比对。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
@@ -67,7 +67,7 @@ msgstr "验证密钥"
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
-msgstr "今后 %s 从使用此密钥的设备发送的消息将在聊天窗口中相应地突出显示。"
+msgstr "%s 今后从使用此密钥的设备发送的消息将在聊天窗口中相应突出显示。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
@@ -80,7 +80,7 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"请验证您正在比较的指纹是否正确。如果指纹不匹配，%s 的账号可能已被盗用，您应考"
+"请验证您正在比对的指纹是否正确。如果指纹不匹配，%s 的账号可能已被盗用，您应考"
 "虑拒绝此密钥。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
@@ -91,40 +91,40 @@ msgstr "验证密钥指纹"
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
-msgstr "将此密钥的指纹与联系人设备上显示的指纹进行比较。"
+msgstr "请将此密钥的指纹与对方设备上显示的指纹进行比对。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:289
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
 msgid "Reject key"
 msgstr "拒绝密钥"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr "阻止与使用此密钥的联系人设备的加密交流。"
+msgstr "阻止与使用此密钥的对方设备进行加密通信。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:284
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
 msgid "Accept key"
 msgstr "接受密钥"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr "允许与使用此密钥的联系人设备的加密交流。"
+msgstr "允许与使用此密钥的对方设备进行加密通信。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr "此密钥当前已%s。"
+msgstr "此密钥当前%s。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr "接受"
+msgstr "已接受"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
@@ -134,23 +134,23 @@ msgstr "这意味着 %s 可以使用此密钥来接收和发送加密消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr "验证"
+msgstr "已验证"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr "此外，已验证与联系人设备上的密钥匹配。"
+msgstr "此外，已验证其与对方设备上的密钥匹配。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr "拒绝"
+msgstr "已拒绝"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
-msgstr "这意味着 %s 无法使用它来解密您的消息，您将不会看到用它加密的消息。"
+msgstr "这意味着 %s 无法使用它来解密您的消息，您将无法查看用它加密的消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
@@ -158,8 +158,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"您将不会看到 %s 的使用此密钥的设备的加密消息。相反，那个设备将无法解密您的消"
-"息。"
+"您将无法查看来自 %s 的使用此密钥的设备的加密消息。反之，该设备将无法再解密您"
+"的消息。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
@@ -182,51 +182,51 @@ msgstr "此联系人有新设备"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "需要 OMEMO 信任决策"
+msgstr "需要 OMEMO 信任决定"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
 msgstr "您是否为账号 %s 添加了新设备？"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "OMEMO by default"
 msgstr "默认使用 OMEMO"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "为新对话启用 OMEMO 加密"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "Encrypt to new devices"
 msgstr "加密新设备"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "自动加密此联系人的新设备。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
 msgid "New keys"
 msgstr "新密钥"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:101
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr "将自动接受来自您其他设备的新加密密钥。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:223
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "已接受"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:226
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
 msgid "Rejected"
 msgstr "已拒绝"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:229
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
 msgid "Verified"
 msgstr "已验证"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:278
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
 msgid "New device"
 msgstr "新设备"
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-09-10 14:09+0000\n"
+"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"PO-Revision-Date: 2025-03-13 23:17+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/"
 "translations/gl/>\n"
 "Language: gl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -991,11 +991,11 @@ msgstr "Ler"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Enviar solicitude"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Aínda non recibes actualizacións de estado deste contacto."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1016,7 +1016,7 @@ msgstr "Esta conversa non admite respostas."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Descargando %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1026,7 +1026,7 @@ msgstr "Descargando %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Subindo %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1064,7 +1064,7 @@ msgstr "Actualizar mensaxe"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Acceder"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1128,23 +1128,23 @@ msgstr "Retirar conta"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Cambiar contrasinal"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Cambiar"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Contrasinal actual"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Novo contrasinal"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirmar contrasinal"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1160,7 +1160,7 @@ msgstr "Xeral"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Mostrar os axustes"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"

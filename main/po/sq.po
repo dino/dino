@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-12-09 10:00+0000\n"
+"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"PO-Revision-Date: 2025-03-13 08:50+0000\n"
 "Language-Team: none\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -268,7 +268,7 @@ msgstr "Formësim Dhome"
 
 #: main/src/windows/conversation_details.vala:211
 msgid "Encryption"
-msgstr ""
+msgstr "Fshehtëzim"
 
 #: main/src/windows/conversation_details.vala:221
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -989,11 +989,11 @@ msgstr "I lexuar"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Dërgo kërkesë"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "S’merrni ende prej këtij kontakti përditësime gjendjesh."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1014,7 +1014,7 @@ msgstr "Kjo bisedë nuk mbulon përgjigje."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Po shkarkohen %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1024,7 +1024,7 @@ msgstr "Po shkarkohet %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Po ngarkohen %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1062,7 +1062,7 @@ msgstr "Përditësoni mesazhin"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Hyrje"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1126,23 +1126,23 @@ msgstr "Hiqe llogarinë"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Ndryshoni fjalëkalimin"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Ndryshoje"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Fjalëkalimi i tanishëm"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Fjalëkalim i ri"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Ripohoni fjalëkalimin"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1158,7 +1158,7 @@ msgstr "Të përgjithshme"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Shfaq parapëlqime"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2023-11-05 18:35+0000\n"
+"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"PO-Revision-Date: 2025-03-13 08:50+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -39,11 +39,11 @@ msgstr "Connetti"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 #: main/data/preferences_window/account_preferences_subpage.ui:127
 msgid "Disable account"
-msgstr ""
+msgstr "Disabilita l'account"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 msgid "Enable account"
-msgstr ""
+msgstr "Abilita l'account"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Select avatar"
@@ -102,7 +102,7 @@ msgstr "Account"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Account disabilitato"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -116,8 +116,9 @@ msgid "No active accounts"
 msgstr "Nessun account attivo"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
+#, fuzzy
 msgid "Sign in"
-msgstr "Accedi"
+msgstr "Registrati"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
@@ -203,31 +204,31 @@ msgstr "Controlla %s per informazioni su come registrarsi"
 
 #: main/src/windows/conversation_details.vala:72
 msgid "Block user"
-msgstr ""
+msgstr "Blocca l'utente"
 
 #: main/src/windows/conversation_details.vala:72
 msgid "Block entire domain"
-msgstr ""
+msgstr "Blocca l'intero dominio"
 
 #: main/src/windows/conversation_details.vala:72
 msgid "Unblock"
-msgstr ""
+msgstr "Sblocca"
 
 #: main/src/windows/conversation_details.vala:90
 msgid "Pinned"
-msgstr ""
+msgstr "Fissato"
 
 #: main/src/windows/conversation_details.vala:90
 msgid "Pin"
-msgstr ""
+msgstr "Fissa"
 
 #: main/src/windows/conversation_details.vala:101
 msgid "Blocked"
-msgstr ""
+msgstr "Bloccato"
 
 #: main/src/windows/conversation_details.vala:105
 msgid "Domain blocked"
-msgstr ""
+msgstr "Dominio bloccato"
 
 #: main/src/windows/conversation_details.vala:109
 msgid "Block"
@@ -236,28 +237,28 @@ msgstr "Blocca"
 #: main/src/windows/conversation_details.vala:128
 #: main/src/windows/conversation_details.vala:129
 msgid "Mute"
-msgstr ""
+msgstr "Silenza"
 
 #: main/src/windows/conversation_details.vala:130
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Notifiche abilitate"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Notifiche per menzioni"
 
 #: main/src/windows/conversation_details.vala:136
 #: main/src/windows/conversation_details.vala:137
 msgid "Muted"
-msgstr ""
+msgstr "Silenziato"
 
 #: main/src/windows/conversation_details.vala:138
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Notifiche disabilitate"
 
 #: main/src/windows/conversation_details.vala:193
 msgid "About"
-msgstr ""
+msgstr "Informazioni"
 
 #: main/src/windows/conversation_details.vala:196
 msgid "Settings"
@@ -269,7 +270,7 @@ msgstr "Configurazione della stanza"
 
 #: main/src/windows/conversation_details.vala:211
 msgid "Encryption"
-msgstr ""
+msgstr "Crittografia"
 
 #: main/src/windows/conversation_details.vala:221
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -582,11 +583,11 @@ msgstr "Cerca tra i messaggi"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Dettagli sulla conversazione"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Chiudi conversazione"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -706,7 +707,7 @@ msgid "Today"
 msgstr "Oggi"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -802,6 +803,7 @@ msgid "%s requests the permission to write in %s"
 msgstr "%s ha chiesto il permesso di scrivere in %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:29
+#, fuzzy
 msgid "Send typing notifications"
 msgstr "Invia notifiche di digitazione"
 
@@ -851,15 +853,15 @@ msgstr "Gestisci account"
 #: main/src/ui/conversation_details.vala:146
 #: main/data/preferences_window/account_preferences_subpage.ui:71
 msgid "XMPP Address"
-msgstr ""
+msgstr "Indirizzo XMPP"
 
 #: main/src/ui/conversation_details.vala:151
 msgid "Display name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #: main/src/ui/conversation_details.vala:165
 msgid "Topic"
-msgstr ""
+msgstr "Argomento"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:233
 msgid "Edit message"
@@ -990,11 +992,11 @@ msgstr "Letto"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Invia richiesta"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Non ricevi ancora aggiornamenti sullo stato da questo contatto."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1015,7 +1017,7 @@ msgstr "Questa conversazione non supporta le risposte."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Scaricamento %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1025,7 +1027,7 @@ msgstr "Scaricamento di %s in corso…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Caricamento %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1051,7 +1053,7 @@ msgstr "File"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nuovo"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1063,7 +1065,7 @@ msgstr "Aggiorna il messaggio"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Accedi"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1095,23 +1097,24 @@ msgstr "Fine"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Invia notifiche di _digitazione"
 
 #: main/data/preferences_window/general_preferences_page.ui:22
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Invia ricevute di _lettura"
 
 #: main/data/preferences_window/general_preferences_page.ui:38
 msgid "_Notifications"
-msgstr ""
+msgstr "_Notifiche"
 
 #: main/data/preferences_window/general_preferences_page.ui:39
 msgid "Notify when a new message arrives"
 msgstr "Notifica quando arriva un nuovo messaggio"
 
 #: main/data/preferences_window/general_preferences_page.ui:55
+#, fuzzy
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Trasforma gli smile in emoji"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:79
 msgid "Local alias"
@@ -1119,31 +1122,31 @@ msgstr "Alias locale"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:106
 msgid "Connection status"
-msgstr ""
+msgstr "Stato della connessione"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:136
 msgid "Remove account"
-msgstr ""
+msgstr "Rimuovi l'account"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Cambia password"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Cambia"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Password corrente"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Nuova password"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Conferma password"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1159,11 +1162,11 @@ msgstr "Generali"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Mostra le preferenze"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Scorciatoie da tastiera"
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
