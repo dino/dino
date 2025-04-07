@@ -84,14 +84,14 @@ namespace Dino.Ui {
             base.snapshot(snapshot);
 
             if ((state == State.DOWNLOADING || state == State.UPLOADING) && progress_animation.value > 0.01) {
-                Gdk.RGBA fg_color = get_color();
-                get_style_context().lookup_color("accent_color", out fg_color);
 
                 float radius = float.max(int.min(get_width(), get_height()) / 2, 1);
                 float line_width = (float) LINE_WIDTH;
 
                 snapshot.translate({get_width() / 2, get_height() / 2});
 #if GTK_4_14
+                var fg_color = get_color();
+                get_style_context().lookup_color("accent_color", out fg_color);
                 var builder = new Gsk.PathBuilder();
                 builder.add_circle({0, 0}, radius - line_width / 2);
                 var circle_path = builder.to_path();
@@ -100,6 +100,8 @@ namespace Dino.Ui {
                 var arc_path = create_progress_arc(circle_path, (float) progress_animation.value);
                 snapshot.append_stroke(arc_path, stroke, fg_color);
 #else
+                var fg_color = get_style_context().get_color();
+                get_style_context().lookup_color("accent_color", out fg_color);
                 var context = snapshot.append_cairo({{-radius, -radius}, {radius*2, radius*2}});
                 context.set_line_cap(Cairo.LineCap.ROUND);
                 context.set_line_width(line_width);
