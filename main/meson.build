@@ -49,6 +49,7 @@ sources = files(
     'src/ui/conversation_content_view/file_default_widget.vala',
     'src/ui/conversation_content_view/file_image_widget.vala',
     'src/ui/conversation_content_view/file_transmission_progress.vala',
+    'src/ui/conversation_content_view/file_transmission_progress.c',
     'src/ui/conversation_content_view/file_widget.vala',
     'src/ui/conversation_content_view/item_actions.vala',
     'src/ui/conversation_content_view/message_widget.vala',

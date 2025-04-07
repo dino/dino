@@ -21,44 +21,30 @@ namespace Dino.Ui {
         public int64 transferred_size { get; set; }
         public State state { get; set; }
 
-        private CssProvider css_provider = new CssProvider();
+        private const int LINE_WIDTH = 4;
+
         private Button button = new Button();
 
-        private uint64 next_update_time = 0;
-        private int64 last_progress_percent = 0;
-        private uint update_progress_timeout_id = -1;
+        private Adw.TimedAnimation progress_animation;
 
         construct {
-            add_css_class("circular-loading-indicator");
-
+            add_css_class("circular-osd");
             button.add_css_class("circular");
-            Adw.Bin holder = new Adw.Bin();
-            holder.set_child(button);
-            this.set_child(holder);
+            button.margin_start = button.margin_end = button.margin_top = button.margin_bottom = LINE_WIDTH;
+            this.set_child(button);
 
             this.button.clicked.connect(on_button_clicked);
 
-            this.notify["transferred-size"].connect(on_transferred_size_update);
+            this.notify["transferred-size"].connect(update_progress);
             this.notify["state"].connect(on_state_changed);
             on_state_changed();
+
+            setup_animation();
         }
 
-        private void on_transferred_size_update() {
-            if (update_progress_timeout_id == -1) {
-                int64 progress_percent = transferred_size * 100 / file_size;
-                if (progress_percent != last_progress_percent) {
-                    uint64 time_now = get_monotonic_time() / 1000;
-                    if (next_update_time > time_now) {
-                        update_progress_timeout_id = Timeout.add((uint) (next_update_time - time_now), () => {
-                            update_progress();
-                            update_progress_timeout_id = -1;
-                            return Source.REMOVE;
-                        });
-                    } else {
-                        update_progress();
-                    }
-                }
-            }
+        private void setup_animation() {
+            progress_animation = new Adw.TimedAnimation(this, 0.0, 0.0, 250, new Adw.CallbackAnimationTarget(queue_draw)) { easing = Adw.Easing.LINEAR };
+            progress_animation.done.connect(update_progress);
         }
 
         private void on_state_changed() {
@@ -80,17 +66,41 @@ namespace Dino.Ui {
         }
 
         private void update_progress() {
-            this.get_style_context().remove_provider(css_provider);
-            int64 progress_percent = transferred_size * 100 / file_size;
+            if (file_size == 0 || progress_animation == null) return;
+            double next_value = (double)transferred_size / (double)file_size;
+            if (progress_animation != null && progress_animation.value_to != next_value) {
+                progress_animation.value_from = progress_animation.value;
+                progress_animation.value_to = next_value;
+                progress_animation.reset();
+                progress_animation.play();
+            }
+        }
 
-            css_provider = Util.force_css(this, @"
-                .circular-loading-indicator {
-                  background-image: conic-gradient(@accent_color $(progress_percent)%, transparent $(progress_percent)%);
+        private static extern Gsk.Path create_progress_arc(Gsk.Path circle, float percentage);
+
+        public override void snapshot(Gtk.Snapshot snapshot) {
+            base.snapshot(snapshot);
+
+            if (state == State.DOWNLOADING || state == State.UPLOADING) {
+                Gdk.RGBA fg_color = get_color();
+                get_style_context().lookup_color("accent_color", out fg_color);
+
+                float radius = float.max(int.min(get_width(), get_height()) / 2, 1);
+                float line_width = (float) LINE_WIDTH;
+
+                var stroke = new Gsk.Stroke(line_width);
+                stroke.set_line_cap(Gsk.LineCap.ROUND);
+
+                snapshot.translate({get_width() / 2, get_height() / 2});
+
+                var builder = new Gsk.PathBuilder();
+                builder.add_circle({0, 0}, radius - line_width / 2);
+                var circle_path = builder.to_path();
+                if (progress_animation.value > 0.01) {
+                    var arc_path = create_progress_arc(circle_path, (float) progress_animation.value);
+                    snapshot.append_stroke(arc_path, stroke, fg_color);
                 }
-            ");
-
-            next_update_time = get_monotonic_time() / 1000 + 500;
-            last_progress_percent = progress_percent;
+            }
         }
 
         private void on_button_clicked() {
@@ -109,10 +119,7 @@ namespace Dino.Ui {
         }
 
         public override void dispose() {
-            if (update_progress_timeout_id != -1) {
-                Source.remove(update_progress_timeout_id);
-                update_progress_timeout_id = -1;
-            }
+            progress_animation = null;
             base.dispose();
         }
     }

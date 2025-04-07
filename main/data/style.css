@@ -188,19 +188,9 @@ window.dino-main .file-image-widget .file-box-outer button:hover {
     padding: 5px 10px;
 }
 
-.dino-main .circular-loading-indicator {
-    border-radius: 50%;
-    padding: 5px;
-    transition: background-image 0.5s linear;
-}
-
-.dino-main .circular-loading-indicator > * {
-    border-radius: 50%;
-    background: @theme_bg_color;
-}
-
-.dino-main .circular-loading-indicator button {
-    padding: 2px;
+.dino-main .circular-osd {
+    background: alpha(@theme_bg_color, 0.75);
+    border-radius: 100%;
 }
 
 /* Call widget */
