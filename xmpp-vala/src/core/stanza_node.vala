@@ -102,7 +102,7 @@ public class StanzaNode : StanzaEntry {
         if (attribute_str == null) return def;
 
         int res = def;
-        bool parse_success = int.try_parse(attribute_str, out res);
+        bool parse_success = int.try_parse(attribute_str, out res, null, 10);
         if (!parse_success) {
             info("Could not parse int attribute %s: %s", name, attribute_str);
             return def;
@@ -112,10 +112,10 @@ public class StanzaNode : StanzaEntry {
 
     public uint get_attribute_uint(string name, uint def = 0, string? ns_uri = null) {
         string? attribute_str = get_attribute(name, ns_uri);
-        if (attribute_str == null) return def;
+        if (attribute_str == null || attribute_str.strip().has_prefix("-")) return def;
 
         uint res = def;
-        bool parse_success = uint.try_parse(attribute_str, out res);
+        bool parse_success = uint.try_parse(attribute_str, out res, null, 10);
         if (!parse_success) {
             info("Could not parse uint attribute %s: %s", name, attribute_str);
             return def;
