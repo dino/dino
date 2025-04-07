@@ -29,6 +29,17 @@ public class Util {
                 assert_not_reached();
         }
     }
+
+    public static bool is_pixbuf_supported_mime_type(string mime_type) {
+        if (mime_type == null) return false;
+
+        foreach (Gdk.PixbufFormat pixbuf_format in Gdk.Pixbuf.get_formats()) {
+            foreach (string pixbuf_mime in pixbuf_format.get_mime_types()) {
+                if (pixbuf_mime == mime_type) return true;
+            }
+        }
+        return false;
+    }
 }
 
 }
