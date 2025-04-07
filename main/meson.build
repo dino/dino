@@ -49,7 +49,6 @@ sources = files(
     'src/ui/conversation_content_view/file_default_widget.vala',
     'src/ui/conversation_content_view/file_image_widget.vala',
     'src/ui/conversation_content_view/file_transmission_progress.vala',
-    'src/ui/conversation_content_view/file_transmission_progress.c',
     'src/ui/conversation_content_view/file_widget.vala',
     'src/ui/conversation_content_view/item_actions.vala',
     'src/ui/conversation_content_view/message_widget.vala',
@@ -125,6 +124,10 @@ if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.8'
 endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.12')
     vala_args += ['-D', 'GTK_4_12']
+endif
+if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.14')
+    vala_args += ['-D', 'GTK_4_14']
+    sources += files('src/ui/conversation_content_view/file_transmission_progress.c')
 endif
 if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.3')
     vala_args += ['-D', 'Adw_1_3']
