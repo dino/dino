@@ -36,7 +36,8 @@ namespace Dino {
 
     public class ImageFileMetadataProvider: Dino.FileMetadataProvider, Object {
         public bool supports_file(File file) {
-            return file.query_info("*", FileQueryInfoFlags.NONE).get_content_type().has_prefix("image");
+            string mime_type = file.query_info("*", FileQueryInfoFlags.NONE).get_content_type();
+            return Dino.Util.is_pixbuf_supported_mime_type(mime_type);
         }
 
         private const int[] THUMBNAIL_DIMS = { 1, 2, 3, 4, 8 };

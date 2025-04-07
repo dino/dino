@@ -247,19 +247,8 @@ public class FileImageWidget : Widget {
     }
 
     public static bool can_display(FileTransfer file_transfer) {
-        return file_transfer.mime_type != null && is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
+        return file_transfer.mime_type != null && Dino.Util.is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
                 (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.thumbnails.size > 0);
-    }
-
-    public static bool is_pixbuf_supported_mime_type(string mime_type) {
-        if (mime_type == null) return false;
-
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string pixbuf_mime in pixbuf_format.get_mime_types()) {
-                if (pixbuf_mime == mime_type) return true;
-            }
-        }
-        return false;
     }
 
     public override void dispose() {

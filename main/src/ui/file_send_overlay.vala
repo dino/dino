@@ -59,15 +59,7 @@ public class FileSendOverlay {
         string file_name = file_info.get_display_name();
         string mime_type = file_info.get_content_type();
 
-        bool is_image = false;
-
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string supported_mime_type in pixbuf_format.get_mime_types()) {
-                if (supported_mime_type == mime_type) {
-                    is_image = true;
-                }
-            }
-        }
+        bool is_image = Dino.Util.is_pixbuf_supported_mime_type(mime_type);
 
         Widget? widget = null;
         if (is_image) {
