@@ -70,14 +70,14 @@ namespace Dino {
             Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
             if (plugin == null) return false;
 
-            return plugin.supports(null);
+            return plugin.supported();
         }
 
         public async bool can_conversation_do_calls(Conversation conversation) {
             if (!can_we_do_calls(conversation.account)) return false;
 
             if (conversation.type_ == Conversation.Type.CHAT) {
-                return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
+                return !conversation.counterpart.equals_bare(conversation.account.bare_jid);
             } else {
                 bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
                 return is_private && can_initiate_groupcall(conversation.account);

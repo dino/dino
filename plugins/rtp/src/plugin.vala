@@ -279,19 +279,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         Gst.deinit();
     }
 
-    public bool supports(string? media) {
-        if (!codec_util.is_element_supported("rtpbin")) return false;
-
-        if (media == "audio") {
-            if (get_devices("audio", false).is_empty) return false;
-            if (get_devices("audio", true).is_empty) return false;
-        }
-
-        if (media == "video") {
-            if (get_devices("video", false).is_empty) return false;
-        }
-
-        return true;
+    public bool supported() {
+        return codec_util.is_element_supported("rtpbin");
     }
 
     public VideoCallWidget? create_widget(WidgetType type) {
