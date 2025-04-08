@@ -368,49 +368,18 @@ box.dino-input-error .chat-input-status.input-status-highlight-once {
     min-height: 0;
 }
 
-.dino-call-window headerbar, .call-button {
+.dino-call-window headerbar {
     box-shadow: none;
 }
 
-.dino-call-window button.call-button {
-    outline: 0;
-    border-radius: 1000px;
-}
-
-.dino-call-window button.white-button {
-    color: #1d1c1d;
-    background: rgba(255,255,255,0.85);
-    border: lightgrey;
-}
-.dino-call-window button.white-button:hover {
-    background: rgba(255,255,255,1);
-}
-
-.dino-call-window button.transparent-white-button {
-    color: white;
-    background: rgba(255,255,255,0.15);
-    border: none;
-}
-.dino-call-window button.transparent-white-button:hover {
-    background: rgba(255,255,255,0.25);
+.dino-call-window .call-button {
+    border-radius: 100%;
+    background-color: @theme_bg_color;
 }
 
 .dino-call-window menubutton.call-mediadevice-settings-button button.toggle {
-    border-radius: 1000px;
-    min-height: 0;
-    min-width: 0;
-    padding: 3px;
-    margin: 2px;
-    transition-duration: 0;
-}
-
-.dino-call-window menubutton.call-mediadevice-settings-button button.toggle:hover,
-.dino-call-window menubutton.call-mediadevice-settings-button button.toggle:checked { /* Effect that makes the button slightly larger on hover :) */
-    border-radius: 1000px;
-    min-height: 0;
-    min-width: 0;
-    padding: 5px;
-    margin: 0;
+    min-width: 18px;
+    min-height: 18px;
 }
 
 .dino-call-window .participant-header-bar .titles {

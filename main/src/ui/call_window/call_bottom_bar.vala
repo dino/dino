@@ -32,31 +32,44 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
         Box main_buttons = new Box(Orientation.HORIZONTAL, 20) { margin_start=40, margin_end=40, margin_bottom=20, margin_top=20, halign=Align.CENTER, hexpand=true };
 
         audio_button.set_child(audio_image);
-        audio_button.add_css_class("call-button");
+        audio_button.add_css_class("circular");
         audio_button.clicked.connect(() => { audio_enabled = !audio_enabled; });
-        audio_button.margin_end = audio_button.margin_bottom = 5; // space for the small settings button
-        audio_button_overlay.set_child(audio_button);
+        Adw.Bin audio_button_bin = new Adw.Bin();
+        audio_button_bin.add_css_class("call-button");
+        audio_button_bin.margin_end = audio_button_bin.margin_bottom = 5; // space for the small settings button
+        audio_button_bin.set_child(audio_button);
+        audio_button_overlay.set_child(audio_button_bin);
         audio_button_overlay.add_overlay(audio_settings_button);
         Util.menu_button_set_icon_with_size(audio_settings_button, "go-up-symbolic", 10);
+        audio_settings_button.add_css_class("circular");
+        audio_settings_button.add_css_class("call-button");
         audio_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(audio_button_overlay);
 
         video_button.set_child(video_image);
-        video_button.add_css_class("call-button");
+        video_button.add_css_class("circular");
         video_button.clicked.connect(() => { video_enabled = !video_enabled; });
-        video_button.margin_end = video_button.margin_bottom = 5;
-        video_button_overlay.set_child(video_button);
+        Adw.Bin video_button_bin = new Adw.Bin();
+        video_button_bin.add_css_class("call-button");
+        video_button_bin.margin_end = video_button_bin.margin_bottom = 5;
+        video_button_bin.set_child(video_button);
+        video_button_overlay.set_child(video_button_bin);
         video_button_overlay.add_overlay(video_settings_button);
         Util.menu_button_set_icon_with_size(video_settings_button, "go-up-symbolic", 10);
+        video_settings_button.add_css_class("circular");
+        video_settings_button.add_css_class("call-button");
         video_settings_button.add_css_class("call-mediadevice-settings-button");
         main_buttons.append(video_button_overlay);
 
         Button button_hang = new Button() { height_request=45, width_request=45, halign=Align.START, valign=Align.START };
         button_hang.set_child(new Image() { icon_name="dino-phone-hangup-symbolic", pixel_size=22 });
-        button_hang.add_css_class("call-button");
+        button_hang.add_css_class("circular");
         button_hang.add_css_class("destructive-action");
         button_hang.clicked.connect(() => hang_up());
-        main_buttons.append(button_hang);
+        Adw.Bin button_hang_bin = new Adw.Bin() { valign=Align.START };
+        button_hang_bin.add_css_class("call-button");
+        button_hang_bin.set_child(button_hang);
+        main_buttons.append(button_hang_bin);
 
         label.add_css_class("text-no-controls");
 
