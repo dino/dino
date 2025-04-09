@@ -19,6 +19,7 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     public string id { owned get { return device_name; }}
     public string display_name { owned get { return device_display_name; }}
     public string? detail_name { owned get {
+        if (device.properties == null) return null;
         if (device.properties.has_field("alsa.card_name")) return device.properties.get_string("alsa.card_name");
         if (device.properties.has_field("alsa.name")) return device.properties.get_string("alsa.name");
         if (device.properties.has_field("alsa.id")) return device.properties.get_string("alsa.id");
@@ -39,13 +40,15 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
     public Gst.Pipeline pipe { get { return plugin.pipe; }}
     public bool is_source { get { return device.has_classes("Source"); }}
     public bool is_sink { get { return device.has_classes("Sink"); }}
-    public bool is_monitor { get { return device.properties.get_string("device.class") == "monitor" || (protocol == DeviceProtocol.PIPEWIRE && device.has_classes("Stream")); } }
+    public bool is_monitor { get { return (device.properties != null && device.properties.get_string("device.class") == "monitor") || (protocol == DeviceProtocol.PIPEWIRE && device.has_classes("Stream")); } }
     public bool is_default { get {
+        if (device.properties == null) return false;
         bool ret;
         device.properties.get_boolean("is-default", out ret);
         return ret;
     }}
     public DeviceProtocol protocol { get {
+        if (device.properties == null) return DeviceProtocol.OTHER;
         if (device.properties.has_name("pulse-proplist")) return DeviceProtocol.PULSEAUDIO;
         if (device.properties.has_name("pipewire-proplist")) return DeviceProtocol.PIPEWIRE;
         if (device.properties.has_name("v4l2deviceprovider")) return DeviceProtocol.V4L2;

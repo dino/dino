@@ -176,6 +176,22 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
     private Sink sink;
     private Gtk.Picture widget;
 
+    private static uint active_widgets = 0;
+
+    public static bool has_instances() {
+        return active_widgets > 0;
+    }
+
+    private static void notify_weak(Object widget_object) {
+        if (active_widgets > 0) {
+            debug("Video widget %p destroyed. left=%u", widget_object, active_widgets);
+            active_widgets--;
+        }
+        if (active_widgets == 0 && widget_object is VideoWidget) {
+            ((VideoWidget)widget_object).plugin.destroy_call_pipe_if_unused();
+        }
+    }
+
     public VideoWidget(Plugin plugin) {
         this.plugin = plugin;
         this.layout_manager = new Gtk.BinLayout();
@@ -184,6 +200,9 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         sink = new Sink() { async = false, sync = true };
         widget = new Gtk.Picture.for_paintable(sink.paintable);
         widget.insert_after(this, null);
+        active_widgets++;
+        debug("Video widget %p created. total=%u", this, active_widgets);
+        this.weak_ref(notify_weak);
     }
 
     public void input_caps_changed(GLib.Object pad, ParamSpec spec) {

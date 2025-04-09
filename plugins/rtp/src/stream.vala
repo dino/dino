@@ -454,7 +454,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
         send_rtp.set_locked_state(true);
         send_rtp.set_state(Gst.State.NULL);
-        pipe.remove(send_rtp);
+        // This happens async, so pipe might be gone by now.
+        if (pipe != null) pipe.remove(send_rtp);
         send_rtp = null;
         debug("Stopped sending RTP for %u", rtpid);
     }
@@ -462,7 +463,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
     private void on_send_rtcp_eos() {
         send_rtcp.set_locked_state(true);
         send_rtcp.set_state(Gst.State.NULL);
-        pipe.remove(send_rtcp);
+        // This happens async, so pipe might be gone by now.
+        if (pipe != null) pipe.remove(send_rtcp);
         send_rtcp = null;
         debug("Stopped sending RTCP for %u", rtpid);
     }
