@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
-"PO-Revision-Date: 2025-03-17 10:14+0000\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
+"PO-Revision-Date: 2025-04-09 17:18+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -97,6 +97,7 @@ msgstr "错误"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "账号"
 
@@ -256,6 +257,7 @@ msgid "Notifications disabled"
 msgstr "通知已禁用"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "关于"
 
@@ -268,6 +270,7 @@ msgid "Room Configuration"
 msgstr "群聊配置"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "加密方式"
 
@@ -291,7 +294,7 @@ msgstr "管理员"
 msgid "Member"
 msgstr "成员"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "文件超过了服务器的最大上传大小。"
 
@@ -516,7 +519,7 @@ msgstr "可公开搜索"
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr "参与者可以更改话题"
+msgstr "参与者可以更改主题"
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
@@ -707,7 +710,7 @@ msgstr "今天"
 #: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
 msgid "%a, %b %d"
-msgstr "%b%d日 星期%a"
+msgstr "%_m月%_d日 %A"
 
 #: main/src/ui/global_search.vala:181
 #, c-format
@@ -810,12 +813,12 @@ msgstr "发送已读回执"
 #: main/src/ui/contact_details/settings_provider.vala:67
 #: main/src/ui/contact_details/settings_provider.vala:69
 msgid "On"
-msgstr "已开启"
+msgstr "已启用"
 
 #: main/src/ui/contact_details/settings_provider.vala:67
 #: main/src/ui/contact_details/settings_provider.vala:70
 msgid "Off"
-msgstr "已关闭"
+msgstr "已禁用"
 
 #: main/src/ui/contact_details/settings_provider.vala:68
 #, c-format
@@ -857,7 +860,7 @@ msgstr "显示名"
 
 #: main/src/ui/conversation_details.vala:165
 msgid "Topic"
-msgstr "话题"
+msgstr "主题"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:233
 msgid "Edit message"
@@ -1141,6 +1144,11 @@ msgstr "新密码"
 msgid "Confirm password"
 msgstr "确认密码"
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "常规"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "没有打开的聊天"
@@ -1148,10 +1156,6 @@ msgstr "没有打开的聊天"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "点击 + 开始聊天或加入频道"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "常规"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

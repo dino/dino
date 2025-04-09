@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2018-01-24 12:20+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-openpgp/lb/>\n"
@@ -17,6 +17,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "GnuPG gëtt ofgefrot"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Feeler am GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Keng Schlëssele verfügbar. Generéier een!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -25,17 +39,15 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "Schlësselen net am Schlësselbond"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Verschlësselung"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Schlëssel Verëffentlechung ausgeschalt"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Feeler am GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Keng Schlëssele verfügbar. Generéier een!"
 
 #~ msgid "Select key"
 #~ msgstr "Schlëssel auswielen"

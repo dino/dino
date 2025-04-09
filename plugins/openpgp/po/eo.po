@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-09-18 10:09+0000\n"
 "Language-Team: none\n"
 "Language: eo\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Pridemandante GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Eraro pri GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Neniu ŝlosilo estas havebla. Faru ŝlosilon!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -29,18 +43,16 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "Ŝlosilo ne en ŝlosilaro"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #, fuzzy
 #~ msgid "Encryption"
 #~ msgstr "Kodo"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Eldonado de ŝlosilo estas malŝaltita"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Eraro pri GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Neniu ŝlosilo estas havebla. Faru ŝlosilon!"
 
 #~ msgid "Select key"
 #~ msgstr "Elekti ŝlosilon"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-12-21 08:00+0000\n"
 "Language-Team: none\n"
 "Language: ta\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Gnupg ஐ வினவுகிறது"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr ""
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "முடக்கப்பட்டது"
@@ -28,6 +42,10 @@ msgstr "முடக்கப்பட்டது"
 #: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "விசை கீச்சினில் இல்லை"
+
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
 
 #~ msgid "Encryption"
 #~ msgstr "குறியாக்கம்"

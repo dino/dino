@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
@@ -245,6 +245,18 @@ msgstr ""
 "Noile chei de criptare de pe celelalte dispozitive ale dumneavoastră vor fi "
 "acceptate automat."
 
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+msgid "This device"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+msgid "Other device"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+msgid "Device"
+msgstr ""
+
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Acceptată"
@@ -260,6 +272,13 @@ msgstr "Verificată"
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
 msgid "New device"
 msgstr "Dispozitiv nou"
+
+#: plugins/omemo/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Administrare chei OMEMO"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/gl/>\n"
@@ -22,6 +22,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Consultando a GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Fallo en GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Sen chaves dispoñibles. Crear unha!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Desactivado"
@@ -30,17 +44,15 @@ msgstr "Desactivado"
 msgid "Key not in keychain"
 msgstr "A chave non está no anel de chaves"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Cifraxe"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Desactivada a publicación de chaves"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Fallo en GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Sen chaves dispoñibles. Crear unha!"
 
 #~ msgid "Select key"
 #~ msgstr "Escolle chave"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2020-11-24 05:28+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hant/>\n"
@@ -22,6 +22,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "正在查詢 GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG 錯誤"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "沒有可用的金鑰。生成一個!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -30,17 +44,15 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "密鑰不在密鑰串中"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "加密"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "金鑰發佈已經被禁用"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "GnuPG 錯誤"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "沒有可用的金鑰。生成一個!"
 
 #~ msgid "Select key"
 #~ msgstr "選擇金鑰"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-08-25 10:09+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ar/>\n"
@@ -23,6 +23,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "استعلام GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "خطأ في GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "لا مفتاح متوفر. قم بتوليد واحد !"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "مُعَطَّل"
@@ -31,17 +45,15 @@ msgstr "مُعَطَّل"
 msgid "Key not in keychain"
 msgstr "المفتاح ليس في سلسلة المفاتيح"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "التعمية"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "نشر المفاتيح معطل"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "خطأ في GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "لا مفتاح متوفر. قم بتوليد واحد !"
 
 #~ msgid "Select key"
 #~ msgstr "اختيار مفتاح"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2025-03-13 08:50+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/"
 "translations/it/>\n"
@@ -97,6 +97,7 @@ msgstr "Errore"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Account"
 
@@ -257,6 +258,7 @@ msgid "Notifications disabled"
 msgstr "Notifiche disabilitate"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "Informazioni"
 
@@ -269,6 +271,7 @@ msgid "Room Configuration"
 msgstr "Configurazione della stanza"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Crittografia"
 
@@ -292,7 +295,7 @@ msgstr "Amministratore"
 msgid "Member"
 msgstr "Membro"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Il file eccede la dimensione massima di upload."
 
@@ -1148,6 +1151,11 @@ msgstr "Nuova password"
 msgid "Confirm password"
 msgstr "Conferma password"
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Generali"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Non hai chat aperte"
@@ -1155,10 +1163,6 @@ msgstr "Non hai chat aperte"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Clicca + per iniziare una conversazione o unirti ad un canale"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Generali"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

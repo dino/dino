@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2021-01-09 11:43+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Bertanya kepada GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Kesalahan pada GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Kunci tidak tersedia. Buat satu!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -29,17 +43,15 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "Kunci tidak ada di gantungan kunci"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Enkripsi"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Penerbitan kunci dinonaktifkan"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Kesalahan pada GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Kunci tidak tersedia. Buat satu!"
 
 #~ msgid "Select key"
 #~ msgstr "Pilih kunci"

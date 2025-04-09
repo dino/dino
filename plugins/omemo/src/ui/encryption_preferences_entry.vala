@@ -159,7 +159,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         own_action_box.append(copy_button);
 
         Adw.ActionRow action_row = new Adw.ActionRow() { use_markup = true };
-        action_row.title = "This device";
+        action_row.title = _("This device");
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(own_b64));
         action_row.add_suffix(own_action_box);
         add_key_row(action_row);
@@ -219,7 +219,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
                 });
             });
             action_row.activatable = true;
-            action_row.title = account.bare_jid.equals_bare(jid) ? "Other device" : "Device";
+            action_row.title = account.bare_jid.equals_bare(jid) ? _("Other device") : _("Device");
             action_row.subtitle = fingerprint_markup(fingerprint_from_base64(key_base64));
             string trust_str = _("Accepted");
             switch(trust) {

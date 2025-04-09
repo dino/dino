@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2025-02-25 04:41+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/translations/"
 "nl/>\n"
@@ -97,6 +97,7 @@ msgstr "Fout"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Accounts"
 
@@ -256,6 +257,7 @@ msgid "Notifications disabled"
 msgstr "Notificaties uitgeschakeld"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "Over"
 
@@ -268,6 +270,7 @@ msgid "Room Configuration"
 msgstr "Ruimte instellingen"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Encryptie"
 
@@ -291,7 +294,7 @@ msgstr "Beheerder"
 msgid "Member"
 msgstr "Lid"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Het bestand overschrijdt de maximaal toegestane upload grootte."
 
@@ -1145,6 +1148,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Algemeen"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Je hebt geen geopende gesprekken"
@@ -1152,10 +1160,6 @@ msgstr "Je hebt geen geopende gesprekken"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Klik op ‘+’ om een gesprek te starten of deel te nemen aan een kanaal"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Algemeen"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

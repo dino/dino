@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-12-19 19:12+0000\n"
 "Language-Team: none\n"
 "Language: ta\n"
@@ -96,6 +96,7 @@ msgstr "பிழை"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "கணக்குகள்"
 
@@ -255,6 +256,7 @@ msgid "Notifications disabled"
 msgstr "அறிவிப்புகள் முடக்கப்பட்டன"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "பற்றி"
 
@@ -267,6 +269,7 @@ msgid "Room Configuration"
 msgstr "அறை உள்ளமைவு"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "குறியாக்கம்"
 
@@ -290,7 +293,7 @@ msgstr "நிர்வாகி"
 msgid "Member"
 msgstr "உறுப்பினர்"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "கோப்பு சேவையகத்தின் அதிகபட்ச பதிவேற்ற அளவை மீறுகிறது."
 
@@ -1144,6 +1147,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "பொது"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "உங்களிடம் திறந்த அரட்டைகள் இல்லை"
@@ -1151,10 +1159,6 @@ msgstr "உங்களிடம் திறந்த அரட்டைகள�
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "அரட்டையைத் தொடங்க + அல்லது சேனலில் சேர + சொடுக்கு செய்க"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "பொது"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

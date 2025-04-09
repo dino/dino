@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: none\n"
 "Language: fi\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Kysellään GnuPG:tä"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Virhe GnuPG:ssä"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Ei avaimia saatavilla. Luo avain!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Pois käytöstä"
@@ -29,17 +43,15 @@ msgstr "Pois käytöstä"
 msgid "Key not in keychain"
 msgstr "Avain ei ole avainnipussa"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Salaus"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Avaimen julkaiseminen pois käytöstä"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Virhe GnuPG:ssä"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Ei avaimia saatavilla. Luo avain!"
 
 #~ msgid "Select key"
 #~ msgstr "Valitse avain"

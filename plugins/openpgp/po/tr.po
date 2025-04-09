@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "GnuPG sorgu"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG'de Hata"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Anahtar yok. Bir tane oluşturun!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Devre dışı"
@@ -29,17 +43,15 @@ msgstr "Devre dışı"
 msgid "Key not in keychain"
 msgstr "Anahtar anahtarlıkta değil"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Şifreleme"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Anahtar yayınlama devre dışı"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "GnuPG'de Hata"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Anahtar yok. Bir tane oluşturun!"
 
 #~ msgid "Select key"
 #~ msgstr "Anahtar seçin"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-12-20 07:11+0000\n"
 "Language-Team: none\n"
 "Language: ta\n"
@@ -234,6 +234,18 @@ msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr "உங்கள் பிற சாதனங்களிலிருந்து புதிய குறியாக்க விசைகள் தானாக ஏற்றுக்கொள்ளப்படும்."
 
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+msgid "This device"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+msgid "Other device"
+msgstr ""
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+msgid "Device"
+msgstr ""
+
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "ஏற்றுக்கொள்ளப்பட்டது"
@@ -249,6 +261,13 @@ msgstr "சரிபார்க்கப்பட்டது"
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
 msgid "New device"
 msgstr "புதிய சாதனம்"
+
+#: plugins/omemo/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "ஓமமோ முக்கிய மேலாண்மை"

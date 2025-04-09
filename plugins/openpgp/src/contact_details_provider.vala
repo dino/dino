@@ -37,7 +37,7 @@ public class ContactDetailsProvider : Plugins.ContactDetailsProvider, Object {
         }
 
         var view = new Adw.ActionRow() {
-            title = "Fingerprint",
+            title = _("Fingerprint"),
             subtitle = str,
 #if Adw_1_3
             subtitle_selectable = true,

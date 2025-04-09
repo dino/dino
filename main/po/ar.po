@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-11-02 17:00+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -98,6 +98,7 @@ msgstr "خطأ"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "الحسابات"
 
@@ -257,6 +258,7 @@ msgid "Notifications disabled"
 msgstr "التنبيهات مُعَطَّلة"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "عَنْ"
 
@@ -269,6 +271,7 @@ msgid "Room Configuration"
 msgstr "ضبط الغرفة"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "التعمية"
 
@@ -292,7 +295,7 @@ msgstr "مدير"
 msgid "Member"
 msgstr "عضو"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "حجم الملف يتجاوز الحد الذي يسمح به الخادوم."
 
@@ -1162,6 +1165,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "عام"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "ليس لديك محادثات مفتوحة"
@@ -1169,10 +1177,6 @@ msgstr "ليس لديك محادثات مفتوحة"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "انقر على + لبدء محادثة أو الانضمام إلى قناة"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "عام"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

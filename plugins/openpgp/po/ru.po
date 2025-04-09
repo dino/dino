@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-12-30 22:56+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ru/>\n"
@@ -23,6 +23,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Запрос GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Ошибка в GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Нет доступных ключей. Стоило бы сгенерировать один!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Выключено"
@@ -31,17 +45,15 @@ msgstr "Выключено"
 msgid "Key not in keychain"
 msgstr "Отсутствует ключ в связке"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Шифрование"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Публикация ключа отключена"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Ошибка в GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Нет доступных ключей. Стоило бы сгенерировать один!"
 
 #~ msgid "Select key"
 #~ msgstr "Выбрать ключ"

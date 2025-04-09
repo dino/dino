@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-07-02 11:09+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/de/>\n"
@@ -17,6 +17,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "GnuPG wird abgefragt"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Fehler in GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Keine Schlüssel vorhanden. Erzeuge einen!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Deaktiviert"
@@ -25,17 +39,15 @@ msgstr "Deaktiviert"
 msgid "Key not in keychain"
 msgstr "Schlüssel nicht im Schlüsselbund"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Verschlüsselung"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Schlüsselveröffentlichung deaktiviert"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Fehler in GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Keine Schlüssel vorhanden. Erzeuge einen!"
 
 #~ msgid "Select key"
 #~ msgstr "Wähle einen Schlüssel"

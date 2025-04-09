@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-08-23 19:09+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
@@ -96,6 +96,7 @@ msgstr "Hata"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Hesaplar"
 
@@ -255,6 +256,7 @@ msgid "Notifications disabled"
 msgstr "Bildirimler devre dışı bırakıldı"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "Hakkında"
 
@@ -267,6 +269,7 @@ msgid "Room Configuration"
 msgstr "Oda Ayarları"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Şifreleme"
 
@@ -290,7 +293,7 @@ msgstr "Yönetici"
 msgid "Member"
 msgstr "Üye"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Dosya, sunucunun azami yükleme boyutunu aşıyor."
 
@@ -1144,6 +1147,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Genel"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Henüz burada sohbet yok"
@@ -1151,10 +1159,6 @@ msgstr "Henüz burada sohbet yok"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Sohbet başlatmak veya bir kanala katılmak için +'ya tıklayın"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Genel"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

@@ -153,7 +153,7 @@
               <object class="GtkStack" id="stack">
                 <child>
                   <object class="GtkStackPage">
-                    <property name="title">About</property>
+                    <property name="title" translatable="yes">About</property>
                     <property name="name">about</property>
                     <property name="child">
                       <object class="GtkScrolledWindow">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-10-25 13:15+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
@@ -22,6 +22,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Запит до GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Помилка у GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Немає доступних ключей. Сгенеріть!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr "Вимкнено"
@@ -30,17 +44,15 @@ msgstr "Вимкнено"
 msgid "Key not in keychain"
 msgstr "Відсутній ключ у зв’язці"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Шифрування"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Публікація ключа відключена"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Помилка у GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Немає доступних ключей. Сгенеріть!"
 
 #~ msgid "Select key"
 #~ msgstr "Вибрати ключ"

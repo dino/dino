@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2024-09-27 16:16+0000\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/dino/translations/"
 "pl/>\n"
@@ -98,6 +98,7 @@ msgstr "Błąd"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Konta"
 
@@ -259,6 +260,7 @@ msgid "Notifications disabled"
 msgstr "Wyłączono powiadomienia"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "O kontakcie"
 
@@ -271,6 +273,7 @@ msgid "Room Configuration"
 msgstr "Konfiguracja pokoju"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Szyfrowanie"
 
@@ -294,7 +297,7 @@ msgstr "Administrator"
 msgid "Member"
 msgstr "Członek"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Plik przekracza maksymalny rozmiar wysyłanych plików dla tego serwera."
 
@@ -1152,6 +1155,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Ogólne"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Nie masz otwartych czatów"
@@ -1159,10 +1167,6 @@ msgstr "Nie masz otwartych czatów"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Kliknij znak + by rozpocząć rozmowę lub przyłączyć się do kanału"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Ogólne"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

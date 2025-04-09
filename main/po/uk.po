@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-06 21:30+0200\n"
+"POT-Creation-Date: 2025-04-09 19:22+0200\n"
 "PO-Revision-Date: 2025-03-13 08:50+0000\n"
 "Language-Team: none\n"
 "Language: uk\n"
@@ -97,6 +97,7 @@ msgstr "Помилка"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Облікові записи"
 
@@ -256,6 +257,7 @@ msgid "Notifications disabled"
 msgstr "Сповіщення вимкнено"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "Докладніше"
 
@@ -268,6 +270,7 @@ msgid "Room Configuration"
 msgstr "Налаштування кімнати"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Шифрування"
 
@@ -291,7 +294,7 @@ msgstr "Адміністратор"
 msgid "Member"
 msgstr "Учасник"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Розмір файлу перевищує дозволений для завантаження на сервер."
 
@@ -1149,6 +1152,11 @@ msgstr "Новий пароль"
 msgid "Confirm password"
 msgstr "Підтвердьте пароль"
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Загальні"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "У вас немає відкритих спілкуваннь"
@@ -1156,10 +1164,6 @@ msgstr "У вас немає відкритих спілкуваннь"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Натисніть + щоб роспочати спілкування або приєднатися до каналу"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Загальні"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
