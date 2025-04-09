@@ -132,18 +132,22 @@ public class FileImageWidget : Widget {
             });
         }
 
-        if (file_transfer.state == FileTransfer.State.IN_PROGRESS) {
-            if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
-                transmission_progress.state = FileTransmissionProgress.State.DOWNLOADING;
-            } else {
-                transmission_progress.state = FileTransmissionProgress.State.UPLOADING;
+        if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
+            if (file_transfer.state == IN_PROGRESS) {
+                transmission_progress.state = DOWNLOADING;
+            } else if (file_transfer.sfs_sources.is_empty) {
+                transmission_progress.state = UNKNOWN_SOURCE;
+            } else if (file_transfer.state == NOT_STARTED) {
+                transmission_progress.state = DOWNLOAD_NOT_STARTED;
+            } else if (file_transfer.state == FAILED) {
+                transmission_progress.state = DOWNLOAD_NOT_STARTED_FAILED_BEFORE;
             }
-        } else if (file_transfer.sfs_sources.is_empty && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
-            transmission_progress.state = UNKNOWN_SOURCE;
-        } else if (file_transfer.state == NOT_STARTED && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
-            transmission_progress.state = DOWNLOAD_NOT_STARTED;
-        } else if (file_transfer.state == FileTransfer.State.FAILED) {
-            transmission_progress.state = DOWNLOAD_NOT_STARTED_FAILED_BEFORE;
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            if (file_transfer.state == IN_PROGRESS) {
+                transmission_progress.state = UPLOADING;
+            } else if (file_transfer.state == FAILED) {
+                transmission_progress.state = UPLOAD_FAILED;
+            }
         }
     }
 

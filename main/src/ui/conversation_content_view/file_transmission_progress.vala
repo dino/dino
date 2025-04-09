@@ -14,7 +14,8 @@ namespace Dino.Ui {
             DOWNLOAD_NOT_STARTED,
             DOWNLOAD_NOT_STARTED_FAILED_BEFORE,
             DOWNLOADING,
-            UPLOADING
+            UPLOADING,
+            UPLOAD_FAILED
         }
 
         public int64 file_size { get; set; }
@@ -48,7 +49,7 @@ namespace Dino.Ui {
         }
 
         private void on_state_changed() {
-            sensitive = state != UNKNOWN_SOURCE;
+            sensitive = state != UNKNOWN_SOURCE && state != UPLOAD_FAILED;
 
             switch (this.state) {
                 case UNKNOWN_SOURCE:
@@ -60,6 +61,7 @@ namespace Dino.Ui {
                     button.icon_name = "small-x-symbolic";
                     break;
                 case DOWNLOAD_NOT_STARTED_FAILED_BEFORE:
+                case UPLOAD_FAILED:
                     button.icon_name = "dialog-warning-symbolic";
                     break;
             }
@@ -67,7 +69,8 @@ namespace Dino.Ui {
 
         private void update_progress() {
             if (file_size == 0 || progress_animation == null) return;
-            double next_value = (double)transferred_size / (double)file_size;
+            // For encrypted files, transferred size > file size. For PGP, the whole message is encrypted at once, making a better solution difficult.
+            double next_value = ((double)transferred_size / (double)file_size).clamp(0, 1);
             if (progress_animation != null && progress_animation.value_to != next_value) {
                 progress_animation.value_from = progress_animation.value;
                 progress_animation.value_to = next_value;
@@ -115,6 +118,7 @@ namespace Dino.Ui {
         private void on_button_clicked() {
             switch (this.state) {
                 case UNKNOWN_SOURCE:
+                case UPLOAD_FAILED:
                     break;
                 case DOWNLOAD_NOT_STARTED_FAILED_BEFORE:
                 case DOWNLOAD_NOT_STARTED:
