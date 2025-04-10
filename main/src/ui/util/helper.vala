@@ -90,10 +90,10 @@ public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
 
 public static string rgba_to_hex(Gdk.RGBA rgba) {
     return "#%02x%02x%02x%02x".printf(
-            (uint)(Math.round(rgba.red*255)),
-            (uint)(Math.round(rgba.green*255)),
-            (uint)(Math.round(rgba.blue*255)),
-            (uint)(Math.round(rgba.alpha*255)))
+            (uint8)(Math.round(rgba.red.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.green.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.blue.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.alpha.clamp(0,1)*255)))
             .up();
 }
 
