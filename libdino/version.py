@@ -26,7 +26,7 @@ def compute_version_from_git(git_repo, git):
             return None
         git_describe = subprocess.check_output([git, "describe", "--tags"], cwd=git_repo, text=True).strip()
         if git_release_tag == git_describe:
-            return git_release_tag
+            return git_release_tag[1:]
         matches = re.match("^.*-([0-9]+)-g([0-9a-f]+)$", git_describe)
         if matches is None:
             return None
@@ -34,7 +34,7 @@ def compute_version_from_git(git_repo, git):
         git_commit_hash = matches.groups()[1]
         git_commit_time = subprocess.check_output([git, "show", "--format=%cd", "--date=format:%Y%m%d", "-s"],
                                                   cwd=git_repo, text=True).strip()
-        return "%s~git%s.%s.%s" % (git_release_tag, git_tag_offset, git_commit_time, git_commit_hash)
+        return "%s~git%s.%s.%s" % (git_release_tag[1:], git_tag_offset, git_commit_time, git_commit_hash)
     except subprocess.CalledProcessError:
         pass
     return None
