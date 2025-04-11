@@ -254,6 +254,7 @@ public class ConnectionManager : Object {
             debug("[%s %p] Connection error: %s", account.bare_jid.to_string(), stream, e.message);
 
             change_connection_state(account, ConnectionState.DISCONNECTED);
+            if (!connections.has_key(account)) return;
             connections[account].reset();
 
             StreamError.Flag? flag = stream.get_flag(StreamError.Flag.IDENTITY);

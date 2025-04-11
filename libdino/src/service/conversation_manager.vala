@@ -62,12 +62,14 @@ public class ConversationManager : StreamInteractionModule, Object {
     }
 
     public Conversation? get_conversation_for_message(Entities.Message message) {
-        if (message.type_ == Entities.Message.Type.CHAT) {
-            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.CHAT);
-        } else if (message.type_ == Entities.Message.Type.GROUPCHAT) {
-            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.GROUPCHAT);
-        } else if (message.type_ == Entities.Message.Type.GROUPCHAT_PM) {
-            return create_conversation(message.counterpart, message.account, Conversation.Type.GROUPCHAT_PM);
+        if (conversations.has_key(message.account)) {
+            if (message.type_ == Entities.Message.Type.CHAT) {
+                return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.CHAT);
+            } else if (message.type_ == Entities.Message.Type.GROUPCHAT) {
+                return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.GROUPCHAT);
+            } else if (message.type_ == Entities.Message.Type.GROUPCHAT_PM) {
+                return create_conversation(message.counterpart, message.account, Conversation.Type.GROUPCHAT_PM);
+            }
         }
         return null;
     }
