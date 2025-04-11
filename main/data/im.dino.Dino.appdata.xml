@@ -227,7 +227,7 @@
     <control>pointing</control>
     <control>keyboard</control>
     <control>touch</control>
-    <display_length>small</display_length>
+    <display_length>360</display_length>
   </supports>
   <project_license>GPL-3.0+</project_license>
   <developer id="im.dino">
