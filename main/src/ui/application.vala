@@ -270,6 +270,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 case "0.2": version = @"$version - Mexican Caribbean Coral Reefs"; break;
                 case "0.3": version = @"$version - Theikenmeer"; break;
                 case "0.4": version = @"$version - Ilulissat"; break;
+                case "0.5": version = @"$version - Alentejo"; break;
             }
         }
 

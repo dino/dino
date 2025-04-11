@@ -191,6 +191,11 @@
   <url type="translate">https://hosted.weblate.org/projects/dino/</url>
   <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <releases>
+    <release date="2025-04-11" version="0.5">
+      <description>
+        <p>The 0.5 release features improved file transfers and two completely reworked dialogs.</p>
+      </description>
+    </release>
     <release date="2023-02-07" version="0.4">
       <description>
         <p>The 0.4 release adds support for message reactions and replies. Also, Dino is ported to GTK4.</p>
@@ -222,6 +227,7 @@
     <control>pointing</control>
     <control>keyboard</control>
     <control>touch</control>
+    <display_length>small</display_length>
   </supports>
   <project_license>GPL-3.0+</project_license>
   <developer id="im.dino">
