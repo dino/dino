@@ -27,6 +27,7 @@
   <summary xml:lang="is">Nútímalegt XMPP-spjallforrit</summary>
   <summary xml:lang="ie">Un modern client de conversationes XMPP</summary>
   <summary xml:lang="id">Aplikasi chat XMPP modern</summary>
+  <summary xml:lang="hy">Ժամանակակից XMPP կլիենտ</summary>
   <summary xml:lang="hu">Modern XMPP-csevegési ügyfélprogram</summary>
   <summary xml:lang="hi">आधुनिक XMPP चैट क्लाइंट</summary>
   <summary xml:lang="gl">Cliente moderno para conversas XMPP</summary>
@@ -71,6 +72,7 @@
     <p xml:lang="is">Dino er nútímalegt spjallforrit og frjáls hugbúnaður fyrir skjáborðið. Það leggur áherslu á að veita hreina og áreiðanlega Jabber/XMPP upplifun með friðhelgi þína í huga.</p>
     <p xml:lang="ie">Dino es un modern cliente de conversationes con fonte apert. It foca se sur provider un nett e fidibil experientie de Jabber/XMPP con un attention a confidentialitá.</p>
     <p xml:lang="id">Dino adalah aplikasi chat open source modern untuk PC. Menyediakan pengalaman Jabber / XMPP yang handal dengan tetap menjunjung privasi Anda.</p>
+    <p xml:lang="hy">Dino֊ն՝ ժամանակակից, բաց կոդով կլիենտ է։ Այն միտուած է պարզ եւ վստահելի Jabber/XMPP փորձառութիւն ապահովելուն, միաժամանակ մտքում ունենալով քո գաղտնիութիւնը։</p>
     <p xml:lang="hu">A Dino egy modern, nyílt forráskódú csevegőprogram az asztali gépekre. Arra összpontosít, hogy tiszta és megbízható Jabber/XMPP-élményt nyújtson, miközben a magánszféra megőrzését is fontosnak tartja.</p>
     <p xml:lang="hi">डिनो डेस्कटॉप के लिए एक आधुनिक ओपन-सोर्स चैट क्लाइंट है। यह आपकी गोपनीयता को ध्यान में रखते हुए एक स्वच्छ और विश्वसनीय जैबर/एक्सएमपीपी अनुभव प्रदान करने पर केंद्रित है।</p>
     <p xml:lang="gl">Dino é un cliente moderno e de código aberto para o escritorio. Orientado a fornecer unha experiencia Jabber/XMPP limpa e fiábel tendo a privacidade e seguranza presentes.</p>
@@ -112,6 +114,7 @@
     <p xml:lang="is">Það styður dulkóðun frá enda til enda með OMEMO og OpenPGP og gerir kleift að stilla persónuverndartengda eiginleika eins og lestrarkvittanir og innsláttartilkynningar.</p>
     <p xml:lang="ie">It supporta ciffration terminal per OMEMO e OpenPGP e permisse configurar sensitiv functiones quam confirmation de lectada e notificationes de tippada.</p>
     <p xml:lang="id">Mendukung enkripsi end-to-end dengan OMEMO dan OpenPGP, dan memungkinkan pengaturan fitur terkait privasi seperti tanda pesan dibaca dan pemberitahuan pengetikan.</p>
+    <p xml:lang="hy">Սատարում է ծայրից ծայրի կրիպտաւորմանը OMEMO֊ի եւ OpenPGP֊ի միջոցով եւ թոյլ է տալիս կարգաւորել գաղտնիութեանը վերաբերող հնարաւորութիւններ, ինչպիսին են՝ ստացուած գրութիւնը ընթերնելու կամ տպելու մասին ծանուցելը։</p>
     <p xml:lang="hu">Támogatja az OMEMO és az OpenPGP használatával történő végpontok közötti titkosítást, és lehetővé teszi a magánszférához kapcsolódó funkciókat, mint például az olvasási visszaigazolást és a gépelési értesítéseket.</p>
     <p xml:lang="hi">यह OMEMO और OpenPGP के साथ शुरू-से-अंत कूटलेखन का समर्थन करता है और गोपनीयता-संबंधी सुविधाओं जैसे कि पठन रसीद और टाइपिंग अधिसूचनाओं को विन्यस्त करने की अनुमति देता है।</p>
     <p xml:lang="gl">Suporta a cifraxe de punto-a-punto con OMEMO e OpenPGP e permite configurar funcións orientadas á privacidade tales coma confirmación de lectura e notificacións de escritura.</p>
@@ -153,6 +156,7 @@
     <p xml:lang="is">Dino sækir feril af netþjóni og samstillir skilaboð með öðrum tækjum.</p>
     <p xml:lang="ie">Dino obtene li diarium del servitore e sincronisa missages inter altri apparates.</p>
     <p xml:lang="id">Dino mengambil riwayat pesan dari server dan menyinkronkan pesan dengan perangkat lain.</p>
+    <p xml:lang="hy">Dino֊ն ունակ է ստանալ սպասարկչից գրութիւնների պատմութիւն եւ սինքրոնացնել այն այլ սարքերի հետ։</p>
     <p xml:lang="hu">A Dino lekéri az előzményeket a kiszolgálóról, és szinkronizálja az üzeneteket a többi eszközzel.</p>
     <p xml:lang="hi">डिनो सर्वर से इतिहास प्राप्त करता है और संदेशों को अन्य डिवाइसों के साथ समन्वयित करता है।</p>
     <p xml:lang="gl">Dino obtén o histórico dende o servidor e sincroniza as mensaxes con outros dispositivos.</p>

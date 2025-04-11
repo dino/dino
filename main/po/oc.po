@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 19:22+0200\n"
-"PO-Revision-Date: 2024-06-01 13:32+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 05:39+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -38,11 +38,11 @@ msgstr "Connexion"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 #: main/data/preferences_window/account_preferences_subpage.ui:127
 msgid "Disable account"
-msgstr ""
+msgstr "Desactivar lo compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 msgid "Enable account"
-msgstr ""
+msgstr "Activar lo compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Select avatar"

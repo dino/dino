@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 19:22+0200\n"
-"PO-Revision-Date: 2024-09-06 15:09+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/hu/>\n"
 "Language: hu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -26,7 +26,7 @@ msgstr "A GnuPG lekérése"
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 #: plugins/openpgp/src/encryption_preferences_entry.vala:42
 msgid "Announce key"
-msgstr ""
+msgstr "Kulcs bejelentése"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -46,7 +46,7 @@ msgstr "A kulcs nincs a kulcstartóban"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "Ujjlenyomat"
 
 #~ msgid "Encryption"
 #~ msgstr "Titkosítás"

@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 19:22+0200\n"
-"PO-Revision-Date: 2025-02-22 23:04+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: none\n"
 "Language: et\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.1-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -241,15 +241,15 @@ msgstr "Sinu muude seadmete uute krüptovõtmetega nõustutakse automaatselt."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
 msgid "This device"
-msgstr ""
+msgstr "See seade"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Other device"
-msgstr ""
+msgstr "Muu seade"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Device"
-msgstr ""
+msgstr "Seade"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
@@ -273,6 +273,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Igal seadmel on oma OMEMO-võti. Sõnumeid on võimalik dekrüptida vaid "
+"konkreetse sihtvõtme jaoks. Sõnumeid on võimalik krüptida vaid seadmete "
+"jaoks, millega oled nõustunud."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "OMEMO võtmehaldus"

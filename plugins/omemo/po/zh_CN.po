@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 19:22+0200\n"
-"PO-Revision-Date: 2025-03-17 10:14+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 05:39+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -216,15 +216,15 @@ msgstr "将自动接受来自您其他设备的新加密密钥。"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
 msgid "This device"
-msgstr ""
+msgstr "此设备"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Other device"
-msgstr ""
+msgstr "其他设备"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Device"
-msgstr ""
+msgstr "设备"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
@@ -248,6 +248,8 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"每个设备都有自己的 OMEMO 密钥。设备只能解密对设备密钥加密的消息。消息仅对已接"
+"受的设备进行加密。"
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "OMEMO 密钥管理"

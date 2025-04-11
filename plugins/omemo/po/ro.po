@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-09 19:22+0200\n"
-"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -247,15 +247,15 @@ msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
 msgid "This device"
-msgstr ""
+msgstr "Acest dispozitiv"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Other device"
-msgstr ""
+msgstr "Alt dispozitiv"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Device"
-msgstr ""
+msgstr "Dispozitiv"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
@@ -279,6 +279,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Fiecare dispozitiv are propria cheie OMEMO. Mesajele pot fi decriptate de un "
+"dispozitiv numai dacă sunt criptate pentru cheia sa. Mesajele sunt criptate "
+"numai pentru dispozitivele acceptate."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Administrare chei OMEMO"
