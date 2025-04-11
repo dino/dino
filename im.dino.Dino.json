@@ -28,9 +28,15 @@
             ],
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/protocolbuffers/protobuf.git",
-                    "tag": "v29.4"
+                    "type": "archive",
+                    "url": "https://github.com/protocolbuffers/protobuf/releases/download/v30.2/protobuf-30.2.tar.gz",
+                    "sha512": "555d1b18d175eeaf17f3879f124d33080f490367840d35b34bfc4e4a5b383bf6a1d09f1570acb6af9c53ac4940a14572d46423b6e3dd0c712e7802c986fb6be6",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 3715,
+                        "stable-only": true,
+                        "url-template": "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protobuf-$version.tar.gz"
+                    }
                 }
             ]
         },
@@ -48,9 +54,15 @@
             ],
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/protobuf-c/protobuf-c.git",
-                    "tag": "v1.5.1"
+                    "type": "archive",
+                    "url": "https://github.com/protobuf-c/protobuf-c/releases/download/v1.5.2/protobuf-c-1.5.2.tar.gz",
+                    "sha512": "78dc72988d7e8232c1b967849aa00939bc05ab7d39b86a8e2af005e38aa4ef4c9b03920d51fb5337399d980e65f35d11bd4742bea745a893ecc909f56a51c9ac",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 3716,
+                        "stable-only": true,
+                        "url-template": "https://github.com/protobuf-c/protobuf-c/releases/download/v$version/protobuf-c-$version.tar.gz"
+                    }
                 }
             ]
         },
@@ -67,9 +79,15 @@
             ],
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/dino/libomemo-c.git",
-                    "tag": "v0.5.1"
+                    "type": "archive",
+                    "url": "https://github.com/dino/libomemo-c/releases/download/v0.5.1/libomemo-c-0.5.1.tar.gz",
+                    "sha512": "ff59565406c51663f2944e9a7c12c5b0e3fa01073039f5161472dd81f59194b1cf2685bc1e0cc930a141bc409b965c5d93313cfc3e0e237250102af3b5e88826",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 359676,
+                        "stable-only": true,
+                        "url-template": "https://github.com/dino/libomemo-c/releases/download/v$version/libomemo-c-$version.tar.gz"
+                    }
                 }
             ]
         },
@@ -85,8 +103,14 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://fukuchi.org/works/qrencode/qrencode-4.1.1.tar.gz",
-                    "sha512": "209bb656ae3f391b03c7b3ceb03e34f7320b0105babf48b619e7a299528b8828449e0e7696f0b5db0d99170a81709d0518e34835229a748701e7df784e58a9ce"
+                    "url": "https://github.com/fukuchi/libqrencode/archive/refs/tags/v4.1.1.tar.gz",
+                    "sha512": "584106e7bcaaa1ef2efe63d653daad38d4ff436eb4b185a1db3c747169c1ffa74149c3b1329bb0b8ae007903db0a7034aabf135cc196d91a37b5c61348154a65",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 12834,
+                        "stable-only": true,
+                        "url-template": "https://github.com/fukuchi/libqrencode/archive/refs/tags/v$version.tar.gz"
+                    }
                 }
             ]
         },
