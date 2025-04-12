@@ -1,4 +1,4 @@
-project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0')
+project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0', meson_version: '>=1.4.0')
 
 fs = import('fs')
 gnome = import('gnome')
@@ -55,6 +55,14 @@ endif
 
 prog_git = find_program('git', required: false)
 prog_python = python.find_installation()
+
+if import('fs').is_file('VERSION')
+    version_file = files('VERSION')[0]
+    version_file_path = version_file.full_path()
+else
+    version_file = 'invalid'
+    version_file_path = meson.current_source_dir() / 'VERSION'
+endif
 
 default_install_rpath = ''
 if get_option('set-install-rpath')
