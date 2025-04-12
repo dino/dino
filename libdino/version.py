@@ -56,6 +56,7 @@ def main():
     p.add_argument("--git", help="Path to git executable", default="git")
     p.add_argument("version_file", metavar="VERSION_FILE",
                    help="Use this file's contents as version if the file exists")
+    p.add_argument("ignored", nargs="*", help=argparse.SUPPRESS)
     args = p.parse_args()
     version = compute_version(args.version_file, args.git_repo, args.git)
     print(version)
