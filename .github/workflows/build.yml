@@ -118,6 +118,7 @@ jobs:
 
           meson install -C build && \
             cd $DEST_FOLDER && \
+            mv ./lib/dino/plugins ./bin && \
             cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
             cp /${{matrix.sys}}/bin/gspawn-win64-helper.exe ./bin && \
             cp -r /${{matrix.sys}}/share/xml ./share && \
