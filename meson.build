@@ -3,7 +3,7 @@ project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0')
 if host_machine.system() == 'windows'
     add_project_arguments('-D_POSIX_C_SOURCE=1', language: 'c')
     add_project_arguments('--define=_WIN32', language: 'vala')
-    add_global_link_arguments('-Wl,--export-all-symbols', language : 'c')
+    add_project_link_arguments('-Wl,--export-all-symbols', language : 'c')
 endif
 
 fs = import('fs')

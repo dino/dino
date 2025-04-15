@@ -98,7 +98,7 @@ jobs:
             mingw-w64-${{matrix.env}}-gst-plugins-bad
             mingw-w64-${{matrix.env}}-cppwinrt
             mingw-w64-${{matrix.env}}-meson
-            mingw-w64-${{matrix.env}}-webrtc-audio-processing
+            mingw-w64-${{matrix.env}}-abseil-cpp                                                                                                              
             mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
             mingw-w64-${{matrix.env}}-nsis
             mingw-w64-${{matrix.env}}-libsignal-protocol-c
@@ -206,7 +206,7 @@ jobs:
             mingw-w64-${{matrix.env}}-gst-plugins-bad
             mingw-w64-${{matrix.env}}-cppwinrt
             mingw-w64-${{matrix.env}}-meson
-            mingw-w64-${{matrix.env}}-webrtc-audio-processing
+            mingw-w64-${{matrix.env}}-abseil-cpp
             mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
             mingw-w64-${{matrix.env}}-nsis
             mingw-w64-${{matrix.env}}-libsignal-protocol-c
@@ -246,6 +246,8 @@ jobs:
             find . -iname "*.dll" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
             find . -iname "*.exe" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
             find . -iname "*.dll" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
+            find . -iname "*.exe" -exec strip -s {} + && \
+            find . -iname "*.dll" -exec strip -s {} + && \
             mv *.dll ./bin
       - name: "Upload Dino for Windows"
         uses: actions/upload-artifact@v4
