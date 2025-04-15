@@ -118,7 +118,7 @@ jobs:
             cd dist && \
             mkdir ./bin ./etc ./lib ./share && \
             mkdir ./lib/dino && \
-            mv ../build/plugins ./lib/dino/ && \
+            mv ../build/plugins ./bin/ && \
             find ../build -type f -name "*.dll" -exec cp {} ./bin/ \; && \
             find ../build -type f -name "dino.exe" -exec cp {} ./bin/ \; && \
             cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
@@ -226,7 +226,7 @@ jobs:
             cd dist && \
             mkdir ./bin ./etc ./lib ./share && \
             mkdir ./lib/dino && \
-            mv ../build/plugins ./lib/dino/ && \
+            mv ../build/plugins ./bin/ && \
             find ../build -type f -name "*.dll" -exec cp {} ./bin/ \; && \
             find ../build -type f -name "dino.exe" -exec cp {} ./bin/ \; && \
             cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
