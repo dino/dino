@@ -109,18 +109,15 @@ jobs:
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
       - name: "Configure"
-        run: meson setup build
+        run: meson setup build --prefix=$PWD/dist --buildtype=release
       - name: "Build"
         run: meson compile -C build
       - name: "Build Package"
         run: |
-          mkdir dist && \
-            cd dist && \
-            mkdir ./bin ./etc ./lib ./share && \
-            mkdir ./lib/dino && \
-            find ../build/plugins -type f -name "*.dll" -exec mv {} ./bin/plugins \; && \
-            find ../build -type f -name "*.dll" -exec cp {} ./bin/ \; && \
-            find ../build -type f -name "dino.exe" -exec cp {} ./bin/ \; && \
+          DEST_FOLDER=$PWD/dist
+
+          meson install -C build && \
+            cd $DEST_FOLDER && \
             cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
             cp /${{matrix.sys}}/bin/gspawn-win64-helper.exe ./bin && \
             cp -r /${{matrix.sys}}/share/xml ./share && \
@@ -133,6 +130,7 @@ jobs:
             mkdir -p ./share/locale && cp -r /${{matrix.sys}}/share/locale ./share/ && \
             mkdir -p ./share/glib-2.0/schemas && cp -r /${{matrix.sys}}/share/glib-2.0/schemas ./share/glib-2.0/ && \
             cp /${{matrix.sys}}/bin/libcrypto-*-x64.dll . && \
+            rm -r ./include && \
             find . -iname "*.dll.a" -exec rm {} + && \
             find . -iname "*.exe" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
             find . -iname "*.dll" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
