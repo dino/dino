@@ -124,7 +124,7 @@ jobs:
             cp -r /${{matrix.sys}}/share/xml ./share && \
             cp -r /${{matrix.sys}}/lib/enchant-2 ./lib && \
             cp -r /${{matrix.sys}}/lib/gstreamer-1.0 ./lib && \
-            cp -r /${{matrix.sys}}/etc/fonts ./etc && \
+            mkdir -p ./etc/fonts && cp -r /${{matrix.sys}}/etc/fonts ./etc/ && \
             mkdir -p ./lib/gdk-pixbuf-2.0/ && cp -r /${{matrix.sys}}/lib/gdk-pixbuf-2.0 ./lib/ && \
             mkdir -p ./lib/gio/ && cp -r /${{matrix.sys}}/lib/gio ./lib/ && \
             mkdir -p ./share/icons && cp -r /${{matrix.sys}}/share/icons ./share/ && \
@@ -230,7 +230,7 @@ jobs:
             cp -r /${{matrix.sys}}/share/xml ./share && \
             cp -r /${{matrix.sys}}/lib/enchant-2 ./lib && \
             cp -r /${{matrix.sys}}/lib/gstreamer-1.0 ./lib && \
-            cp -r /${{matrix.sys}}/etc/fonts ./etc && \
+            mkdir -p ./etc/fonts && cp -r /${{matrix.sys}}/etc/fonts ./etc/ && \
             mkdir -p ./lib/gdk-pixbuf-2.0/ && cp -r /${{matrix.sys}}/lib/gdk-pixbuf-2.0 ./lib/ && \
             mkdir -p ./lib/gio/ && cp -r /${{matrix.sys}}/lib/gio ./lib/ && \
             mkdir -p ./share/icons && cp -r /${{matrix.sys}}/share/icons ./share/ && \
