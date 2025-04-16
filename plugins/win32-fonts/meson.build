@@ -11,6 +11,11 @@ sources = files(
     'src/plugin.vala',
     'src/register_plugin.vala',
 )
+sources += gnome.compile_resources(
+    'resources',
+    'data/gresource.xml',
+    source_dir: 'data',
+)
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
