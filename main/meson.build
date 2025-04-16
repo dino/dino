@@ -107,14 +107,11 @@ sources += gnome.compile_resources(
     source_dir: 'data',
 )
 
-link_args = []
-
 if host_machine.system() == 'windows'
     win = import('windows')
     sources += win.compile_resources(
         'dino-info.rc',
     )
-    link_args += ['-mwindows']
 endif
 
 c_args = [
@@ -153,7 +150,7 @@ if meson.get_compiler('vala').version().version_compare('=0.56.12')
     vala_args += ['-D', 'VALA_0_56_12']
 endif
 
-exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, link_args: link_args, dependencies: dependencies, install: true)
+exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, win_subsystem: 'windows')
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
