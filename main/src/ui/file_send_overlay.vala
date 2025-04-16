@@ -57,7 +57,7 @@ public class FileSendOverlay {
 
     private async void load_file_widget(File file, FileInfo file_info) {
         string file_name = file_info.get_display_name();
-        string mime_type = file_info.get_content_type();
+        string mime_type = Dino.Util.get_content_type(file_info);
 
         bool is_image = Dino.Util.is_pixbuf_supported_mime_type(mime_type);
 

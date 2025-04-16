@@ -7,7 +7,7 @@ namespace Dino.Ui.Util {
 
 public class AudioVideoFileMetadataProvider: Dino.FileMetadataProvider, Object {
     public bool supports_file(File file) {
-        string? mime_type = file.query_info("*", FileQueryInfoFlags.NONE).get_content_type();
+        string? mime_type = Dino.Util.get_content_type(file.query_info("*", FileQueryInfoFlags.NONE));
         if (mime_type == null) {
             return false;
         }
