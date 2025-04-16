@@ -120,9 +120,11 @@ public class ConversationSelector : Widget {
         if (rows.has_key(conversation)) {
             conversation.notify["pinned"].disconnect(list_box.invalidate_sort);
 
-            yield rows[conversation].colapse();
-            list_box.remove(rows[conversation]);
-            rows.unset(conversation);
+            ConversationSelectorRow conversation_row;
+            rows.unset(conversation, out conversation_row);
+
+            yield conversation_row.colapse();
+            list_box.remove(conversation_row);
         }
     }
 

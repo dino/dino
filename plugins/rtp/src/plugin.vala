@@ -12,12 +12,12 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
 
     private Gee.List<Stream> streams = new ArrayList<Stream>();
     private Gee.List<Device> devices = new ArrayList<Device>();
+    private int64 last_devices_refresh = 0;
     //    private Gee.List<Participant> participants = new ArrayList<Participant>();
 
     public void registered(Dino.Application app) {
         this.app = app;
         this.codec_util = new CodecUtil();
-        app.startup.connect(startup);
         app.add_option_group(Gst.init_get_option_group());
         app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
             list.add(new Module(this));
@@ -42,24 +42,55 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         if (pause_count < 0) warning("Pause count below zero!");
     }
 
-    private void init_device_monitor() {
-        if (device_monitor != null) return;
-        device_monitor = new Gst.DeviceMonitor();
-        device_monitor.show_all = true;
-        device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
-        device_monitor.start();
+    private void handle_existing_devices(Gst.DeviceMonitor device_monitor) {
+        var new_devices = new ArrayList<Device>();
         foreach (Gst.Device device in device_monitor.get_devices()) {
             if (device.properties == null) continue;
             if (device.properties.get_string("device.api") == "wasapi") continue;
             if (device.properties.has_name("pipewire-proplist") && device.has_classes("Audio")) continue;
             if (device.properties.get_string("device.class") == "monitor") continue;
-            if (devices.any_match((it) => it.matches(device))) continue;
-            devices.add(new Device(this, device));
+            var pre_device = devices.first_match((it) => it.matches(device));
+            if (pre_device != null) {
+                if (!new_devices.contains(pre_device)) new_devices.add(pre_device);
+                continue;
+            }
+            var new_device = new Device(this, device);
+            devices.add(new_device);
+            new_devices.add(new_device);
         }
+        devices.retain_all(new_devices);
+    }
+
+    private void refresh_devices() {
+        if (device_monitor != null) return; // No manual refresh needed, we're monitoring actively.
+        if (last_devices_refresh > 0 && last_devices_refresh + 5000000 > get_monotonic_time()) return; // Already current
+        var device_monitor = new Gst.DeviceMonitor();
+        device_monitor.show_all = true;
+        device_monitor.start();
+        handle_existing_devices(device_monitor);
+        device_monitor.stop();
+        last_devices_refresh = get_monotonic_time();
+    }
+
+    private void start_device_monitor() {
+        if (device_monitor != null) return;
+        device_monitor = new Gst.DeviceMonitor();
+        device_monitor.show_all = true;
+        device_monitor.get_bus().add_watch(Priority.DEFAULT, on_device_monitor_message);
+        device_monitor.start();
+        handle_existing_devices(device_monitor);
+    }
+
+    private void stop_device_monitor() {
+        if (device_monitor == null) return;
+        device_monitor.stop();
+        device_monitor = null;
     }
 
     private void init_call_pipe() {
         if (pipe != null) return;
+        debug("Creating call pipe.");
+        start_device_monitor();
         pipe = new Gst.Pipeline(null);
 
         // RTP
@@ -92,6 +123,12 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         pipe.set_state(Gst.State.PLAYING);
     }
 
+    public void destroy_call_pipe_if_unused() {
+        if (streams.is_empty && !VideoWidget.has_instances()) {
+            destroy_call_pipe();
+        }
+    }
+
     private void destroy_call_pipe() {
         if (pipe == null) return;
         pipe.set_state(Gst.State.NULL);
@@ -100,10 +137,8 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         echoprobe = null;
 #endif
         pipe = null;
-    }
-
-    public void startup() {
-        init_device_monitor();
+        stop_device_monitor();
+        debug("Call pipe destroyed");
     }
 
     private static Gst.Caps? request_pt_map(Gst.Element rtpbin, uint session, uint pt, Plugin plugin) {
@@ -271,29 +306,17 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     public void close_stream(Stream stream) {
         streams.remove(stream);
         stream.destroy();
+        destroy_call_pipe_if_unused();
     }
 
     public void shutdown() {
-        if (device_monitor != null) {
-            device_monitor.stop();
-        }
+        stop_device_monitor();
         destroy_call_pipe();
         Gst.deinit();
     }
 
-    public bool supports(string? media) {
-        if (!codec_util.is_element_supported("rtpbin")) return false;
-
-        if (media == "audio") {
-            if (get_devices("audio", false).is_empty) return false;
-            if (get_devices("audio", true).is_empty) return false;
-        }
-
-        if (media == "video") {
-            if (get_devices("video", false).is_empty) return false;
-        }
-
-        return true;
+    public bool supported() {
+        return codec_util.is_element_supported("rtpbin");
     }
 
     public VideoCallWidget? create_widget(WidgetType type) {
@@ -305,6 +328,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     }
 
     public Gee.List<MediaDevice> get_devices(string media, bool incoming) {
+        refresh_devices();
         Gee.List<MediaDevice> devices;
         if (media == "video" && !incoming) {
             devices = get_video_sources();

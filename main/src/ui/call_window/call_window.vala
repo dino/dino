@@ -18,7 +18,6 @@ namespace Dino.Ui {
         public HeaderBar header_bar = new HeaderBar() { valign=Align.START, halign=Align.END, show_title_buttons=true, opacity=0.0 };
         public Revealer header_bar_revealer = new Revealer() { halign=Align.END, valign=Align.START, transition_type=RevealerTransitionType.SLIDE_LEFT, transition_duration=200, reveal_child=false };
         public Box own_video_box = new Box(Orientation.HORIZONTAL, 0) { halign=Align.END, valign=Align.END };
-        private Widget? own_video = null;
         private HashMap<string, ParticipantWidget> participant_widgets = new HashMap<string, ParticipantWidget>();
         private ArrayList<string> participants = new ArrayList<string>();
 
@@ -98,6 +97,7 @@ namespace Dino.Ui {
         }
 
         public void remove_participant(string participant) {
+            participant_widgets[participant].set_video(new Adw.Bin());
             participants.remove(participant);
             grid.remove(participant_widgets[participant]);
             participant_widgets.unset(participant);
@@ -167,7 +167,7 @@ namespace Dino.Ui {
         public void set_own_video(Widget? widget_) {
             unset_own_video();
 
-            own_video = widget_;
+            Widget? own_video = widget_;
             if (own_video == null) {
                 own_video = new Box(Orientation.HORIZONTAL, 0);
             }

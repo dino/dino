@@ -90,10 +90,10 @@ public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
 
 public static string rgba_to_hex(Gdk.RGBA rgba) {
     return "#%02x%02x%02x%02x".printf(
-            (uint)(Math.round(rgba.red*255)),
-            (uint)(Math.round(rgba.green*255)),
-            (uint)(Math.round(rgba.blue*255)),
-            (uint)(Math.round(rgba.alpha*255)))
+            (uint8)(Math.round(rgba.red.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.green.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.blue.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.alpha.clamp(0,1)*255)))
             .up();
 }
 
@@ -134,12 +134,23 @@ public static bool is_dark_theme(Gtk.Widget widget) {
     return (bg.red > 0.5 && bg.green > 0.5 && bg.blue > 0.5);
 }
 
-private static uint8 is24h = 0;
+private static int8 is24h = 0;
 public static bool is_24h_format() {
     if (is24h == 0) {
+#if _WIN32
+        // TODO: use proper Windows APIs
         string p_format = "               "; // Leaving room to be filled by strftime
         Time.local(0).strftime((char[]) p_format.data, "%p");
         is24h = p_format.strip() == "" ? 1 : -1;
+#else
+        Regex has_ampm = /(^|[^%])%[pP]/;
+        Regex has_t_fmt_ampm = /(^|[^%])%r/;
+        unowned string t_fmt = Posix.nl_langinfo(Posix.NLItem.T_FMT);
+        unowned string t_fmt_ampm = Posix.nl_langinfo(Posix.NLItem.T_FMT_AMPM);
+        bool has_am_str = Posix.nl_langinfo(Posix.NLItem.AM_STR).strip() != "";
+        bool has_pm_str = Posix.nl_langinfo(Posix.NLItem.PM_STR).strip() != "";
+is24h = ((has_ampm.match(t_fmt) || has_t_fmt_ampm.match(t_fmt) && has_ampm.match(t_fmt_ampm)) && (has_am_str || has_pm_str)) ? -1 : 1;
+#endif
     }
     return is24h == 1;
 }

@@ -18,6 +18,7 @@ public class Dino.CallState : Object {
     public bool use_cim = false;
     public string? cim_call_id = null;
     public Jid? cim_counterpart = null;
+    public ArrayList<Jid> cim_jids_to_inform = new ArrayList<Jid>();
     public string cim_message_type { get; set; default=Xmpp.MessageStanza.TYPE_CHAT; }
 
     public Xep.Muji.GroupCall? group_call { get; set; }
@@ -49,7 +50,7 @@ public class Dino.CallState : Object {
     }
 
     internal async void initiate_groupchat_call(Jid muc) {
-        parent_muc = muc;
+        cim_jids_to_inform.add(muc);
         cim_message_type = MessageStanza.TYPE_GROUPCHAT;
 
         if (this.group_call == null) yield convert_into_group_call();
@@ -97,23 +98,26 @@ public class Dino.CallState : Object {
         accepted = true;
         call.state = Call.State.ESTABLISHING;
 
+        XmppStream stream = stream_interactor.get_stream(call.account);
+        if (stream == null) return;
+
         if (use_cim) {
-            XmppStream stream = stream_interactor.get_stream(call.account);
-            if (stream == null) return;
-            if (group_call != null) {
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_accept(stream, cim_counterpart, cim_call_id, group_call.muc_jid, cim_message_type);
+            if (invited_to_group_call != null) {
+                join_group_call.begin(invited_to_group_call);
+
+                foreach (Jid jid_to_inform in cim_jids_to_inform) {
+                    stream.get_module(Xep.CallInvites.Module.IDENTITY).send_muji_accept(stream, jid_to_inform, cim_call_id, invited_to_group_call, cim_message_type);
+                }
             } else if (peers.size == 1) {
                 string sid = peers.values.to_array()[0].sid;
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_jingle_accept(stream, cim_counterpart, cim_call_id, sid, cim_message_type);
+                foreach (Jid jid_to_inform in cim_jids_to_inform) {
+                    stream.get_module(Xep.CallInvites.Module.IDENTITY).send_jingle_accept(stream, jid_to_inform, cim_call_id, sid, cim_message_type);
+                }
             }
         } else {
             foreach (PeerState peer in peers.values) {
                 peer.accept();
             }
-        }
-
-        if (invited_to_group_call != null) {
-            join_group_call.begin(invited_to_group_call);
         }
     }
 
@@ -123,7 +127,10 @@ public class Dino.CallState : Object {
         if (use_cim) {
             XmppStream stream = stream_interactor.get_stream(call.account);
             if (stream == null) return;
-            stream.get_module(Xep.CallInvites.Module.IDENTITY).send_reject(stream, cim_counterpart, cim_call_id, cim_message_type);
+
+            foreach (Jid jid_to_inform in cim_jids_to_inform) {
+                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_reject(stream, jid_to_inform, cim_call_id, cim_message_type);
+            }
         }
         var peers_cpy = new ArrayList<PeerState>();
         peers_cpy.add_all(peers.values);
@@ -137,32 +144,38 @@ public class Dino.CallState : Object {
         var peers_cpy = new ArrayList<PeerState>();
         peers_cpy.add_all(peers.values);
 
-        if (group_call != null) {
-            XmppStream stream = stream_interactor.get_stream(call.account);
-            if (stream != null) {
+        // Terminate sessions, send out messages about the ended call, exit MUC if applicable
+        XmppStream stream = stream_interactor.get_stream(call.account);
+        if (stream != null) {
+            if (group_call != null) {
                 stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, group_call.muc_jid);
+            }
+
+            if (call.state == Call.State.IN_PROGRESS || call.state == Call.State.ESTABLISHING) {
+                foreach (PeerState peer in peers_cpy) {
+                    peer.end(Xep.Jingle.ReasonElement.SUCCESS, reason_text);
+                }
+                if (use_cim) {
+                    foreach (Jid jid_to_inform in cim_jids_to_inform) {
+                        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_left(stream, jid_to_inform, cim_call_id, cim_message_type);
+                    }
+                }
+            } else if (call.state == Call.State.RINGING) {
+                foreach (PeerState peer in peers_cpy) {
+                    peer.end(Xep.Jingle.ReasonElement.CANCEL, reason_text);
+                }
+                if (call.direction == Call.DIRECTION_OUTGOING && use_cim) {
+                    foreach (Jid jid_to_inform in cim_jids_to_inform) {
+                        stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, jid_to_inform, cim_call_id, cim_message_type);
+                    }
+                }
             }
         }
 
+        // Update the call state
         if (call.state == Call.State.IN_PROGRESS || call.state == Call.State.ESTABLISHING) {
-            foreach (PeerState peer in peers_cpy) {
-                peer.end(Xep.Jingle.ReasonElement.SUCCESS, reason_text);
-            }
-            if (use_cim) {
-                XmppStream stream = stream_interactor.get_stream(call.account);
-                if (stream == null) return;
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_left(stream, cim_counterpart, cim_call_id, cim_message_type);
-            }
             call.state = Call.State.ENDED;
         } else if (call.state == Call.State.RINGING) {
-            foreach (PeerState peer in peers_cpy) {
-                peer.end(Xep.Jingle.ReasonElement.CANCEL, reason_text);
-            }
-            if (call.direction == Call.DIRECTION_OUTGOING && use_cim) {
-                XmppStream stream = stream_interactor.get_stream(call.account);
-                if (stream == null) return;
-                stream.get_module(Xep.CallInvites.Module.IDENTITY).send_retract(stream, cim_counterpart, cim_call_id, cim_message_type);
-            }
             call.state = Call.State.MISSED;
         } else {
             return;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
 "PO-Revision-Date: 2020-02-04 16:50+0000\n"
 "Language-Team: none\n"
 "Language: ie\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "Contactante GnuPG"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Errore de GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Null claves disponibil. Crea ún!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -29,17 +43,15 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "Clave ne es in li porta-clave"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "Ciffration"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Publication de claves depermisset"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Errore de GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Null claves disponibil. Crea ún!"
 
 #~ msgid "Select key"
 #~ msgstr "Selecter un clave"

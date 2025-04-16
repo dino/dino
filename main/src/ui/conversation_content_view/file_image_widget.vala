@@ -15,7 +15,7 @@ public class FileImageWidget : Widget {
     }
     private State state = State.EMPTY;
 
-    private Stack stack = new Stack() { transition_duration=600, transition_type=StackTransitionType.CROSSFADE };
+    private Stack stack = new Stack() { transition_duration=600, transition_type=StackTransitionType.CROSSFADE, hhomogeneous = false, vhomogeneous = false, interpolate_size = true };
     private Overlay overlay = new Overlay();
 
     private bool show_image_overlay_toolbar = false;
@@ -106,16 +106,8 @@ public class FileImageWidget : Widget {
 
     private void refresh_state() {
         if ((state == EMPTY || state == PREVIEW) && file_transfer.path != null) {
-            if (state == EMPTY) {
-                load_from_file.begin(file_transfer.get_file(), file_transfer.file_name);
-                show_image_overlay_toolbar = true;
-            } if (state == PREVIEW) {
-                Timeout.add(500, () => {
-                    load_from_file.begin(file_transfer.get_file(), file_transfer.file_name);
-                    show_image_overlay_toolbar = true;
-                    return false;
-                });
-            }
+            load_from_file.begin(file_transfer.get_file(), file_transfer.file_name);
+            show_image_overlay_toolbar = true;
             this.set_cursor_from_name("zoom-in");
 
             state = IMAGE;
@@ -132,7 +124,7 @@ public class FileImageWidget : Widget {
             transmission_progress.visible = true;
             show_image_overlay_toolbar = false;
         } else if (transmission_progress.visible) {
-            Timeout.add(500, () => {
+            Timeout.add(250, () => {
                 transmission_progress.transferred_size = transmission_progress.file_size;
                 transmission_progress.visible = false;
                 show_image_overlay_toolbar = true;
@@ -140,18 +132,22 @@ public class FileImageWidget : Widget {
             });
         }
 
-        if (file_transfer.state == FileTransfer.State.IN_PROGRESS) {
-            if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
-                transmission_progress.state = FileTransmissionProgress.State.DOWNLOADING;
-            } else {
-                transmission_progress.state = FileTransmissionProgress.State.UPLOADING;
+        if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
+            if (file_transfer.state == IN_PROGRESS) {
+                transmission_progress.state = DOWNLOADING;
+            } else if (file_transfer.sfs_sources.is_empty) {
+                transmission_progress.state = UNKNOWN_SOURCE;
+            } else if (file_transfer.state == NOT_STARTED) {
+                transmission_progress.state = DOWNLOAD_NOT_STARTED;
+            } else if (file_transfer.state == FAILED) {
+                transmission_progress.state = DOWNLOAD_NOT_STARTED_FAILED_BEFORE;
             }
-        } else if (file_transfer.sfs_sources.is_empty) {
-            transmission_progress.state = UNKNOWN_SOURCE;
-        } else if (file_transfer.state == NOT_STARTED && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
-            transmission_progress.state = DOWNLOAD_NOT_STARTED;
-        } else if (file_transfer.state == FileTransfer.State.FAILED) {
-            transmission_progress.state = DOWNLOAD_NOT_STARTED_FAILED_BEFORE;
+        } else if (file_transfer.direction == FileTransfer.DIRECTION_SENT) {
+            if (file_transfer.state == IN_PROGRESS) {
+                transmission_progress.state = UPLOADING;
+            } else if (file_transfer.state == FAILED) {
+                transmission_progress.state = UPLOAD_FAILED;
+            }
         }
     }
 
@@ -255,19 +251,8 @@ public class FileImageWidget : Widget {
     }
 
     public static bool can_display(FileTransfer file_transfer) {
-        return file_transfer.mime_type != null && is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
+        return file_transfer.mime_type != null && Dino.Util.is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
                 (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.thumbnails.size > 0);
-    }
-
-    public static bool is_pixbuf_supported_mime_type(string mime_type) {
-        if (mime_type == null) return false;
-
-        foreach (PixbufFormat pixbuf_format in Pixbuf.get_formats()) {
-            foreach (string pixbuf_mime in pixbuf_format.get_mime_types()) {
-                if (pixbuf_mime == mime_type) return true;
-            }
-        }
-        return false;
     }
 
     public override void dispose() {

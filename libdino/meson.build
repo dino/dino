@@ -78,15 +78,15 @@ sources = files(
 sources += [version_vala]
 c_args = [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
-    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('plugindir')),
+    '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
 vala_args = []
 if meson.get_compiler('vala').version().version_compare('=0.56.11')
     vala_args += ['-D', 'VALA_0_56_11']
 endif
-lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true])
+lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 
-install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
+install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi', install_tag: 'devel') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
 install_headers('src/dino_i18n.h')

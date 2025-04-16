@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-12-03 09:00+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-03-12 18:09+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -97,6 +97,7 @@ msgstr "Virhe"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Tilit"
 
@@ -256,6 +257,7 @@ msgid "Notifications disabled"
 msgstr "Ilmoitukset pois käytöstä"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "Tietoja"
 
@@ -268,6 +270,7 @@ msgid "Room Configuration"
 msgstr "Huoneen asetukset"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Salaus"
 
@@ -291,7 +294,7 @@ msgstr "Ylläpitäjä"
 msgid "Member"
 msgstr "Jäsen"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Tiedoston koko ylittää palvelimen määrittämän maksimikoon."
 
@@ -990,11 +993,11 @@ msgstr "Luettu"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Lähetä pyyntö"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Et vastaanota tilapäivityksiä tältä henkilöltä vielä."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1015,7 +1018,7 @@ msgstr "Tämä keskustelu ei tue vastauksia."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Ladataan %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1025,7 +1028,7 @@ msgstr "Ladataan %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Lähetetään %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1063,7 +1066,7 @@ msgstr "Päivitä viesti"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Kirjaudu"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1127,23 +1130,28 @@ msgstr "Poista tili"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Vaihda salasana"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Vaihda"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Nykyinen salasana"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Uusi salasana"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Vahvista salasana"
+
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Yleinen"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1153,13 +1161,9 @@ msgstr "Sinulla ei ole avoimia pikakeskusteluja"
 msgid "Click + to start a chat or join a channel"
 msgstr "Napsauta + aloittaaksesi keskustelun tai liittyäksesi kanavalle"
 
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Yleinen"
-
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Näytä asetukset"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"

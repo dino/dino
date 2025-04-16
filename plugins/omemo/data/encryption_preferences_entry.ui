@@ -5,7 +5,7 @@
     <child>
       <object class="AdwPreferencesGroup" id="keys_preferences_group">
         <property name="title">OMEMO</property>
-        <property name="description">Each device has its own OMEMO key. Messages can only be decrypted by a device if they are encrypted to its key. Messages are only encrypted to accepted devices.</property>
+        <property name="description" translatable="yes">Each device has its own OMEMO key. Messages can only be decrypted by a device if they are encrypted to its key. Messages are only encrypted to accepted devices.</property>
         <property name="margin-bottom">12</property>
       </object>
     </child>

@@ -69,6 +69,10 @@ bool fail_if_not_eq_int(int left, int right, string? reason = null) {
     return fail_if_not(left == right, @"$(reason + ": " ?? "")$left != $right");
 }
 
+bool fail_if_not_eq_uint(uint left, uint right, string? reason = null) {
+    return fail_if_not(left == right, @"$(reason + ": " ?? "")$left != $right");
+}
+
 private float float_to_accuracy(float f, float accuracy) {
     return (float) (Math.round(f * Math.pow(10, accuracy)) / Math.pow(10, accuracy));
 }

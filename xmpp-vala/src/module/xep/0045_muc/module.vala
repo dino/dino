@@ -132,7 +132,8 @@ public class Module : XmppStreamModule {
 
     public void exit(XmppStream stream, Jid jid) {
         try {
-            string nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
+            string? nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
+            if (nick == null) return;
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = jid.with_resource(nick);
             presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;

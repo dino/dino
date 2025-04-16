@@ -345,7 +345,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     private void initialize_for_conversation_(Conversation? conversation) {
         if (this.conversation == conversation) {
-            print("Re-initialized for %s\n", conversation.counterpart.bare_jid.to_string());
+            debug("Re-initialized for %s", conversation.counterpart.bare_jid.to_string());
         }
         // Deinitialize old conversation
         Dino.Application app = Dino.Application.get_default();

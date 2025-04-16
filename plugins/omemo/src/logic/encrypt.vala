@@ -1,5 +1,5 @@
 using Gee;
-using Signal;
+using Omemo;
 using Dino.Entities;
 using Xmpp;
 using Xmpp.Xep.Omemo;
@@ -59,7 +59,7 @@ namespace Dino.Plugins.Omemo {
                 message.body = "[This message is OMEMO encrypted]";
                 status.encrypted = true;
             } catch (Error e) {
-                warning(@"Signal error while encrypting message: $(e.message)\n");
+                warning(@"error while encrypting message: $(e.message)\n");
                 message.body = "[OMEMO encryption failed]";
                 status.encrypted = false;
             }

@@ -56,6 +56,7 @@ namespace Xmpp {
         TlsXmppStream? stream = null;
         TlsCertificateFlags? tls_errors = null;
         IOError? io_error = null;
+        uint connection_timeout_id = 0;
         foreach (SrvTargetInfo target in targets) {
             try {
                 if (target.service == "xmpp-client") {
@@ -69,7 +70,7 @@ namespace Xmpp {
                     stream.add_module(module);
                 }
 
-                uint connection_timeout_id = Timeout.add_seconds(30, () => {
+                connection_timeout_id = Timeout.add_seconds(30, () => {
                     warning("Connection attempt timed out");
                     stream.disconnect();
                     return Source.REMOVE;
@@ -78,12 +79,17 @@ namespace Xmpp {
                 yield stream.connect();
 
                 Source.remove(connection_timeout_id);
+                connection_timeout_id = 0;
 
                 return new XmppStreamResult() { stream=stream };
             } catch (IOError e) {
                 warning("Could not establish XMPP session with %s:%i: %s", target.host, target.port, e.message);
 
                 if (stream != null) {
+                    if (connection_timeout_id != 0) {
+                        Source.remove(connection_timeout_id);
+                        connection_timeout_id = 0;
+                    }
                     if (stream.errors != null) {
                         tls_errors = stream.errors;
                     }

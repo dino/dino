@@ -2,7 +2,7 @@ using Crypto;
 using Dino;
 using Dino.Entities;
 using Gee;
-using Signal;
+using Omemo;
 using Xmpp;
 using Xmpp.Xep;
 

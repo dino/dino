@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
 "PO-Revision-Date: 2021-04-26 15:32+0000\n"
 "Language-Team: none\n"
 "Language: fa\n"
@@ -21,6 +21,20 @@ msgstr ""
 msgid "Querying GnuPG"
 msgstr "پرس‌و‌جوی گنوپی‌جی"
 
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "خطا در گنوپی‌جی"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "هیچ کلیدی در دسترس نیست. یکی تولید کنید!"
+
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
 msgstr ""
@@ -29,17 +43,15 @@ msgstr ""
 msgid "Key not in keychain"
 msgstr "کلید در دسته‌کلید نیست"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
 #~ msgid "Encryption"
 #~ msgstr "رمزگذاری"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "انشار کلید غیرفعال‌شده"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "خطا در گنوپی‌جی"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "هیچ کلیدی در دسترس نیست. یکی تولید کنید!"
 
 #~ msgid "Select key"
 #~ msgstr "انتخاب کلید"

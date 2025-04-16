@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 05:39+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -11,11 +11,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "正在查询 GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr "公布密钥"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG 错误"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "没有密钥可用。生成一个吧！"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
@@ -25,17 +39,15 @@ msgstr "已禁用"
 msgid "Key not in keychain"
 msgstr "密钥不在密钥链中"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "指纹"
+
 #~ msgid "Encryption"
 #~ msgstr "加密"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "已禁用密钥发布功能"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "GnuPG 错误"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "没有密钥可用。生成一个吧！"
 
 #~ msgid "Select key"
 #~ msgstr "选择密钥"

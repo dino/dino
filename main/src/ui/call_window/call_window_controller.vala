@@ -210,18 +210,25 @@ public class Dino.Ui.CallWindowController : Object {
         bool show_keys = true;
         Plugins.Registry registry = Dino.Application.get_default().plugin_registry;
         if (((has_audio && audio_encryption != null) || (has_video && video_encryption != null)) && (!has_audio || !has_video || (audio_encryption != null && video_encryption != null && audio_encryption.encryption_ns == video_encryption.encryption_ns))) {
-            Plugins.CallEncryptionEntry? encryption_entry = audio_encryption != null ? registry.call_encryption_entries[audio_encryption.encryption_ns] : null;
-            if (encryption_entry != null) {
-                Plugins.CallEncryptionWidget? audio_encryption_widgets = encryption_entry.get_widget(call.account, audio_encryption);
-                Plugins.CallEncryptionWidget? video_encryption_widgets = encryption_entry.get_widget(call.account, video_encryption);
-                if (audio_encryption_widgets != null && video_encryption_widgets != null) {
-                    if (audio_encryption_widgets.get_title() == video_encryption_widgets.get_title())
-                        title = audio_encryption_widgets.get_title();
-                    if (audio_encryption_widgets.get_icon_name() == video_encryption_widgets.get_icon_name())
-                        icon_name = audio_encryption_widgets.get_icon_name();
-                    if (audio_encryption_widgets.show_keys() == video_encryption_widgets.show_keys())
-                        show_keys = audio_encryption_widgets.show_keys();
-                }
+            Plugins.CallEncryptionEntry? audio_encryption_entry = audio_encryption != null ? registry.call_encryption_entries[audio_encryption.encryption_ns] : null;
+            Plugins.CallEncryptionEntry? video_encryption_entry = video_encryption != null ? registry.call_encryption_entries[video_encryption.encryption_ns] : null;
+            Plugins.CallEncryptionWidget? audio_encryption_widgets = audio_encryption_entry != null ? audio_encryption_entry.get_widget(call.account, audio_encryption) : null;
+            Plugins.CallEncryptionWidget? video_encryption_widgets = video_encryption_entry != null ? video_encryption_entry.get_widget(call.account, video_encryption) : null;
+            if (audio_encryption_widgets != null && !has_video) {
+                title = audio_encryption_widgets.get_title();
+                icon_name = audio_encryption_widgets.get_icon_name();
+                show_keys = audio_encryption_widgets.show_keys();
+            } else if (video_encryption_widgets != null && !has_audio) {
+                title = video_encryption_widgets.get_title();
+                icon_name = video_encryption_widgets.get_icon_name();
+                show_keys = video_encryption_widgets.show_keys();
+            } else if (audio_encryption_widgets != null && video_encryption_widgets != null) {
+                if (audio_encryption_widgets.get_title() == video_encryption_widgets.get_title())
+                    title = audio_encryption_widgets.get_title();
+                if (audio_encryption_widgets.get_icon_name() == video_encryption_widgets.get_icon_name())
+                    icon_name = audio_encryption_widgets.get_icon_name();
+                if (audio_encryption_widgets.show_keys() == video_encryption_widgets.show_keys())
+                    show_keys = audio_encryption_widgets.show_keys();
             }
         }
 
@@ -376,7 +383,13 @@ public class Dino.Ui.CallWindowController : Object {
         }
 
         call_window_handler_ids = bottom_bar_handler_ids = new ulong[0];
-        own_video.detach();
+        if (own_video != null) {
+            if (this.call_window.bottom_bar.video_enabled) {
+                own_video.detach();
+                call_window.unset_own_video();
+            }
+            own_video = null;
+        }
         base.dispose();
     }
 }

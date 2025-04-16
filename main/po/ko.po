@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
 "PO-Revision-Date: 2022-10-17 00:56+0000\n"
 "Language-Team: none\n"
 "Language: ko\n"
@@ -96,6 +96,7 @@ msgstr "오류"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "계정"
 
@@ -257,6 +258,7 @@ msgid "Notifications disabled"
 msgstr ""
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr ""
 
@@ -269,6 +271,7 @@ msgid "Room Configuration"
 msgstr "방 설정"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr ""
 
@@ -292,7 +295,7 @@ msgstr "관리자"
 msgid "Member"
 msgstr "구성원"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "파일이 서버 허용 최대 용량을 초과하였습니다."
 
@@ -1148,6 +1151,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "전역"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "열린 채팅이 없습니다"
@@ -1155,10 +1163,6 @@ msgstr "열린 채팅이 없습니다"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr ""
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "전역"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

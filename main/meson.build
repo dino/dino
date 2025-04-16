@@ -10,6 +10,7 @@ dependencies = [
     dep_m,
     dep_qlite,
     dep_xmpp_vala,
+    meson.get_compiler('vala').find_library('posix'),
 ]
 sources = files(
     'src/main.vala',
@@ -106,6 +107,7 @@ sources += gnome.compile_resources(
     'data/gresource.xml',
     source_dir: 'data',
 )
+
 if host_machine.system() == 'windows'
     win = import('windows')
     sources += win.compile_resources(
@@ -130,6 +132,10 @@ endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.12')
     vala_args += ['-D', 'GTK_4_12']
 endif
+if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.14')
+    vala_args += ['-D', 'GTK_4_14']
+    sources += files('src/ui/conversation_content_view/file_transmission_progress.c')
+endif
 if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.3')
     vala_args += ['-D', 'Adw_1_3']
 endif
@@ -148,7 +154,8 @@ endif
 if meson.get_compiler('vala').version().version_compare('=0.56.12')
     vala_args += ['-D', 'VALA_0_56_12']
 endif
-exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true)
+
+exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, win_subsystem: 'windows', install_rpath: default_install_rpath)
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')

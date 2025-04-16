@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-09-25 16:16+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-03-13 23:17+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -92,6 +92,7 @@ msgstr "Fehler"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Konten"
 
@@ -252,8 +253,9 @@ msgid "Notifications disabled"
 msgstr "Benachrichtigungen deaktiviert"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
-msgstr "Über"
+msgstr "Info"
 
 #: main/src/windows/conversation_details.vala:196
 msgid "Settings"
@@ -264,6 +266,7 @@ msgid "Room Configuration"
 msgstr "Raumkonfiguration"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Verschlüsselung"
 
@@ -287,7 +290,7 @@ msgstr "Admin"
 msgid "Member"
 msgstr "Mitglied"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Die Datei übersteigt die maximale Uploadgröße des Servers."
 
@@ -987,11 +990,11 @@ msgstr "Gelesen"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Anfrage senden"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Du erhältst noch keine Statusaktualisierungen von diesem Kontakt."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1012,7 +1015,7 @@ msgstr "Diese Unterhaltung unterstützt keine Antworten."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Herunterladen von %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1022,7 +1025,7 @@ msgstr "Lade %s herunter…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Hochladen von %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1060,7 +1063,7 @@ msgstr "Nachricht aktualisieren"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1124,23 +1127,28 @@ msgstr "Konto entfernen"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Passwort ändern"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Ändern"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Aktuelles Passwort"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Neues Passwort"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Passwort bestätigen"
+
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Allgemein"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1150,13 +1158,9 @@ msgstr "Du hast keine offenen Chats"
 msgid "Click + to start a chat or join a channel"
 msgstr "Klicke auf +, um einen Chat zu starten oder einem Kanal beizutreten"
 
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Allgemein"
-
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Einstellungen anzeigen"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"

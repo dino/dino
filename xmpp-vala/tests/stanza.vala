@@ -115,24 +115,28 @@ class StanzaTest : Gee.TestCase {
 
     private void test_get_attribute_int() {
         var stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "42");
-        assert(stanza_node.get_attribute_int("bar", -2) == 42);
-        assert(stanza_node.get_attribute_uint("bar", 3) == 42);
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), 42);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 42);
 
         // TODO: REVERT after understanding why try_parse overflows on Windows
         #if _WIN32
         #else
         stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "-42");
-        assert(stanza_node.get_attribute_int("bar", -2) == -42);
-        assert(stanza_node.get_attribute_uint("bar", 3) == 3);
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -42);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
         #endif
 
         stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns();
-        assert(stanza_node.get_attribute_int("bar", -2) == -2);
-        assert(stanza_node.get_attribute_uint("bar", 3) == 3);
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
+
+        stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "0x42");
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
 
         stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "str");
-        assert(stanza_node.get_attribute_int("bar", -2) == -2);
-        assert(stanza_node.get_attribute_uint("bar", 3) == 3);
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
 
     }
 

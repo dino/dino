@@ -16,10 +16,27 @@ public class SearchPathGenerator {
 
     public string get_locale_path(string gettext_package, string locale_install_dir) {
         string? locale_dir = null;
-        if (Path.get_dirname(exec_path).contains("dino") || Path.get_dirname(exec_path) == "." || Path.get_dirname(exec_path).contains("build")) {
-            string exec_locale = Path.build_filename(Path.get_dirname(exec_path), "locale");
+        string dirname = Path.get_dirname(exec_path);
+        // Does our environment look like a CMake build dir?
+        if (dirname.contains("dino") || dirname == "." || dirname.contains("build")) {
+            string exec_locale = Path.build_filename(dirname, "locale");
             if (FileUtils.test(Path.build_filename(exec_locale, "en", "LC_MESSAGES", gettext_package + ".mo"), FileTest.IS_REGULAR)) {
                 locale_dir = exec_locale;
+            }
+        }
+        // Does our environment look like a meson build dir?
+        if (dirname == "." || Path.get_basename(dirname) == "main") {
+            if (gettext_package == "dino") {
+                string exec_locale = Path.build_filename(dirname, "po");
+                if (FileUtils.test(Path.build_filename(exec_locale, "en", "LC_MESSAGES", gettext_package + ".mo"), FileTest.IS_REGULAR)) {
+                    locale_dir = exec_locale;
+                }
+            } else if (gettext_package.has_prefix("dino-")) {
+                // This is a plugin, so fetch from plugin subdir
+                string exec_locale = Path.build_filename(dirname, "..", "plugins", gettext_package.substring(5), "po");
+                if (FileUtils.test(Path.build_filename(exec_locale, "en", "LC_MESSAGES", gettext_package + ".mo"), FileTest.IS_REGULAR)) {
+                    locale_dir = exec_locale;
+                }
             }
         }
         return locale_dir ?? locale_install_dir;

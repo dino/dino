@@ -9,7 +9,7 @@ dependencies = [
     dep_gtk4,
     dep_libgcrypt,
     dep_libqrencode,
-    dep_libsignal_protocol_c,
+    dep_libomemo_c,
     dep_m,
     dep_qlite,
     dep_xmpp_vala,
@@ -33,14 +33,14 @@ sources = files(
     'src/protocol/message_flag.vala',
     'src/protocol/stream_module.vala',
     'src/register_plugin.vala',
-    'src/signal/context.vala',
-    'src/signal/signal_helper.c',
-    'src/signal/simple_iks.vala',
-    'src/signal/simple_pks.vala',
-    'src/signal/simple_spks.vala',
-    'src/signal/simple_ss.vala',
-    'src/signal/store.vala',
-    'src/signal/util.vala',
+    'src/native/context.vala',
+    'src/native/helper.c',
+    'src/native/simple_iks.vala',
+    'src/native/simple_pks.vala',
+    'src/native/simple_spks.vala',
+    'src/native/simple_ss.vala',
+    'src/native/store.vala',
+    'src/native/util.vala',
     'src/trust_level.vala',
     'src/ui/bad_messages_populator.vala',
     'src/ui/call_encryption_entry.vala',
@@ -69,7 +69,7 @@ vala_args = [
     '--internal-vapi', meson.current_build_dir() / 'omemo-internal.vapi',
     '--internal-header', meson.current_build_dir() / 'omemo-internal.h',
 ]
-lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / 'dino/plugins')
+lib_omemo = shared_library('omemo', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / get_option('plugindir'), install_rpath: default_install_rpath)
 dep_omemo = declare_dependency(link_with: lib_omemo, include_directories: include_directories('.'))
 summary('End-to-end encryption using OMEMO (omemo)', dep_omemo, section: 'Plugins')
 # This is to use the internal vapi instead of the regular
@@ -77,12 +77,12 @@ vapi_omemo_internal = custom_target('omemo-internal-vapi', command: [find_progra
 dep_omemo_internal = declare_dependency(link_args: [lib_omemo.full_path()], include_directories: include_directories('.', 'src'), sources: [vapi_omemo_internal])
 
 test_sources = [
-    'tests/signal/common.vala',
-    'tests/signal/testcase.vala',
+    'tests/native/common.vala',
+    'tests/native/testcase.vala',
 
-    'tests/signal/curve25519.vala',
-    'tests/signal/hkdf.vala',
-    'tests/signal/session_builder.vala',
+    'tests/native/curve25519.vala',
+    'tests/native/hkdf.vala',
+    'tests/native/session_builder.vala',
 ]
 test_vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
