@@ -29,17 +29,17 @@ namespace Dino.Plugins.OpenPgp {
             var keys = yield get_pgp_keys();
 
             if (keys == null) {
-                preferences_group.add(new Adw.ActionRow() { title="Announce key", subtitle="Error in GnuPG" });
+                preferences_group.add(new Adw.ActionRow() { title=_("Announce key"), subtitle=_("Error in GnuPG") });
                 return;
             }
             if (keys.size == 0) {
-                preferences_group.add(new Adw.ActionRow() { title="Announce key", subtitle="No keys available. Generate one!" });
+                preferences_group.add(new Adw.ActionRow() { title=_("Announce key"), subtitle= _("No keys available. Generate one!") });
                 return;
             }
 
             StringList string_list = new StringList(null);
 #if Adw_1_4
-            var drop_down = new Adw.ComboRow() { title = "Announce key" };
+            var drop_down = new Adw.ComboRow() { title = _("Announce key") };
             drop_down.model = string_list;
             preferences_group.add(drop_down);
 #else

@@ -103,11 +103,20 @@ jobs:
             mingw-w64-${{matrix.env}}-nsis
             mingw-w64-${{matrix.env}}-libsignal-protocol-c
             mingw-w64-${{matrix.env}}-fontconfig
+            mingw-w64-${{matrix.env}}-protobuf-c
+            mingw-w64-${{matrix.env}}-check
       - name: "Setup matchers"
         run: |
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Install libomemo-c"
+        run: |
+          git clone https://github.com/dino/libomemo-c.git && \
+            cd libomemo-c && \
+            meson setup build && \
+            meson compile -C build && \
+            meson install -C build
       - name: "Configure"
         run: meson setup build --prefix=$PWD/dist --buildtype=release
       - name: "Build"
@@ -148,111 +157,3 @@ jobs:
           if-no-files-found: error
       - name: "Test"
         run: meson test -C build
-  build-windows-cmake:
-    name: "Build Windows CMake"
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    strategy:
-      matrix:
-        include:
-          - { sys: ucrt64,  env: ucrt-x86_64 }
-          - { sys: clang64, env: clang-x86_64 }
-    steps:
-      - shell: powershell
-        run: git config --global core.autocrlf input
-      - name: "Checkout sources"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: "Setup MSYS2"
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{matrix.sys}}
-          update: true
-          install: >-
-            git
-            make
-            zip
-            unzip
-            curl
-            mingw-w64-${{matrix.env}}-toolchain
-            mingw-w64-${{matrix.env}}-gcc
-            mingw-w64-${{matrix.env}}-cmake
-            mingw-w64-${{matrix.env}}-ninja
-            mingw-w64-${{matrix.env}}-libsoup3
-            mingw-w64-${{matrix.env}}-gtk4
-            mingw-w64-${{matrix.env}}-sqlite3
-            mingw-w64-${{matrix.env}}-gobject-introspection
-            mingw-w64-${{matrix.env}}-glib2
-            mingw-w64-${{matrix.env}}-glib-networking
-            mingw-w64-${{matrix.env}}-openssl
-            mingw-w64-${{matrix.env}}-libgcrypt
-            mingw-w64-${{matrix.env}}-libgee
-            mingw-w64-${{matrix.env}}-vala
-            mingw-w64-${{matrix.env}}-gsettings-desktop-schemas
-            mingw-w64-${{matrix.env}}-qrencode
-            mingw-w64-${{matrix.env}}-ntldd-git
-            mingw-w64-${{matrix.env}}-gpgme
-            mingw-w64-${{matrix.env}}-libadwaita
-            mingw-w64-${{matrix.env}}-gspell
-            mingw-w64-${{matrix.env}}-enchant
-            mingw-w64-${{matrix.env}}-hunspell
-            mingw-w64-${{matrix.env}}-iso-codes
-            mingw-w64-${{matrix.env}}-gst-plugins-base
-            mingw-w64-${{matrix.env}}-gst-plugins-good
-            mingw-w64-${{matrix.env}}-gst-plugins-bad
-            mingw-w64-${{matrix.env}}-cppwinrt
-            mingw-w64-${{matrix.env}}-meson
-            mingw-w64-${{matrix.env}}-abseil-cpp
-            mingw-w64-${{matrix.env}}-webrtc-audio-processing-1
-            mingw-w64-${{matrix.env}}-nsis
-            mingw-w64-${{matrix.env}}-libsignal-protocol-c
-            mingw-w64-${{matrix.env}}-fontconfig
-      - name: "Setup matchers"
-        run: |
-          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
-          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
-          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
-      - name: "Configure"
-        run: ./configure --program-prefix=$PWD/dist --with-tests --with-libsoup3 --no-debug --release --disable-fast-vapi
-      - name: "Build"
-        run: make
-      - name: "Build Package"
-        run: |
-          DEST_FOLDER=$PWD/dist
-
-          make install && \
-            cd $DEST_FOLDER && \
-            cp /${{matrix.sys}}/bin/gdbus.exe ./bin && \
-            cp /${{matrix.sys}}/bin/gspawn-win64-helper.exe ./bin && \
-            cp -r /${{matrix.sys}}/share/xml ./share && \
-            cp -r /${{matrix.sys}}/lib/enchant-2 ./lib && \
-            cp -r /${{matrix.sys}}/lib/gstreamer-1.0 ./lib && \
-            mkdir -p ./etc/fonts && cp -r /${{matrix.sys}}/etc/fonts ./etc/ && \
-            mkdir -p ./lib/gdk-pixbuf-2.0/ && cp -r /${{matrix.sys}}/lib/gdk-pixbuf-2.0 ./lib/ && \
-            mkdir -p ./lib/gio/ && cp -r /${{matrix.sys}}/lib/gio ./lib/ && \
-            mkdir -p ./share/icons && cp -r /${{matrix.sys}}/share/icons ./share/ && \
-            mkdir -p ./share/locale && cp -r /${{matrix.sys}}/share/locale ./share/ && \
-            mkdir -p ./share/glib-2.0/schemas && cp -r /${{matrix.sys}}/share/glib-2.0/schemas ./share/glib-2.0/ && \
-            cp /${{matrix.sys}}/bin/libcrypto-*-x64.dll . && \
-            rm -r ./include && \
-            find . -iname "*.dll.a" -exec rm {} + && \
-            find . -iname "*.exe" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
-            find . -iname "*.dll" -exec ntldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
-            find . -iname "*.exe" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
-            find . -iname "*.dll" -exec ldd {} + | grep ${{matrix.sys}} | awk '{print "cp /${{matrix.sys}}/bin/"$1" ."}' | sh && \
-            find . -iname "*.exe" -exec strip -s {} + && \
-            find . -iname "*.dll" -exec strip -s {} + && \
-            mv *.dll ./bin
-      - name: "Upload Dino for Windows"
-        uses: actions/upload-artifact@v4
-        with:
-          name: dino-windows-cmake-${{matrix.env}}
-          path: dist/
-          if-no-files-found: error
-      - name: "Test"
-        run: |
-          build/xmpp-vala-test
-          build/omemo-test

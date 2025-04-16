@@ -4,6 +4,7 @@ using Gee;
 using Xmpp;
 using Dino.Entities;
 using Gtk;
+using Omemo;
 
 namespace Dino.Plugins.Omemo {
 
@@ -32,7 +33,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
     private Account account;
     private Jid jid;
     private int identity_id = 0;
-    private Signal.Store store;
+    private Store store;
     private Set<uint32> displayed_ids = new HashSet<uint32>();
 
     [GtkChild] private unowned Adw.ActionRow automatically_accept_new_row;
@@ -158,7 +159,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         own_action_box.append(copy_button);
 
         Adw.ActionRow action_row = new Adw.ActionRow() { use_markup = true };
-        action_row.title = "This device";
+        action_row.title = _("This device");
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(own_b64));
         action_row.add_suffix(own_action_box);
         add_key_row(action_row);
@@ -190,8 +191,8 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         bool key_active = device[plugin.db.identity_meta.now_active];
         if (store != null) {
             try {
-                Signal.Address address = new Signal.Address(jid.to_string(), device[plugin.db.identity_meta.device_id]);
-                Signal.SessionRecord? session = null;
+                Address address = new Address(jid.to_string(), device[plugin.db.identity_meta.device_id]);
+                SessionRecord? session = null;
                 if (store.contains_session(address)) {
                     session = store.load_session(address);
                     string session_key_base64 = Base64.encode(session.state.remote_identity_key.serialize());
@@ -218,7 +219,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
                 });
             });
             action_row.activatable = true;
-            action_row.title = account.bare_jid.equals_bare(jid) ? "Other device" : "Device";
+            action_row.title = account.bare_jid.equals_bare(jid) ? _("Other device") : _("Device");
             action_row.subtitle = fingerprint_markup(fingerprint_from_base64(key_base64));
             string trust_str = _("Accepted");
             switch(trust) {

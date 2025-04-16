@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2025-01-22 15:09+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-09 17:18+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/translations/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -97,12 +97,13 @@ msgstr "错误"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "账号"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr "已禁用账号"
+msgstr "已禁用的账号"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -126,7 +127,7 @@ msgstr "服务器无法证明它是 %s。"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:145
 msgid "Its security certificate is not trusted by your operating system."
-msgstr "您的操作系统不信任其安全证书。"
+msgstr "其安全证书未受您的操作系统信任。"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:147
 msgid "Its security certificate is issued to another domain."
@@ -134,7 +135,7 @@ msgstr "其安全证书已颁发给另一个域名。"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:149
 msgid "Its security certificate will only become valid in the future."
-msgstr "其安全证书只会在将来有效。"
+msgstr "其安全证书仅在未来有效。"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:151
 msgid "Its security certificate is expired."
@@ -185,7 +186,7 @@ msgstr "在 %s 注册"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:307
 msgid "The server requires to sign up through a website"
-msgstr "服务器要求在网站上注册"
+msgstr "服务器要求通过网站注册"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:309
 msgid "Open website"
@@ -215,11 +216,11 @@ msgstr "取消屏蔽"
 
 #: main/src/windows/conversation_details.vala:90
 msgid "Pinned"
-msgstr "已置顶"
+msgstr "已固定"
 
 #: main/src/windows/conversation_details.vala:90
 msgid "Pin"
-msgstr "置顶"
+msgstr "固定"
 
 #: main/src/windows/conversation_details.vala:101
 msgid "Blocked"
@@ -256,6 +257,7 @@ msgid "Notifications disabled"
 msgstr "通知已禁用"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "关于"
 
@@ -268,8 +270,9 @@ msgid "Room Configuration"
 msgstr "群聊配置"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
-msgstr "加密"
+msgstr "加密方式"
 
 #: main/src/windows/conversation_details.vala:221
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -291,7 +294,7 @@ msgstr "管理员"
 msgid "Member"
 msgstr "成员"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "文件超过了服务器的最大上传大小。"
 
@@ -457,7 +460,7 @@ msgstr "开始对话"
 
 #: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
-msgstr "用户"
+msgstr "访客"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:145
@@ -508,7 +511,7 @@ msgstr "持久"
 
 #: main/src/ui/util/data_forms.vala:38
 msgid "The room will persist after the last occupant leaves"
-msgstr "最后一位参与者离开后，群聊将持续存在"
+msgstr "最后一位参与者离开后，群聊将仍然存在"
 
 #: main/src/ui/util/data_forms.vala:41
 msgid "Publicly searchable"
@@ -516,7 +519,7 @@ msgstr "可公开搜索"
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr "参与者可以更改话题"
+msgstr "参与者可以更改主题"
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
@@ -539,7 +542,7 @@ msgstr "有审核"
 
 #: main/src/ui/util/data_forms.vala:56
 msgid "Only occupants with voice may send messages"
-msgstr "只有有发言权的参与者才能发送信息"
+msgstr "仅允许有发言权的参与者发送信息"
 
 #: main/src/ui/util/data_forms.vala:59
 msgid "Members only"
@@ -547,7 +550,7 @@ msgstr "仅成员"
 
 #: main/src/ui/util/data_forms.vala:60
 msgid "Only members may enter the room"
-msgstr "只有成员才能进入群聊"
+msgstr "只有成员才能进入此群聊"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
@@ -707,7 +710,7 @@ msgstr "今天"
 #: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
 msgid "%a, %b %d"
-msgstr "%b%d日 星期%a"
+msgstr "%_m月%_d日 %A"
 
 #: main/src/ui/global_search.vala:181
 #, c-format
@@ -810,12 +813,12 @@ msgstr "发送已读回执"
 #: main/src/ui/contact_details/settings_provider.vala:67
 #: main/src/ui/contact_details/settings_provider.vala:69
 msgid "On"
-msgstr "开启"
+msgstr "已启用"
 
 #: main/src/ui/contact_details/settings_provider.vala:67
 #: main/src/ui/contact_details/settings_provider.vala:70
 msgid "Off"
-msgstr "关闭"
+msgstr "已禁用"
 
 #: main/src/ui/contact_details/settings_provider.vala:68
 #, c-format
@@ -853,11 +856,11 @@ msgstr "XMPP 地址"
 
 #: main/src/ui/conversation_details.vala:151
 msgid "Display name"
-msgstr "显示名称"
+msgstr "显示名"
 
 #: main/src/ui/conversation_details.vala:165
 msgid "Topic"
-msgstr "话题"
+msgstr "主题"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:233
 msgid "Edit message"
@@ -881,7 +884,7 @@ msgstr "打开"
 #: main/src/ui/conversation_content_view/file_widget.vala:167
 #: main/src/ui/conversation_content_view/file_default_widget.vala:58
 msgid "Save as…"
-msgstr "保存为…"
+msgstr "另存为…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
@@ -986,15 +989,15 @@ msgstr "已读"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "发送请求"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "您尚未接收对方的状态更新。"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr "此联系人想将您添加到他们的联系人列表中"
+msgstr "对方想将您添加到联系人列表"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
@@ -1011,7 +1014,7 @@ msgstr "此对话不支持回复。"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "正在下载 %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1021,21 +1024,21 @@ msgstr "正在下载 %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "正在上传 %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
 msgid "%s offered: %s"
-msgstr "分享了 %s：%s"
+msgstr "%s 已提供：%s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:89
 #, c-format
 msgid "File offered: %s"
-msgstr "分享了文件：%s"
+msgstr "文件已提供：%s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:91
 msgid "File offered"
-msgstr "文件已分享"
+msgstr "文件已提供"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:97
 msgid "File transfer failed"
@@ -1059,7 +1062,7 @@ msgstr "更新消息"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "登录"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1123,23 +1126,28 @@ msgstr "移除账号"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "更改密码"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "更改"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "当前密码"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "新密码"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "确认密码"
+
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "常规"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1147,15 +1155,11 @@ msgstr "没有打开的聊天"
 
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
-msgstr "单击 + 开始聊天或加入频道"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "常规"
+msgstr "点击 + 开始聊天或加入频道"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "显示首选项"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
@@ -1171,11 +1175,11 @@ msgstr "导航"
 
 #: main/data/gtk/help-overlay.ui:60
 msgid "Jump to next conversation"
-msgstr "跳转到下一个对话"
+msgstr "‌转至下个对话"
 
 #: main/data/gtk/help-overlay.ui:66
 msgid "Jump to previous conversation"
-msgstr "跳转到上一个对话"
+msgstr "转至上个对话"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
@@ -1207,8 +1211,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino 是适用于桌面的现代开源聊天客户端。它专注于提供简洁可靠的 Jabber/XMPP 体"
-"验，同时兼顾用户隐私。"
+"Dino 是适用于桌面的现代开源聊天客户端，专注于提供简洁可靠的 Jabber/XMPP 体"
+"验，同时注重您的隐私。"
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1239,7 +1243,7 @@ msgstr "无匹配消息"
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr "检查拼写或尝试移除筛选器"
+msgstr "检查拼写或尝试移除筛选条件"
 
 #: main/data/file_send_overlay.ui:61
 msgid "Send"

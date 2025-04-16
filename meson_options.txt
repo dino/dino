@@ -1,4 +1,6 @@
-option('plugindir', type: 'string', value: 'lib/dino/plugins', description: 'Dino plugin directory')
+option('plugindir', type: 'string', value: 'dino/plugins', description: 'Dino plugin directory, relative to libdir')
+
+option('set-install-rpath', type: 'boolean', value: false, description: 'Set rpath of installed binaries to the configured libdir')
 
 option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
 option('plugin-ice', type: 'feature', description: 'Peer-to-peer communication')

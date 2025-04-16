@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-06-01 13:32+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 05:39+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -38,11 +38,11 @@ msgstr "Connexion"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 #: main/data/preferences_window/account_preferences_subpage.ui:127
 msgid "Disable account"
-msgstr ""
+msgstr "Desactivar lo compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 msgid "Enable account"
-msgstr ""
+msgstr "Activar lo compte"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Select avatar"
@@ -96,6 +96,7 @@ msgstr "Error"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Comptes"
 
@@ -255,6 +256,7 @@ msgid "Notifications disabled"
 msgstr ""
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr ""
 
@@ -267,6 +269,7 @@ msgid "Room Configuration"
 msgstr "Configuracion de la sala"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr ""
 
@@ -290,7 +293,7 @@ msgstr "Administrador"
 msgid "Member"
 msgstr "Membre"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr ""
 "Lo fichièr es mai pesuc que la talha maximala de mandadís sul servidor."
@@ -1145,6 +1148,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "General"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Avètz pas cap conversacion dobèrta"
@@ -1152,10 +1160,6 @@ msgstr "Avètz pas cap conversacion dobèrta"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Clicatz per començar una conversacion o rejónher un salon"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "General"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

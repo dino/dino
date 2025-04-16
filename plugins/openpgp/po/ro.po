@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ro/>\n"
 "Language: ro\n"
@@ -17,11 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Se interoghează GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+msgid "Announce key"
+msgstr "Anunță cheie"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Eroare în GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Nici o cheie disponibilă. Generați una!"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:53
 msgid "Disabled"
@@ -31,17 +45,15 @@ msgstr "Dezactivat"
 msgid "Key not in keychain"
 msgstr "Cheia nu este în șirul de chei"
 
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "Amprentă"
+
 #~ msgid "Encryption"
 #~ msgstr "Criptare"
 
 #~ msgid "Key publishing disabled"
 #~ msgstr "Cheie publică dezactivată"
-
-#~ msgid "Error in GnuPG"
-#~ msgstr "Eroare în GnuPG"
-
-#~ msgid "No keys available. Generate one!"
-#~ msgstr "Nici o cheie disponibilă. Generați una!"
 
 #~ msgid "Select key"
 #~ msgstr "Selectați cheia"

@@ -1,5 +1,5 @@
 using Gee;
-using Signal;
+using Omemo;
 using Xmpp;
 
 namespace Dino.Plugins.Omemo {

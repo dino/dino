@@ -17,9 +17,9 @@ namespace Xmpp.Xep.JingleMessageInitiation {
                 propose_node.put_node(desc_node);
             }
 
-            MessageStanza accepted_message = new MessageStanza() { to=to, type_=MessageStanza.TYPE_CHAT };
-            accepted_message.stanza.put_node(propose_node);
-            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, accepted_message);
+            MessageStanza propose_message = new MessageStanza() { to=to, type_=MessageStanza.TYPE_CHAT };
+            propose_message.stanza.put_node(propose_node);
+            stream.get_module(MessageModule.IDENTITY).send_message.begin(stream, propose_message);
         }
 
         public void send_session_retract_to_peer(XmppStream stream, Jid to, string sid) {

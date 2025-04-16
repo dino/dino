@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
-"PO-Revision-Date: 2025-03-11 16:12+0000\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"PO-Revision-Date: 2025-03-25 14:09+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
 "fr/>\n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:71
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
@@ -34,7 +34,7 @@ msgstr "Annuler"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:72
 msgid "Connect"
-msgstr "Connexion"
+msgstr "Se connecter"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:94
 #: main/data/preferences_window/account_preferences_subpage.ui:127
@@ -97,6 +97,7 @@ msgstr "Erreur"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Comptes"
 
@@ -117,7 +118,7 @@ msgstr "Aucun compte actif"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
-msgstr "Se connecter"
+msgstr "Connexion"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
@@ -257,6 +258,7 @@ msgid "Notifications disabled"
 msgstr "Notifications désactivées"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "À propos"
 
@@ -269,6 +271,7 @@ msgid "Room Configuration"
 msgstr "Configuration du salon"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Chiffrement"
 
@@ -292,7 +295,7 @@ msgstr "Administrateur·ice"
 msgid "Member"
 msgstr "Membre"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Le fichier dépasse la taille maximale autorisée par le serveur."
 
@@ -993,11 +996,11 @@ msgstr "Lu"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Envoyer une requête"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Vous ne recevez pas encore les changements de statuts de ce contact."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1018,7 +1021,7 @@ msgstr "Cette conversation ne gère pas les réponses."
 #: main/src/ui/conversation_content_view/file_default_widget.vala:67
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Téléchargement de %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:69
 #, c-format
@@ -1028,7 +1031,7 @@ msgstr "Téléchargement de %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:73
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "%s envoyés… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:87
 #, c-format
@@ -1066,7 +1069,7 @@ msgstr "Modifier ce message"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Se connecter"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1130,23 +1133,28 @@ msgstr "Supprimer ce compte"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Changement de mot de passe"
 
 #: main/data/preferences_window/change_password_dialog.ui:30
 msgid "Change"
-msgstr ""
+msgstr "Changer"
 
 #: main/data/preferences_window/change_password_dialog.ui:57
 msgid "Current password"
-msgstr ""
+msgstr "Mot de passe actuel"
 
 #: main/data/preferences_window/change_password_dialog.ui:62
 msgid "New password"
-msgstr ""
+msgstr "Nouveau mot de passe"
 
 #: main/data/preferences_window/change_password_dialog.ui:67
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirmation du mot de passe"
+
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Général"
 
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
@@ -1156,13 +1164,9 @@ msgstr "Vous n’avez aucune discussion ouverte"
 msgid "Click + to start a chat or join a channel"
 msgstr "Cliquez sur + pour commencer une conversation ou rejoindre un salon"
 
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Général"
-
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Afficher les préférences"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"

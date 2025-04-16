@@ -1,5 +1,6 @@
 using Gee;
 using Dino.Entities;
+using Omemo;
 
 extern const string GETTEXT_PACKAGE;
 extern const string LOCALE_INSTALL_DIR;
@@ -8,8 +9,8 @@ namespace Dino.Plugins.Omemo {
 
 public class Plugin : RootInterface, Object {
     public const bool DEBUG = false;
-    private static Signal.Context? _context;
-    public static Signal.Context get_context() {
+    private static Context? _context;
+    public static Context get_context() {
         assert(_context != null);
         return (!)_context;
     }
@@ -17,11 +18,11 @@ public class Plugin : RootInterface, Object {
         lock(_context) {
             try {
                 if (_context == null) {
-                    _context = new Signal.Context(DEBUG);
+                    _context = new Context(DEBUG);
                 }
                 return true;
             } catch (Error e) {
-                warning("Error initializing Signal Context %s", e.message);
+                warning("Error initializing libomemo-c Context %s", e.message);
                 return false;
             }
         }
@@ -54,11 +55,11 @@ public class Plugin : RootInterface, Object {
         this.app.plugin_registry.register_call_entryption_entry(DtlsSrtpVerificationDraft.NS_URI, new CallEncryptionEntry(db));
 
         this.app.stream_interactor.module_manager.initialize_account_modules.connect((account, list) => {
-            Signal.Store signal_store = Plugin.get_context().create_store();
-            list.add(new StreamModule(signal_store));
-            decryptors[account] = new OmemoDecryptor(account, app.stream_interactor, trust_manager, db, signal_store);
+            Store store = Plugin.get_context().create_store();
+            list.add(new StreamModule(store));
+            decryptors[account] = new OmemoDecryptor(account, app.stream_interactor, trust_manager, db, store);
             list.add(decryptors[account]);
-            encryptors[account] = new OmemoEncryptor(account, trust_manager,signal_store);
+            encryptors[account] = new OmemoEncryptor(account, trust_manager, store);
             list.add(encryptors[account]);
             list.add(new JetOmemo.Module());
             list.add(new DtlsSrtpVerificationDraft.StreamModule());

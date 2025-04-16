@@ -21,7 +21,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void conference_removed(Account account, Jid jid);
 
     private StreamInteractor stream_interactor;
-    private HashMap<Account, HashSet<Jid>> mucs_todo = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
+    private HashMap<Account, HashSet<Jid>> mucs_joined = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashSet<Jid>> mucs_joining = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<Jid, Cancellable>> mucs_sync_cancellables = new HashMap<Account, HashMap<Jid, Cancellable>>(Account.hash_func, Account.equals_func);
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
@@ -122,25 +122,26 @@ public class MucManager : StreamInteractionModule, Object {
             enter_errors[jid] = res.muc_error;
         }
 
-        if (!mucs_todo.has_key(account)) {
-            mucs_todo[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
+        if (!mucs_joined.has_key(account)) {
+            mucs_joined[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
         }
-        mucs_todo[account].add(jid.with_resource(res.nick ?? nick_));
+        mucs_joined[account].add(jid.with_resource(res.nick ?? nick_));
 
         return res;
     }
 
     public void part(Account account, Jid jid) {
-        if (!mucs_todo.has_key(account) || !mucs_todo[account].contains(jid)) return;
-
-        mucs_todo[account].remove(jid);
+        if (mucs_joined.has_key(account) && mucs_joined[account].contains(jid)) {
+            mucs_joined[account].remove(jid);
+        }
 
         XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) return;
-        unset_autojoin(account, stream, jid);
-        stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid);
+        if (stream != null) {
+            unset_autojoin(account, stream, jid);
+            stream.get_module(Xep.Muc.Module.IDENTITY).exit(stream, jid.bare_jid);
+        }
 
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.GROUPCHAT);
         if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
 
         cancel_sync(account, jid);
@@ -182,9 +183,9 @@ public class MucManager : StreamInteractionModule, Object {
 
         conversation.nickname = new_nick;
 
-        if (mucs_todo.has_key(conversation.account)) {
-            mucs_todo[conversation.account].remove(conversation.counterpart);
-            mucs_todo[conversation.account].add(conversation.counterpart.with_resource(new_nick));
+        if (mucs_joined.has_key(conversation.account)) {
+            mucs_joined[conversation.account].remove(conversation.counterpart);
+            mucs_joined[conversation.account].add(conversation.counterpart.with_resource(new_nick));
         }
 
         // Update nick in bookmark
@@ -630,8 +631,7 @@ public class MucManager : StreamInteractionModule, Object {
             } else if (conversation.active && !conference.autojoin) {
                 part(account, conference.jid);
             }
-        }
-        if (conference.autojoin) {
+        } else if (conference.autojoin) {
             join.begin(account, conference.jid, conference.nick, conference.password);
         }
         conference_added(account, conference);
@@ -655,9 +655,9 @@ public class MucManager : StreamInteractionModule, Object {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return;
 
-        if (!mucs_todo.has_key(account)) return;
+        if (!mucs_joined.has_key(account)) return;
 
-        foreach (Jid jid in mucs_todo[account]) {
+        foreach (Jid jid in mucs_joined[account]) {
 
             bool joined = false;
 
@@ -666,7 +666,7 @@ public class MucManager : StreamInteractionModule, Object {
             });
 
             Timeout.add_seconds(10, () => {
-                if (joined || !mucs_todo.has_key(account) || stream_interactor.get_stream(account) != stream) return false;
+                if (joined || !mucs_joined.has_key(account) || stream_interactor.get_stream(account) != stream) return false;
 
                 join.begin(account, jid.bare_jid, jid.resourcepart, null, true);
                 return false;

@@ -70,14 +70,14 @@ namespace Dino {
             Plugins.VideoCallPlugin? plugin = Application.get_default().plugin_registry.video_call_plugin;
             if (plugin == null) return false;
 
-            return plugin.supports(null);
+            return plugin.supported();
         }
 
         public async bool can_conversation_do_calls(Conversation conversation) {
             if (!can_we_do_calls(conversation.account)) return false;
 
             if (conversation.type_ == Conversation.Type.CHAT) {
-                return (yield get_call_resources(conversation.account, conversation.counterpart)).size > 0 || has_jmi_resources(conversation.counterpart);
+                return !conversation.counterpart.equals_bare(conversation.account.bare_jid);
             } else {
                 bool is_private = stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart);
                 return is_private && can_initiate_groupcall(conversation.account);
@@ -295,7 +295,8 @@ namespace Dino {
             CallState call_state = new CallState(call, stream_interactor);
             connect_call_state_signals(call_state);
             call_state.invited_to_group_call = muc_jid;
-            call_state.parent_muc = inviter_jid.bare_jid;
+            call_state.use_cim = true;
+            call_state.cim_jids_to_inform.add(inviter_jid.bare_jid);
 
             debug("[%s] on_muji_call_received accepting", account.bare_jid.to_string());
 
@@ -456,7 +457,7 @@ namespace Dino {
 
                 call_state.use_cim = true;
                 call_state.cim_call_id = call_id;
-                call_state.cim_counterpart = message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? from_jid.bare_jid : from_jid;
+                call_state.cim_jids_to_inform.add(message_stanza.type_ == MessageStanza.TYPE_GROUPCHAT ? from_jid.bare_jid : from_jid);
                 call_state.cim_message_type = message_stanza.type_;
 
                 Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(from_jid, to_jid, account, message_stanza.type_);

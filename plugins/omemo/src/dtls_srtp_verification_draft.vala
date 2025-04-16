@@ -1,4 +1,4 @@
-using Signal;
+using Omemo;
 using Gee;
 using Xmpp;
 

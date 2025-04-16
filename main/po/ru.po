@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 16:28+0100\n"
+"POT-Creation-Date: 2025-04-11 18:06+0200\n"
 "PO-Revision-Date: 2024-09-06 14:24+0300\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/"
 "translations/ru/>\n"
@@ -98,6 +98,7 @@ msgstr "Ошибка"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_window.ui:11
 msgid "Accounts"
 msgstr "Учётные записи"
 
@@ -257,6 +258,7 @@ msgid "Notifications disabled"
 msgstr "Уведомления отключены"
 
 #: main/src/windows/conversation_details.vala:193
+#: main/data/conversation_details.ui:156
 msgid "About"
 msgstr "О программе"
 
@@ -269,6 +271,7 @@ msgid "Room Configuration"
 msgstr "Настройки комнаты"
 
 #: main/src/windows/conversation_details.vala:211
+#: main/data/preferences_window/preferences_window.ui:18
 msgid "Encryption"
 msgstr "Шифрование"
 
@@ -292,7 +295,7 @@ msgstr "Администратор"
 msgid "Member"
 msgstr "Участник"
 
-#: main/src/ui/file_send_overlay.vala:92
+#: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Размер файла превышает максимальный размер загрузки сервера."
 
@@ -1150,6 +1153,11 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+#: main/data/preferences_window/preferences_window.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "Основные"
+
 #: main/data/unified_main_content.ui:46
 msgid "You have no open chats"
 msgstr "Тут пустовато"
@@ -1157,10 +1165,6 @@ msgstr "Тут пустовато"
 #: main/data/unified_main_content.ui:47
 msgid "Click + to start a chat or join a channel"
 msgstr "Нажмите + для того, чтобы начать чат или присоединиться к каналу"
-
-#: main/data/gtk/help-overlay.ui:10
-msgid "General"
-msgstr "Основные"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

@@ -1,7 +1,7 @@
 using Dino.Entities;
 
 using Crypto;
-using Signal;
+using Omemo;
 
 namespace Dino.Plugins.Omemo {
 

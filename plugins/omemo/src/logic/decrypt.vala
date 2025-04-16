@@ -1,7 +1,7 @@
 using Dino.Entities;
 using Qlite;
 using Gee;
-using Signal;
+using Omemo;
 using Xmpp;
 
 namespace Dino.Plugins.Omemo {
@@ -91,7 +91,7 @@ namespace Dino.Plugins.Omemo {
                     possible_jids.add(message.real_jid.bare_jid);
                 } else if (data.is_prekey) {
                     // pre key messages do store the identity key, so we can use that to find the real jid
-                    PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(data.encrypted_key);
+                    PreKeyOmemoMessage msg = Plugin.get_context().deserialize_signal_pre_key_message(data.encrypted_key);
                     string identity_key = Base64.encode(msg.identity_key.serialize());
                     foreach (Row row in db.identity_meta.get_with_device_id(identity_id, data.sid).with(db.identity_meta.identity_key_public_base64, "=", identity_key)) {
                         try {
@@ -124,7 +124,7 @@ namespace Dino.Plugins.Omemo {
 
             if (data.is_prekey) {
                 int identity_id = db.identity.get_id(account.id);
-                PreKeySignalMessage msg = Plugin.get_context().deserialize_pre_key_signal_message(encrypted_key);
+                PreKeyOmemoMessage msg = Plugin.get_context().deserialize_signal_pre_key_message(encrypted_key);
                 string identity_key = Base64.encode(msg.identity_key.serialize());
 
                 bool ok = update_db_for_prekey(identity_id, identity_key, from_jid, sid);
@@ -132,13 +132,13 @@ namespace Dino.Plugins.Omemo {
 
                 debug("Starting new session for decryption with device from %s/%d", from_jid.to_string(), sid);
                 SessionCipher cipher = store.create_session_cipher(address);
-                key = cipher.decrypt_pre_key_signal_message(msg);
+                key = cipher.decrypt_pre_key_message(msg);
                 // TODO: Finish session
             } else {
                 debug("Continuing session for decryption with device from %s/%d", from_jid.to_string(), sid);
-                SignalMessage msg = Plugin.get_context().deserialize_signal_message(encrypted_key);
+                OmemoMessage msg = Plugin.get_context().deserialize_signal_message(encrypted_key);
                 SessionCipher cipher = store.create_session_cipher(address);
-                key = cipher.decrypt_signal_message(msg);
+                key = cipher.decrypt_message(msg);
             }
 
             if (key.length >= 32) {

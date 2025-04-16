@@ -139,5 +139,11 @@ namespace Dino.Ui {
             header_bar.opacity = controls_active ? 1.0 : 0.0;
             invite_button.visible = may_show_invite_button && is_highest_row && is_start_row;
         }
+
+        public override void dispose() {
+            main_widget = null;
+            overlay = null;
+            base.dispose();
+        }
     }
 }
