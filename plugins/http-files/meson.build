@@ -3,7 +3,6 @@ dependencies = [
     dep_gee,
     dep_glib,
     dep_gmodule,
-    dep_gtk4,
     dep_libsoup,
     dep_qlite,
     dep_xmpp_vala,

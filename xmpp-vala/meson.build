@@ -1,5 +1,4 @@
 dependencies = [
-    dep_gdk_pixbuf,
     dep_gee,
     dep_gio,
     dep_glib,
@@ -130,7 +129,6 @@ sources = files(
     'src/module/xep/0447_stateless_file_sharing.vala',
     'src/module/xep/0461_replies.vala',
     'src/module/xep/0482_call_invites.vala',
-    'src/module/xep/pixbuf_storage.vala',
     'src/util.vala',
 )
 c_args = [

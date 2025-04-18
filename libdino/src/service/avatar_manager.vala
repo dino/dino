@@ -24,8 +24,6 @@ public class AvatarManager : StreamInteractionModule, Object {
     private string folder = null;
     private HashMap<Jid, string> user_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, string> vcard_avatars = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
-    private HashMap<string, Pixbuf> cached_pixbuf = new HashMap<string, Pixbuf>();
-    private HashMap<string, Gee.List<SourceFuncWrapper>> pending_pixbuf = new HashMap<string, Gee.List<SourceFuncWrapper>>();
     private HashSet<string> pending_fetch = new HashSet<string>();
     private const int MAX_PIXEL = 192;
 
@@ -104,70 +102,8 @@ public class AvatarManager : StreamInteractionModule, Object {
         }
     }
 
-    [Version (deprecated = true)]
-    public bool has_avatar_cached(Account account, Jid jid) {
-        string? hash = get_avatar_hash(account, jid);
-        return hash != null && cached_pixbuf.has_key(hash);
-    }
-
     public bool has_avatar(Account account, Jid jid) {
         return get_avatar_hash(account, jid) != null;
-    }
-
-    [Version (deprecated = true)]
-    public Pixbuf? get_cached_avatar(Account account, Jid jid_) {
-        string? hash = get_avatar_hash(account, jid_);
-        if (hash == null) return null;
-        if (cached_pixbuf.has_key(hash)) return cached_pixbuf[hash];
-        return null;
-    }
-
-    [Version (deprecated = true)]
-    public async Pixbuf? get_avatar(Account account, Jid jid_) {
-        Jid jid = jid_;
-        if (!stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid_, account)) {
-            jid = jid_.bare_jid;
-        }
-
-        int source = -1;
-        string? hash = null;
-        if (user_avatars.has_key(jid)) {
-            hash = user_avatars[jid];
-            source = 1;
-        } else if (vcard_avatars.has_key(jid)) {
-            hash = vcard_avatars[jid];
-            source = 2;
-        }
-
-        if (hash == null) return null;
-
-        if (cached_pixbuf.has_key(hash)) {
-            return cached_pixbuf[hash];
-        }
-
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null || !stream.negotiation_complete) return null;
-
-        if (pending_pixbuf.has_key(hash)) {
-            pending_pixbuf[hash].add(new SourceFuncWrapper(get_avatar.callback));
-            yield;
-            return cached_pixbuf[hash];
-        }
-
-        pending_pixbuf[hash] = new ArrayList<SourceFuncWrapper>();
-        Pixbuf? image = yield get_image(hash);
-        if (image != null) {
-            cached_pixbuf[hash] = image;
-        } else {
-            if (yield fetch_and_store(stream, account, jid, source, hash)) {
-                image = yield get_image(hash);
-            }
-            cached_pixbuf[hash] = image;
-        }
-        foreach (SourceFuncWrapper sfw in pending_pixbuf[hash]) {
-            sfw.sfun();
-        }
-        return image;
     }
 
     public void publish(Account account, string file) {
@@ -328,29 +264,6 @@ public class AvatarManager : StreamInteractionModule, Object {
     public bool has_image(string id) {
         File file = File.new_for_path(Path.build_filename(folder, id));
         return file.query_exists();
-    }
-
-    public async Pixbuf? get_image(string id) {
-        try {
-            File file = File.new_for_path(Path.build_filename(folder, id));
-            FileInputStream stream = yield file.read_async(Priority.LOW);
-
-            uint8 fbuf[1024];
-            size_t size;
-
-            Checksum checksum = new Checksum (ChecksumType.SHA1);
-            while ((size = yield stream.read_async(fbuf, Priority.LOW)) > 0) {
-                checksum.update(fbuf, size);
-            }
-
-            if (checksum.get_string() != id) {
-                FileUtils.remove(file.get_path());
-            }
-            stream.seek(0, SeekType.SET);
-            return yield new Pixbuf.from_stream_async(stream, null);
-        } catch (Error e) {
-            return null;
-        }
     }
 }
 

@@ -1,8 +1,8 @@
 dependencies = [
     dep_crypto_vala,
     dep_dino,
-    dep_gdk_pixbuf,
     dep_gee,
+    dep_gio,
     dep_glib,
     dep_gmodule,
     dep_gnutls,

@@ -1,6 +1,5 @@
 dependencies = [
     dep_dino,
-    dep_gdk_pixbuf,
     dep_gee,
     dep_glib,
     dep_gmodule,
