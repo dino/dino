@@ -46,16 +46,12 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
             get_notifications_dbus.begin((_, res) => {
                 // It might take a bit to get the interface. NotificationEvents will queue any notifications in the meantime.
-                try {
-                    DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
-                    if (dbus_notifications != null) {
-                        FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
-                        notification_events.register_notification_provider.begin(free_desktop_notifier);
-                    } else {
-                        notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
-                    }
-                } catch (Error e) {
-                    debug("Failed accessing fdo notification server: %s", e.message);
+                DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
+                if (dbus_notifications != null) {
+                    FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
+                    notification_events.register_notification_provider.begin(free_desktop_notifier);
+                } else {
+                    notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
                 }
             });
 

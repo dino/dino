@@ -17,12 +17,34 @@ namespace Dino {
         public abstract async void get_server_information(out string name, out string vendor, out string version, out string spec_version) throws DBusError, IOError;
     }
 
+    // This function will always return. Sometimes Glib.Bus.get_proxy doesn't return, but this function covers that with a timeout.
+    // Returns null if the dbus notifications interface can't be obtained (if timeout or exception)
     public static async DBusNotifications? get_notifications_dbus() {
-        try {
-            return yield Bus.get_proxy(BusType.SESSION, "org.freedesktop.Notifications", "/org/freedesktop/Notifications");
-        } catch (IOError e) {
-            warning("Couldn't get org.freedesktop.Notifications DBus instance: %s\n", e.message);
-        }
-        return null;
+        DBusNotifications? ret = null;
+        Cancellable cancellable = new Cancellable();
+
+        uint timeout_handle_id = Timeout.add_seconds(10, () => {
+            warning("Timeout waiting for org.freedesktop.Notifications DBus instance");
+            cancellable.cancel();
+            Idle.add(get_notifications_dbus.callback);
+            return false;
+        });
+
+        Bus.get_proxy.begin<DBusNotifications>(BusType.SESSION, "org.freedesktop.Notifications", "/org/freedesktop/Notifications", 0, cancellable, (_, res) => {
+            try {
+                ret = Bus.get_proxy.end(res);
+            } catch(IOError e) {
+                warning("Couldn't get org.freedesktop.Notifications DBus instance: %s", e.message);
+            }
+            if (timeout_handle_id != 0) {
+                Source.remove(timeout_handle_id);
+                Idle.add(get_notifications_dbus.callback);
+            }
+        });
+
+        yield;
+        timeout_handle_id = 0;
+
+        return ret;
     }
 }
