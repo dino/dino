@@ -252,13 +252,16 @@ public class ConversationViewController : Object {
             return false;
         }
 
-        // Don't forward / change focus on Control / Alt
+        // Don't forward / change focus on control keys
         if (keyval == Gdk.Key.Control_L || keyval == Gdk.Key.Control_R ||
-                keyval == Gdk.Key.Alt_L || keyval == Gdk.Key.Alt_R) {
+                keyval == Gdk.Key.Alt_L || keyval == Gdk.Key.Alt_R ||
+                keyval == Gdk.Key.Meta_L || keyval == Gdk.Key.Meta_R ||
+                keyval == Gdk.Key.Super_L || keyval == Gdk.Key.Super_R) {
             return false;
         }
-        // Don't forward / change focus on Control + ...
-        if ((state & ModifierType.CONTROL_MASK) > 0) {
+        // Don't forward / change focus on keyboard shortcuts (which include control keys)
+        if ((state & (ModifierType.CONTROL_MASK | ModifierType.ALT_MASK |
+                ModifierType.META_MASK | ModifierType.SUPER_MASK)) > 0) {
             return false;
         }
 
