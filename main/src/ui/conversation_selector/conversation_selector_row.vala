@@ -186,7 +186,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
-                    bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
+                    bool file_is_image = transfer.content_type != null && transfer.content_type.is_image();
                     change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
                     if (transfer.direction == Message.DIRECTION_SENT) {
                         message_label.label = (file_is_image ? _("Image sent") : _("File sent") );

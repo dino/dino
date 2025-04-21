@@ -31,9 +31,9 @@ public class FileSendOverlay : Adw.Dialog {
 
     private async void load_file_widget(File file, FileInfo file_info) {
         string file_name = file_info.get_display_name();
-        string mime_type = file_info.get_content_type();
+        var content_type = new Xmpp.FileContentType.from_file_info(file_info);
 
-        bool is_image = Dino.Util.is_pixbuf_supported_mime_type(mime_type);
+        bool is_image = Dino.Util.is_pixbuf_supported_content_type(content_type);
 
         Widget? widget = null;
         if (is_image) {
@@ -47,7 +47,7 @@ public class FileSendOverlay : Adw.Dialog {
         if (widget == null) {
             FileDefaultWidget default_widget = new FileDefaultWidget();
             default_widget.name_label.label = file_name;
-            default_widget.set_static_file_info(mime_type);
+            default_widget.set_static_file_info(content_type);
             widget = default_widget;
         }
 

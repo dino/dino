@@ -232,7 +232,7 @@ public class FileImageWidget : Widget {
     }
 
     public static bool can_display(FileTransfer file_transfer) {
-        return file_transfer.mime_type != null && Dino.Util.is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
+        return file_transfer.content_type != null && Dino.Util.is_pixbuf_supported_content_type(file_transfer.content_type) &&
                 (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.thumbnails.size > 0);
     }
 

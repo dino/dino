@@ -92,7 +92,7 @@ public class FileProvider : Dino.FileProvider, Object {
             if (name.down() == "content-type") content_type = val;
             if (name.down() == "content-length") content_length = val;
         });
-        file_meta.mime_type = content_type;
+        file_meta.content_type = new FileContentType.from_mime_type(content_type);
         if (content_length != null) {
             file_meta.size = int64.parse(content_length);
         }
@@ -131,7 +131,7 @@ public class FileProvider : Dino.FileProvider, Object {
         if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
             var file_meta = new HttpFileMeta();
             file_meta.size = file_transfer.size;
-            file_meta.mime_type = file_transfer.mime_type;
+            file_meta.content_type = file_transfer.content_type;
             file_meta.file_name = file_transfer.file_name;
             file_meta.message = null;
             return file_meta;
@@ -145,7 +145,7 @@ public class FileProvider : Dino.FileProvider, Object {
 
         var file_meta = new HttpFileMeta();
         file_meta.size = file_transfer.size;
-        file_meta.mime_type = file_transfer.mime_type;
+        file_meta.content_type = file_transfer.content_type;
 
         file_meta.file_name = extract_file_name_from_url(message.body);
 

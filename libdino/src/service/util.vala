@@ -30,8 +30,10 @@ public class Util {
         }
     }
 
-    public static bool is_pixbuf_supported_mime_type(string mime_type) {
-        if (mime_type == null) return false;
+    public static bool is_pixbuf_supported_content_type(Xmpp.FileContentType? content_type) {
+        if (content_type == null) return false;
+
+        string mime_type = content_type.get_mime_type();
 
         foreach (Gdk.PixbufFormat pixbuf_format in Gdk.Pixbuf.get_formats()) {
             foreach (string pixbuf_mime in pixbuf_format.get_mime_types()) {

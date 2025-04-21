@@ -28,7 +28,7 @@ public class HttpFileSender : FileSender, Object {
         if (stream == null) return null;
 
         try {
-            var slot_result = yield stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, file_meta.size, file_meta.mime_type);
+            var slot_result = yield stream_interactor.module_manager.get_module(file_transfer.account, Xmpp.Xep.HttpFileUpload.Module.IDENTITY).request_slot(stream, file_transfer.server_file_name, file_meta.size, file_meta.content_type);
             send_data.url_down = slot_result.url_get;
             send_data.url_up = slot_result.url_put;
             send_data.headers = slot_result.headers;
@@ -145,9 +145,9 @@ public class HttpFileSender : FileSender, Object {
 #if SOUP_3_0
         string transfer_host = Uri.parse(file_send_data.url_up, UriFlags.NONE).get_host();
         put_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
-        put_message.set_request_body(file_meta.mime_type, file_transfer.input_stream, (ssize_t) file_meta.size);
+        put_message.set_request_body(file_meta.content_type.get_mime_type(), file_transfer.input_stream, (ssize_t) file_meta.size);
 #else
-        put_message.request_headers.set_content_type(file_meta.mime_type, null);
+        put_message.request_headers.set_content_type(file_meta.content_type.get_mime_type(), null);
         put_message.request_headers.set_content_length(file_meta.size);
         put_message.request_body.set_accumulate(false);
         put_message.wrote_headers.connect(() => transfer_more_bytes(file_transfer.input_stream, put_message.request_body));

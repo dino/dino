@@ -132,6 +132,7 @@ sources = files(
     'src/module/xep/0447_stateless_file_sharing.vala',
     'src/module/xep/0461_replies.vala',
     'src/module/xep/0482_call_invites.vala',
+    'src/file_content_type.vala',
     'src/util.vala',
 )
 c_args = [

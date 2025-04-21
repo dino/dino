@@ -2,6 +2,7 @@ using Gee;
 using Gdk;
 using Gtk;
 using Pango;
+using Xmpp;
 
 using Dino.Entities;
 
@@ -50,7 +51,7 @@ public class FileWidget : SizeRequestBin {
 
     private FileTransfer file_transfer;
     public FileTransfer.State file_transfer_state { get; set; }
-    public string file_transfer_mime_type { get; set; }
+    public FileContentType file_transfer_content_type { get; set; }
     private State? state = null;
 
     private FileDefaultWidgetController default_widget_controller;
@@ -84,10 +85,10 @@ public class FileWidget : SizeRequestBin {
 //        });
 
         file_transfer.bind_property("state", this, "file-transfer-state");
-        file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+        file_transfer.bind_property("content-type", this, "file-transfer-content-type");
 
         this.notify["file-transfer-state"].connect(update_widget);
-        this.notify["file-transfer-mime-type"].connect(update_widget);
+        this.notify["file-transfer-content-type"].connect(update_widget);
     }
 
     private async void update_widget() {
@@ -202,7 +203,7 @@ public class FileDefaultWidgetController : Object {
     private FileDefaultWidget widget;
     private FileTransfer? file_transfer;
     public string file_transfer_state { get; set; }
-    public string file_transfer_mime_type { get; set; }
+    public FileContentType file_transfer_content_type { get; set; }
     public int64 file_transfer_transferred_bytes { get; set; }
 
     private FileTransfer.State state;
@@ -213,7 +214,7 @@ public class FileDefaultWidgetController : Object {
         widget.clicked.connect(on_clicked);
 
         this.notify["file-transfer-state"].connect(update_file_info);
-        this.notify["file-transfer-mime-type"].connect(update_file_info);
+        this.notify["file-transfer-content-type"].connect(update_file_info);
         this.notify["file-transfer-transferred-bytes"].connect(update_file_info);
     }
 
@@ -224,7 +225,7 @@ public class FileDefaultWidgetController : Object {
         widget.name_label.label = file_transfer.file_name;
 
         file_transfer.bind_property("state", this, "file-transfer-state");
-        file_transfer.bind_property("mime-type", this, "file-transfer-mime-type");
+        file_transfer.bind_property("content-type", this, "file-transfer-content-type");
         file_transfer.bind_property("transferred-bytes", this, "file-transfer-transferred-bytes");
 
         update_file_info();
@@ -232,7 +233,7 @@ public class FileDefaultWidgetController : Object {
 
     private void update_file_info() {
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.mime_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes);
+        widget.update_file_info(file_transfer.content_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes);
     }
 
     private void on_clicked() {

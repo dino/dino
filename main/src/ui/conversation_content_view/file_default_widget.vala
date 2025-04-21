@@ -39,21 +39,21 @@ public class FileDefaultWidget : Box {
         });
     }
 
-    public void set_static_file_info(string? mime_type) {
+    public void set_static_file_info(Xmpp.FileContentType? content_type) {
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
 
         image_stack.set_visible_child_name("content_type_image");
-        content_type_image.icon_name = get_file_icon_name(mime_type);
-        mime_label.label = mime_type != null ? ContentType.get_description(mime_type) : null;
+        content_type_image.icon_name = get_file_icon_name(content_type);
+        mime_label.label = content_type != null ? content_type.get_description() : null;
     }
 
-    public void update_file_info(string? mime_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
+    public void update_file_info(Xmpp.FileContentType? content_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
         this.state = state;
 
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
 
-        content_type_image.icon_name = get_file_icon_name(mime_type);
-        string? mime_description = mime_type != null ? ContentType.get_description(mime_type) : null;
+        content_type_image.icon_name = get_file_icon_name(content_type);
+        string? mime_description = content_type != null ? content_type.get_description() : null;
 
         switch (state) {
             case FileTransfer.State.COMPLETE:
@@ -134,10 +134,10 @@ public class FileDefaultWidget : Box {
         file_menu.opacity = 0;
     }
 
-    private static string get_file_icon_name(string? mime_type) {
-        if (mime_type == null) return "dino-file-symbolic";
+    private static string get_file_icon_name(Xmpp.FileContentType? content_type) {
+        if (content_type == null) return "dino-file-symbolic";
 
-        string generic_icon_name = ContentType.get_generic_icon_name(mime_type) ?? "";
+        string generic_icon_name = content_type.get_generic_icon_name() ?? "";
         switch (generic_icon_name) {
             case "audio-x-generic": return "dino-file-music-symbolic";
             case "image-x-generic": return "dino-file-image-symbolic";

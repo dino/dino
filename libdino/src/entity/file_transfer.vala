@@ -66,7 +66,7 @@ public class FileTransfer : Object {
         set { server_file_name_ = value; }
     }
     public string path { get; set; }
-    public string? mime_type { get; set; }
+    public FileContentType? content_type { get; set; }
     public int64 size { get; set; }
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
@@ -80,7 +80,7 @@ public class FileTransfer : Object {
         owned get {
             return new Xep.FileMetadataElement.FileMetadata() {
                 name = this.file_name,
-                mime_type = this.mime_type,
+                content_type = this.content_type,
                 size = this.size,
                 desc = this.desc,
                 date = this.modification_date,
@@ -93,7 +93,7 @@ public class FileTransfer : Object {
         }
         set {
             this.file_name = value.name;
-            this.mime_type = value.mime_type;
+            this.content_type = value.content_type;
             this.size = value.size;
             this.desc = value.desc;
             this.modification_date = value.date;
@@ -140,7 +140,9 @@ public class FileTransfer : Object {
         encryption = (Encryption) row[db.file_transfer.encryption];
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];
-        mime_type = row[db.file_transfer.mime_type];
+        if (row[db.file_transfer.mime_type] != null) {
+            content_type = new FileContentType.from_mime_type(row[db.file_transfer.mime_type]);
+        }
         size = (int64) row[db.file_transfer.size];
         state = (State) row[db.file_transfer.state];
         provider = row[db.file_transfer.provider];
@@ -197,7 +199,7 @@ public class FileTransfer : Object {
 
         if (file_sharing_id != null) builder.value(db.file_transfer.file_sharing_id, file_sharing_id);
         if (path != null) builder.value(db.file_transfer.path, path);
-        if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
+        if (content_type != null) builder.value(db.file_transfer.mime_type, content_type.get_mime_type());
         if (path != null) builder.value(db.file_transfer.path, path);
         if (modification_date != null) builder.value(db.file_transfer.modification_date, (long) modification_date.to_unix());
         if (width != -1) builder.value(db.file_transfer.width, width);
@@ -280,8 +282,8 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.file_name, file_name); break;
             case "path":
                 update_builder.set(db.file_transfer.path, path); break;
-            case "mime-type":
-                update_builder.set(db.file_transfer.mime_type, mime_type); break;
+            case "content-type":
+                update_builder.set(db.file_transfer.mime_type, content_type.get_mime_type()); break;
             case "size":
                 update_builder.set(db.file_transfer.size, (long) size); break;
             case "state":
