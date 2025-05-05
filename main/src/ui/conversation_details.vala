@@ -36,6 +36,7 @@ namespace Dino.Ui.ConversationDetails {
                 affiliation = conference_member.affiliation
             };
         });
+        view_model.account_jid = stream_interactor.get_accounts().size > 1 ? model.conversation.account.bare_jid.to_string() : null;
 
         if (model.domain_blocked) {
             view_model.blocked = DOMAIN;

@@ -198,6 +198,12 @@ namespace Dino.Ui.ConversationDetails {
             if (model.room_configuration_rows != null && model.room_configuration_rows.get_n_items() > 0) {
                 about_box.append(Util.rows_to_preference_group(model.room_configuration_rows, _("Room Configuration")));
             }
+
+            if (model.account_jid != null) {
+                var account_label = new Label(@"via $(model.account_jid)") { halign=Align.START, margin_start=14, margin_top=4 };
+                account_label.add_css_class("dim-label");
+                about_box.append(account_label);
+            }
         }
 
         public void add_encryption_tab_element(Adw.PreferencesGroup preferences_group) {
