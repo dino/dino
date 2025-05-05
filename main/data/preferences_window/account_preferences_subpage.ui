@@ -69,6 +69,7 @@
                     <child>
                       <object class="AdwActionRow" id="xmpp_address">
                         <property name="title" translatable="yes">XMPP Address</property>
+                        <property name="subtitle_selectable">True</property>
                         <style>
                           <class name="property"/>
                         </style>
