@@ -11,7 +11,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
             var metadata = Xep.FileMetadataElement.get_file_metadata(file_sharing_node);
             if (metadata == null) continue;
 
-            var sources_node = message.stanza.get_subnode("sources", NS_URI);
+            var sources_node = file_sharing_node.get_subnode("sources", NS_URI);
 
             ret.add(new FileShare() {
                 id = file_sharing_node.get_attribute("id", NS_URI),
