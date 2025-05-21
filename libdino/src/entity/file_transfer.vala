@@ -224,7 +224,7 @@ public class FileTransfer : Object {
         }
 
         foreach (Xep.StatelessFileSharing.Source source in sfs_sources) {
-            add_sfs_source(source);
+            persist_source(source);
         }
 
         notify.connect(on_update);
@@ -234,7 +234,13 @@ public class FileTransfer : Object {
         if (sfs_sources.contains(source)) return; // Don't add the same source twice. Might happen due to MAM and lacking deduplication.
 
         sfs_sources.add(source);
+        if (id != -1) {
+            persist_source(source);
+        }
+        sources_changed();
+    }
 
+    private void persist_source(Xep.StatelessFileSharing.Source source) {
         Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
         if (http_source != null) {
             db.sfs_sources.insert()
@@ -243,8 +249,6 @@ public class FileTransfer : Object {
                     .value(db.sfs_sources.data, http_source.url)
                     .perform();
         }
-
-        sources_changed();
     }
 
     public File? get_file() {
