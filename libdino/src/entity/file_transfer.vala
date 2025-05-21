@@ -224,7 +224,7 @@ public class FileTransfer : Object {
         }
 
         foreach (Xep.StatelessFileSharing.Source source in sfs_sources) {
-            add_sfs_source(source);
+            store_source(source);
         }
 
         notify.connect(on_update);
@@ -235,6 +235,12 @@ public class FileTransfer : Object {
 
         sfs_sources.add(source);
 
+        store_source(source);
+
+        sources_changed();
+    }
+
+    private void store_source(Xep.StatelessFileSharing.Source source) {
         Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
         if (http_source != null) {
             db.sfs_sources.insert()
@@ -243,8 +249,6 @@ public class FileTransfer : Object {
                     .value(db.sfs_sources.data, http_source.url)
                     .perform();
         }
-
-        sources_changed();
     }
 
     public File? get_file() {
