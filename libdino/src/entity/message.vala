@@ -66,6 +66,7 @@ public class Message : Object {
             marked_ = value;
         }
     }
+    public bool retracted { get; set; }
     public string? edit_to = null;
     public int quoted_item_id { get; private set; default=0; }
 
@@ -110,6 +111,7 @@ public class Message : Object {
 
         edit_to = row[db.message_correction.to_stanza_id];
         quoted_item_id = row[db.reply.quoted_content_item_id];
+        retracted = row[db.message.retracted];
 
         notify.connect(on_update);
     }
@@ -129,7 +131,8 @@ public class Message : Object {
             .value(db.message.local_time, (long) local_time.to_unix())
             .value(db.message.body, body)
             .value(db.message.encryption, encryption)
-            .value(db.message.marked, marked);
+            .value(db.message.marked, marked)
+            .value(db.message.retracted, retracted);
         if (stanza_id != null) builder.value(db.message.stanza_id, stanza_id);
         if (server_id != null) builder.value(db.message.server_id, server_id);
         id = (int) builder.perform();
@@ -304,6 +307,8 @@ public class Message : Object {
                 update_builder.set(db.message.encryption, encryption); break;
             case "marked":
                 update_builder.set(db.message.marked, marked); break;
+            case "retracted":
+                update_builder.set(db.message.retracted, retracted); break;
         }
         update_builder.perform();
 

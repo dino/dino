@@ -37,6 +37,7 @@ public class MessageMetaItem : ContentMetaItem {
         this.stream_interactor = stream_interactor;
 
         stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_received_correction);
+        stream_interactor.get_module(MessageRetraction.IDENTITY).received_retraction.connect(on_received_retraction);
 
         label.activate_link.connect(on_label_activate_link);
 
@@ -76,6 +77,12 @@ public class MessageMetaItem : ContentMetaItem {
         MessageItem message_item = item as MessageItem;
         Conversation conversation = message_item.conversation;
         Message message = message_item.message;
+
+        if (message.retracted) {
+            string error_color = Util.rgba_to_hex(Util.get_label_pango_color(label, "@error_color"));
+            label.label = "<span size='small' color='%s'>%s</span>".printf(error_color, _("message removed"));
+            return;
+        }
 
         // Get a copy of the markup spans, such that we can modify them
         var markups = new ArrayList<Xep.MessageMarkup.Span>();
@@ -285,6 +292,14 @@ public class MessageMetaItem : ContentMetaItem {
         }
     }
 
+    private void on_received_retraction(ContentItem content_item) {
+        if (this.content_item.id == content_item.id) {
+            this.content_item = content_item;
+            message_item = content_item as MessageItem;
+            update_label();
+        }
+    }
+
     public static bool on_label_activate_link(string uri) {
         // Always handle xmpp URIs with Dino
         if (!uri.has_prefix("xmpp:")) return false;
@@ -295,6 +310,7 @@ public class MessageMetaItem : ContentMetaItem {
 
     public override void dispose() {
         stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.disconnect(on_received_correction);
+        stream_interactor.get_module(MessageRetraction.IDENTITY).received_retraction.disconnect(on_received_retraction);
         this.notify["in-edit-mode"].disconnect(on_in_edit_mode_changed);
         if (marked_notify_handler_id != -1) {
             this.disconnect(marked_notify_handler_id);

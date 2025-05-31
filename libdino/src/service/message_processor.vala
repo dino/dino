@@ -353,7 +353,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class StoreContentItemListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY", "STORE", "CORRECTION", "MESSAGE_REINTERPRETING" };
+        public string[] after_actions_const = new string[]{ "DEDUPLICATE", "DECRYPT", "FILTER_EMPTY", "STORE", "RETRACTION", "CORRECTION", "MESSAGE_REINTERPRETING" };
         public override string action_group { get { return "STORE_CONTENT_ITEM"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
