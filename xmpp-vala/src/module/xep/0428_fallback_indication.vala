@@ -6,10 +6,9 @@ namespace Xmpp.Xep.FallbackIndication {
 
     public class Fallback {
         public string ns_uri { get; set; }
-        public FallbackLocation[] locations;
+        public Gee.List<FallbackLocation> locations;
 
-
-        public Fallback(string ns_uri, FallbackLocation[] locations) {
+        public Fallback(string ns_uri, Gee.List<FallbackLocation> locations) {
             this.ns_uri = ns_uri;
             this.locations = locations;
         }
@@ -73,7 +72,7 @@ namespace Xmpp.Xep.FallbackIndication {
                 }
             }
             if (locations.is_empty) continue;
-            ret.add(new Fallback(ns_uri, locations.to_array()));
+            ret.add(new Fallback(ns_uri, locations));
         }
 
         return ret;

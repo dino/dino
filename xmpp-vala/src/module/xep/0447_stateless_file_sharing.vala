@@ -44,6 +44,16 @@ namespace Xmpp.Xep.StatelessFileSharing {
         return ret;
     }
 
+    public static bool is_sfs_fallback_message(MessageStanza message) {
+        Gee.List<FallbackIndication.Fallback> fallbacks = Xep.FallbackIndication.get_fallbacks(message);
+        foreach (var fallback in fallbacks) {
+            if (fallback.ns_uri == StatelessFileSharing.NS_URI && fallback.locations.any_match((it) => it.is_whole)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Currently only returns a single http source
     private static Gee.List<Source>? get_sources(StanzaNode sources_node) {
         string? url = HttpSchemeForUrlData.get_url(sources_node);
