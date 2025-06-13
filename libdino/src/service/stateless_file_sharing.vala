@@ -156,6 +156,12 @@ public class Dino.StatelessFileSharing : StreamInteractionModule, Object {
                     return true;
                 }
             }
+
+            // Don't process messages that are fallback for legacy clients
+            if (Xep.StatelessFileSharing.is_sfs_fallback_message(stanza)) {
+                return true;
+            }
+
             return false;
         }
     }

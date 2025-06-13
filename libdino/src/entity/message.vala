@@ -212,7 +212,7 @@ public class Message : Object {
 
         var fallbacks = new ArrayList<Xep.FallbackIndication.Fallback>();
         foreach (string ns_uri in fallbacks_by_ns.keys) {
-            fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri].to_array()));
+            fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri]));
         }
         this.fallbacks = fallbacks;
         this.markups = markups;
