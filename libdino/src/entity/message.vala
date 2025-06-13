@@ -200,7 +200,7 @@ public class Message : Object {
                     if (!fallbacks_by_ns.has_key(ns_uri)) {
                         fallbacks_by_ns[ns_uri] = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
                     }
-                    fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation(row[db.body_meta.from_char], row[db.body_meta.to_char]));
+                    fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation.partial_body(row[db.body_meta.from_char], row[db.body_meta.to_char]));
                     break;
                 case Xep.MessageMarkup.NS_URI:
                     var types = new ArrayList<Xep.MessageMarkup.SpanType>();

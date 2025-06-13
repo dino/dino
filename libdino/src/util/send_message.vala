@@ -26,7 +26,7 @@ namespace Dino {
             out_message.body = fallback + out_message.body;
 
             // Store fallback location
-            var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback.char_count());
+            var fallback_location = new Xep.FallbackIndication.FallbackLocation.partial_body(0, (int)fallback.char_count());
             var fallback_list = new ArrayList<Xep.FallbackIndication.Fallback>();
             fallback_list.add(new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
             out_message.set_fallbacks(fallback_list);

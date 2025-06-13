@@ -16,12 +16,18 @@ namespace Xmpp.Xep.FallbackIndication {
     }
 
     public class FallbackLocation {
+        public bool is_whole { get { return from_char == -1 && to_char == -1; } }
         public int from_char { get; set; }
         public int to_char { get; set; }
 
-        public FallbackLocation(int from_char, int to_char) {
+        public FallbackLocation.partial_body(int from_char, int to_char) {
             this.from_char = from_char;
             this.to_char = to_char;
+        }
+
+        public FallbackLocation.whole_body() {
+            this.from_char = -1;
+            this.to_char = -1;
         }
     }
 
@@ -30,10 +36,12 @@ namespace Xmpp.Xep.FallbackIndication {
                 .add_self_xmlns()
                 .put_attribute("for", fallback.ns_uri);
         foreach (FallbackLocation location in fallback.locations) {
-            fallback_node.put_node(new StanzaNode.build("body", NS_URI)
-                .add_self_xmlns()
-                .put_attribute("start", location.from_char.to_string())
-                .put_attribute("end", location.to_char.to_string()));
+            var node = new StanzaNode.build("body", NS_URI).add_self_xmlns();
+            if (!location.is_whole) {
+                node.put_attribute("start", location.from_char.to_string())
+                        .put_attribute("end", location.to_char.to_string());
+            }
+            fallback_node.put_node(node);
         }
         message.stanza.put_node(fallback_node);
     }
@@ -48,15 +56,21 @@ namespace Xmpp.Xep.FallbackIndication {
             string? ns_uri = fallback_node.get_attribute("for");
             if (ns_uri == null) continue;
 
-            Gee.List<StanzaNode> body_nodes = fallback_node.get_subnodes("body", NS_URI);
-            if (body_nodes.is_empty) continue;
-
             var locations = new ArrayList<FallbackLocation>();
-            foreach (StanzaNode body_node in body_nodes) {
-                int start_char = body_node.get_attribute_int("start", -1);
-                int end_char = body_node.get_attribute_int("end", -1);
-                if (start_char == -1 || end_char == -1) continue;
-                locations.add(new FallbackLocation(start_char, end_char));
+            if (fallback_node.get_all_subnodes().is_empty) {
+                locations.add(new FallbackLocation.whole_body());
+            } else {
+                Gee.List<StanzaNode> body_nodes = fallback_node.get_subnodes("body", NS_URI);
+                foreach (StanzaNode body_node in body_nodes) {
+                    int start_char = body_node.get_attribute_int("start", -1);
+                    int end_char = body_node.get_attribute_int("end", -1);
+                    if (start_char == -1 && end_char == -1) {
+                        locations.add(new FallbackLocation.whole_body());
+                        continue;
+                    }
+                    if (start_char == -1 || end_char == -1) continue;
+                    locations.add(new FallbackLocation.partial_body(start_char, end_char));
+                }
             }
             if (locations.is_empty) continue;
             ret.add(new Fallback(ns_uri, locations.to_array()));
