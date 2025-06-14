@@ -1,4 +1,5 @@
 using Gee;
+using Gdk;
 using Gtk;
 
 using Dino.Entities;
@@ -24,6 +25,11 @@ namespace Dino.Ui.Util {
         var entry_view_model = preferences_row as ViewModel.PreferencesRow.Entry;
         if (entry_view_model != null) {
             Adw.EntryRow view = new Adw.EntryRow() { title = entry_view_model.title, show_apply_button=true };
+            if (preferences_row.media_uri != null) {
+                var bytes = BitsOfBinary.get_data_for_uri(preferences_row.media_uri);
+                Picture picture = new Picture.for_paintable(Texture.from_bytes(bytes));
+                view.add_suffix(picture);
+            }
             entry_view_model.bind_property("text", view, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL, (_, from, ref to) => {
                 var str = (string) from;
                 to = str ?? "";

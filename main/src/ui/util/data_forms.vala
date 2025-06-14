@@ -115,6 +115,12 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
             return null;
     }
 
+    var media_node = field.node.get_subnode("media", "urn:xmpp:media-element");
+    if (media_node != null) {
+        view_model.media_type = media_node.get_attribute("type", "urn:xmpp:media-element");
+        view_model.media_uri = media_node.get_deep_string_content("uri");
+    }
+
     view_model.title = label;
     return view_model;
 }

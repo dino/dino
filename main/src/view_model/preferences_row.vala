@@ -7,6 +7,9 @@ using Gtk;
 namespace Dino.Ui.ViewModel.PreferencesRow {
     public abstract class Any : Object {
         public string title { get; set; }
+
+        public string? media_type { get; set; }
+        public string? media_uri { get; set; }
     }
 
     public class Text : Any {
