@@ -213,6 +213,7 @@ public class FileDefaultWidgetController : Object {
     public void set_file_transfer(FileTransfer file_transfer) {
         this.file_transfer = file_transfer;
 
+        widget.init_updating_file_info();
         widget.name_label.label = file_transfer.file_name;
 
         file_transfer.bind_property("state", this, "file-transfer-state");

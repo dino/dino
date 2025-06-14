@@ -20,7 +20,7 @@ public class FileDefaultWidget : Box {
 
     private FileTransfer.State state;
 
-    public FileDefaultWidget() {
+    public void init_updating_file_info() {
         EventControllerMotion this_motion_events = new EventControllerMotion();
         this.add_controller(this_motion_events);
         this_motion_events.enter.connect(on_pointer_entered_event);
@@ -37,6 +37,14 @@ public class FileDefaultWidget : Box {
 
             this.clicked();
         });
+    }
+
+    public void set_static_file_info(string? mime_type) {
+        spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
+
+        image_stack.set_visible_child_name("content_type_image");
+        content_type_image.icon_name = get_file_icon_name(mime_type);
+        mime_label.label = mime_type != null ? ContentType.get_description(mime_type) : null;
     }
 
     public void update_file_info(string? mime_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
