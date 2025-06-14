@@ -217,37 +217,12 @@ public class FileImageWidget : Widget {
     }
 
     public static Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
-        string[] splits = thumbnail.uri.split(":", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ':' not found");
-            return null;
+        Bytes? data = Xep.BitsOfBinary.get_data_for_uri(thumbnail.uri);
+        if (data == null) {
+            warning("Couldn't parse data from uri: %s", thumbnail.uri);
         }
-        if (splits[0] != "data") {
-            warning("Unsupported thumbnail: unimplemented uri type\n");
-            return null;
-        }
-        splits = splits[1].split(";", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ';' not found");
-            return null;
-        }
-        if (splits[0] != "image/png") {
-            warning("Unsupported thumbnail: unsupported mime-type\n");
-            return null;
-        }
-        splits = splits[1].split(",", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ',' not found");
-            return null;
-        }
-        if (splits[0] != "base64") {
-            warning("Unsupported thumbnail: data is not base64 encoded\n");
-            return null;
-        }
-        uint8[] data = Base64.decode(splits[1]);
-        MemoryInputStream input_stream = new MemoryInputStream.from_data(data);
-        Pixbuf pixbuf = new Pixbuf.from_stream(input_stream);
-        return pixbuf;
+        MemoryInputStream input_stream = new MemoryInputStream.from_data(data.get_data());
+        return new Pixbuf.from_stream(input_stream);
     }
 
     public static bool can_display(FileTransfer file_transfer) {

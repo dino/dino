@@ -14,6 +14,7 @@ namespace Xmpp.Xep.JingleContentThumbnails {
 
     public class Thumbnail {
         public string uri;
+        public Bytes data;
         public string? media_type;
         public int width;
         public int height;
@@ -34,11 +35,21 @@ namespace Xmpp.Xep.JingleContentThumbnails {
         }
 
         public static Thumbnail? from_stanza_node(StanzaNode node) {
-            Thumbnail thumbnail = new Thumbnail();
-            thumbnail.uri = node.get_attribute("uri");
-            if (thumbnail.uri == null) {
-                return null;
+            string uri = node.get_attribute("uri");
+            if (uri == null) return null;
+
+            string? data_uri = null;
+            Bytes data = BitsOfBinary.get_data_for_uri(uri);
+
+            if (uri.has_suffix("@bob.xmpp.org")) {
+                data_uri = "data:image/png;base64," + Base64.encode(data.get_data());
+            } else if (uri.has_prefix("data:image/png;base64,")) {
+                data_uri = uri;
             }
+
+            Thumbnail thumbnail = new Thumbnail();
+            thumbnail.uri = data_uri;
+            thumbnail.data = data;
             thumbnail.media_type = node.get_attribute("media-type");
             thumbnail.width = node.get_attribute_int("width");
             thumbnail.height = node.get_attribute_int("height");
