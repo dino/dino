@@ -95,6 +95,7 @@ sources = files(
     'src/module/xep/0199_ping.vala',
     'src/module/xep/0203_delayed_delivery.vala',
     'src/module/xep/0215_external_service_discovery.vala',
+    'src/module/xep/0231_bits_of_binary.vala',
     'src/module/xep/0234_jingle_file_transfer.vala',
     'src/module/xep/0249_direct_muc_invitations.vala',
     'src/module/xep/0260_jingle_socks5_bytestreams.vala',
