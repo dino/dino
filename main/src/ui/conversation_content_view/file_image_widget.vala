@@ -217,11 +217,7 @@ public class FileImageWidget : Widget {
     }
 
     public static Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
-        Bytes? data = Xep.BitsOfBinary.get_data_for_uri(thumbnail.uri);
-        if (data == null) {
-            warning("Couldn't parse data from uri: %s", thumbnail.uri);
-        }
-        MemoryInputStream input_stream = new MemoryInputStream.from_data(data.get_data());
+        MemoryInputStream input_stream = new MemoryInputStream.from_data(thumbnail.data.get_data());
         return new Pixbuf.from_stream(input_stream);
     }
 

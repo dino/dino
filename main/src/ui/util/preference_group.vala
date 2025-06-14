@@ -26,7 +26,7 @@ namespace Dino.Ui.Util {
         if (entry_view_model != null) {
             Adw.EntryRow view = new Adw.EntryRow() { title = entry_view_model.title, show_apply_button=true };
             if (preferences_row.media_uri != null) {
-                var bytes = BitsOfBinary.get_data_for_uri(preferences_row.media_uri);
+                var bytes = Xmpp.get_data_for_uri(preferences_row.media_uri);
                 Picture picture = new Picture.for_paintable(Texture.from_bytes(bytes));
                 view.add_suffix(picture);
             }

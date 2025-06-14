@@ -160,7 +160,7 @@ public class FileTransfer : Object {
 
         foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
             Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
-            thumbnail.uri = thumbnail_row[db.file_thumbnails.uri];
+            thumbnail.data = Xmpp.get_data_for_uri(thumbnail_row[db.file_thumbnails.uri]);
             thumbnail.media_type = thumbnail_row[db.file_thumbnails.mime_type];
             thumbnail.width = thumbnail_row[db.file_thumbnails.width];
             thumbnail.height = thumbnail_row[db.file_thumbnails.height];
@@ -214,9 +214,11 @@ public class FileTransfer : Object {
                     .perform();
         }
         foreach (Xep.JingleContentThumbnails.Thumbnail thumbnail in thumbnails) {
+            string data_uri = "data:image/png;base64," + Base64.encode(thumbnail.data.get_data());
+
             db.file_thumbnails.insert()
                     .value(db.file_thumbnails.id, id)
-                    .value(db.file_thumbnails.uri, thumbnail.uri)
+                    .value(db.file_thumbnails.uri, data_uri)
                     .value(db.file_thumbnails.mime_type, thumbnail.media_type)
                     .value(db.file_thumbnails.width, thumbnail.width)
                     .value(db.file_thumbnails.height, thumbnail.height)

@@ -223,6 +223,7 @@ public class Database : Qlite.Database {
 
     public class FileThumbnailsTable : Table {
         public Column<int> id = new Column.Integer("id");
+        // TODO store data as bytes, not as data uri
         public Column<string> uri = new Column.Text("uri") { not_null = true };
         public Column<string> mime_type = new Column.Text("mime_type");
         public Column<int> width = new Column.Integer("width");

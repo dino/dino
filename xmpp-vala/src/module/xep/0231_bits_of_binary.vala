@@ -6,16 +6,6 @@ namespace Xmpp.Xep.BitsOfBinary {
 
     public static HashMap<string, Bytes> known_bobs = null;
 
-    public Bytes? get_data_for_uri(string uri) {
-        if (uri.has_suffix("@bob.xmpp.org")) {
-            string cid = uri.replace("cid:", "");
-            return BitsOfBinary.known_bobs[cid];
-        } else if (uri.has_prefix("data:image/png;base64,")) {
-            return new Bytes.take(Base64.decode(uri.replace("data:image/png;base64,", "")));
-        }
-        return null;
-    }
-
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "bits_of_binary");
 
