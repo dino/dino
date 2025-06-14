@@ -20,7 +20,9 @@ namespace Xmpp.Xep.FileMetadataElement {
                 node.put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)));
             }
             if (this.mime_type != null) {
+                // TODO remove the media_type node, it was implemented by accident and temporary provides backwards-compatibility
                 node.put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.mime_type)));
+                node.put_node(new StanzaNode.build("media-type", NS_URI).put_node(new StanzaNode.text(this.mime_type)));
             }
             if (this.size != -1) {
                 node.put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())));
@@ -65,7 +67,12 @@ namespace Xmpp.Xep.FileMetadataElement {
         if (desc_node != null && desc_node.get_string_content() != null) {
             metadata.desc = desc_node.get_string_content();
         }
-        StanzaNode? mime_node = file_node.get_subnode("media_type");
+        // TODO remove media_type handling, it was implemented by accident and temporary provides backwards-compatibility
+        StanzaNode? mime_node_bad = file_node.get_subnode("media_type");
+        if (mime_node_bad != null && mime_node_bad.get_string_content() != null) {
+            metadata.mime_type = mime_node_bad.get_string_content();
+        }
+        StanzaNode? mime_node = file_node.get_subnode("media-type");
         if (mime_node != null && mime_node.get_string_content() != null) {
             metadata.mime_type = mime_node.get_string_content();
         }
