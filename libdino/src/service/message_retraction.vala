@@ -36,9 +36,17 @@ public class MessageRetraction : StreamInteractionModule, MessageListener {
 
         var target_msg = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(retract_id, conversation);
 
-        if (target_msg.from != null && !target_msg.from.equals(message.from)) {
-            return false;
+        var allowed = false;
+        if (target_msg.from != null && target_msg.from.equals(message.from)) {
+            // user retracts their own message
+            allowed = true;
         }
+        else if (conversation.type_ == Conversation.Type.GROUPCHAT && message.from.equals(conversation.counterpart)) {
+            // retracted by moderator per XEP-0425
+            allowed = true;
+        }
+
+        if (!allowed) return false;
 
         if (target_msg != null) {
             target_msg.retracted = true;
