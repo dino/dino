@@ -23,6 +23,7 @@ namespace Dino.Ui.ConversationDetails {
     }
 
     public void bind_dialog(Model.ConversationDetails model, ViewModel.ConversationDetails view_model, StreamInteractor stream_interactor) {
+        // Set some data once
         view_model.avatar = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(model.conversation);
         view_model.show_blocked = model.conversation.type_ == Conversation.Type.CHAT && stream_interactor.get_module(BlockingManager.IDENTITY).is_supported(model.conversation.account);
         view_model.members_sorted.set_model(model.members);
@@ -46,6 +47,7 @@ namespace Dino.Ui.ConversationDetails {
             view_model.blocked = UNBLOCK;
         }
 
+        // Bind properties
         model.display_name.bind_property("display-name", view_model, "name", BindingFlags.SYNC_CREATE);
         model.conversation.bind_property("notify-setting", view_model, "notification", BindingFlags.SYNC_CREATE, (_, from, ref to) => {
             switch (model.conversation.get_notification_setting(stream_interactor)) {
@@ -136,38 +138,65 @@ namespace Dino.Ui.ConversationDetails {
         });
     }
 
-    public Dialog setup_dialog(Conversation conversation, StreamInteractor stream_interactor, Window parent) {
-        var dialog = new Dialog() { transient_for = parent };
-        var model = new Model.ConversationDetails();
-        model.populate(stream_interactor, conversation);
-//        populate_dialog(model, conversation, stream_interactor);
-        bind_dialog(model, dialog.model, stream_interactor);
-
-        dialog.model.about_rows.append(new ViewModel.PreferencesRow.Text() {
+    public void set_about_rows(Model.ConversationDetails model, ViewModel.ConversationDetails view_model, StreamInteractor stream_interactor) {
+        view_model.about_rows.append(new ViewModel.PreferencesRow.Text() {
             title = _("XMPP Address"),
-            text = conversation.counterpart.to_string()
+            text = model.conversation.counterpart.to_string()
         });
         if (model.conversation.type_ == Conversation.Type.CHAT) {
             var about_row = new ViewModel.PreferencesRow.Entry() {
                 title = _("Display name"),
-                text = dialog.model.name
+                text = model.display_name.display_name
             };
             about_row.changed.connect(() => {
-                if (about_row.text != Util.get_conversation_display_name(stream_interactor, conversation)) {
-                    stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(conversation.account, conversation.counterpart, about_row.text);
+                if (about_row.text != model.display_name.display_name) {
+                    stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(model.conversation.account, model.conversation.counterpart, about_row.text);
                 }
             });
-            dialog.model.about_rows.append(about_row);
+            view_model.about_rows.append(about_row);
         }
         if (model.conversation.type_ == Conversation.Type.GROUPCHAT) {
-            var topic = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
-            if (topic != null && topic != "") {
-                dialog.model.about_rows.append(new ViewModel.PreferencesRow.Text() {
+            var topic = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(model.conversation.counterpart, model.conversation.account);
+
+            Ui.ViewModel.PreferencesRow.Any preferences_row = null;
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(model.conversation.counterpart, model.conversation.account);
+            if (own_muc_jid != null) {
+                Xep.Muc.Role? own_role = stream_interactor.get_module(MucManager.IDENTITY).get_role(own_muc_jid, model.conversation.account);
+                if (own_role != null) {
+                    if (own_role == MODERATOR) {
+                        var preferences_row_entry = new ViewModel.PreferencesRow.Entry() {
+                            title = _("Topic"),
+                            text = topic
+                        };
+                        preferences_row_entry.changed.connect(() => {
+                            if (preferences_row_entry.text != topic) {
+                                stream_interactor.get_module(MucManager.IDENTITY).change_subject(model.conversation.account, model.conversation.counterpart, preferences_row_entry.text);
+                            }
+                        });
+                        preferences_row = preferences_row_entry;
+                    }
+                }
+            }
+            if (preferences_row == null && topic != null && topic != "") {
+                preferences_row = new ViewModel.PreferencesRow.Text() {
                     title = _("Topic"),
                     text = Util.parse_add_markup(topic, null, true, true)
-                });
+                };
+            }
+            if (preferences_row != null) {
+                view_model.about_rows.append(preferences_row);
             }
         }
+    }
+
+    public Dialog setup_dialog(Conversation conversation, StreamInteractor stream_interactor, Window parent) {
+        var dialog = new Dialog() { transient_for = parent };
+        var model = new Model.ConversationDetails();
+        model.populate(stream_interactor, conversation);
+        bind_dialog(model, dialog.model, stream_interactor);
+
+        set_about_rows(model, dialog.model, stream_interactor);
+
         dialog.close_request.connect(() => {
             // Only send the config form if something was changed
             if (model.data_form_bak != null && model.data_form_bak != model.data_form.stanza_node.to_string()) {
