@@ -85,6 +85,11 @@ vala_args = []
 if meson.get_compiler('vala').version().version_compare('=0.56.11')
     vala_args += ['-D', 'VALA_0_56_11']
 endif
+if get_option('plugin-secret').allowed()
+    vala_args += ['-D', 'WITH_SECRET']
+    dependencies += [dep_secret]
+    sources += ['src/service/secret_manager.vala']
+endif
 lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 
