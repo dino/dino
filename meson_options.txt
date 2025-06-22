@@ -8,6 +8,7 @@ option('plugin-omemo', type: 'feature', description: 'End-to-end encryption usin
 option('plugin-openpgp', type: 'feature', description: 'End-to-end encryption using PGP')
 option('plugin-rtp', type: 'feature', description: 'Voice/video calls')
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
+option('plugin-secret', type: 'feature', value: 'disabled', description: 'Password storage via libsecret')
 
 option('plugin-rtp-h264', type: 'feature', value: 'disabled', description: 'H264 codec')
 option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Intel MediaSDK')

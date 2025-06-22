@@ -46,7 +46,9 @@ namespace Dino.Ui{
             string? pw_input = current_password_entry.get_text();
             string? new_pw_input = new_password_entry.get_text();
 
-            if (pw_input != null && model.account.password == pw_input){
+            var password = yield model.account.get_password();
+
+            if (pw_input != null && password == pw_input){
                 change_password_button.sensitive = false;
                 change_password_stack.visible_child_name = "spinner";
                 string? ret = yield model.change_password(new_pw_input);
