@@ -2,15 +2,15 @@ option('plugindir', type: 'string', value: 'dino/plugins', description: 'Dino pl
 
 option('set-install-rpath', type: 'boolean', value: false, description: 'Set rpath of installed binaries to the configured libdir')
 
-option('plugin-http-files', type: 'feature', description: 'HTTP file upload')
-option('plugin-ice', type: 'feature', description: 'Peer-to-peer communication')
-option('plugin-omemo', type: 'feature', description: 'End-to-end encryption using OMEMO')
-option('plugin-openpgp', type: 'feature', description: 'End-to-end encryption using PGP')
-option('plugin-rtp', type: 'feature', description: 'Voice/video calls')
+option('plugin-http-files', type: 'feature', value: 'enabled', description: 'HTTP file upload')
+option('plugin-ice', type: 'feature', value: 'enabled', description: 'Peer-to-peer communication')
+option('plugin-omemo', type: 'feature', value: 'enabled', description: 'End-to-end encryption using OMEMO')
+option('plugin-openpgp', type: 'feature', value: 'auto', description: 'End-to-end encryption using PGP')
+option('plugin-rtp', type: 'feature', value: 'enabled', description: 'Voice/video calls')
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
 
 option('plugin-rtp-h264', type: 'feature', value: 'disabled', description: 'H264 codec')
 option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Intel MediaSDK')
 option('plugin-rtp-vaapi', type: 'feature', value: 'disabled', description: 'Video Acceleration API')
 option('plugin-rtp-vp9', type: 'feature', value: 'disabled', description: 'VP9 codec')
-option('plugin-rtp-webrtc-audio-processing', type: 'feature', description: 'Voice preprocessing')
+option('plugin-rtp-webrtc-audio-processing', value: 'auto', type: 'feature', description: 'Voice preprocessing')
