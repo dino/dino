@@ -28,7 +28,9 @@ namespace Xmpp.Xep.FileMetadataElement {
                 node.put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())));
             }
             if (this.date != null) {
-                node.put_node(new StanzaNode.build("date", NS_URI).put_node(new StanzaNode.text(this.date.to_string())));
+                node.put_node(new StanzaNode.build("date", NS_URI).put_node(
+                        new StanzaNode.text(DateTimeProfiles.to_datetime(this.date))
+                ));
             }
             if (this.desc != null) {
                 node.put_node(new StanzaNode.build("desc", NS_URI).put_node(new StanzaNode.text(this.desc)));
@@ -82,7 +84,7 @@ namespace Xmpp.Xep.FileMetadataElement {
         }
         StanzaNode? date_node = file_node.get_subnode("date");
         if (date_node != null && date_node.get_string_content() != null) {
-            metadata.date = new DateTime.from_iso8601(date_node.get_string_content(), null);
+            metadata.date = DateTimeProfiles.parse_string(date_node.get_string_content());
         }
         StanzaNode? width_node = file_node.get_subnode("width");
         if (width_node != null && width_node.get_string_content() != null) {
