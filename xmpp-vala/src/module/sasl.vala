@@ -1,6 +1,12 @@
 namespace Xmpp.Sasl {
     private const string NS_URI = "urn:ietf:params:xml:ns:xmpp-sasl";
 
+    // An interface for providing the password to the SASL authenticator.  No need to also
+    // have a set_password; this interface is just used to log in.
+    public interface PasswordProvider : GLib.Object {
+        public abstract async string? get_password();
+    }
+
     public class Flag : XmppStreamFlag {
         public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "sasl");
         public string mechanism;
@@ -24,14 +30,14 @@ namespace Xmpp.Sasl {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "sasl");
 
         public string name { get; set; }
-        public string password { get; set; }
         public bool use_full_name = false;
+        private PasswordProvider password_provider;
 
         public signal void received_auth_failure(XmppStream stream, StanzaNode node);
 
-        public Module(string name, string password) {
+        public Module(string name, PasswordProvider password_provider) {
             this.name = name;
-            this.password = password;
+            this.password_provider = password_provider;
         }
 
         public override void attach(XmppStream stream) {
@@ -151,6 +157,29 @@ namespace Xmpp.Sasl {
             }
         }
 
+        private async void write_auth_to_stream(XmppStream stream, Flag flag) {
+            var name = flag.name;
+            var password = yield password_provider.get_password();
+
+            var stanza = new StanzaNode.build("auth", NS_URI).add_self_xmlns()
+                    .put_attribute("mechanism", flag.mechanism);
+            StanzaNode? inner = null;
+
+            if (flag.mechanism == Mechanism.PLAIN) {
+                inner = new StanzaNode.text(Base64.encode(get_plain_bytes(name, password)));
+            } else if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
+                string initial_message = @"n=$name,r=$(flag.client_nonce)";
+                string normalized_password = password.normalize(-1, NormalizeMode.NFKC);
+                flag.password = normalized_password;
+                inner = new StanzaNode.text(Base64.encode((uchar[]) ("n,,"+initial_message).to_utf8()));
+            }
+            if (inner == null) return;
+
+            stanza = stanza.put_node(inner);
+            yield stream.write_async(stanza);
+            stream.add_flag(flag);
+        }
+
         public void received_features_node(XmppStream stream) {
             if (stream.has_flag(Flag.IDENTITY)) return;
             if (stream.is_setup_needed()) return;
@@ -179,31 +208,24 @@ namespace Xmpp.Sasl {
                     name = split[0];
                 }
             }
+
+            var flag = new Flag();
+            flag.name = name;
+
             if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
-                string normalized_password = password.normalize(-1, NormalizeMode.NFKC);
                 string client_nonce = Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x");
-                string initial_message = @"n=$name,r=$client_nonce";
-                stream.write(new StanzaNode.build("auth", NS_URI).add_self_xmlns()
-                        .put_attribute("mechanism", Mechanism.SCRAM_SHA_1)
-                        .put_node(new StanzaNode.text(Base64.encode((uchar[]) ("n,,"+initial_message).to_utf8()))));
-                var flag = new Flag();
                 flag.mechanism = Mechanism.SCRAM_SHA_1;
-                flag.name = name;
-                flag.password = normalized_password;
                 flag.client_nonce = client_nonce;
-                stream.add_flag(flag);
             } else if (Mechanism.PLAIN in supported_mechanisms) {
-                stream.write(new StanzaNode.build("auth", NS_URI).add_self_xmlns()
-                                    .put_attribute("mechanism", Mechanism.PLAIN)
-                                    .put_node(new StanzaNode.text(Base64.encode(get_plain_bytes(name, password)))));
-                var flag = new Flag();
                 flag.mechanism = Mechanism.PLAIN;
-                flag.name = name;
-                stream.add_flag(flag);
             } else {
                 stderr.printf("No supported mechanism provided by server at %s\n", stream.remote_name.to_string());
                 return;
             }
+
+            var loop = new GLib.MainLoop();
+            write_auth_to_stream.begin(stream, flag, () => {loop.quit();});
+            loop.run();
         }
 
         private static uchar[] get_plain_bytes(string name_s, string password_s) {

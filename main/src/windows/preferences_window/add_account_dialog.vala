@@ -211,7 +211,8 @@ public class AddAccountDialog : Adw.Window {
             if (password_group.visible) {
                 // JID + Psw fields were visible: Try to log in
                 string password = password_entry.text;
-                Account account = new Account(login_jid, password);
+                Account account = new Account(login_jid);
+                yield account.set_password(password);
 
                 ConnectionManager.ConnectionError.Source? error = yield stream_interactor.get_module(Register.IDENTITY).add_check_account(account);
                 sign_in_continue_spinner.visible = false;
