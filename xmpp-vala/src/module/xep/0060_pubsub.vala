@@ -41,8 +41,8 @@ namespace Xmpp.Xep.Pubsub {
             retract_listeners.unset(node);
         }
 
-        public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid jid, string node) { // TODO multiple nodes gehen auch
-            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
+        public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid jid, string node, ArrayList<StanzaNode>? items = null) {
+            Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI, items).put_attribute("node", node)));
             request_iq.to = jid;
 
             Iq.Stanza iq_res = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, request_iq);
