@@ -54,6 +54,7 @@ sources = files(
     'src/service/jingle_file_transfers.vala',
     'src/service/message_correction.vala',
     'src/service/message_processor.vala',
+    'src/service/message_retraction.vala',
     'src/service/message_storage.vala',
     'src/service/module_manager.vala',
     'src/service/muc_manager.vala',

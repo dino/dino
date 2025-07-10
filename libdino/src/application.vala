@@ -53,6 +53,7 @@ public interface Application : GLib.Application {
         Register.start(stream_interactor, db);
         EntityInfo.start(stream_interactor, db);
         MessageCorrection.start(stream_interactor, db);
+        MessageRetraction.start(stream_interactor, db);
         FileTransferStorage.start(stream_interactor, db);
         Reactions.start(stream_interactor, db);
         Replies.start(stream_interactor, db);

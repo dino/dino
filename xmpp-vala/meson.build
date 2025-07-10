@@ -124,6 +124,7 @@ sources = files(
     'src/module/xep/0402_bookmarks2.vala',
     'src/module/xep/0410_muc_self_ping.vala',
     'src/module/xep/0421_occupant_ids.vala',
+    'src/module/xep/0424_message_retraction.vala',
     'src/module/xep/0428_fallback_indication.vala',
     'src/module/xep/0444_reactions.vala',
     'src/module/xep/0446_file_metadata_element.vala',
