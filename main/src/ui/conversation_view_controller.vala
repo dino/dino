@@ -23,6 +23,8 @@ public class ConversationViewController : Object {
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
 
+    private const string[] KEY_COMBINATION_CLOSE_CONVERSATION = {"<Ctrl>W", null};
+
     public ConversationViewController(ConversationView view, ConversationTitlebar titlebar, StreamInteractor stream_interactor) {
         this.view = view;
         this.titlebar = titlebar;
@@ -112,6 +114,13 @@ public class ConversationViewController : Object {
             return false;
         }));
         ((Gtk.Window)view.get_root()).add_shortcut(shortcut);
+
+        SimpleAction close_conversation_action = new SimpleAction("close-current-conversation", null);
+        close_conversation_action.activate.connect(() => {
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+        });
+        app.add_action(close_conversation_action);
+        app.set_accels_for_action("app.close-current-conversation", KEY_COMBINATION_CLOSE_CONVERSATION);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
