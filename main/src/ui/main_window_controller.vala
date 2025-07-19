@@ -13,7 +13,7 @@ public class MainWindowController : Object {
     private Application app;
     private Database db;
     private MainWindow window;
-    private const string[] KEY_COMBINATION_CLOSE_CONVERSATION = {"<Ctrl>W", null};
+    private const string[] KEY_COMBINATION_CLOSE_CONVERSATION = {"<Ctrl>W", "Escape", null};
 
     private ConversationViewController conversation_view_controller;
 
