@@ -55,12 +55,6 @@
                                 <property name="title" translatable="yes">Close conversation</property>
                             </object>
                         </child>
-                        <child>
-                            <object class="GtkShortcutsShortcut">
-                                <property name="accelerator">Escape</property>
-                                <property name="title" translatable="yes">Also close conversation</property>
-                            </object>
-                        </child>
                     </object>
                 </child>
                 <child>
