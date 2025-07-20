@@ -362,8 +362,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             int best_height = 0;
             for (int i = 0; i < device.caps.get_size(); i++) {
                 unowned Gst.Structure? that = device.caps.get_structure(i);
+                unowned Gst.CapsFeatures? features = device.caps.get_features(i);
                 Value? best_fraction_now = null;
-                if (!that.has_name("video/x-raw")) continue;
+                if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
                 int num = 0, den = 0, width = 0, height = 0;
                 if (!that.has_field("framerate")) continue;
                 Value framerate = that.get_value("framerate");
@@ -402,7 +403,8 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 // No caps in first round, try without framerate
                 for (int i = 0; i < device.caps.get_size(); i++) {
                     unowned Gst.Structure? that = device.caps.get_structure(i);
-                    if (!that.has_name("video/x-raw")) continue;
+                    unowned Gst.CapsFeatures? features = device.caps.get_features(i);
+                    if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
                     int width = 0, height = 0;
                     if (!that.has_field("width") || !that.get_int("width", out width)) continue;
                     if (!that.has_field("height") || !that.get_int("height", out height)) continue;
