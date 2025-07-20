@@ -164,14 +164,12 @@ public class MessageProcessor : StreamInteractionModule, Object {
                 new_message.server_id = mam_message_flag.mam_id;
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
-            bool server_supports_sid = (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
+            bool server_supports_sid = yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, new_message.counterpart.bare_jid);
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
-            bool server_supports_sid = (yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
+            bool server_supports_sid = yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, account.bare_jid);
             }
