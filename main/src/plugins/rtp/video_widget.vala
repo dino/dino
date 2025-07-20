@@ -163,8 +163,11 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
     private Gst.Element? connected_device_element;
     private Stream? connected_stream;
     private Gst.Element prepare;
-    private Sink sink;
+    private Gst.Video.Sink sink;
     private Gtk.Picture widget;
+    private bool is_gtk4paintablesink;
+    private bool got_first_buffer;
+    private bool flipped;
 
     private static uint active_widgets = 0;
 
@@ -187,15 +190,42 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         this.layout_manager = new Gtk.BinLayout();
 
         id = last_id++;
-        sink = new Sink() { async = false, sync = true };
-        widget = new Gtk.Picture.for_paintable(sink.paintable);
+
+        Gdk.Paintable paintable = null;
+        sink = (Gst.Video.Sink) Gst.ElementFactory.make("gtk4paintablesink");
+        if (sink != null) {
+            Gst.Caps sink_caps = sink.get_pad_template("sink").caps;
+            Gst.Caps yuv_caps = new Gst.Caps.simple("video/x-raw", "format",
+                                                    typeof(string), "YUY2", null);
+            if (!sink_caps.intersect(yuv_caps).is_empty()) {
+                debug("Using gtk4paintablesink");
+                is_gtk4paintablesink = true;
+                sink.async = false;
+                sink.sync = true;
+                sink.get("paintable", out paintable);
+            } else {
+                sink = null;
+            }
+        }
+        if (sink == null) {
+            debug("Using Rtp.Sink");
+            Sink rtp_sink = new Sink() { async = false, sync = true };
+            paintable = rtp_sink.paintable;
+            sink = rtp_sink;
+        }
+        assert(paintable != null);
+        widget = new Gtk.Picture.for_paintable(paintable);
         widget.insert_after(this, null);
         active_widgets++;
         debug("Video widget %p created. total=%u", this, active_widgets);
         this.weak_ref(notify_weak);
     }
 
-    public void input_caps_changed(GLib.Object pad, ParamSpec spec) {
+    private void update_resolution(GLib.Object pad) {
+        if (!got_first_buffer) {
+            return;
+        }
+
         Gst.Caps? caps = ((Gst.Pad)pad).caps;
         if (caps == null) {
             debug("Input: No caps");
@@ -206,12 +236,92 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         caps.get_structure(0).get_int("width", out width);
         caps.get_structure(0).get_int("height", out height);
 
+        if (flipped) {
+            int tmp = width;
+            width = height;
+            height = tmp;
+        }
+
         debug("Input resolution changed: %ix%i", width, height);
         // Invoke signal on GTK main loop as recipients are likely to use it for doing GTK operations
         Idle.add(() => {
             resolution_changed(width, height);
             return Source.REMOVE;
         });
+    }
+
+    public void on_input_caps_changed(GLib.Object pad, ParamSpec spec) {
+        update_resolution(pad);
+    }
+
+    private Gst.PadProbeReturn on_event(Gst.Pad pad, Gst.PadProbeInfo info) {
+        var event = info.get_event();
+
+        if (event != null && event.type == Gst.EventType.TAG) {
+            Gst.TagList tags;
+            event.parse_tag(out tags);
+
+            Gst.Video.OrientationMethod orientation_method;
+            if (Gst.Video.Orientation.from_tag(tags, out orientation_method)) {
+                switch (orientation_method) {
+                    case Gst.Video.OrientationMethod.IDENTITY:
+                    case Gst.Video.OrientationMethod.VERT:
+                    case Gst.Video.OrientationMethod.@180:
+                    case Gst.Video.OrientationMethod.HORIZ:
+                    default:
+                        flipped = false;
+                        break;
+                    case Gst.Video.OrientationMethod.@90R:
+                    case Gst.Video.OrientationMethod.@90L:
+                    case Gst.Video.OrientationMethod.UL_LR:
+                    case Gst.Video.OrientationMethod.UR_LL:
+                        flipped = true;
+                        break;
+                }
+                update_resolution(sink.get_static_pad("sink"));
+
+                if (connected_device != null) {
+                    Gdk.Paintable paintable = widget.get_paintable();
+                    var orientation = 0 /* Auto */;
+                    switch (orientation_method) {
+                        case Gst.Video.OrientationMethod.IDENTITY:
+                            orientation = 5; /* FlipRotate0 */
+                            break;
+                        case Gst.Video.OrientationMethod.@90L:
+                            orientation = 6; /* FlipRotate90 */
+                            break;
+                        case Gst.Video.OrientationMethod.@180:
+                            orientation = 7; /* FlipRotate180 */
+                            break;
+                        case Gst.Video.OrientationMethod.@90R:
+                            orientation = 8; /* FlipRotate270 */
+                            break;
+                        case Gst.Video.OrientationMethod.HORIZ:
+                            orientation = 1; /* Rotate0 */
+                            break;
+                        case Gst.Video.OrientationMethod.UL_LR:
+                            orientation = 2; /* Rotate90 */
+                            break;
+                        case Gst.Video.OrientationMethod.VERT:
+                            orientation = 3; /* Rotate180 */
+                            break;
+                        case Gst.Video.OrientationMethod.UR_LL:
+                            orientation = 4; /* Rotate270 */
+                            break;
+                        default:
+                            break;
+                    }
+                    paintable.set("orientation", orientation);
+                }
+            }
+        }
+        return Gst.PadProbeReturn.OK;
+    }
+
+    private Gst.PadProbeReturn on_first_buffer(Gst.Pad pad, Gst.PadProbeInfo info) {
+        got_first_buffer = true;
+        update_resolution(pad);
+        return Gst.PadProbeReturn.REMOVE;
     }
 
     public void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Xmpp.Jid jid) {
@@ -222,12 +332,22 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(sink);
-        prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoconvert name=video_widget_$(id)_convert", true);
-        prepare.name = @"video_widget_$(id)_prepare";
-        prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
-        pipe.add(prepare);
-        connected_stream.add_output(prepare);
-        prepare.link(sink);
+
+        var sink_pad = sink.get_static_pad("sink");
+        sink_pad.notify["caps"].connect(on_input_caps_changed);
+        sink_pad.add_probe(Gst.PadProbeType.EVENT_DOWNSTREAM, on_event);
+        sink_pad.add_probe(Gst.PadProbeType.BUFFER, on_first_buffer);
+        got_first_buffer = false;
+
+        if (is_gtk4paintablesink) {
+            connected_stream.add_output(sink);
+        } else {
+            prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoconvert name=video_widget_$(id)_convert", true);
+            prepare.name = @"video_widget_$(id)_prepare";
+            pipe.add(prepare);
+            connected_stream.add_output(prepare);
+            prepare.link(sink);
+        }
         sink.set_locked_state(false);
         plugin.unpause();
         attached = true;
@@ -240,17 +360,23 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         if (connected_device == null) return;
         plugin.pause();
         pipe.add(sink);
-        prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
-        prepare.name = @"video_widget_$(id)_prepare";
-        if (prepare is Gst.Bin) {
-            ((Gst.Bin) prepare).get_by_name(@"video_widget_$(id)_flip").get_static_pad("sink").notify["caps"].connect(input_caps_changed);
-        } else {
-            prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
-        }
-        pipe.add(prepare);
         connected_device_element = connected_device.link_source();
-        connected_device_element.link(prepare);
-        prepare.link(sink);
+
+        var sink_pad = sink.get_static_pad("sink");
+        sink_pad.notify["caps"].connect(on_input_caps_changed);
+        sink_pad.add_probe(Gst.PadProbeType.EVENT_DOWNSTREAM, on_event);
+        sink_pad.add_probe(Gst.PadProbeType.BUFFER, on_first_buffer);
+        got_first_buffer = false;
+
+        if (is_gtk4paintablesink) {
+            connected_device_element.link(sink);
+        } else {
+            prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoflip method=horizontal-flip name=video_widget_$(id)_flip ! videoconvert name=video_widget_$(id)_convert", true);
+            prepare.name = @"video_widget_$(id)_prepare";
+            pipe.add(prepare);
+            connected_device_element.link(prepare);
+            prepare.link(sink);
+        }
         sink.set_locked_state(false);
         plugin.unpause();
         attached = true;
@@ -261,7 +387,11 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         if (attached) {
             debug("Detaching");
             if (connected_stream != null) {
-                connected_stream.remove_output(prepare);
+                if (prepare != null) {
+                    connected_stream.remove_output(prepare);
+                } else {
+                    connected_stream.remove_output(sink);
+                }
                 connected_stream = null;
             }
             if (connected_device != null) {
@@ -270,10 +400,12 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
                 connected_device.unlink();
                 connected_device = null;
             }
-            prepare.set_locked_state(true);
-            prepare.set_state(Gst.State.NULL);
-            pipe.remove(prepare);
-            prepare = null;
+            if (prepare != null) {
+                prepare.set_locked_state(true);
+                prepare.set_state(Gst.State.NULL);
+                pipe.remove(prepare);
+                prepare = null;
+            }
             sink.set_locked_state(true);
             sink.set_state(Gst.State.NULL);
             pipe.remove(sink);
