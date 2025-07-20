@@ -280,7 +280,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        accept_button.set_icon_name("emblem-ok-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
+        accept_button.set_icon_name("check-plain-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
         accept_button.add_css_class("suggested-action");
         accept_button.tooltip_text = _("Accept key");
 
