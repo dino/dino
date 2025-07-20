@@ -155,7 +155,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 return_to_main = true;
                 current_response = TrustLevel.UNTRUSTED;
             } else if (row == accept_row) {
-                confirm_image.set_from_icon_name("emblem-ok-symbolic");
+                confirm_image.set_from_icon_name("check-plain-symbolic");
                 confirm_title_label.label = _("Accept key");
                 confirm_desc_label.set_markup(_("You will be able to exchange encrypted messages with the device of %s that uses this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 manage_stack.set_visible_child_name("confirm");
