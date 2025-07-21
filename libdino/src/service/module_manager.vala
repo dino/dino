@@ -34,9 +34,7 @@ public class ModuleManager {
 
         foreach (XmppStreamModule module in module_map[account]) {
             if (module.get_id() == Bind.Module.IDENTITY.id) {
-                ((Bind.Module) module).requested_resource = account.resourcepart;
-            } else if (module.get_id() == Sasl.Module.IDENTITY.id) {
-                ((Sasl.Module) module).password = account.password;
+                (module as Bind.Module).requested_resource = account.resourcepart;
             }
         }
         return modules;
@@ -46,7 +44,7 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<XmppStreamModule>();
             module_map[account].add(new Iq.Module());
-            module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
+            module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account));
             module_map[account].add(new Xep.StreamManagement.Module());
             module_map[account].add(new Bind.Module(account.resourcepart));
             module_map[account].add(new Session.Module());
