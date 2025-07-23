@@ -156,7 +156,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #if ENABLE_VAAPI
                         "vaapih264dec",
 #endif
-                        null
+                        "avdec_h264"
                     };
                 case "vp9":
                     return new string[] {
