@@ -102,6 +102,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkh264enc",
 #endif
 #if ENABLE_VAAPI
+                        "vah264lpenc",
+                        "vah264enc",
                         "vaapih264enc",
 #endif
                         "x264enc"
@@ -122,6 +124,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkvp8enc",
 #endif
 #if ENABLE_VAAPI
+                        "vavp8enc",
                         "vaapivp8enc",
 #endif
                         "vp8enc"
@@ -154,6 +157,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkh264dec",
 #endif
 #if ENABLE_VAAPI
+                        "vah264dec",
                         "vaapih264dec",
 #endif
                         "avdec_h264"
@@ -164,6 +168,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkvp9dec",
 #endif
 #if ENABLE_VAAPI
+                        "vavp9dec",
                         "vaapivp9dec",
 #endif
                         "vp9dec"
@@ -174,6 +179,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkvp8dec",
 #endif
 #if ENABLE_VAAPI
+                        "vavp8dec",
                         "vaapivp8dec",
 #endif
                         "vp8dec"
@@ -185,18 +191,18 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public static string? get_encode_prefix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         if (encode == "msdkh264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
-        if (encode == "vaapih264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
+        if (encode == "vah264lpenc" || encode == "vah264enc" || encode == "vaapih264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
         return null;
     }
 
     public static string? get_encode_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
-        if (encode == "vaapih264enc") return @" rate-control=vbr";
+        if (encode == "vah264lpenc" || encode == "vah264enc" || encode == "vaapih264enc") return @" rate-control=vbr";
         if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency bframes=0 cabac=false dct8x8=false";
 
         // VP8
-        if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
+        if (encode == "vavp8enc" || encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
         if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
 
         // VP9
@@ -229,11 +235,14 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
         switch (encode_name) {
             case "msdkh264enc":
+            case "vah264enc":
+            case "vah264lpenc":
             case "vaapih264enc":
             case "x264enc":
             case "msdkvp9enc":
             case "vaapivp9enc":
             case "msdkvp8enc":
+            case "vavp8enc":
             case "vaapivp8enc":
                 bitrate = uint.min(2048000, bitrate);
                 encode.set("bitrate", bitrate);
@@ -270,7 +279,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
-        if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
+        if (decode == "vavp9dec" || decode == "vaapivp9dec" || decode == "vavp8dec" || decode == "vaapivp8dec" || decode == "vah264dec" || decode == "vaapih264dec") return " max-errors=100";
         if (decode == "vp8dec" || decode == "vp9dec") return " threads=8";
         return null;
     }
