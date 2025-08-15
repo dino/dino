@@ -332,7 +332,10 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.path = file.get_basename();
 
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.mime_type = file_info.get_content_type();
+            if (file_info.get_content_type() != "application/octet-stream" || file_transfer.mime_type == null) {
+                // Only overwrite mime_type if it's better than what we had before.
+                file_transfer.mime_type = file_info.get_content_type();
+            }
 
             file_transfer.state = FileTransfer.State.COMPLETE;
         } catch (IOError.CANCELLED e) {
