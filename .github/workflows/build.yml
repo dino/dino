@@ -41,3 +41,102 @@ jobs:
         with:
           manifest-path: im.dino.Dino.json
           bundle: im.dino.Dino.flatpak
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup matchers"
+        shell: bash
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Setup MSYS2, install dependencies"
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            protobuf-devel
+          pacboy: >-
+            ca-certificates:p
+            meson:p
+            ntldd:p
+            check:p
+            gcc:p
+            glib-networking:p
+            gobject-introspection:p
+            gpgme:p
+            gst-plugins-base:p
+            gstreamer:p
+            gtk4:p
+            icu:p
+            libadwaita:p
+            libgcrypt:p
+            libgee:p
+            libnice:p
+            libsoup3:p
+            nsis:p
+            protobuf-c:p
+            qrencode:p
+            vala:p
+      - name: "Checkout libomemo-c"
+        uses: actions/checkout@v4
+        with:
+          repository: dino/libomemo-c
+          path: libomemo-c
+          fetch-depth: 0
+      - name: "Build libomemo-c"
+        run: |
+          cd libomemo-c
+          meson setup build
+          meson compile -C build
+          meson install -C build
+      - name: "Checkout libsrtp2"
+        uses: actions/checkout@v4
+        with:
+          repository: cisco/libsrtp
+          ref: v2
+          path: libsrtp2
+          fetch-depth: 0
+      - name: "Build libsrtp2"
+        run: |
+          cd libsrtp2
+          meson setup build
+          meson compile -C build
+          meson install -C build
+      - name: "Configure"
+        run: meson setup build --prefix=$GITHUB_WORKSPACE/dist
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Package"
+        run: |
+          meson install -C build
+          cd dist
+          find . "(" -iname "*.exe" -or -iname "*.dll" ")" -exec ntldd {} + | grep -i $MSYSTEM | awk '{print "cp /$MSYSTEM/bin/"$1" bin"}' | sh
+          find . "(" -iname "*.exe" -or -iname "*.dll" ")" -exec   ldd {} + | grep -i $MSYSTEM | awk '{print "cp /$MSYSTEM/bin/"$1" bin"}' | sh
+          mkdir -p etc lib share/glib-2.0
+          cp -r /$MSYSTEM/etc/fonts etc
+          cp -r /$MSYSTEM/lib/gdk-pixbuf-2.0 /$MSYSTEM/lib/gio lib
+          cp -r /$MSYSTEM/share/icons /$MSYSTEM/share/locale share
+          cp -r /$MSYSTEM/share/glib-2.0/schemas share/glib-2.0
+          find . -iname "*.a" -delete
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: dino-windows
+          path: dist/
+          if-no-files-found: error
+      - name: "Run Tests"
+        run: |
+          meson test -C build
+          meson test -C libomemo-c/build
+          meson test -C libsrtp2/build
