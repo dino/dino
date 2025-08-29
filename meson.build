@@ -7,6 +7,11 @@ if is_mingw
     # are available for GTK when loading the .ui files.
     add_project_link_arguments('-Wl,--export-all-symbols', language: 'c')
 endif
+if is_windows
+    add_project_arguments(['-D', 'IS_WINDOWS'], language: 'vala')
+    # _POSIX_C_SOURCE 1 (POSIX 1996) for Time.local (glib-2.0.vapi calls localtime_r)
+    add_project_arguments(['-D_POSIX_C_SOURCE=1'], language: 'c')
+endif
 
 fs = import('fs')
 gnome = import('gnome')
