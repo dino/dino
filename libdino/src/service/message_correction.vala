@@ -40,7 +40,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     }
 
     public void set_correction(Conversation conversation, Message message, Message old_message) {
-        string reference_stanza_id = old_message.edit_to ?? old_message.stanza_id;
+        string reference_stanza_id = MessageStorage.get_reference_id(old_message);
 
         outstanding_correction_nodes[message.stanza_id] = reference_stanza_id;
 
@@ -109,7 +109,8 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
         if (!last_messages.has_key(conversation) || !last_messages[conversation].has_key(message.from)) return false;
         Message original_message = last_messages[conversation][message.from];
-        if (original_message.stanza_id != replace_id) return false;
+        // TODO this should be the referencing id (-> in MUCs the server id), but this implementation is temporarily for backwards-compatibility.
+        if (original_message.stanza_id != replace_id && original_message.server_id != replace_id) return false;
 
         int message_id_to_be_updated = get_latest_correction_message_id(conversation.account.id, replace_id, db.get_jid_id(message.counterpart), message.counterpart.resourcepart);
         if (message_id_to_be_updated == -1) {
