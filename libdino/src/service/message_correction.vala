@@ -16,8 +16,9 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private HashMap<Conversation, HashMap<Jid, Message>> last_messages = new HashMap<Conversation, HashMap<Jid, Message>>(Conversation.hash_func, Conversation.equals_func);
+    public HashMap<Conversation, Gee.List<ContentItem>> unmatched_corrections = new HashMap<Conversation, Gee.List<ContentItem>>(Conversation.hash_func, Conversation.equals_func);
 
+    private HashMap<Conversation, HashMap<Jid, Message>> last_messages = new HashMap<Conversation, HashMap<Jid, Message>>(Conversation.hash_func, Conversation.equals_func);
     private HashMap<string, string> outstanding_correction_nodes = new HashMap<string, string>();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -37,6 +38,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
                 if (last_messages.has_key(conversation)) last_messages[conversation].unset(jid);
             }
         });
+        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(cache_unmatched_correction);
     }
 
     public void set_correction(Conversation conversation, Message message, Message old_message) {
@@ -90,51 +92,110 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
-        if (conversation.type_ != Conversation.Type.CHAT) {
-            // Don't process messages or corrections from MUC history or MUC MAM
-            DateTime? mam_delay = Xep.DelayedDelivery.get_time_for_message(stanza, message.from.bare_jid);
-            if (mam_delay != null) return false;
-            if (Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null) return false;
+        if (unmatched_corrections.has_key(conversation) && unmatched_corrections[conversation].size > 0) {
+            ContentItem? remove_from_list = null;
+            bool? ret = null;
+            foreach (var unmatched_correction_item in unmatched_corrections[conversation]) {
+                MessageItem unmatched_correction_message_item = unmatched_correction_item as MessageItem;
+                if (unmatched_correction_message_item != null) {
+                    if (MessageStorage.get_reference_id(message) == unmatched_correction_message_item.message.edit_to) {
+                        debug("Matching original message to correction retrospectively %s", unmatched_correction_message_item.message.edit_to);
+                        remove_from_list = unmatched_correction_item;
+                        ret = process_wrong_order_correction(conversation, message, unmatched_correction_message_item);
+                    } else if (unmatched_correction_message_item.message.edit_to == message.edit_to) {
+                        debug("Got another correction to the same (unknown) original message %s", message.edit_to);
+                        ret = process_wrong_order_correction(conversation, message, unmatched_correction_message_item);
+                    }
+                }
+            }
+            if (remove_from_list != null) unmatched_corrections[conversation].remove(remove_from_list);
+            if (ret != null) return ret;
         }
 
         string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);
-        if (replace_id == null) {
-            if (!last_messages.has_key(conversation)) {
-                last_messages[conversation] = new HashMap<Jid, Message>(Jid.hash_func, Jid.equals_func);
-            }
-            last_messages[conversation][message.from] = message;
 
+        // Store the latest message for every resource. This enables the corrections-allowed-check specified in the XEP.
+        // This is only needed for MUCs - In case the MUC doesn't support occupant ids, the last message can still be corrected.
+        if (replace_id == null && conversation.type_.is_muc_semantic()) {
+            // Don't process messages or corrections from MUC history or MUC MAM
+            if (Xep.DelayedDelivery.get_time_for_message(stanza, message.from.bare_jid) == null &&
+                    Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) == null) {
+                if (!last_messages.has_key(conversation)) {
+                    last_messages[conversation] = new HashMap<Jid, Message>(Jid.hash_func, Jid.equals_func);
+                }
+                last_messages[conversation][message.from] = message;
+            }
+        }
+
+        if (replace_id != null) {
+            var correction_message = message;
+            correction_message.edit_to = replace_id; // This isn't persisted TODO
+
+            // Check if it's maybe accepted by the XEP rules (for MUCs without occupant id)
+            if (conversation.type_.is_muc_semantic()) {
+                if (last_messages.has_key(conversation) && last_messages[conversation].has_key(correction_message.from)) {
+                    var last_message = last_messages[conversation][correction_message.from];
+                    // TODO this should be the referencing id (-> in MUCs the server id), but this implementation is temporarily for backwards-compatibility.
+                    bool acceptable = last_message.stanza_id == replace_id || last_message.server_id == replace_id;
+                    if (acceptable) {
+                        return process_in_order_correction(conversation, last_messages[conversation][correction_message.from], correction_message);
+                    }
+                }
+            }
+
+            Message? original_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_referencing_id(replace_id, conversation);
+            if (original_message != null && is_correction_acceptable(original_message, correction_message)) {
+                return process_in_order_correction(conversation, original_message, correction_message);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private bool process_wrong_order_correction(Conversation conversation, Message earlier_message, MessageItem correction_message) {
+        if (!is_correction_acceptable(earlier_message, correction_message.message)) {
             return false;
         }
 
-        if (!last_messages.has_key(conversation) || !last_messages[conversation].has_key(message.from)) return false;
-        Message original_message = last_messages[conversation][message.from];
-        // TODO this should be the referencing id (-> in MUCs the server id), but this implementation is temporarily for backwards-compatibility.
-        if (original_message.stanza_id != replace_id && original_message.server_id != replace_id) return false;
+        db.content_item.update()
+                .with(db.content_item.id, "=", correction_message.id)
+                .set(db.content_item.time, (long) earlier_message.time.to_unix())
+                .set(db.content_item.local_time, (long) earlier_message.local_time.to_unix())
+                .perform();
 
-        int message_id_to_be_updated = get_latest_correction_message_id(conversation.account.id, replace_id, db.get_jid_id(message.counterpart), message.counterpart.resourcepart);
+        correction_message.time = earlier_message.time;
+
+        on_received_correction(conversation, correction_message.message.id);
+
+        return true;
+    }
+
+    private bool process_in_order_correction(Conversation conversation, Message original_message, Message correction_message) {
+        int message_id_to_be_updated = get_latest_correction_message_id(conversation, correction_message.edit_to);
         if (message_id_to_be_updated == -1) {
             message_id_to_be_updated = original_message.id;
         }
 
+        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_referencing_id(conversation, correction_message.edit_to);
+
         db.message_correction.insert()
-            .value(db.message_correction.message_id, message.id)
-            .value(db.message_correction.to_stanza_id, replace_id)
-            .perform();
+                .value(db.message_correction.message_id, correction_message.id)
+                .value(db.message_correction.to_stanza_id, correction_message.edit_to)
+                .perform();
 
-        int current_correction_message_id = get_latest_correction_message_id(conversation.account.id, replace_id, db.get_jid_id(message.counterpart), message.counterpart.resourcepart);
-
-        if (current_correction_message_id != message_id_to_be_updated) {
+        int current_correction_message_id = get_latest_correction_message_id(conversation, correction_message.edit_to);
+        if (content_item != null) {
             db.content_item.update()
-                    .with(db.content_item.foreign_id, "=", message_id_to_be_updated)
+                    .with(db.content_item.id, "=", content_item.id)
                     .with(db.content_item.content_type, "=", 1)
                     .set(db.content_item.foreign_id, current_correction_message_id)
                     .perform();
-            message.edit_to = replace_id;
 
             on_received_correction(conversation, current_correction_message_id);
 
             return true;
+        } else {
+            warning("Got no content item for %s", correction_message.edit_to);
         }
 
         return false;
@@ -147,16 +208,16 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         }
     }
 
-    private int get_latest_correction_message_id(int account_id, string stanza_id, int counterpart_jid_id, string? counterpart_resource) {
+    public int get_latest_correction_message_id(Conversation conversation, string stanza_ref_id) {
         var qry = db.message_correction.select({db.message.id})
                 .join_with(db.message, db.message.id, db.message_correction.message_id)
-                .with(db.message.account_id, "=", account_id)
-                .with(db.message.counterpart_id, "=", counterpart_jid_id)
-                .with(db.message_correction.to_stanza_id, "=", stanza_id)
+                .with(db.message.account_id, "=", conversation.account.id)
+                .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
+                .with(db.message_correction.to_stanza_id, "=", stanza_ref_id)
                 .order_by(db.message.time, "DESC");
 
-        if (counterpart_resource != null) {
-            qry.with(db.message.counterpart_resource, "=", counterpart_resource);
+        if (conversation.counterpart.resourcepart != null) {
+            qry.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
         }
         RowOption row = qry.single().row();
         if (row.is_present()) {
@@ -181,6 +242,27 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             last_messages[conversation] = last_conversation_messages;
         }
     }
+
+    private void cache_unmatched_correction(ContentItem content_item, Conversation conversation) {
+        MessageItem message_item = content_item as MessageItem;
+        if (message_item == null || message_item.message.edit_to == null) return;
+
+        // Check if this is an unmatched correction
+        if (content_item.time != message_item.time) return;
+
+        debug(@"Caching unmatched correction $(message_item.message.server_id) $(message_item.id)");
+        if (!unmatched_corrections.has_key(conversation)) unmatched_corrections[conversation] = new ArrayList<ContentItem>();
+        unmatched_corrections[conversation].add(content_item);
+    }
 }
+
+    // Accepts MUC corrections iff the occupant id matches
+    // Accepts 1:1 corrections iff the bare jid matches
+    private bool is_correction_acceptable(Message original_message, Message correction_message) {
+        bool acceptable = (original_message.type_.is_muc_semantic() && original_message.occupant_db_id != -1 && original_message.occupant_db_id == correction_message.occupant_db_id) ||
+                (original_message.type_ == Message.Type.CHAT && original_message.from.equals_bare(correction_message.from));
+        if (!acceptable) warning("Got unacceptable correction (%i to %i from %s)", correction_message.id, original_message.id, correction_message.from.to_string());
+        return acceptable;
+    }
 
 }

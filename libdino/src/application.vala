@@ -41,6 +41,7 @@ public interface Application : GLib.Application {
         BlockingManager.start(stream_interactor);
         Calls.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
+        OccupantIdStore.start(stream_interactor, db);
         MucManager.start(stream_interactor);
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);

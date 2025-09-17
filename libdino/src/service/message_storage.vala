@@ -41,6 +41,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .order_by(db.message.time, "DESC")
+                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id)
                 .limit(count);
@@ -92,6 +93,7 @@ public class MessageStorage : StreamInteractionModule, Object {
         }
 
         RowOption row_option = db.message.select().with(db.message.id, "=", id)
+                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id)
                 .row();
@@ -121,6 +123,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.stanza_id, "=", stanza_id)
                 .order_by(db.message.time, "DESC")
+                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id);
 
@@ -147,6 +150,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.server_id, "=", server_id)
                 .order_by(db.message.time, "DESC")
+                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id);
 

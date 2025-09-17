@@ -148,31 +148,26 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return null;
     }
 
-    public ContentItem? get_content_item_for_message_id(Conversation conversation, string message_id) {
-        Row? row = get_content_item_row_for_message_id(conversation, message_id);
+    public ContentItem? get_content_item_for_referencing_id(Conversation conversation, string message_id) {
+        Row? row = get_content_item_row_for_referencing_id(conversation, message_id);
         if (row != null) {
             return get_item_from_row(row, conversation);
         }
         return null;
     }
 
-    public int get_content_item_id_for_message_id(Conversation conversation, string message_id) {
-        Row? row = get_content_item_row_for_message_id(conversation, message_id);
+    public int get_content_item_id_for_referencing_id(Conversation conversation, string message_id) {
+        Row? row = get_content_item_row_for_referencing_id(conversation, message_id);
         if (row != null) {
             return row[db.content_item.id];
         }
         return -1;
     }
 
-    private Row? get_content_item_row_for_message_id(Conversation conversation, string message_id) {
+    private Row? get_content_item_row_for_referencing_id(Conversation conversation, string message_id) {
         var content_item_row = db.content_item.select();
 
-        Message? message = null;
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(message_id, conversation);
-        } else {
-            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(message_id, conversation);
-        }
+        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_referencing_id(message_id, conversation);
         if (message == null) return null;
 
         RowOption file_transfer_row = db.file_transfer.select()
@@ -186,7 +181,11 @@ public class ContentItemStore : StreamInteractionModule, Object {
             content_item_row.with(db.content_item.foreign_id, "=", file_transfer_row[db.file_transfer.id])
                     .with(db.content_item.content_type, "=", 2);
         } else {
-            content_item_row.with(db.content_item.foreign_id, "=", message.id)
+            // Check if this message has been corrected. In that case, the foreign id is the latest correction.
+            int correction_message_db_id = stream_interactor.get_module(MessageCorrection.IDENTITY).get_latest_correction_message_id(conversation, message_id);
+            int message_db_id = correction_message_db_id != -1 ? correction_message_db_id : message.id;
+
+            content_item_row.with(db.content_item.foreign_id, "=", message_db_id)
                     .with(db.content_item.content_type, "=", 1);
         }
         RowOption content_item_row_option = content_item_row.single().row();

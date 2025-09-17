@@ -64,6 +64,7 @@ sources = files(
     'src/service/module_manager.vala',
     'src/service/muc_manager.vala',
     'src/service/notification_events.vala',
+    'src/service/occupant_id_store.vala',
     'src/service/presence_manager.vala',
     'src/service/replies.vala',
     'src/service/reactions.vala',

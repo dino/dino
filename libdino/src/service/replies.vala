@@ -64,7 +64,7 @@ public class Dino.Replies : StreamInteractionModule, Object {
         Xep.Replies.ReplyTo? reply_to = Xep.Replies.get_reply_to(stanza);
         if (reply_to == null) return;
 
-        ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_message_id(conversation, reply_to.to_message_id);
+        ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_referencing_id(conversation, reply_to.to_message_id);
         if (quoted_content_item == null) return;
 
         message.set_quoted_item(quoted_content_item.id);

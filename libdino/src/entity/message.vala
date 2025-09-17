@@ -46,6 +46,7 @@ public class Message : Object {
     }
     public bool direction { get; set; }
     public Jid? real_jid { get; set; }
+    public int occupant_db_id { get; set; default=-1; }
     public Type type_ { get; set; default = Type.UNKNOWN; }
     private string? body_;
     public string? body {
@@ -105,8 +106,11 @@ public class Message : Object {
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
+
         string? real_jid_str = row[db.real_jid.real_jid];
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
+
+        occupant_db_id = row[db.message_occupant_id.occupant_id];
 
         edit_to = row[db.message_correction.to_stanza_id];
         quoted_item_id = row[db.reply.quoted_content_item_id];
@@ -138,6 +142,13 @@ public class Message : Object {
             db.real_jid.insert()
                 .value(db.real_jid.message_id, id)
                 .value(db.real_jid.real_jid, real_jid.to_string())
+                .perform();
+        }
+
+        if (occupant_db_id != -1) {
+            db.message_occupant_id.insert()
+                .value(db.message_occupant_id.occupant_id, occupant_db_id)
+                .value(db.message_occupant_id.message_id, id)
                 .perform();
         }
         notify.connect(on_update);
@@ -318,6 +329,13 @@ public class Message : Object {
             db.reply.upsert()
                 .value(db.reply.message_id, id, true)
                 .value(db.reply.quoted_content_item_id, quoted_item_id)
+                .perform();
+        }
+
+        if (sp.get_name() == "message-occupant-id" && occupant_db_id != -1) {
+            db.message_occupant_id.upsert()
+                .value(db.message_occupant_id.occupant_id, occupant_db_id, true)
+                .value(db.message_occupant_id.message_id, id)
                 .perform();
         }
     }
