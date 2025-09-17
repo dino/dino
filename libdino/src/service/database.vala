@@ -83,11 +83,12 @@ public class Database : Qlite.Database {
         public Column<string> body = new Column.Text("body");
         public Column<int> encryption = new Column.Integer("encryption");
         public Column<int> marked = new Column.Integer("marked");
+        public Column<bool> retracted = new Column.BoolInt("retracted") { not_null = true, default = "0", min_version = 30 };
 
         internal MessageTable(Database db) {
             base(db, "message");
             init({id, stanza_id, server_id, account_id, counterpart_id, our_resource, counterpart_resource, direction,
-                type_, time, local_time, body, encryption, marked});
+                type_, time, local_time, body, encryption, marked, retracted});
 
             // get latest messages
             index("message_account_counterpart_time_idx", {account_id, counterpart_id, time});
