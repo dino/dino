@@ -1,5 +1,18 @@
 project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0', meson_version: '>=1.3.0')
 
+is_windows = host_machine.system() == 'windows'
+is_mingw = is_windows and meson.get_compiler('c').get_define('__MINGW32__') != ''
+if is_mingw
+    # export all symbols so that our widget classes like DinoUiConversationSelector
+    # are available for GTK when loading the .ui files.
+    add_project_link_arguments('-Wl,--export-all-symbols', language: 'c')
+endif
+if is_windows
+    add_project_arguments(['-D', 'IS_WINDOWS'], language: 'vala')
+    # _POSIX_C_SOURCE 1 (POSIX 1996) for Time.local (glib-2.0.vapi calls localtime_r)
+    add_project_arguments(['-D_POSIX_C_SOURCE=1'], language: 'c')
+endif
+
 fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')

@@ -588,13 +588,13 @@ public class Database : Qlite.Database {
         if (oldVersion < 15) {
             // Initialize `conversation.read_up_to_item` with the content item id corresponding to the `read_up_to` message.
             try {
-                exec("
+                exec("""
                 update conversation
                 set read_up_to_item=ifnull((
                     select content_item.id
                     from content_item
                     where content_item.foreign_id=conversation.read_up_to and content_type=1)
-                , -1);");
+                , -1);""");
             } catch (Error e) {
                 error("Failed to upgrade to database version 15: %s", e.message);
             }
