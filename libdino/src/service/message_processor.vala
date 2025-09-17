@@ -159,9 +159,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         if (mam_message_flag != null && mam_message_flag.mam_id != null) {
-            bool server_mam_acceptable = !message.type_.is_muc_semantic() && entity_info.has_feature_cached(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI);
-            bool muc_mam_acceptable = message.type_.is_muc_semantic() && entity_info.has_feature_cached(account, message.from, Xmpp.MessageArchiveManagement.NS_URI);
-            if (server_mam_acceptable || muc_mam_acceptable) {
+            bool sender_supports_mam = entity_info.has_feature_cached(account, mam_message_flag.sender_jid, Xmpp.MessageArchiveManagement.NS_URI);
+            if (sender_supports_mam) {
                 new_message.server_id = mam_message_flag.mam_id;
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
