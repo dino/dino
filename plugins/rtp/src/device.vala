@@ -418,6 +418,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             Value? framerate = that.get_value("framerate");
             if (framerate != null && framerate.type() == typeof(Gst.ValueList) && best_fraction != null) {
                 that.set_value("framerate", best_fraction);
+            } else if (framerate == null) {
+                // The source does not support framerate negotiation. Just set a
+                // reasonable value. The source might be able to honor it and
+                // should ignore it otherwise.
+                that.@set("framerate", typeof(Gst.Fraction), 30, 1, null);
             }
             debug("Selected caps %s", res.to_string());
             return res;
