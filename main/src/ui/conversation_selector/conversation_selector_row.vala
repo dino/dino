@@ -21,6 +21,8 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] protected unowned Image pinned_image;
     [GtkChild] public unowned Revealer main_revealer;
 
+    private PopoverMenu popover_menu;
+
     public Conversation conversation { get; private set; }
 
     protected const int AVATAR_SIZE = 40;
@@ -92,11 +94,32 @@ public class ConversationSelectorRow : ListBoxRow {
             }
         });
 
+        popover_menu = new Gtk.PopoverMenu.from_model(get_popover_menu_model());
+        popover_menu.set_parent(this);
+
+        GestureClick right_click = new GestureClick();
+        right_click.set_button(Gdk.BUTTON_SECONDARY);
+        right_click.pressed.connect((gesture, n_press, x, y) => {
+            show_popover(popover_menu, gesture);
+        });
+        this.add_controller(right_click);
+
+        GestureLongPress longpress = new GestureLongPress();
+        longpress.pressed.connect((gesture, x, y) => {
+            show_popover(popover_menu, gesture);
+        });
+        this.add_controller(longpress);
+
+        popover_menu.hide.connect(() => {
+            right_click.reset();
+            longpress.reset();
+        });
+
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
         conversation.notify["read-up-to-item"].connect(() => update_read());
-        conversation.notify["pinned"].connect(() => { update_pinned_icon(); });
+        conversation.notify["pinned"].connect(() => { update_pinned(); });
 
         update_name_label();
         update_pinned_icon();
@@ -131,8 +154,23 @@ public class ConversationSelectorRow : ListBoxRow {
         name_label.label = Util.get_conversation_display_name(stream_interactor, conversation);
     }
 
+    private void update_pinned() {
+        update_pinned_icon();
+        popover_menu.set_menu_model(get_popover_menu_model());
+    }
+
     private void update_pinned_icon() {
         pinned_image.visible = conversation.pinned != 0;
+    }
+
+    private MenuModel get_popover_menu_model() {
+        Menu menu = new Menu();
+
+        MenuItem menu_item_pin_conversation = new MenuItem(conversation.pinned != 0 ? _("Unpin conversation") : _("Pin conversation"), null);
+        menu_item_pin_conversation.set_action_and_target_value("app.pin-conversation", new GLib.Variant.int32(conversation.id));
+        menu.append_item(menu_item_pin_conversation);
+
+        return menu;
     }
 
     protected void update_time_label(DateTime? new_time = null) {
@@ -356,6 +394,11 @@ public class ConversationSelectorRow : ListBoxRow {
          } else {
              return _("Just now");
          }
+    }
+
+    protected void show_popover(Popover popover, Gesture gesture) {
+        popover.popup();
+        gesture.set_state(EventSequenceState.CLAIMED);
     }
 }
 
