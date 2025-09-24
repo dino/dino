@@ -166,9 +166,14 @@ public class ConversationSelectorRow : ListBoxRow {
     private MenuModel get_popover_menu_model() {
         Menu menu = new Menu();
 
-        MenuItem menu_item_pin_conversation = new MenuItem(conversation.pinned != 0 ? _("Unpin conversation") : _("Pin conversation"), null);
+        MenuItem menu_item_pin_conversation = new MenuItem(conversation.pinned != 0 ? _("Unpin Conversation") : _("Pin Conversation"), null);
         menu_item_pin_conversation.set_action_and_target_value("app.pin-conversation", new GLib.Variant.int32(conversation.id));
         menu.append_item(menu_item_pin_conversation);
+
+        MenuItem menu_item_conversation_details = new MenuItem(_("Conversation Details"), null);
+        var conversation_details_variant = new GLib.Variant.tuple(new GLib.Variant[] {new GLib.Variant.int32(conversation.id), new GLib.Variant.string("about")});
+        menu_item_conversation_details.set_action_and_target_value("app.open-conversation-details", conversation_details_variant);
+        menu.append_item(menu_item_conversation_details);
 
         return menu;
     }
