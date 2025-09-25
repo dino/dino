@@ -175,6 +175,10 @@ public class ConversationSelectorRow : ListBoxRow {
         menu_item_conversation_details.set_action_and_target_value("app.open-conversation-details", conversation_details_variant);
         menu.append_item(menu_item_conversation_details);
 
+        MenuItem menu_item_close_conversation = new MenuItem(_("Close Conversation"), null);
+        menu_item_close_conversation.set_action_and_target_value("app.close-conversation", new GLib.Variant.int32(conversation.id));
+        menu.append_item(menu_item_close_conversation);
+
         return menu;
     }
 
