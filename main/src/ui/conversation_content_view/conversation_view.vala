@@ -211,6 +211,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
+    public void show_selection_checkboxes(bool enable) {
+        foreach (ConversationItemSkeleton skeleton in item_item_skeletons.values) {
+            skeleton.show_selection_checkbox(enable);
+        }
+    }
+
     private void update_message_menu() {
         if (current_meta_item == null) {
             message_menu_box.visible = false;

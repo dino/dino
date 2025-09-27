@@ -15,6 +15,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public AvatarPicture avatar_picture { get; set; }
     public Image encryption_image { get; set; }
     public Image received_image { get; set; }
+    private CheckButton select { get; set; }
 
     private HashMap<int, Widget> content_widgets = new HashMap<int, Widget>();
 
@@ -54,6 +55,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
         encryption_image = (Image) builder.get_object("encrypted_image");
         received_image = (Image) builder.get_object("marked_image");
+        select = (CheckButton) builder.get_object("select");
 
         widget = item.get_widget(this, Plugins.WidgetType.GTK4) as Widget;
         if (widget != null) {
@@ -111,7 +113,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         int row_no = 1;
         for (int i = 0; i < 5; i++) {
             if (!content_widgets.has_key(i)) continue;
-            main_grid.attach(content_widgets[i], 1, row_no, 4, 1);
+            main_grid.attach(content_widgets[i], 2, row_no, 4, 1);
             row_no++;
         }
     }
@@ -265,6 +267,10 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         return main_grid;
     }
 
+    public void show_selection_checkbox(bool enable) {
+        select.visible = enable;
+    }
+
     public override void dispose() {
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
@@ -301,6 +307,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             received_image.unparent();
             received_image.dispose();
             received_image = null;
+        }
+        if (select != null) {
+            select.unparent();
+            select.dispose();
+            select = null;
         }
         base.dispose();
     }
