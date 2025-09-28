@@ -121,16 +121,6 @@ public class ConversationViewController : Object {
         });
         app.add_action(close_conversation_action);
         app.set_accels_for_action("app.close-current-conversation", KEY_COMBINATION_CLOSE_CONVERSATION);
-
-        SimpleAction select_messages_action = new SimpleAction("select-messages", VariantType.INT32);
-        select_messages_action.activate.connect((variant) => {
-            int conversation_id = variant.get_int32();
-            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
-            if (conversation == null || !this.conversation.equals(conversation)) return;
-
-            view.conversation_frame.show_selection_checkboxes(true);
-        });
-        app.add_action(select_messages_action);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {

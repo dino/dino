@@ -74,7 +74,34 @@
                                             <object class="GtkStackPage">
                                                 <property name="name">content</property>
                                                 <property name="child">
-                                                    <object class="DinoUiConversationView" id="conversation_view">
+                                                    <object class="GtkBox" id="content_box">
+                                                        <property name="orientation">vertical</property>
+                                                        <child>
+                                                            <object class="GtkBox" id="selection_toolbar">
+                                                                <property name="orientation">horizontal</property>
+                                                                <property name="visible">false</property>
+                                                                <child>
+                                                                    <object class="GtkButton" id="selection_cancel">
+                                                                        <property name="halign">start</property>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkBox" id="selection_toolbar_separator">
+                                                                        <property name="hexpand">true</property>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
+                                                                    <object class="GtkButton" id="selection_copy">
+                                                                        <property name="halign">end</property>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="DinoUiConversationView" id="conversation_view">
+                                                                <property name="vexpand">True</property>
+                                                            </object>
+                                                        </child>
                                                     </object>
                                                 </property>
                                             </object>

@@ -28,6 +28,9 @@ public class MainWindow : Adw.ApplicationWindow {
     private Stack stack = new Stack();
     private Stack left_stack;
     private Stack right_stack;
+    private Box selection_toolbar;
+    private Button selection_cancel;
+    private Button selection_copy;
 
     private StreamInteractor stream_interactor;
     private Database db;
@@ -68,12 +71,18 @@ public class MainWindow : Adw.ApplicationWindow {
         right_stack = (Stack) builder.get_object("right_stack");
         conversation_view = (ConversationView) builder.get_object("conversation_view");
         search_flap = (Adw.Flap) builder.get_object("search_flap");
+        selection_toolbar = (Box) builder.get_object("selection_toolbar");
+        selection_cancel = (Button) builder.get_object("selection_cancel");
+        selection_copy = (Button) builder.get_object("selection_copy");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         conversation_selector.conversation_selected.connect_after(() => leaflet.navigate(Adw.NavigationDirection.FORWARD));
 
         Adw.Bin search_frame = (Adw.Bin) builder.get_object("search_frame");
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
+
+        selection_cancel.label = _("Cancel");
+        selection_copy.label = _("Copy");
     }
 
     private void setup_headerbar() {
@@ -162,6 +171,10 @@ public class MainWindow : Adw.ApplicationWindow {
                 config.window_height = default_height;
             }
         }
+    }
+
+    public void show_selection_toolbar(bool enable) {
+        selection_toolbar.visible = enable;
     }
 }
 

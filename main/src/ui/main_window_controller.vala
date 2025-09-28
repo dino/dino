@@ -38,6 +38,18 @@ public class MainWindowController : Object {
         });
         app.add_action(jump_to_conversatio_message_action);
 
+        SimpleAction select_messages_action = new SimpleAction("select-messages", VariantType.INT32);
+        select_messages_action.activate.connect((variant) => {
+            if (window.conversation_view == null || this.conversation == null) return;
+
+            int conversation_id = variant.get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null || !this.conversation.equals(conversation)) return;
+
+            window.conversation_view.conversation_frame.show_selection_checkboxes(true);
+            window.show_selection_toolbar(true);
+        });
+        app.add_action(select_messages_action);
     }
 
     public void set_window(MainWindow window) {
