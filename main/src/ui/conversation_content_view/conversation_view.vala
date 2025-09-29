@@ -468,13 +468,19 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     public void select_item(ContentItem item) {
         lock (selected_content_items) {
-            selected_content_items.add(item);
+            if (!selected_content_items.contains(item)) {
+                selected_content_items.add(item);
+                GLib.Application.get_default().activate_action("update-selected-messages-counter", selected_content_items.size);
+            }
         }
     }
 
     public void unselect_item(ContentItem item) {
         lock (selected_content_items) {
-            selected_content_items.remove(item);
+            if (selected_content_items.contains(item)) {
+                selected_content_items.remove(item);
+                GLib.Application.get_default().activate_action("update-selected-messages-counter", selected_content_items.size);
+            }
         }
     }
 

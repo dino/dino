@@ -86,8 +86,14 @@
                                                                     </object>
                                                                 </child>
                                                                 <child>
-                                                                    <object class="GtkBox" id="selection_toolbar_separator">
+                                                                    <object class="GtkLabel" id="selection_counter">
+                                                                        <property name="ellipsize">end</property>
+                                                                        <property name="halign">start</property>
+                                                                        <property name="valign">baseline</property>
                                                                         <property name="hexpand">true</property>
+                                                                        <attributes>
+                                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                        </attributes>
                                                                     </object>
                                                                 </child>
                                                                 <child>

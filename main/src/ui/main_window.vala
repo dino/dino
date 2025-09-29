@@ -30,6 +30,7 @@ public class MainWindow : Adw.ApplicationWindow {
     private Stack right_stack;
     private Box selection_toolbar;
     public Button selection_cancel;
+    public Label selection_counter;
     public Button selection_copy;
 
     private StreamInteractor stream_interactor;
@@ -59,6 +60,7 @@ public class MainWindow : Adw.ApplicationWindow {
         setup_unified();
         setup_headerbar();
         setup_stack();
+        update_selection_counter(0);
     }
 
     private void setup_unified() {
@@ -73,6 +75,7 @@ public class MainWindow : Adw.ApplicationWindow {
         search_flap = (Adw.Flap) builder.get_object("search_flap");
         selection_toolbar = (Box) builder.get_object("selection_toolbar");
         selection_cancel = (Button) builder.get_object("selection_cancel");
+        selection_counter = (Label) builder.get_object("selection_counter");
         selection_copy = (Button) builder.get_object("selection_copy");
         conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
         conversation_selector.conversation_selected.connect_after(() => leaflet.navigate(Adw.NavigationDirection.FORWARD));
@@ -101,6 +104,10 @@ public class MainWindow : Adw.ApplicationWindow {
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
         set_content(stack);
+    }
+
+    public void update_selection_counter(int messages_count) {
+        selection_counter.label = _("%i messages selected").printf(messages_count);
     }
 
     public enum StackState {

@@ -202,6 +202,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         unselect_message_action.activate.connect((variant) => { select_message(variant, false); });
         add_action(unselect_message_action);
 
+        SimpleAction update_selected_messages_counter_action = new SimpleAction("update-selected-messages-counter", VariantType.INT32);
+        update_selected_messages_counter_action.activate.connect((variant) => { window.update_selection_counter(variant.get_int32()); });
+        add_action(update_selected_messages_counter_action);
+
         SimpleAction accept_voice_request_action = new SimpleAction("accept-voice-request", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.STRING}));
         accept_voice_request_action.activate.connect((variant) => {
             int conversation_id = variant.get_child_value(0).get_int32();
