@@ -106,6 +106,14 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
+window.dino-main .dino-conversation .message-box.select-mode {
+    background: alpha(@theme_selected_bg_color, 0.3);
+}
+
+window.dino-main .dino-conversation .message-box.select-mode:hover {
+    background: alpha(@theme_selected_bg_color, 0.32);
+}
+
 window.dino-main .dino-conversation .message-box.error {
     background: alpha(@error_color, 0.1);
 }

@@ -78,6 +78,20 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             reactions_controller.init();
         }
 
+        Application app = GLib.Application.get_default() as Application;
+        select.toggled.connect(() => {
+            if (content_meta_item == null) return;
+
+            var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(content_meta_item.content_item.id)});
+            if (select.get_active()) {
+                app.activate_action("select-message", variant);
+                main_grid.add_css_class("select-mode");
+            } else {
+                app.activate_action("unselect-message", variant);
+                main_grid.remove_css_class("select-mode");
+            }
+        });
+
         update_margin();
     }
 

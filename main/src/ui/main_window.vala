@@ -29,8 +29,8 @@ public class MainWindow : Adw.ApplicationWindow {
     private Stack left_stack;
     private Stack right_stack;
     private Box selection_toolbar;
-    private Button selection_cancel;
-    private Button selection_copy;
+    public Button selection_cancel;
+    public Button selection_copy;
 
     private StreamInteractor stream_interactor;
     private Database db;

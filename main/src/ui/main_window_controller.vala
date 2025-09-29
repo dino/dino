@@ -46,8 +46,7 @@ public class MainWindowController : Object {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
             if (conversation == null || !this.conversation.equals(conversation)) return;
 
-            window.conversation_view.conversation_frame.show_selection_checkboxes(true);
-            window.show_selection_toolbar(true);
+            toggle_selection_mode(true);
         });
         app.add_action(select_messages_action);
     }
@@ -83,6 +82,11 @@ public class MainWindowController : Object {
         });
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("preferences", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
+
+        window.selection_cancel.clicked.connect(() => { toggle_selection_mode(false); });
+        window.selection_copy.clicked.connect(() => {
+            toggle_selection_mode(false);
+        });
 
 //        ConversationListModel list_model = new ConversationListModel(stream_interactor);
 //        list_model.closed_conversation.connect((conversation) => {
@@ -193,6 +197,11 @@ public class MainWindowController : Object {
 
     private void close_search() {
         conversation_view_controller.search_menu_entry.button.active = false;
+    }
+
+    private void toggle_selection_mode(bool enable) {
+        window.conversation_view.conversation_frame.show_selection_checkboxes(enable);
+        window.show_selection_toolbar(enable);
     }
 }
 

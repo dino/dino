@@ -28,6 +28,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
+    private Gee.TreeSet<ContentItem> selected_content_items = new TreeSet<ContentItem>(compare_content_items);
     private Gee.List<Widget> widget_order = new Gee.ArrayList<Widget>();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
@@ -214,6 +215,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     public void show_selection_checkboxes(bool enable) {
         foreach (ConversationItemSkeleton skeleton in item_item_skeletons.values) {
             skeleton.show_selection_checkbox(enable);
+        }
+        if (!enable) {
+            selected_content_items.clear();
         }
     }
 
@@ -423,7 +427,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             item_item_skeletons.unset(item);
 
             if (item is ContentMetaItem) {
-                content_items.remove((ContentMetaItem)item);
+                ContentMetaItem content_meta_item = (ContentMetaItem)item;
+                content_items.remove(content_meta_item);
+                selected_content_items.remove(content_meta_item.content_item);
             }
             meta_items.remove(item);
             skeleton.dispose();
@@ -458,6 +464,18 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     public void remove_notification(Widget widget) {
         notification_revealer.reveal_child = false;
         notifications.remove(widget);
+    }
+
+    public void select_item(ContentItem item) {
+        lock (selected_content_items) {
+            selected_content_items.add(item);
+        }
+    }
+
+    public void unselect_item(ContentItem item) {
+        lock (selected_content_items) {
+            selected_content_items.remove(item);
+        }
     }
 
     private Widget insert_new(Plugins.MetaConversationItem item) {
@@ -578,6 +596,13 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
+    private static int compare_content_items(ContentItem a, ContentItem b) {
+        int cmp1 = a.time.compare(b.time);
+        if (cmp1 != 0) return cmp1;
+
+        return a.id - b.id;
+    }
+
     private static int compare_content_meta_items(ContentMetaItem a, ContentMetaItem b) {
         return compare_meta_items(a, b);
     }
@@ -607,6 +632,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             widget.dispose();
         }
         widgets.clear();
+        selected_content_items.clear();
 
         Widget? notification = notifications.get_first_child();
         while (notification != null) {
