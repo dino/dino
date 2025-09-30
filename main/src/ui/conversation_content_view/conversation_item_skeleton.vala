@@ -283,6 +283,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     public void show_selection_checkbox(bool enable) {
         select.visible = enable;
+        select.set_active(false);
     }
 
     public override void dispose() {

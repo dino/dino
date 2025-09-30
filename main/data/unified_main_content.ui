@@ -80,6 +80,7 @@
                                                             <object class="GtkBox" id="selection_toolbar">
                                                                 <property name="orientation">horizontal</property>
                                                                 <property name="visible">false</property>
+                                                                <property name="spacing">6</property>
                                                                 <child>
                                                                     <object class="GtkButton" id="selection_cancel">
                                                                         <property name="halign">start</property>

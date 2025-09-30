@@ -218,6 +218,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
         if (!enable) {
             selected_content_items.clear();
+            GLib.Application.get_default().activate_action("update-selected-messages-counter", 0);
         }
     }
 
