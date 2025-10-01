@@ -22,6 +22,8 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] public unowned Revealer main_revealer;
 
     private PopoverMenu popover_menu;
+    private Adw.ToggleGroup mute_switch;
+    private Button mute_reset_button;
 
     public Conversation conversation { get; private set; }
 
@@ -95,6 +97,24 @@ public class ConversationSelectorRow : ListBoxRow {
         });
 
         popover_menu = new Gtk.PopoverMenu.from_model(get_popover_menu_model());
+
+        Builder builder = new Builder.from_resource("/im/dino/Dino/mute_toggle.ui");
+        switch (conversation.type_) {
+            case Conversation.Type.CHAT:
+            case Conversation.Type.GROUPCHAT_PM:
+                mute_switch = (Adw.ToggleGroup) builder.get_object("mute_switch_chat");
+                break;
+            case Conversation.Type.GROUPCHAT:
+                mute_switch = (Adw.ToggleGroup) builder.get_object("mute_switch_muc");
+                break;
+        }
+        mute_reset_button = (Button) builder.get_object("reset_button");
+        Box mute_switch_wrapper = new Box(Orientation.HORIZONTAL, 0);
+        Box separator = new Box(Orientation.HORIZONTAL, 0) { hexpand=true };
+        mute_switch_wrapper.append(mute_switch);
+        mute_switch_wrapper.append(separator);
+        mute_switch_wrapper.append(mute_reset_button);
+        popover_menu.add_child(mute_switch_wrapper, "mute-switch");
         popover_menu.set_parent(this);
 
         GestureClick right_click = new GestureClick();
@@ -178,6 +198,10 @@ public class ConversationSelectorRow : ListBoxRow {
         MenuItem menu_item_close_conversation = new MenuItem(_("Close Conversation"), null);
         menu_item_close_conversation.set_action_and_target_value("app.close-conversation", new GLib.Variant.int32(conversation.id));
         menu.append_item(menu_item_close_conversation);
+
+        MenuItem menu_item_mute_switch = new MenuItem(null, null);
+        menu_item_mute_switch.set_attribute_value("custom", new GLib.Variant.string("mute-switch"));
+        menu.append_item(menu_item_mute_switch);
 
         return menu;
     }
