@@ -248,6 +248,24 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             call_state.reject();
         });
         add_action(deny_call_action);
+
+        SimpleAction pin_conversation_action = new SimpleAction("pin-conversation", VariantType.INT32);
+        pin_conversation_action.activate.connect((variant) => {
+            int conversation_id = variant.get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+
+	    conversation.pinned = conversation.pinned == 1 ? 0 : 1;
+	});
+        add_action(pin_conversation_action);
+
+        SimpleAction close_conversation_action = new SimpleAction("close-conversation", VariantType.INT32);
+        close_conversation_action.activate.connect((variant) => {
+            int conversation_id = variant.get_int32();
+            ConversationManager conversation_manager = stream_interactor.get_module(ConversationManager.IDENTITY);
+            Conversation? conversation = conversation_manager.get_conversation_by_id(conversation_id);
+            conversation_manager.close_conversation(conversation);
+	});
+        add_action(close_conversation_action);
     }
 
     private void show_preferences_window() {
