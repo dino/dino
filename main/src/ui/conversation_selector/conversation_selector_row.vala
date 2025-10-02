@@ -110,6 +110,7 @@ public class ConversationSelectorRow : ListBoxRow {
                 mute_switch = (Adw.ToggleGroup) builder.get_object("mute_switch_muc");
                 break;
         }
+        assert(mute_switch != null);
         mute_reset_button = (Button) builder.get_object("reset_button");
         mute_switch_wrapper = new Box(Orientation.HORIZONTAL, 0);
         Box separator = new Box(Orientation.HORIZONTAL, 0) { hexpand=true };
@@ -141,14 +142,31 @@ public class ConversationSelectorRow : ListBoxRow {
             longpress.reset();
         });
 
+        mute_switch.notify["active-name"].connect(() => {
+            switch (mute_switch.active_name) {
+                case "notification.on":
+                    conversation.notify_setting = ON;
+                    break;
+                case "notification.highlight":
+                    conversation.notify_setting = HIGHLIGHT;
+                    break;
+                case "notification.off":
+                    conversation.notify_setting = OFF;
+                    break;
+            }
+        });
+        mute_reset_button.clicked.connect(() => { conversation.notify_setting = DEFAULT; });
+
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
         conversation.notify["read-up-to-item"].connect(() => update_read());
         conversation.notify["pinned"].connect(() => { update_pinned(); });
+        conversation.notify["notify-setting"].connect(() => { update_mute_switch(); });
 
         update_name_label();
         update_pinned_icon();
+        update_mute_switch();
         content_item_received();
     }
 
@@ -191,6 +209,23 @@ public class ConversationSelectorRow : ListBoxRow {
 
     private void update_pinned_icon() {
         pinned_image.visible = conversation.pinned != 0;
+    }
+
+    private void update_mute_switch() {
+        switch (conversation.get_notification_setting(stream_interactor)) {
+            case ON:
+                mute_switch.active_name = "notification.on";
+                break;
+            case HIGHLIGHT:
+                mute_switch.active_name = "notification.highlight";
+                break;
+            case OFF:
+                mute_switch.active_name = "notification.off";
+                break;
+            default:
+                mute_switch.active_name = null;
+                break;
+        }
     }
 
     private MenuModel get_popover_menu_model() {
