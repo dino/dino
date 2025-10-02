@@ -22,8 +22,10 @@ public class ConversationSelectorRow : ListBoxRow {
     [GtkChild] public unowned Revealer main_revealer;
 
     private PopoverMenu popover_menu;
+    private Separator popover_separator;
     private Adw.ToggleGroup mute_switch;
     private Button mute_reset_button;
+    private Box mute_switch_wrapper;
 
     public Conversation conversation { get; private set; }
 
@@ -109,12 +111,16 @@ public class ConversationSelectorRow : ListBoxRow {
                 break;
         }
         mute_reset_button = (Button) builder.get_object("reset_button");
-        Box mute_switch_wrapper = new Box(Orientation.HORIZONTAL, 0);
+        mute_switch_wrapper = new Box(Orientation.HORIZONTAL, 0);
         Box separator = new Box(Orientation.HORIZONTAL, 0) { hexpand=true };
         mute_switch_wrapper.append(mute_switch);
         mute_switch_wrapper.append(separator);
         mute_switch_wrapper.append(mute_reset_button);
         popover_menu.add_child(mute_switch_wrapper, "mute-switch");
+
+        popover_separator = new Separator(Orientation.VERTICAL);
+        popover_menu.add_child(popover_separator, "separator");
+
         popover_menu.set_parent(this);
 
         GestureClick right_click = new GestureClick();
@@ -176,7 +182,11 @@ public class ConversationSelectorRow : ListBoxRow {
 
     private void update_pinned() {
         update_pinned_icon();
+        popover_menu.remove_child(mute_switch_wrapper);
+        popover_menu.remove_child(popover_separator);
         popover_menu.set_menu_model(get_popover_menu_model());
+        popover_menu.add_child(mute_switch_wrapper, "mute-switch");
+        popover_menu.add_child(popover_separator, "separator");
     }
 
     private void update_pinned_icon() {
@@ -190,6 +200,14 @@ public class ConversationSelectorRow : ListBoxRow {
         menu_item_pin_conversation.set_action_and_target_value("app.pin-conversation", new GLib.Variant.int32(conversation.id));
         menu.append_item(menu_item_pin_conversation);
 
+        MenuItem menu_item_mute_switch = new MenuItem(null, null);
+        menu_item_mute_switch.set_attribute_value("custom", new GLib.Variant.string("mute-switch"));
+        menu.append_item(menu_item_mute_switch);
+
+        MenuItem menu_item_separator = new MenuItem(null, null);
+        menu_item_separator.set_attribute_value("custom", new GLib.Variant.string("separator"));
+        menu.append_item(menu_item_separator);
+
         MenuItem menu_item_conversation_details = new MenuItem(_("Conversation Details"), null);
         var conversation_details_variant = new GLib.Variant.tuple(new GLib.Variant[] {new GLib.Variant.int32(conversation.id), new GLib.Variant.string("about")});
         menu_item_conversation_details.set_action_and_target_value("app.open-conversation-details", conversation_details_variant);
@@ -198,10 +216,6 @@ public class ConversationSelectorRow : ListBoxRow {
         MenuItem menu_item_close_conversation = new MenuItem(_("Close Conversation"), null);
         menu_item_close_conversation.set_action_and_target_value("app.close-conversation", new GLib.Variant.int32(conversation.id));
         menu.append_item(menu_item_close_conversation);
-
-        MenuItem menu_item_mute_switch = new MenuItem(null, null);
-        menu_item_mute_switch.set_attribute_value("custom", new GLib.Variant.string("mute-switch"));
-        menu.append_item(menu_item_mute_switch);
 
         return menu;
     }
