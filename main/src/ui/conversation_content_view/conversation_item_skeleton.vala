@@ -57,6 +57,8 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         received_image = (Image) builder.get_object("marked_image");
         select = (CheckButton) builder.get_object("select");
 
+        select.add_css_class("select");
+
         widget = item.get_widget(this, Plugins.WidgetType.GTK4) as Widget;
         if (widget != null) {
             widget.valign = Align.END;
@@ -123,7 +125,9 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             content_widget.unparent();
         }
 
-        content_widgets[priority] = (Widget) object;
+        Widget content_widget = (Widget) object;
+        content_widget.add_css_class("conversation-meta-item");
+        content_widgets[priority] = content_widget;
         int row_no = 1;
         for (int i = 0; i < 5; i++) {
             if (!content_widgets.has_key(i)) continue;

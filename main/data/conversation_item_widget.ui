@@ -6,7 +6,7 @@
     <property name="row-spacing">2</property>
     <child>
       <object class="GtkCheckButton" id="select">
-        <property name="valign">baseline</property>
+        <property name="valign">start</property>
         <property name="visible">false</property>
         <layout>
           <property name="column">0</property>
