@@ -23,7 +23,10 @@ public class Dino.LimitInputStream : InputStream, PollableInputStream {
 
     public bool is_readable() {
             if (!can_poll()) throw new IOError.NOT_SUPPORTED("Stream is not pollable");
-            return remaining_bytes == 0 || ((PollableInputStream)inner).is_readable();
+            // Due to https://gitlab.gnome.org/GNOME/libsoup/-/issues/473 and
+            // https://gitlab.gnome.org/GNOME/glib-networking/-/issues/20, is_readable() can return false when
+            // approaching end of stream even if the stream is readable.
+            return remaining_bytes < 65536 || ((PollableInputStream)inner).is_readable();
         }
 
     private ssize_t check_limit(ssize_t read) throws IOError {
