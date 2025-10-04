@@ -485,6 +485,40 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
+    public string selection_to_text() {
+        StringBuilder sb = new StringBuilder();
+        bool first = true;
+        foreach (ContentItem item in selected_content_items) {
+            string display_room = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
+            string msg_text;
+            switch (item.type_) {
+                case MessageItem.TYPE:
+                    MessageItem message_item = item as MessageItem;
+                    msg_text = Dino.message_body_without_reply_fallback(message_item.message);
+                    break;
+                case FileItem.TYPE:
+                    FileItem file_item = item as FileItem;
+                    FileTransfer transfer = file_item.file_transfer;
+                    bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
+                    msg_text = ( file_is_image ? _("(Image %s)") : _("(File %s)") ).printf(transfer.file_name);
+                    break;
+                case CallItem.TYPE:
+                    CallItem call_item = item as CallItem;
+                    msg_text = call_item.call.direction == Call.DIRECTION_OUTGOING ? _("(Outgoing call)") : _("(Incoming call)");
+                    break;
+                default:
+                    msg_text = "<Unknown message>";
+                    break;
+            }
+            if (!first) {
+                sb.append("\n\n");
+            }
+            sb.append(@"$display_room, [$(item.time.format("%Y-%m-%d %H:%M:%S"))]\n$msg_text");
+            first = false;
+        }
+        return sb.str;
+    }
+
     private Widget insert_new(Plugins.MetaConversationItem item) {
         Plugins.MetaConversationItem? lower_item = meta_items.lower(item);
 

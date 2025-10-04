@@ -85,6 +85,7 @@ public class MainWindowController : Object {
 
         window.selection_cancel.clicked.connect(() => { toggle_selection_mode(false); });
         window.selection_copy.clicked.connect(() => {
+            window.get_clipboard().set_text(window.conversation_view.conversation_frame.selection_to_text());
             toggle_selection_mode(false);
         });
 
