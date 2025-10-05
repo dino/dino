@@ -78,10 +78,9 @@ namespace Dino.Ui.ConversationDetails {
             }
             block_button.menu_model = block_menu_model;
 
-#if Adw_1_4
             // TODO: replace with putting buttons in new line on small screens
             notification_button_menu_content.can_shrink = true;
-#endif
+
             update_blocked_button();
         }
 

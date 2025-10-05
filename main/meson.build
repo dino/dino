@@ -127,9 +127,6 @@ if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.14
     vala_args += ['-D', 'GTK_4_14']
     sources += files('src/ui/conversation_content_view/file_transmission_progress.c')
 endif
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.3')
-    vala_args += ['-D', 'Adw_1_3']
-endif
 if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.4')
     vala_args += ['-D', 'Adw_1_4']
 endif
