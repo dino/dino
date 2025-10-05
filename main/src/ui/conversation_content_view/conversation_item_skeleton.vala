@@ -94,6 +94,23 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             }
         });
 
+        GestureClick click = new GestureClick();
+        click.pressed.connect((gesture, x, y) => {
+            if (!select.visible) return;
+
+            select.set_active(!select.active);
+        });
+        main_grid.add_controller(click);
+
+        GestureLongPress longpress = new GestureLongPress();
+        longpress.pressed.connect((gesture, x, y) => {
+            if (select.visible) return;
+
+            app.activate_action("select-messages", new Variant.int32(conversation.id));
+            select.set_active(true);
+        });
+        main_grid.add_controller(longpress);
+
         update_margin();
     }
 
