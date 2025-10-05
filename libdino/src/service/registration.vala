@@ -27,7 +27,7 @@ public class Register : StreamInteractionModule, Object{
 
         Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
         list.add(new Iq.Module());
-        list.add(new Sasl.Module(account.bare_jid.to_string(), account.password));
+        list.add(new Sasl.Module(account.bare_jid.to_string(), account));
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp,
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(account.domainpart, peer_cert, errors); }

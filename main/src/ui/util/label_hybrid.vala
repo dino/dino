@@ -9,6 +9,10 @@ public class LabelHybrid : Widget {
     public Label label = new Label("") { max_width_chars=1, ellipsize=Pango.EllipsizeMode.END };
     protected Button button = new Button() { has_frame=false };
 
+    public signal void switched_to_label();
+    public signal void switched_to_widget();
+    private bool shows_widget = false;
+
     internal virtual void init(Widget widget) {
         this.layout_manager = new BinLayout();
         stack.set_parent(this);
@@ -24,10 +28,18 @@ public class LabelHybrid : Widget {
     public void show_widget() {
         stack.visible_child_name = "widget";
         stack.get_child_by_name("widget").grab_focus();
+        if (!shows_widget) {
+            switched_to_widget();
+            shows_widget = true;
+        }
     }
 
     public void show_label() {
         stack.visible_child_name = "label";
+        if (shows_widget) {
+            switched_to_label();
+            shows_widget = false;
+        }
     }
 
     public override void dispose() {

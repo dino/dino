@@ -121,7 +121,7 @@ public class Dino.Ui.ViewModel.ChangePasswordDialog : Object {
     public async string? change_password(string new_password) {
         var res = yield stream_interactor.get_module(Register.IDENTITY).change_password(account, new_password);
         if (res == null) {
-            account.password = new_password;
+            account.set_password(new_password);
         }
         return res;
     }

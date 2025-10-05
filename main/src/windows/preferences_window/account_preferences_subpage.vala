@@ -62,8 +62,12 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
             var password = new PasswordEntry() { show_peek_icon=true };
             dialog.response.connect((response) => {
                 if (response == "connect") {
-                    account.password = password.text;
-                    model.reconnect_account(account);
+                    var new_pw = password.text;
+
+                    // TODO indicate saving?
+                    account.set_password.begin(new_pw, (obj, res) => {
+                        model.reconnect_account(account);
+                    });
                 }
             });
             dialog.set_default_response("connect");
