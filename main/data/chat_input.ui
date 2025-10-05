@@ -4,15 +4,15 @@
     <template class="DinoUiChatInputView">
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
-        <style>
-            <class name="dino-chatinput"/>
-        </style>
         <child>
             <object class="GtkFrame" id="frame">
                 <property name="margin_start">14</property>
                 <property name="margin_end">14</property>
                 <property name="child">
                     <object class="GtkBox" id="outer_box">
+                        <style>
+                            <class name="dino-chatinput"/>
+                        </style>
                         <child>
                             <object class="GtkButton" id="file_button">
                                 <property name="icon-name">mail-attachment-symbolic</property>

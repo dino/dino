@@ -6,30 +6,32 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
+[GtkTemplate (ui = "/im/dino/Dino/main_window.ui")]
 public class MainWindow : Adw.ApplicationWindow {
 
     public signal void conversation_selected(Conversation conversation);
 
-    public new string? title { get; set; }
-    public string? subtitle { get; set; }
+    [GtkChild] public Stack stack;
+    [GtkChild] public Adw.NavigationSplitView navigation_split_view;
+
+    [GtkChild] public MenuButton add_button;
+    [GtkChild] public MenuButton menu_button;
+
+    [GtkChild] public Adw.HeaderBar conversation_headerbar;
+    [GtkChild] public Adw.WindowTitle conversation_window_title;
+
+    [GtkChild] public ConversationView conversation_view;
+    [GtkChild] public ConversationSelector conversation_selector;
+    [GtkChild] public Adw.Flap search_flap;
+    [GtkChild] private Stack left_stack;
+    [GtkChild] private Stack right_stack;
+    [GtkChild] public Adw.Bin search_frame;
+
+    public GlobalSearch global_search;
 
     public WelcomePlaceholder welcome_placeholder = new WelcomePlaceholder();
     public NoAccountsPlaceholder accounts_placeholder = new NoAccountsPlaceholder();
-    public ConversationView conversation_view;
-    public ConversationSelector conversation_selector;
-    public ConversationTitlebar conversation_titlebar;
-    public Widget conversation_list_titlebar;
-    public Box box = new Box(Orientation.VERTICAL, 0) { orientation=Orientation.VERTICAL };
-    private Adw.Leaflet leaflet;
-    public Box left_box;
-    public Box right_box;
-    public Adw.Flap search_flap;
-    public GlobalSearch global_search;
-    private Stack stack = new Stack();
-    private Stack left_stack;
-    private Stack right_stack;
 
-    private StreamInteractor stream_interactor;
     private Database db;
     private Config config;
 
@@ -43,7 +45,6 @@ public class MainWindow : Adw.ApplicationWindow {
 
     public MainWindow(Application application, StreamInteractor stream_interactor, Database db, Config config) {
         Object(application : application);
-        this.stream_interactor = stream_interactor;
         this.db = db;
         this.config = config;
 
@@ -53,45 +54,16 @@ public class MainWindow : Adw.ApplicationWindow {
 
         ((Widget)this).realize.connect(restore_window_size);
 
-        setup_unified();
-        setup_headerbar();
-        setup_stack();
-    }
+        conversation_selector.init(stream_interactor);
+        conversation_selector.conversation_selected.connect_after(() => { navigation_split_view.show_content = true; });
 
-    private void setup_unified() {
-        Builder builder = new Builder.from_resource("/im/dino/Dino/unified_main_content.ui");
-        leaflet = (Adw.Leaflet) builder.get_object("leaflet");
-        box.append(leaflet);
-        left_box = (Box) builder.get_object("left_box");
-        right_box = (Box) builder.get_object("right_box");
-        left_stack = (Stack) builder.get_object("left_stack");
-        right_stack = (Stack) builder.get_object("right_stack");
-        conversation_view = (ConversationView) builder.get_object("conversation_view");
-        search_flap = (Adw.Flap) builder.get_object("search_flap");
-        conversation_selector = ((ConversationSelector) builder.get_object("conversation_list")).init(stream_interactor);
-        conversation_selector.conversation_selected.connect_after(() => leaflet.navigate(Adw.NavigationDirection.FORWARD));
-
-        Adw.Bin search_frame = (Adw.Bin) builder.get_object("search_frame");
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
-    }
 
-    private void setup_headerbar() {
-        conversation_list_titlebar = get_conversation_list_titlebar();
-        conversation_titlebar = new ConversationTitlebar();
-        leaflet.bind_property("folded", conversation_list_titlebar, "show-end-title-buttons", BindingFlags.SYNC_CREATE);
-        leaflet.bind_property("folded", conversation_titlebar.get_widget(), "show-start-title-buttons", BindingFlags.SYNC_CREATE);
-        left_box.prepend(conversation_list_titlebar);
-        right_box.prepend(conversation_titlebar.get_widget());
-        leaflet.notify["folded"].connect_after(() => conversation_titlebar.back_button_visible = leaflet.folded);
-        conversation_titlebar.back_pressed.connect(() => leaflet.navigate(Adw.NavigationDirection.BACK));
-    }
+        create_add_menu(add_button, menu_button);
 
-    private void setup_stack() {
-        stack.add_named(box, "main");
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
-        set_content(stack);
     }
 
     public enum StackState {
@@ -105,14 +77,11 @@ public class MainWindow : Adw.ApplicationWindow {
         if (stack_state == StackState.CONVERSATION) {
             left_stack.set_visible_child_name("content");
             right_stack.set_visible_child_name("content");
-
             stack.set_visible_child_name("main");
-        } else if (stack_state == StackState.CLEAN_START || stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
-            if (stack_state == StackState.CLEAN_START) {
-                stack.set_visible_child_name("welcome_placeholder");
-            } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
-                stack.set_visible_child_name("accounts_placeholder");
-            }
+        } else if (stack_state == StackState.CLEAN_START) {
+            stack.set_visible_child_name("welcome_placeholder");
+        } else if (stack_state == StackState.NO_ACTIVE_ACCOUNTS) {
+            stack.set_visible_child_name("accounts_placeholder");
         } else if (stack_state == StackState.NO_ACTIVE_CONVERSATIONS) {
             stack.set_visible_child_name("main");
             left_stack.set_visible_child_name("placeholder");
@@ -163,6 +132,18 @@ public class MainWindow : Adw.ApplicationWindow {
             }
         }
     }
+
+    private static void create_add_menu(MenuButton add_button, MenuButton menu_button) {
+        add_button.tooltip_text = Util.string_if_tooltips_active(_("Start Conversation"));
+
+        Builder add_builder = new Builder.from_resource("/im/dino/Dino/menu_add.ui");
+        MenuModel add_menu_model = add_builder.get_object("menu_add") as MenuModel;
+        add_button.set_menu_model(add_menu_model);
+
+        Builder menu_builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
+        MenuModel menu_menu_model = menu_builder.get_object("menu_app") as MenuModel;
+        menu_button.set_menu_model(menu_menu_model);
+    }
 }
 
 public class WelcomePlaceholder : MainWindowPlaceholder {
@@ -182,7 +163,7 @@ public class NoAccountsPlaceholder : MainWindowPlaceholder {
     }
 }
 
-[GtkTemplate (ui = "/im/dino/Dino/unified_window_placeholder.ui")]
+[GtkTemplate (ui = "/im/dino/Dino/main_window_placeholder.ui")]
 public class MainWindowPlaceholder : Box {
     [GtkChild] public unowned Adw.StatusPage status_page;
     [GtkChild] public unowned Button primary_button;

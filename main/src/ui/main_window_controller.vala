@@ -43,7 +43,7 @@ public class MainWindowController : Object {
     public void set_window(MainWindow window) {
         this.window = window;
 
-        this.conversation_view_controller = new ConversationViewController(window.conversation_view, window.conversation_titlebar, stream_interactor);
+        this.conversation_view_controller = new ConversationViewController(window, window.conversation_view, stream_interactor);
 
         conversation_view_controller.search_menu_entry.button.bind_property("active", window.search_flap, "reveal-flap", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 

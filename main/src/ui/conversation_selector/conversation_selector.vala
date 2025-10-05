@@ -19,6 +19,7 @@ public class ConversationSelector : Widget {
     public ConversationSelector init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         list_box.set_parent(this);
+        list_box.add_css_class("navigation-sidebar");
         this.layout_manager = new BinLayout();
 
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
