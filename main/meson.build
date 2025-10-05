@@ -79,7 +79,6 @@ sources = files(
     'src/ui/util/data_forms.vala',
     'src/ui/util/file_metadata_providers.vala',
     'src/ui/util/helper.vala',
-    'src/ui/util/label_hybrid.vala',
     'src/ui/util/preference_group.vala',
     'src/ui/util/size_request_box.vala',
     'src/ui/util/sizing_bin.vala',

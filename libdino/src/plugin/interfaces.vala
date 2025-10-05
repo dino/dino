@@ -72,7 +72,7 @@ public interface ContactDetailsProvider : Object {
 
 public class ContactDetails : Object {
     public signal void save();
-    public signal void add(string category, string label, string? desc, Object widget);
+    public signal void add_settings_action_row(Object action_row_model);
 }
 
 public interface TextCommand : Object {

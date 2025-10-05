@@ -2,7 +2,6 @@ using Dino.Entities;
 using Xmpp;
 using Xmpp.Xep;
 using Gee;
-using Gtk;
 
 namespace Dino.Ui.ViewModel.PreferencesRow {
     public abstract class Any : Object {
@@ -36,7 +35,8 @@ namespace Dino.Ui.ViewModel.PreferencesRow {
         public int active_item { get; set; }
     }
 
-    public class WidgetDeprecated : Any {
-        public Widget widget;
+    public class Button : Any {
+        public signal void clicked();
+        public string button_text { get; set; }
     }
 }

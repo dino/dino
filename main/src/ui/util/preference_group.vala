@@ -92,10 +92,12 @@ namespace Dino.Ui.Util {
             return view;
         }
 
-        var widget_view_model = preferences_row as ViewModel.PreferencesRow.WidgetDeprecated;
-        if (widget_view_model != null) {
-            var view = new Adw.ActionRow() { title = widget_view_model.title };
-            view.add_suffix(widget_view_model.widget);
+        var button_view_model = preferences_row as ViewModel.PreferencesRow.Button;
+        if (button_view_model != null) {
+            var view = new Adw.ActionRow() { title = button_view_model.title };
+            var button = new Button.with_label(button_view_model.button_text) { valign = Align.CENTER };
+            view.add_suffix(button);
+            button.clicked.connect(() => button_view_model.clicked());
             return view;
         }
 

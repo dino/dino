@@ -206,8 +206,8 @@ namespace Dino.Ui.ConversationDetails {
         });
 
         Plugins.ContactDetails contact_details = new Plugins.ContactDetails();
-        contact_details.add.connect((c, l, d, wo) => {
-            add_entry(c, l, d, wo, dialog);
+        contact_details.add_settings_action_row.connect((entry_row_model) => {
+            dialog.model.settings_rows.append((Ui.ViewModel.PreferencesRow.Any) entry_row_model);
         });
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_details_entry(new ContactDetails.SettingsProvider(stream_interactor));
@@ -222,33 +222,5 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         return dialog;
-    }
-
-    private void add_entry(string category, string label, string? description, Object wo, Dialog dialog) {
-        if (!(wo is Widget)) return;
-
-        Widget widget = (Widget) wo;
-        if (widget.get_type().is_a(typeof(Entry))) {
-            Util.EntryLabelHybrid hybrid = new Util.EntryLabelHybrid.wrap(widget as Entry) { xalign=1 };
-            widget = hybrid;
-        } else if (widget.get_type().is_a(typeof(ComboBoxText))) {
-            Util.ComboBoxTextLabelHybrid hybrid = new Util.ComboBoxTextLabelHybrid.wrap(widget as ComboBoxText) { xalign=1 };
-            widget = hybrid;
-        }
-
-        var view_model = new ViewModel.PreferencesRow.WidgetDeprecated() {
-            title = label,
-            widget = widget
-        };
-
-        switch (category) {
-            case "Permissions":
-            case "Local Settings":
-            case "Settings":
-                dialog.model.settings_rows.append(view_model);
-                break;
-            default:
-                break;
-        }
     }
 }
