@@ -4,7 +4,7 @@
   <object class="DinoUiViewModelConversationDetails" id="model"/>
   <template class="DinoUiConversationDetailsDialog">
     <property name="default-width">600</property>
-<!--    <property name="default-height">400</property>-->
+    <property name="default-height">590</property>
     <property name="modal">True</property>
     <child>
       <object class="GtkBox">

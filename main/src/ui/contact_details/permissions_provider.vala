@@ -18,7 +18,7 @@ public class PermissionsProvider : Plugins.ContactDetailsProvider, Object {
         Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
         if (own_jid == null) return;
 
-        if (true || stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account) == Xmpp.Xep.Muc.Role.VISITOR) {
+        if (stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account) == Xmpp.Xep.Muc.Role.VISITOR) {
             var view_model = new Ui.ViewModel.PreferencesRow.Button() {
                 title = _("Request permission to send messages"),
                 button_text = _("Request")

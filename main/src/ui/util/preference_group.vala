@@ -6,6 +6,32 @@ using Dino.Entities;
 using Xmpp.Xep;
 
 namespace Dino.Ui.Util {
+    public Gee.List<Adw.PreferencesGroup> rows_to_preference_window_split_at_text(GLib.ListStore row_view_models) {
+        var preference_groups = new ArrayList<Adw.PreferencesGroup>();
+        Adw.PreferencesGroup? preference_group = null;
+
+        for (int preference_group_i = 0; preference_group_i < row_view_models.get_n_items(); preference_group_i++) {
+            var preferences_row = (ViewModel.PreferencesRow.Any) row_view_models.get_item(preference_group_i);
+
+            // If it's a text, start a new PreferencesGroup with the text as title. Else, add an item to the current group.
+            var preferences_row_text = preferences_row as ViewModel.PreferencesRow.Text;
+            if (preferences_row_text != null) {
+                if (preference_group != null) preference_groups.add(preference_group);
+                preference_group = new Adw.PreferencesGroup() { title=preferences_row_text.text };
+            } else {
+                if (preference_group == null) {
+                    preference_group = new Adw.PreferencesGroup();
+                }
+                Widget? w = row_to_preference_row(preferences_row);
+                if (w == null) continue;
+                preference_group.add(w);
+            }
+
+        }
+
+        return preference_groups;
+    }
+
     public Adw.PreferencesGroup rows_to_preference_group(GLib.ListStore row_view_models, string title) {
         var preference_group = new Adw.PreferencesGroup() { title=title };
 
