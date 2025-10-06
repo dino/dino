@@ -66,8 +66,7 @@ public class MainWindowController : Object {
 
         window.welcome_placeholder.primary_button.clicked.connect(() => {
             ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor, db);
-            dialog.set_transient_for(app.get_active_window());
-            dialog.present();
+            dialog.present(app.get_active_window());
         });
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("preferences", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));

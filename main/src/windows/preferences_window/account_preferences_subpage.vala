@@ -6,10 +6,9 @@ using Gtk;
 using Gdk;
 
 [GtkTemplate (ui = "/im/dino/Dino/preferences_window/account_preferences_subpage.ui")]
-public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
+public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
 
     [GtkChild] public unowned Adw.HeaderBar headerbar;
-    [GtkChild] public unowned Button back_button;
     [GtkChild] public unowned AvatarPicture avatar;
     [GtkChild] public unowned Adw.ActionRow xmpp_address;
     [GtkChild] public unowned Adw.EntryRow local_alias;
@@ -24,19 +23,16 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     [GtkChild] public unowned Button disable_account_button;
 
     public Account account { get { return model.selected_account.account; } }
-    public ViewModel.PreferencesWindow model { get; set; }
+    public ViewModel.PreferencesDialog model { get; set; }
 
     private Binding[] bindings = new Binding[0];
     private ulong[] account_notify_ids = new ulong[0];
     private ulong alias_entry_changed = 0;
 
     construct {
+        title = "Account";
         headerbar.show_title = false;
         button_container.layout_manager = new NaturalDirectionBoxLayout((BoxLayout)button_container.layout_manager);
-        back_button.clicked.connect(() => {
-            var window = (Adw.PreferencesWindow) this.get_root();
-            window.pop_subpage();
-        });
         edit_avatar_button.clicked.connect(() => {
             show_select_avatar();
         });
@@ -52,8 +48,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
         password_change.activatable_widget = new Label("");
         password_change.activated.connect(() => {
             var dialog = new ChangePasswordDialog(model.get_change_password_dialog_model());
-            dialog.set_transient_for((Gtk.Window)this.get_root());
-            dialog.present();
+            dialog.present((Gtk.Window)this.get_root());
         });
         enter_password_button.clicked.connect(() => {
             var dialog = new Adw.MessageDialog((Window)this.get_root(), "Enter password for %s".printf(account.bare_jid.to_string()), null);
@@ -157,8 +152,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     }
 
     private void show_remove_account_dialog() {
-        Adw.MessageDialog dialog = new Adw.MessageDialog (
-                (Window)this.get_root(),
+        Adw.AlertDialog dialog = new Adw.AlertDialog (
                 _("Remove account %s?".printf(account.bare_jid.to_string())),
                 "You won't be able to access your conversation history anymore."
         );
@@ -169,13 +163,19 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
         dialog.response.connect((response) => {
             if (response == "remove") {
                 model.remove_account(account);
-                // Close the account subpage
-                var window = (Adw.PreferencesWindow) this.get_root();
-                window.pop_subpage();
+
+                // Close the account subpage. Get the parent-times-x PreferencesDialog, to call pop_subpage() on it.
+                Widget parent = this.parent;
+                for (int i = 0; parent != null && i < 20; i++) {
+                    if (parent.get_type() == typeof(Dino.Ui.PreferencesDialog)) {
+                        ((Dino.Ui.PreferencesDialog) parent).pop_subpage();
+                    }
+                    parent = parent.parent;
+                }
             }
             dialog.close();
         });
-        dialog.present();
+        dialog.present((Window)this.get_root());
     }
 
     private string get_status_label() {

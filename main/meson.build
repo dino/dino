@@ -88,15 +88,15 @@ sources = files(
     'src/ui/widgets/natural_size_increase.vala',
     'src/view_model/account_details.vala',
     'src/view_model/conversation_details.vala',
+    'src/view_model/preferences_dialog.vala',
     'src/view_model/preferences_row.vala',
-    'src/view_model/preferences_window.vala',
     'src/windows/preferences_window/account_preferences_subpage.vala',
     'src/windows/preferences_window/accounts_preferences_page.vala',
     'src/windows/preferences_window/add_account_dialog.vala',
     'src/windows/preferences_window/change_password_dialog.vala',
     'src/windows/preferences_window/encryption_preferences_page.vala',
     'src/windows/preferences_window/general_preferences_page.vala',
-    'src/windows/preferences_window/preferences_window.vala',
+    'src/windows/preferences_window/preferences_dialog.vala',
     'src/windows/conversation_details.vala',
 )
 sources += gnome.compile_resources(

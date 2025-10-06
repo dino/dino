@@ -7,7 +7,7 @@ using Xmpp;
 namespace Dino.Ui{
 
     [GtkTemplate (ui = "/im/dino/Dino/preferences_window/change_password_dialog.ui")]
-    public class ChangePasswordDialog : Gtk.Dialog {
+    public class ChangePasswordDialog : Adw.Dialog {
 
         [GtkChild] private unowned Button change_password_button;
         [GtkChild] private unowned Stack change_password_stack;
@@ -20,7 +20,6 @@ namespace Dino.Ui{
         private ViewModel.ChangePasswordDialog model;
 
         public ChangePasswordDialog(ViewModel.ChangePasswordDialog model) {
-            Object(use_header_bar : 1);
             this.model = model;
 
             Util.force_error_color(change_password_error_label);

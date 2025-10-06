@@ -153,9 +153,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 
             string stack_value = variant.get_child_value(1).get_string();
 
-            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, window);
+            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor);
             conversation_details.stack.visible_child_name = stack_value;
-            conversation_details.present();
+            conversation_details.present(window);
         });
         add_action(open_conversation_details_action);
 
@@ -251,16 +251,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     }
 
     private void show_preferences_window() {
-        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        Ui.PreferencesDialog dialog = new Ui.PreferencesDialog();
         dialog.model.populate(db, stream_interactor);
-        dialog.present();
+        dialog.present(window);
     }
 
     private void show_preferences_account_window(Account account) {
-        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        Ui.PreferencesDialog dialog = new Ui.PreferencesDialog();
         dialog.model.populate(db, stream_interactor);
         dialog.accounts_page.account_chosen(account);
-        dialog.present();
+        dialog.present(window);
     }
 
     private void show_about_window() {

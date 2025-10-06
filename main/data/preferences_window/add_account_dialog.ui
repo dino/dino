@@ -2,9 +2,9 @@
 <interface>
     <requires lib="gtk" version="4.0"/>
     <template class="DinoUiManageAccountsAddAccountDialog">
-        <property name="default_width">450</property>
-        <property name="default_height">260</property>
-        <property name="modal">True</property>
+        <property name="content-width">450</property>
+        <property name="content-height">260</property>
+        <property name="follows-content-size">False</property>
         <child>
             <object class="GtkBox">
                 <property name="orientation">vertical</property>

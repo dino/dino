@@ -7,7 +7,7 @@ using Gtk;
 namespace Dino.Ui.ConversationDetails {
 
     [GtkTemplate (ui = "/im/dino/Dino/conversation_details.ui")]
-    public class Dialog : Adw.Window {
+    public class Dialog : Adw.Dialog {
         [GtkChild] public unowned Stack stack;
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;

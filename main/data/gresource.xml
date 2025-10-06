@@ -60,7 +60,7 @@
     <file>preferences_window/add_account_dialog.ui</file>
     <file>preferences_window/change_password_dialog.ui</file>
     <file>preferences_window/general_preferences_page.ui</file>
-    <file>preferences_window/preferences_window.ui</file>
+    <file>preferences_window/preferences_dialog.ui</file>
 
     <file>join_room_dialog.ui</file>
     <file>join_room_dialog1.ui</file>

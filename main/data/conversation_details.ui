@@ -3,9 +3,9 @@
   <requires lib="gtk" version="4.0"/>
   <object class="DinoUiViewModelConversationDetails" id="model"/>
   <template class="DinoUiConversationDetailsDialog">
-    <property name="default-width">600</property>
-    <property name="default-height">590</property>
-    <property name="modal">True</property>
+    <property name="content-width">600</property>
+    <property name="content-height">600</property>
+    <property name="follows-content-size">False</property>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="DinoUiViewModelPreferencesWindow" id="model" />
-  <template class="DinoUiPreferencesWindow">
-    <property name="default-width">700</property>
-    <property name="default-height">550</property>
-    <property name="modal">True</property>
+  <object class="DinoUiViewModelPreferencesDialog" id="model" />
+  <template class="DinoUiPreferencesDialog">
+    <property name="content-width">700</property>
+    <property name="content-height">550</property>
+    <property name="follows-content-size">False</property>
     <child>
       <object class="DinoUiPreferencesWindowAccounts" id="accounts_page">
         <property name="title" translatable="yes">Accounts</property>

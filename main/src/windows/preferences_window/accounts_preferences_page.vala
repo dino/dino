@@ -9,7 +9,7 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
     public Adw.PreferencesGroup active_accounts;
     public Adw.PreferencesGroup disabled_accounts;
 
-    public ViewModel.PreferencesWindow model { get; set; }
+    public ViewModel.PreferencesDialog model { get; set; }
 
     construct  {
         this.title = _("Accounts");
@@ -36,11 +36,10 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
 
         add_account_button.clicked.connect(() => {
             Ui.ManageAccounts.AddAccountDialog add_account_dialog = new Ui.ManageAccounts.AddAccountDialog(model.stream_interactor, model.db);
-            add_account_dialog.set_transient_for((Window)this.get_root());
             add_account_dialog.added.connect((account) => {
                 refresh();
             });
-            add_account_dialog.present();
+            add_account_dialog.present((Window)this.get_root());
         });
 
         disabled_accounts.visible = false; // Only display disabled section if it contains accounts

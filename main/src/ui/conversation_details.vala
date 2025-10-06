@@ -189,20 +189,19 @@ namespace Dino.Ui.ConversationDetails {
         }
     }
 
-    public Dialog setup_dialog(Conversation conversation, StreamInteractor stream_interactor, Window parent) {
-        var dialog = new Dialog() { transient_for = parent };
+    public Dialog setup_dialog(Conversation conversation, StreamInteractor stream_interactor) {
+        var dialog = new Dialog();
         var model = new Model.ConversationDetails();
         model.populate(stream_interactor, conversation);
         bind_dialog(model, dialog.model, stream_interactor);
 
         set_about_rows(model, dialog.model, stream_interactor);
 
-        dialog.close_request.connect(() => {
+        dialog.closed.connect(() => {
             // Only send the config form if something was changed
             if (model.data_form_bak != null && model.data_form_bak != model.data_form.stanza_node.to_string()) {
                 stream_interactor.get_module(MucManager.IDENTITY).set_config_form.begin(conversation.account, conversation.counterpart, model.data_form);
             }
-            return false;
         });
 
         Plugins.ContactDetails contact_details = new Plugins.ContactDetails();

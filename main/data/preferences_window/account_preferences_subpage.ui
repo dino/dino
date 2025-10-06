@@ -2,144 +2,143 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="DinoUiAccountPreferencesSubpage">
-    <property name="orientation">vertical</property>
     <child>
-      <object class="AdwHeaderBar" id="headerbar">
-        <style>
-          <class name="flat"/>
-        </style>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkButton" id="back_button">
-            <property name="icon-name">go-previous-symbolic</property>
+          <object class="AdwHeaderBar" id="headerbar">
+            <style>
+              <class name="flat"/>
+            </style>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkScrolledWindow">
-        <property name="vexpand">True</property>
-        <property name="hexpand">True</property>
         <child>
-          <object class="AdwClamp">
+          <object class="GtkScrolledWindow">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
             <child>
-              <object class="GtkBox">
-                <property name="margin-top">24</property>
-                <property name="margin-bottom">24</property>
-                <property name="margin-start">12</property>
-                <property name="margin-end">12</property>
-                <property name="spacing">24</property>
-                <property name="orientation">vertical</property>
+              <object class="AdwClamp">
                 <child>
-                  <object class="GtkOverlay">
-                    <property name="halign">center</property>
-                    <property name="child">
-                      <object class="DinoUiAvatarPicture" id="avatar">
-                        <property name="height-request">144</property>
-                        <property name="width-request">144</property>
-                      </object>
-                    </property>
-                    <child type="overlay">
-                      <object class="GtkBox" id="avatar_menu_box">
-                        <property name="opacity">0.9</property>
-                        <property name="margin-end">6</property>
-                        <property name="margin-bottom">6</property>
-                        <property name="halign">end</property>
-                        <property name="valign">end</property>
-                        <style>
-                          <class name="card"/>
-                          <class name="toolbar"/>
-                          <class name="overlay-toolbar"/>
-                        </style>
-                        <child>
-                          <object class="GtkButton" id="edit_avatar_button">
-                            <property name="icon-name">document-edit-symbolic</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="remove_avatar_button">
-                            <property name="icon-name">user-trash-symbolic</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup">
-                    <child>
-                      <object class="AdwActionRow" id="xmpp_address">
-                        <property name="title" translatable="yes">XMPP Address</property>
-                        <property name="subtitle_selectable">True</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwEntryRow" id="local_alias">
-                        <property name="title" translatable="yes">Local alias</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwActionRow" id="password_change">
-                        <property name="title" translatable="yes">Password</property>
-                        <child type="suffix">
-                          <object class="GtkBox">
-                            <property name="opacity">0.7</property>
-                            <property name="spacing">6</property>
-                            <property name="orientation">horizontal</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label">•••••</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkImage">
-                                <property name="icon-name">go-next-symbolic</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwActionRow" id="connection_status">
-                        <property name="title" translatable="yes">Connection status</property>
-                        <style>
-                          <class name="property"/>
-                        </style>
-                        <child type="suffix">
-                          <object class="GtkButton" id="enter_password_button">
-                            <property name="label">Enter password</property>
-                            <property name="valign">center</property>
-                            <property name="visible">False</property>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox" id="button_container">
-                    <property name="halign">center</property>
+                  <object class="GtkBox">
+                    <property name="margin-top">24</property>
+                    <property name="margin-bottom">24</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
                     <property name="spacing">24</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkButton" id="disable_account_button">
-                        <property name="label" translatable="1">Disable account</property>
+                      <object class="GtkOverlay">
                         <property name="halign">center</property>
-                        <style>
-                          <class name="pill"/>
-                        </style>
+                        <property name="child">
+                          <object class="DinoUiAvatarPicture" id="avatar">
+                            <property name="height-request">144</property>
+                            <property name="width-request">144</property>
+                          </object>
+                        </property>
+                        <child type="overlay">
+                          <object class="GtkBox" id="avatar_menu_box">
+                            <property name="opacity">0.9</property>
+                            <property name="margin-end">6</property>
+                            <property name="margin-bottom">6</property>
+                            <property name="halign">end</property>
+                            <property name="valign">end</property>
+                            <style>
+                              <class name="card"/>
+                              <class name="toolbar"/>
+                              <class name="overlay-toolbar"/>
+                            </style>
+                            <child>
+                              <object class="GtkButton" id="edit_avatar_button">
+                                <property name="icon-name">document-edit-symbolic</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="remove_avatar_button">
+                                <property name="icon-name">user-trash-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkButton" id="remove_account_button">
-                        <property name="label" translatable="1">Remove account</property>
+                      <object class="AdwPreferencesGroup">
+                        <child>
+                          <object class="AdwActionRow" id="xmpp_address">
+                            <property name="title" translatable="yes">XMPP Address</property>
+                            <property name="subtitle_selectable">True</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwEntryRow" id="local_alias">
+                            <property name="title" translatable="yes">Local alias</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="password_change">
+                            <property name="title" translatable="yes">Password</property>
+                            <child type="suffix">
+                              <object class="GtkBox">
+                                <property name="opacity">0.7</property>
+                                <property name="spacing">6</property>
+                                <property name="orientation">horizontal</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">•••••</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">go-next-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="connection_status">
+                            <property name="title" translatable="yes">Connection status</property>
+                            <style>
+                              <class name="property"/>
+                            </style>
+                            <child type="suffix">
+                              <object class="GtkButton" id="enter_password_button">
+                                <property name="label">Enter password</property>
+                                <property name="valign">center</property>
+                                <property name="visible">False</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="button_container">
                         <property name="halign">center</property>
-                        <style>
-                          <class name="pill"/>
-                          <class name="destructive-action"/>
-                        </style>
+                        <property name="spacing">24</property>
+                        <child>
+                          <object class="GtkButton" id="disable_account_button">
+                            <property name="label" translatable="1">Disable account</property>
+                            <property name="halign">center</property>
+                            <style>
+                              <class name="pill"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="remove_account_button">
+                            <property name="label" translatable="1">Remove account</property>
+                            <property name="halign">center</property>
+                            <style>
+                              <class name="pill"/>
+                              <class name="destructive-action"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>

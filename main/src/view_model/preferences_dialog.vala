@@ -3,7 +3,7 @@ using Xmpp;
 using Xmpp.Xep;
 using Gee;
 
-public class Dino.Ui.ViewModel.PreferencesWindow : Object {
+public class Dino.Ui.ViewModel.PreferencesDialog : Object {
     public signal void update();
 
     public HashMap<Account, AccountDetails> account_details = new HashMap<Account, AccountDetails>(Account.hash_func, Account.equals_func);

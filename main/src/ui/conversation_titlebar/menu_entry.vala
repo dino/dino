@@ -42,8 +42,8 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     }
 
     private void open_conversation_details() {
-        var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, (Window)button.get_root());
-        conversation_details.present();
+        var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor);
+        conversation_details.present((Window)button.get_root());
     }
 
     public Object? get_widget(Plugins.WidgetType type) {
