@@ -154,10 +154,20 @@ public class FileImageWidget : Widget {
     public async void load_from_file(File file, string file_name) throws GLib.Error {
         FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
 
-        // Work-around because Gtk.Picture does not apply the orientation itself
-        Gdk.Pixbuf? pixbuf = new Pixbuf.from_file(file.get_path());
-        pixbuf = pixbuf.apply_embedded_orientation();
-        image.paintable = Texture.for_pixbuf(pixbuf);
+        FileInputStream file_stream = null;
+        try {
+            file_stream = file.read();
+            // Work-around because Gtk.Picture does not apply the orientation itself
+            Gdk.Pixbuf? pixbuf = new Pixbuf.from_stream(file_stream);
+            pixbuf = pixbuf.apply_embedded_orientation();
+            image.paintable = Texture.for_pixbuf(pixbuf);
+        } finally {
+            try {
+                if (file_stream != null) file_stream.close();
+            } catch (Error e) {
+                // Ignore
+            }
+        }
 
         stack.add_child(image);
         stack.set_visible_child(image);

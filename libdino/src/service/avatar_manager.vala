@@ -106,9 +106,12 @@ public class AvatarManager : StreamInteractionModule, Object {
         return get_avatar_hash(account, jid) != null;
     }
 
-    public void publish(Account account, string file) {
+    public void publish(Account account, File file) {
+        debug("Publish avatar from %s", file.get_uri());
+        FileInputStream file_stream = null;
         try {
-            Pixbuf pixbuf = new Pixbuf.from_file(file);
+            file_stream = file.read();
+            Pixbuf pixbuf = new Pixbuf.from_stream(file_stream);
             if (pixbuf.width >= pixbuf.height && pixbuf.width > MAX_PIXEL) {
                 int dest_height = (int) ((float) MAX_PIXEL / pixbuf.width * pixbuf.height);
                 pixbuf = pixbuf.scale_simple(MAX_PIXEL, dest_height, InterpType.BILINEAR);
@@ -121,9 +124,18 @@ public class AvatarManager : StreamInteractionModule, Object {
             XmppStream stream = stream_interactor.get_stream(account);
             if (stream != null) {
                 Xmpp.Xep.UserAvatars.publish_png(stream, buffer, pixbuf.width, pixbuf.height);
+                debug("Publishing %u png bytes via user-avatars.", buffer.length);
+            } else {
+                warning("No stream when trying to publish.");
             }
         } catch (Error e) {
             warning(e.message);
+        } finally {
+            try {
+                if (file_stream != null) file_stream.close();
+            } catch (Error e) {
+                // Ignore
+            }
         }
     }
 
@@ -257,6 +269,7 @@ public class AvatarManager : StreamInteractionModule, Object {
             DataOutputStream fos = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
             yield fos.write_bytes_async(data);
         } catch (Error e) {
+            warning("Error writing avatar file: %s", e.message);
             // Ignore: we failed in storing, so we refuse to display later...
         }
     }

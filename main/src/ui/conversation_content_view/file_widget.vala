@@ -169,8 +169,13 @@ public class FileWidgetController : Object {
         save_dialog.set_current_name(file_transfer.file_name);
 
         save_dialog.response.connect(() => {
-            try{
-                GLib.File.new_for_uri(file_transfer.get_file().get_uri()).copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
+            File? target_file = save_dialog.get_file();
+            if (target_file == null) {
+                warning("No file returned from save dialog.");
+                return;
+            }
+            try {
+                file_transfer.get_file().copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
             } catch (Error err) {
                 warning("Failed copy file %s - %s", file_transfer.get_file().get_uri(), err.message);
             }

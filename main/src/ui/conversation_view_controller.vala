@@ -203,7 +203,7 @@ public class ConversationViewController : Object {
         FileChooserNative chooser = new FileChooserNative(_("Select file"), view.get_root() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         chooser.response.connect((response) => {
             if (response == ResponseType.ACCEPT) {
-                open_send_file_overlay(File.new_for_path(chooser.get_file().get_path()));
+                open_send_file_overlay(chooser.get_file());
             }
         });
         chooser.show();
@@ -213,7 +213,10 @@ public class ConversationViewController : Object {
         FileInfo file_info;
         try {
             file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        } catch (Error e) { return; }
+        } catch (Error e) {
+            warning("Failed querying info for file %s", file.get_path());
+            return;
+        }
 
         FileSendOverlay overlay = new FileSendOverlay(file, file_info);
         overlay.send_file.connect(() => send_file(file));

@@ -144,8 +144,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
         chooser.add_filter(filter);
 
         chooser.response.connect(() => {
-            string uri = chooser.get_file().get_path();
-            model.set_avatar_uri(account, uri);
+            model.set_avatar_file(account, chooser.get_file());
         });
 
         chooser.show();

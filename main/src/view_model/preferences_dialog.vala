@@ -66,8 +66,8 @@ public class Dino.Ui.ViewModel.PreferencesDialog : Object {
         update();
     }
 
-    public void set_avatar_uri(Account account, string uri) {
-        stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, uri);
+    public void set_avatar_file(Account account, File file) {
+        stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, file);
     }
 
     public void remove_avatar(Account account) {
