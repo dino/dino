@@ -14,7 +14,6 @@
     <file>conversation_details.css</file>
     <file>conversation_details.ui</file>
     <file>conversation_item_widget.ui</file>
-    <file>conversation_list_titlebar.ui</file>
     <file>conversation_row.ui</file>
     <file>conversation_view.ui</file>
     <file>dino-conversation-list-placeholder-arrow.svg</file>
@@ -66,6 +65,8 @@
     <file>join_room_dialog.ui</file>
     <file>join_room_dialog1.ui</file>
     <file>join_room_dialog2.ui</file>
+    <file>main_window.ui</file>
+    <file>main_window_placeholder.ui</file>
     <file>menu_add.ui</file>
     <file>menu_app.ui</file>
     <file>menu_conversation.ui</file>
@@ -78,7 +79,5 @@
     <file>search_autocomplete.ui</file>
     <file>style-dark.css</file>
     <file>style.css</file>
-    <file>unified_main_content.ui</file>
-    <file>unified_window_placeholder.ui</file>
   </gresource>
 </gresources>

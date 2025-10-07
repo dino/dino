@@ -11,8 +11,8 @@
                         <property name="orientation">horizontal</property>
                         <property name="margin-top">10</property>
                         <property name="margin-bottom">10</property>
-                        <property name="margin-start">7</property>
-                        <property name="margin-end">14</property>
+                        <property name="margin-start">2</property>
+                        <property name="margin-end">4</property>
                         <child>
                             <object class="DinoUiAvatarPicture" id="picture">
                                 <property name="height-request">35</property>

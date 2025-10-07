@@ -31,7 +31,7 @@ dep_gstreamer_rtp = dependency('gstreamer-rtp-1.0', disabler: true, required: ge
 dep_gstreamer_video = dependency('gstreamer-video-1.0', disabler: true, required: get_option('plugin-rtp'))
 dep_gtk4 = dependency('gtk4')
 dep_icu_uc = dependency('icu-uc')
-dep_libadwaita = dependency('libadwaita-1', version: '>=1.2')
+dep_libadwaita = dependency('libadwaita-1', version: '>=1.4')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
 dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))

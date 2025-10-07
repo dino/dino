@@ -15,7 +15,6 @@ public class Dino.Ui.PreferencesWindow : Adw.PreferencesWindow {
     [GtkChild] public unowned ViewModel.PreferencesWindow model { get; }
 
     construct {
-        this.can_navigate_back = true; // remove once we require Adw > 1.4
         this.bind_property("model", accounts_page, "model", BindingFlags.SYNC_CREATE);
         this.bind_property("model", account_page, "model", BindingFlags.SYNC_CREATE);
         this.bind_property("model", encryption_page, "model", BindingFlags.SYNC_CREATE);

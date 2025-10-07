@@ -39,29 +39,15 @@ public class ConversationSelectorRow : ListBoxRow {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
 
-        switch (conversation.type_) {
-            case Conversation.Type.CHAT:
-                stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-                    if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
-                        update_name_label();
-                    }
-                });
-                break;
-            case Conversation.Type.GROUPCHAT:
-                stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
-                    if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                        update_name_label();
-                        update_read(true); // bubble color might have changed
-                    }
-                });
-                stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
-                    if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
-                        update_name_label();
-                    }
-                });
-                break;
-            case Conversation.Type.GROUPCHAT_PM:
-                break;
+        var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
+        display_name_model.bind_property("display-name", name_label, "label", BindingFlags.SYNC_CREATE);
+
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
+                if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                    update_read(true); // bubble color might have changed
+                }
+            });
         }
 
         // Set tooltip

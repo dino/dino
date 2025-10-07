@@ -61,9 +61,7 @@ namespace Dino.Ui.Util {
             var view = new Adw.ActionRow() {
                 title = row_text.title,
                 subtitle = row_text.text,
-#if Adw_1_3
-                subtitle_selectable = true,
-#endif
+                subtitle_selectable = true
             };
             view.add_css_class("property");
 
@@ -88,24 +86,18 @@ namespace Dino.Ui.Util {
             foreach (string text in combobox_view_model.items) {
                 string_list.append(text);
             }
-#if Adw_1_4
             var view = new Adw.ComboRow() { title = combobox_view_model.title };
             view.model = string_list;
             combobox_view_model.bind_property("active-item", view, "selected", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-#else
-            var view = new Adw.ActionRow() { title = combobox_view_model.title };
-            var drop_down = new DropDown(string_list, null) { valign = Align.CENTER };
-            combobox_view_model.bind_property("active-item", drop_down, "selected", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
-            view.activatable_widget = drop_down;
-            view.add_suffix(drop_down);
-#endif
             return view;
         }
 
-        var widget_view_model = preferences_row as ViewModel.PreferencesRow.WidgetDeprecated;
-        if (widget_view_model != null) {
-            var view = new Adw.ActionRow() { title = widget_view_model.title };
-            view.add_suffix(widget_view_model.widget);
+        var button_view_model = preferences_row as ViewModel.PreferencesRow.Button;
+        if (button_view_model != null) {
+            var view = new Adw.ActionRow() { title = button_view_model.title };
+            var button = new Button.with_label(button_view_model.button_text) { valign = Align.CENTER };
+            view.add_suffix(button);
+            button.clicked.connect(() => button_view_model.clicked());
             return view;
         }
 

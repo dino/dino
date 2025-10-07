@@ -31,13 +31,11 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     private ulong alias_entry_changed = 0;
 
     construct {
-#if Adw_1_4
         headerbar.show_title = false;
-#endif
         button_container.layout_manager = new NaturalDirectionBoxLayout((BoxLayout)button_container.layout_manager);
         back_button.clicked.connect(() => {
             var window = (Adw.PreferencesWindow) this.get_root();
-            window.close_subpage();
+            window.pop_subpage();
         });
         edit_avatar_button.clicked.connect(() => {
             show_select_avatar();
@@ -173,8 +171,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
                 model.remove_account(account);
                 // Close the account subpage
                 var window = (Adw.PreferencesWindow) this.get_root();
-                window.close_subpage();
-//                window.pop_subpage();
+                window.pop_subpage();
             }
             dialog.close();
         });
