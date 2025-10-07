@@ -45,7 +45,7 @@
                             <style>
                               <class name="card"/>
                               <class name="toolbar"/>
-                              <class name="overlay-toolbar"/>
+                              <class name="compact-card-toolbar"/>
                             </style>
                             <child>
                               <object class="GtkButton" id="edit_avatar_button">

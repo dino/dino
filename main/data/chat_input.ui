@@ -4,19 +4,21 @@
     <template class="DinoUiChatInputView">
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
+        <property name="margin-top">4</property>
         <child>
-            <object class="GtkFrame" id="frame">
-                <property name="margin_start">14</property>
-                <property name="margin_end">14</property>
-                <property name="child">
                     <object class="GtkBox" id="outer_box">
+                        <property name="margin_start">14</property>
+                        <property name="margin_end">14</property>
                         <style>
                             <class name="dino-chatinput"/>
+                            <class name="card"/>
+                            <class name="toolbar"/>
+                            <class name="activatable"/>
+                            <class name="compact-card-toolbar"/>
                         </style>
                         <child>
                             <object class="GtkButton" id="file_button">
                                 <property name="icon-name">mail-attachment-symbolic</property>
-                                <property name="margin-top">2</property>
                                 <property name="valign">start</property>
                                 <style>
                                     <class name="flat"/>
@@ -53,7 +55,6 @@
                             <object class="GtkMenuButton" id="emoji_button">
                                 <property name="icon-name">emoji-people-symbolic</property>
                                 <property name="has-frame">False</property>
-                                <property name="margin-top">2</property>
                                 <property name="valign">start</property>
                                 <style>
                                     <class name="flat"/>
@@ -66,7 +67,6 @@
                             <object class="GtkMenuButton" id="encryption_button">
                                 <property name="icon-name">changes-allow-symbolic</property>
                                 <property name="has-frame">False</property>
-                                <property name="margin-top">2</property>
                                 <property name="valign">start</property>
                                 <style>
                                     <class name="flat"/>
@@ -76,8 +76,6 @@
                             </object>
                         </child>
                     </object>
-                </property>
-            </object>
         </child>
         <child>
             <object class="GtkLabel" id="chat_input_status">

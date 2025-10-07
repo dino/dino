@@ -121,13 +121,13 @@ picture.avatar {
 
 /* Overlay Toolbar */
 
-.overlay-toolbar {
+.compact-card-toolbar {
     padding: 2px;
     border-radius: 6px;
     border-spacing: 0;
 }
 
-.overlay-toolbar > * {
+.compact-card-toolbar > * {
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -247,41 +247,17 @@ window.dino-main .dino-file-overlay {
 
 /* Chat Input*/
 
-window.dino-main .dino-attach-button {
-    min-width: 24px; /* Make button the same width as avatars */
+/* These rules are direved from the libadwaita style for activateable entry rows */
+window.dino-main box.dino-chatinput.activatable {
+  outline: 0 solid transparent;
+  outline-offset: 5px;
+  transition: outline-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), outline-width 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), outline-offset 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), background-image 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94), border-radius 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-window.dino-main .dino-attach-button,
-window.dino-main .dino-chatinput-button button {
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    min-height: 0;
-    padding: 7px 5px;
-    color: alpha(@theme_fg_color, 0.7);
-    outline: none;
-}
-
-window.dino-main .dino-attach-button:hover,
-window.dino-main .dino-chatinput-button button:hover {
-    color: @theme_selected_bg_color;
-}
-
-window.dino-main .dino-attach-button:backdrop,
-window.dino-main .dino-chatinput-button button:backdrop {
-    color: alpha(@theme_unfocused_fg_color, 0.6);
-}
-
-window.dino-main .dino-attach-button:active,
-window.dino-main .dino-attach-button:checked,
-window.dino-main .dino-chatinput-button button:active,
-window.dino-main .dino-chatinput-button button:checked {
-    color: alpha(@theme_selected_bg_color, 0.8);
-}
-
-window.dino-main .dino-attach-button:checked:backdrop,
-window.dino-main .dino-chatinput-button button:checked:backdrop {
-    color: alpha(@theme_unfocused_selected_bg_color, 0.8);
+window.dino-main box.dino-chatinput.activatable:focus-within {
+  outline-offset: -1px;
+  outline-width: 2px;
+  outline-color: color-mix(in srgb, var(--accent-color) 50%, transparent);
 }
 
 .dino-unread-line label {
@@ -291,13 +267,6 @@ window.dino-main .dino-chatinput-button button:checked:backdrop {
 .dino-unread-line separator {
     background-color: @theme_selected_bg_color;
 }
-
-.dino-chatinput,
-.dino-chatinput textview,
-.dino-chatinput textview text {
-    background-color: @theme_base_color;
-}
-
 
 /*Chat input warning*/
 

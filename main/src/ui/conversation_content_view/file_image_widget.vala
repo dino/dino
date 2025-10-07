@@ -46,7 +46,7 @@ public class FileImageWidget : Widget {
         image_overlay_toolbar.append(button);
         image_overlay_toolbar.add_css_class("card");
         image_overlay_toolbar.add_css_class("toolbar");
-        image_overlay_toolbar.add_css_class("overlay-toolbar");
+        image_overlay_toolbar.add_css_class("compact-card-toolbar");
         image_overlay_toolbar.set_cursor_from_name("default");
 
         file_size_label.add_css_class("file-details");

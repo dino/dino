@@ -101,6 +101,9 @@
                                 <property name="content">
                                     <object class="AdwNavigationPage">
                                         <property name="title">Conversation</property>
+                                        <style>
+                                            <class name="view" />
+                                        </style>
                                         <property name="child">
                                             <object class="AdwToolbarView">
                                                 <child type="top">

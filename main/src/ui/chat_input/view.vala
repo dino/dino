@@ -19,7 +19,6 @@ public class View : Box {
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
-    [GtkChild] public unowned Frame frame;
     [GtkChild] public unowned Box quote_box;
     [GtkChild] public unowned ChatTextView chat_text_view;
     [GtkChild] public unowned Button file_button;
@@ -44,8 +43,6 @@ public class View : Box {
         emoji_button.set_popover(chooser);
 
         file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
-
-        Util.force_css(frame, "* { border-radius: 3px; }");
 
         return this;
     }

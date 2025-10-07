@@ -29,7 +29,7 @@
                                                 <style>
                                                     <class name="card"/>
                                                     <class name="toolbar"/>
-                                                    <class name="overlay-toolbar"/>
+                                                    <class name="compact-card-toolbar"/>
                                                 </style>
                                             </object>
                                         </child>
