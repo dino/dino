@@ -98,6 +98,17 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         click.pressed.connect((gesture, x, y) => {
             if (!select.visible) return;
 
+            // ignore clicks on the checkbox itself as they would trigger two activations
+            Graphene.Rect select_bounds;
+            bool ok = select.compute_bounds(main_grid, out select_bounds);
+            if (ok) {
+                Graphene.Point cursor = new Graphene.Point();
+                cursor.init((float) x, (float) y);
+                if (ok && select_bounds.contains_point(cursor)) {
+                    return;
+                }
+            }
+
             select.set_active(!select.active);
         });
         main_grid.add_controller(click);
