@@ -137,7 +137,7 @@ public class MainWindowController : Object {
         update_stack_state();
     }
 
-    public void select_conversation(Conversation? conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
+    public void select_conversation(Conversation? conversation, bool do_reset_toolbars = true, bool default_initialize_conversation = true) {
         this.conversation = conversation;
 
         conversation_view_controller.select_conversation(conversation, default_initialize_conversation);
@@ -146,8 +146,9 @@ public class MainWindowController : Object {
         conversation.active = true; // only for conversation_selected
         window.conversation_selector.on_conversation_selected(conversation); // In case selection was not via ConversationSelector
 
-        if (do_reset_search) {
+        if (do_reset_toolbars) {
             reset_search_entry();
+            toggle_selection_mode(false);
         }
     }
 
