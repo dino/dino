@@ -52,8 +52,12 @@ window.dino-main .dino-conversation .has-skeleton {
     margin-top: 10px;
 }
 
-window.dino-main .dino-conversation .message-box:not(.has-skeleton) {
-    padding-left: 58px;
+window.dino-main .dino-conversation .message-box:not(.has-skeleton) .conversation-meta-item {
+    margin-left: 43px;
+}
+
+window.dino-main .dino-conversation .select {
+    margin-right: 3px;
 }
 
 window.dino-main .unread-count-notify {
@@ -94,6 +98,14 @@ window.dino-main .dino-conversation .message-box.edit-mode {
 
 window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
+}
+
+window.dino-main .dino-conversation .message-box.select-mode {
+    background: alpha(@theme_selected_bg_color, 0.3);
+}
+
+window.dino-main .dino-conversation .message-box.select-mode:hover {
+    background: alpha(@theme_selected_bg_color, 0.32);
 }
 
 window.dino-main .dino-conversation .message-box.error {
