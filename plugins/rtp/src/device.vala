@@ -218,6 +218,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         }
         if (new_width == active_caps_width) return;
         int new_height = device_caps_height * new_width / device_caps_width;
+        if ((new_height % 2) != 0) {
+            new_height += 1;
+        }
         Gst.Caps new_caps;
         if (device_caps_framerate_den != 0) {
             new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
