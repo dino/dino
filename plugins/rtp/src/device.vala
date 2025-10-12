@@ -10,7 +10,7 @@ public enum Dino.Plugins.Rtp.DeviceProtocol {
 }
 
 public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
-    private const int[] common_widths = {320, 360, 400, 480, 640, 960, 1280, 1920, 2560, 3840};
+    private const int[] common_widths = {320, 352, 416, 480, 640, 960, 1280, 1920, 2560, 3840};
 
     public Plugin plugin { get; private set; }
     public CodecUtil codec_util { get { return plugin.codec_util; } }
