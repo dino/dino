@@ -43,7 +43,9 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
-            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            // Conversation is still active if only the account is disabled. We don't need to part the room in this
+            // case, as we will just go offline instead.
+            if (conversation.type_ == Conversation.Type.GROUPCHAT && !conversation.active) {
                 part(conversation.account, conversation.counterpart);
             }
         });

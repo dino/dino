@@ -185,7 +185,8 @@ public class Conversation : Object {
                 update.set(db.conversation.resource, nickname); break;
             case "active":
                 update.set(db.conversation.active, active);
-                update.set(db.conversation.active_last_changed, (long) new DateTime.now_utc().to_unix());
+                active_last_changed = new DateTime.now_utc();
+                update.set(db.conversation.active_last_changed, (long) active_last_changed.to_unix());
                 break;
             case "last-active":
                 if (last_active != null) {
