@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2018-04-03 15:27+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/eu/>\n"
@@ -24,7 +24,7 @@ msgstr "GnuPGri galdetzen"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgstr "GnuPG akatsa"
 msgid "No keys available. Generate one!"
 msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr ""
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2025-04-10 05:39+0000\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "dino/plugin-omemo/zh_Hans/>\n"
@@ -95,7 +95,7 @@ msgstr "请将此密钥的指纹与对方设备上显示的指纹进行比对。
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "拒绝密钥"
 
@@ -106,7 +106,7 @@ msgstr "阻止与使用此密钥的对方设备进行加密通信。"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "接受密钥"
 
@@ -189,56 +189,56 @@ msgstr "需要 OMEMO 信任决定"
 msgid "Did you add a new device for account %s?"
 msgstr "您是否为账号 %s 添加了新设备？"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
 msgstr "默认使用 OMEMO"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "为新对话启用 OMEMO 加密"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
 msgstr "加密新设备"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "自动加密此联系人的新设备。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "新密钥"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr "将自动接受来自您其他设备的新加密密钥。"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
 msgstr "此设备"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
 msgstr "其他设备"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
 msgstr "设备"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
 msgstr "已接受"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "已拒绝"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "已验证"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
 msgstr "新设备"
 

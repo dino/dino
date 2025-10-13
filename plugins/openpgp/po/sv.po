@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2024-08-05 20:09+0000\n"
 "Language-Team: none\n"
 "Language: sv\n"
@@ -23,7 +23,7 @@ msgstr "Frågar GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
 msgstr ""
 
@@ -35,7 +35,7 @@ msgstr "Fel i GnuPG"
 msgid "No keys available. Generate one!"
 msgstr "Inga nycklar tillgängliga. Generera en!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr "Inaktiverad"
 

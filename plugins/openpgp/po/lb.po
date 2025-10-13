@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2018-01-24 12:20+0000\n"
 "Language-Team: Luxembourgish <https://hosted.weblate.org/projects/dino/"
 "plugin-openpgp/lb/>\n"
@@ -19,7 +19,7 @@ msgstr "GnuPG gëtt ofgefrot"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
 msgstr ""
 
@@ -31,7 +31,7 @@ msgstr "Feeler am GnuPG"
 msgid "No keys available. Generate one!"
 msgstr "Keng Schlëssele verfügbar. Generéier een!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr ""
 

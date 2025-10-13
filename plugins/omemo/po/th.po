@@ -8,81 +8,74 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-13 21:57+0200\n"
-"PO-Revision-Date: 2025-04-10 11:50+0000\n"
+"PO-Revision-Date: 2025-10-05 07:02+0000\n"
 "Language-Team: none\n"
-"Language: et\n"
+"Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
 msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
-msgstr ""
-"%s kasutab seadet, mille suhtes puudub usaldus. Sa ei näe sõnumeid "
-"seadmetest, mida sa ei usalda."
+msgstr "%s ได้ใช้อุปกรณ์ที่ไม่น่าเชื่อถือ คุณจะไม่เห็นข้อความจากอุปกรณ์ที่คุณไม่น่าเชื่อถือ"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
-msgstr "Halda seadmeid"
+msgstr "จัดการอุปกรณ์"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
-msgstr ""
-"%s ei usalda seda seadet. See tähendab, et sa ilmselt ei näe kõiki sõnumeid."
+msgstr "%s ไม่เชื่อถืออุปกรณ์นี้ นั่นหมายความว่าคุณอาจพลาดข้อความ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
-msgstr "Halda võtmeid"
+msgstr "จัดการกุญแจ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
-msgstr ""
-"Võrdle tähemärkide haaval seda sõrmejälge tollega, mida näidatakse teise "
-"osapoole seadmes."
+msgstr "เปรียบเทียบลายนิ้วมือแต่ละอักขระกับลายนิ้วมือที่แสดงบนอุปกรณ์ของผู้ติดต่อของคุณ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
-msgstr "Sõrmejäljed erinevad"
+msgstr "ลายนิ้วมือแตกต่างกัน"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints match"
-msgstr "Sõrmejäljed on samad"
+msgstr "ลายนิ้วมือตรงกัน"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 #: plugins/omemo/src/ui/manage_key_dialog.vala:81
 #: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
-msgstr "Katkesta"
+msgstr "ยกเลิก"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
-msgstr "Kinnita"
+msgstr "ยืนยัน"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
-msgstr "Verifitseeri võtmed"
+msgstr "ตรวจสอบคีย์"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
-msgstr ""
-"Kui kasutaja %s saadab tulevikus sõnumeid seadmest, mis kasutab seda "
-"krüptovõtit, siis need on ka vestlusaknas vastavalt märgitud."
+msgstr "ข้อความในอนาคตที่ส่งโดย %s จากอุปกรณ์ที่ใช้คีย์นี้จะถูกไฮไลท์ในหน้าต่างแชทตามลำดับ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
-msgstr "Sõrmejäljed on erinevad"
+msgstr "ลายนิ้วมือไม่ตรงกัน"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
@@ -91,80 +84,70 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Palun kontrolli, et sa kindlasti võrdleid õigeid sõrmejälgi. Kui sõrmejäljed "
-"siiski ei klapi, siis võib %s kasutajakonto olla rääderdatud ja sa peaksid "
-"sellise võtme lubamisest keelduma."
+"โปรดตรวจสอบให้แน่ใจว่าคุณกำลังเปรียบเทียบลายนิ้วมือที่ถูกต้อง หากลายนิ้วมือไม่ตรงกัน บัญชีของ %s "
+"อาจถูกบุกรุก และคุณควรพิจารณาปฏิเสธคีย์นี้"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
-msgstr "Verifitseeri võtme sõrmejälge"
+msgstr "ตรวจสอบลายนิ้วมือคีย์"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
-msgstr ""
-"Võrdle seda sõrmejälge tollega, mida näidatakse teise osapoole seadmes."
+msgstr "เปรียบเทียบลายนิ้วมือของคีย์นี้กับลายนิ้วมือที่แสดงบนอุปกรณ์ของผู้ติดต่อ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
-msgstr "Keeldu võtme kasutamisest"
+msgstr "ปฏิเสธคีย์"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Sellega sa keelad krüptitud suhtluse sinu vestluspartneri seadmega, mis "
-"kasutab seda krüptovõtit."
+msgstr "บล็อกการสื่อสารที่เข้ารหัสกับอุปกรณ์ของผู้ติดต่อที่ใช้คีย์นี้"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
-msgstr "Nõustu võtme kasutamisega"
+msgstr "ยอมรับคีย์"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Sellega sa lubad krüptitud suhtluse sinu vestluspartneri seadmega, mis "
-"kasutab seda krüptovõtit."
+msgstr "อนุญาตให้มีการสื่อสารแบบเข้ารหัสกับอุปกรณ์ของผู้ติดต่อที่ใช้คีย์นี้"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr "See krüptovõti on praegu %s."
+msgstr "คีย์นี้ปัจจุบันคือ %s"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr "tunnustatud"
+msgstr "ได้รับการยอมรับ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr ""
-"See tähendab, et %s võib teda kasutada krüptitud sõnumite saatmisel ja "
-"vastuvõtmisel."
+msgstr "ซึ่งหมายความว่าสามารถใช้โดย %s เพื่อรับและส่งข้อความเข้ารหัสได้"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr "verifitseeritud"
+msgstr "ตรวจสอบแล้ว"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr ""
-"Lisaks oled sa kontrollinud, et ta vastab krüptovõtmele teise osapoole "
-"seadmes."
+msgstr "นอกจากนี้ ยังได้รับการตรวจสอบว่าตรงกับคีย์บนอุปกรณ์ของผู้ติดต่อแล้ว"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr "keelatud"
+msgstr "ถูกปฏิเสธ"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
@@ -172,8 +155,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"See tähendab, et %s ei saa teda kasutada sinu krüptitud sõnumite lugemisel "
-"ning ka sina ei näe selle võtmega krüptitud sõnumeid."
+"ซึ่งหมายความว่าไม่สามารถใช้ %s เพื่อถอดรหัสข้อความของคุณได้ "
+"และคุณจะไม่เห็นข้อความที่เข้ารหัสด้วยมัน"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
@@ -181,91 +164,89 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Sa ei näe %s krüptitud sõnumeid seadmetest, mis kasutavad seda krüptovõtit. "
-"Ja teistpidi pole ka seal seadmes võimalik lugeda sinu krüptitud sõnumeid."
+"คุณจะไม่เห็นข้อความเข้ารหัสจากอุปกรณ์ของ %s ที่ใช้คีย์นี้ ในทางกลับกัน "
+"อุปกรณ์นั้นจะไม่สามารถถอดรหัสข้อความของคุณได้อีกต่อไป"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
-msgstr ""
-"Sa saad nüüd vahetada krüptitud sõnumeid %s seadmetega, kus on kasutusel see "
-"krüptovõti."
+msgstr "คุณจะสามารถแลกเปลี่ยนข้อความเข้ารหัสกับอุปกรณ์ %s ที่ใช้คีย์นี้ได้"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
-msgstr "Tagasi"
+msgstr "กลับ"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Halda"
+msgstr "จัดการ"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
-msgstr "Sellel kasutajal on uusi seadmeid"
+msgstr "ผู้ติดต่อรายนี้มีอุปกรณ์ใหม่"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "Pead otsustama OMEMO-põhise usalduse osas"
+msgstr "จำเป็นต้องมีการตัดสินใจเกี่ยวกับความไว้วางใจของ OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Kas sa lisasid uue seadme kasutajakontole %s?"
+msgstr "คุณได้เพิ่มอุปกรณ์ใหม่สำหรับบัญชี %s แล้วหรือยัง?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr "OMEMO kasutamine vaikimisi"
+msgstr "OMEMO ตามค่าเริ่มต้น"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
-msgstr "Kasuta OMEMO krüptimist uute vestluste puhul"
+msgstr "เปิดใช้งานการเข้ารหัส OMEMO สำหรับการสนทนาใหม่"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
-msgstr "Krüpti uute seadmete jaoks"
+msgstr "เข้ารหัสไปยังอุปกรณ์ใหม่"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
-msgstr "Krüpti automaatselt selle kasutaja uute seadmete puhul."
+msgstr "เข้ารหัสไปยังอุปกรณ์ใหม่จากผู้ติดต่อนี้โดยอัตโนมัติ"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
-msgstr "Uued krüptovõtmed"
+msgstr "กุญแจใหม่"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
-msgstr "Sinu muude seadmete uute krüptovõtmetega nõustutakse automaatselt."
+msgstr "คีย์การเข้ารหัสใหม่จากอุปกรณ์อื่นของคุณจะได้รับการยอมรับโดยอัตโนมัติ"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr "See seade"
+msgstr "อุปกรณ์นี้"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr "Muu seade"
+msgstr "อุปกรณ์อื่น ๆ"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
-msgstr "Seade"
+msgstr "อุปกรณ์"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
-msgstr "Tunnustatud"
+msgstr "ได้รับการยอมรับ"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
-msgstr "Keelatud"
+msgstr "ถูกปฏิเสธ"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
-msgstr "Verifitseeritud"
+msgstr "ได้รับการยืนยันแล้ว"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr "Uus seade"
+msgstr "อุปกรณ์ใหม่"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -273,37 +254,6 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
-"Igal seadmel on oma OMEMO-võti. Sõnumeid on võimalik dekrüptida vaid "
-"konkreetse sihtvõtme jaoks. Sõnumeid on võimalik krüptida vaid seadmete "
-"jaoks, millega oled nõustunud."
-
-#~ msgid "OMEMO Key Management"
-#~ msgstr "OMEMO võtmehaldus"
-
-#~ msgid "Encryption"
-#~ msgstr "Krüptimine"
-
-#, c-format
-#~ msgid "%d OMEMO device"
-#~ msgid_plural "%d OMEMO devices"
-#~ msgstr[0] "%d OMEMO seade"
-#~ msgstr[1] "%d OMEMO seadet"
-
-#~ msgid "Automatically accept new keys"
-#~ msgstr "Nõustu uute võtmetega automaatselt"
-
-#~ msgid ""
-#~ "New encryption keys from this contact will be accepted automatically."
-#~ msgstr "Sa nõustud selle kasutaja uute krüptovõtmetega automaatselt."
-
-#~ msgid "Own key"
-#~ msgstr "Oma krüptovõti"
-
-#~ msgid "Associated keys"
-#~ msgstr "Seotud krüptovõtmed"
-
-#~ msgid "Inactive keys"
-#~ msgstr "Mitteaktiivsed krüptovõtmed"
-
-#~ msgid "Unused"
-#~ msgstr "Kasutamata"
+"แต่ละอุปกรณ์จะมีคีย์ OMEMO ของตัวเอง "
+"ข้อความสามารถถอดรหัสได้โดยอุปกรณ์เฉพาะเมื่อเข้ารหัสด้วยคีย์ของอุปกรณ์นั้นๆ เท่านั้น "
+"ข้อความจะถูกเข้ารหัสไปยังอุปกรณ์ที่ได้รับการยอมรับเท่านั้น"

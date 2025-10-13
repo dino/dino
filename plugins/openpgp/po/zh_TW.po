@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2020-11-24 05:28+0000\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "dino/plugin-openpgp/zh_Hant/>\n"
@@ -24,7 +24,7 @@ msgstr "正在查詢 GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgstr "GnuPG 錯誤"
 msgid "No keys available. Generate one!"
 msgstr "沒有可用的金鑰。生成一個!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr ""
 

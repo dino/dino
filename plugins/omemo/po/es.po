@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2025-01-29 01:02+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-05-11 19:01+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"<jaime.marquinez.ferrandiz@fastmail.net>\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -111,7 +112,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Rechazar clave"
 
@@ -124,7 +125,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Aceptar clave"
 
@@ -217,58 +218,58 @@ msgstr "Decisión de confianza requerida para clave OMEMO"
 msgid "Did you add a new device for account %s?"
 msgstr "¿Añadiste un nuevo dispositivo para la cuenta %s?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
 msgstr "OMEMO por defecto"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "Habilitar el cifrado de OMEMO para nuevas conversaciones"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
 msgstr "Cifrar para nuevos dispositivos"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "Cifrar automáticamente los nuevos dispositivos desde este contacto."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "Nuevas claves"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Las nuevas claves de cifrado de tus otros dispositivos serán aceptadas "
 "automáticamente."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Este dispositivo"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Otro dispositivo"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Dispositivo"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
-msgid "Device"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Aceptada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Rechazada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Verificada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
 msgstr "Dispositivo nuevo"
 
@@ -278,6 +279,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Cada dispositivo tiene su propia clave OMEMO. Los mensajes solamente se "
+"pueden descifrar por un dispositivo si se han cifrado para su clave. Los "
+"mensajes solamente se cifran para dispositivos aceptados."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Huellas digitales OMEMO"

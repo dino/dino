@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2020-08-23 21:36+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-08-04 20:01+0000\n"
 "Language-Team: none\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2.1-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -23,9 +23,9 @@ msgstr "Consultando GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "Anunciar chave"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -35,9 +35,9 @@ msgstr "Erro no GnuPG"
 msgid "No keys available. Generate one!"
 msgstr "Nenhuma chave disponível. Gere uma!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
-msgstr ""
+msgstr "Desativado"
 
 #: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
@@ -45,7 +45,7 @@ msgstr "A chave não está no chaveiro"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "Impressão digital"
 
 #~ msgid "Encryption"
 #~ msgstr "Criptografia"

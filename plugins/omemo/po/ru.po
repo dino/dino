@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2024-12-30 22:56+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-05-06 13:05+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ru/>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -109,7 +109,7 @@ msgstr "Сверить этот отпечаток с ключом, отобра
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Отклонить ключ"
 
@@ -122,7 +122,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Принять ключ"
 
@@ -214,57 +214,57 @@ msgstr "Требуется решение OMEMO о доверии"
 msgid "Did you add a new device for account %s?"
 msgstr "Вы добавляли аккаунт %s на новое устройство?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
 msgstr "OMEMO по умолчанию"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "Включить OMEMO-шифрование для новых бесед"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
 msgstr "Шифрование для новых устройств"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "Автоматическое шифрование для новых устройств этого контакта."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "Новые ключи"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Новые ключи шифрования от других ваших устройств будут приняты автоматически."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Это устройство"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Другое устройство"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Устройство"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
-msgid "Device"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Принят"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Отклонён"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Подтверждён"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
 msgstr "Новое устройство"
 
@@ -274,6 +274,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Каждое устройство имеет свой собственный ключ OMEMO. Сообщения могут быть "
+"расшифрованы устройством только в том случае, если они зашифрованы его "
+"ключом. Сообщения зашифрованы только для одобренных устройств."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Управление ключами OMEMO"

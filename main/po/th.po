@@ -8,16 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-13 21:57+0200\n"
-"PO-Revision-Date: 2025-03-14 17:31+0000\n"
-"Language-Team: Romanian <https://hosted.weblate.org/projects/dino/"
-"translations/ro/>\n"
-"Language: ro\n"
+"PO-Revision-Date: 2025-10-05 07:02+0000\n"
+"Language-Team: none\n"
+"Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
@@ -31,136 +29,134 @@ msgstr ""
 #: main/data/add_conversation/add_groupchat_dialog.ui:12
 #: main/data/add_conversation/add_contact_dialog.ui:13
 msgid "Cancel"
-msgstr "Anulare"
+msgstr "ยกเลิก"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:65
 msgid "Connect"
-msgstr "Conectare"
+msgstr "เชื่อมต่อ"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr "Dezactivare cont"
+msgstr "ลบบัญชีผู้ใช้"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr "Activare cont"
+msgstr "เปิดใช้งานบัญชี"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
-msgstr "Selectare avatar"
+msgstr "เลือกอวาตาร์"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:203
 msgid "Select"
-msgstr "Selectare"
+msgstr "เลือก"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Images"
-msgstr "Imagini"
+msgstr "รูปภาพ"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:142
 msgid "All files"
-msgstr "Toate fișierele"
+msgstr "ไฟล์ทั้งหมด"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:156
 #, c-format
 msgid "Remove account %s?"
-msgstr "Se șterge contul %s?"
+msgstr "ลบบัญชี %s?"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:188
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
-msgstr "Conectare…"
+msgstr "กำลังเชื่อมต่อ…"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:190
 msgid "Connected"
-msgstr "Conectat"
+msgstr "เชื่อมต่อแล้ว"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:192
 msgid "Disconnected"
-msgstr "Deconectat"
+msgstr "ตัดการเชื่อมต่อ"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:203
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
-msgstr "Parolă greșită"
+msgstr "รหัสผ่านผิด"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:205
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
-msgstr "Certificat TLS invalid"
+msgstr "ใบรับรอง TLS ไม่ถูกต้อง"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:208
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:210
 msgid "Error"
-msgstr "Eroare"
+msgstr "ผิดพลาด"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
 #: main/data/preferences_window/preferences_dialog.ui:11
 msgid "Accounts"
-msgstr "Conturi"
+msgstr "บัญชี"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr "Conturi dezactivate"
+msgstr "บัญชีที่ถูกปิดใช้งาน"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
 msgid "Add Account"
-msgstr "Adaugă un cont"
+msgstr "เพิ่มบัญชี"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
 #: main/src/ui/main_window.vala:160
 msgid "No active accounts"
-msgstr "Nici un cont activ"
+msgstr "ไม่มีบัญชีที่ใช้งานอยู่"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
-msgstr "Autentificare"
+msgstr "ลงชื่อเข้าใช้"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr "Serverul nu a putut dovedi că este %s."
+msgstr "เซิร์ฟเวอร์ไม่สามารถพิสูจน์ได้ว่าเป็น %s"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:145
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
-"Sistemul dumneavoastră de operare nu are încredere în certificatul său de "
-"securitate."
+msgstr "ใบรับรองความปลอดภัยไม่ได้รับความไว้วางใจจากระบบปฏิบัติการของคุณ"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:147
 msgid "Its security certificate is issued to another domain."
-msgstr "Certificatul său de securitate este emis pentru alt domeniu."
+msgstr "ใบรับรองความปลอดภัยจะออกให้กับโดเมนอื่น"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:149
 msgid "Its security certificate will only become valid in the future."
-msgstr "Certificatul său de securitate va deveni valabil numai în viitor."
+msgstr "ใบรับรองความปลอดภัยนั้นจะใช้ได้เฉพาะในอนาคตเท่านั้น"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:151
 msgid "Its security certificate is expired."
-msgstr "Certificatul său de securitate este expirat."
+msgstr "ใบรับรองความปลอดภัยหมดอายุแล้ว"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:159
 #: main/data/preferences_window/add_account_dialog.ui:111
 msgid "Create account"
-msgstr "Creează cont"
+msgstr "สร้างบัญชี"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:178
 #, c-format
 msgid "You can now use the account %s."
-msgstr "Acum puteți începe să utilizați contul %s."
+msgstr "ตอนนี้คุณสามารถใช้บัญชี %s ได้แล้ว"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:224
 msgid "Wrong username or password"
-msgstr "Nume utilizator sau parolă greșite"
+msgstr "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:227
 msgid "Something went wrong"
-msgstr "A apărut o problemă"
+msgstr "มีบางอย่างผิดพลาดเกิดขึ้น"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:248
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
@@ -168,7 +164,7 @@ msgstr "A apărut o problemă"
 #: main/src/ui/notifier_freedesktop.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr "Nu s-a putut face conectarea la %s"
+msgstr "ไม่สามารถเชื่อมต่อกับ %s ได้"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:255
 #: main/src/windows/preferences_window/add_account_dialog.vala:265
@@ -176,162 +172,162 @@ msgstr "Nu s-a putut face conectarea la %s"
 #: main/src/windows/preferences_window/add_account_dialog.vala:359
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Invalid address"
-msgstr "Adresă invalidă"
+msgstr "ที่อยู่ไม่ถูกต้อง"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:293
 msgid "No response from server"
-msgstr "Nici un răspuns de la server"
+msgstr "ไม่มีการตอบสนองจากเซิร์ฟเวอร์"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:304
 #, c-format
 msgid "Register on %s"
-msgstr "Înregistrare pe %s"
+msgstr "ลงทะเบียนบน %s"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:307
 msgid "The server requires to sign up through a website"
-msgstr "Serverul necesită înregistrarea printr-un site web"
+msgstr "เซิร์ฟเวอร์จำเป็นต้องลงทะเบียนผ่านเว็บไซต์"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:309
 msgid "Open website"
-msgstr "Deschide site-ul"
+msgstr "เปิดเว็บไซต์"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:321
 #: main/data/preferences_window/add_account_dialog.ui:294
 msgid "Register"
-msgstr "Înregistrează-te"
+msgstr "ลงทะเบียน"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:323
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr "Aflați pe %s informații despre cum se face înregistrarea"
+msgstr "ตรวจสอบ %s เพื่อดูข้อมูลเกี่ยวกับวิธีการสมัคร"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
-msgstr "Blochează utilizator"
+msgstr "บล็อคผู้ใช้"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block entire domain"
-msgstr "Blochează întregul domeniu"
+msgstr "บล็อกทั้งโดเมน"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr "Deblochează"
+msgstr "ปลดบล็อค"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr "Fixat"
+msgstr "ปักหมุด"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr "Fixare"
+msgstr "ปักหมุด"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr "Blocat"
+msgstr "ถูกบล็อค"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr "Domeniu blocat"
+msgstr "โดเมนถูกบล็อค"
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
-msgstr "Blochează"
+msgstr "ปิดกั้น"
 
 #: main/src/windows/conversation_details.vala:131
 #: main/src/windows/conversation_details.vala:132
 msgid "Mute"
-msgstr "Suprimă"
+msgstr "ปิดเสียง"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
-msgstr "Notificări activate"
+msgstr "เปิดใช้งานการแจ้งเตือนแล้ว"
 
 #: main/src/windows/conversation_details.vala:136
 msgid "Notifications for mentions"
-msgstr "Notificări pentru mențiuni"
+msgstr "การแจ้งเตือนสำหรับการกล่าวถึง"
 
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr "Silențios"
+msgstr "ปิดเสียง"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
-msgstr "Notificări dezactivate"
+msgstr "การแจ้งเตือนถูกปิดใช้งาน"
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr "Despre"
+msgstr "เกี่ยวกับ"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
-msgstr "Setări"
+msgstr "การตั้งค่า"
 
 #: main/src/windows/conversation_details.vala:222
 msgid "Room Configuration"
-msgstr "Configurare discuție"
+msgstr "การกำหนดค่าห้อง"
 
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr "Criptare"
+msgstr "การเข้ารหัส"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
 msgid "Members"
-msgstr "Membri"
+msgstr "สมาชิก"
 
 #: main/src/view_model/conversation_details.vala:131
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
-msgstr "Proprietar"
+msgstr "เจ้าของ"
 
 #: main/src/view_model/conversation_details.vala:132
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "Admin"
-msgstr "Administrator"
+msgstr "ผู้ดูแลระบบ"
 
 #: main/src/view_model/conversation_details.vala:133
 #: main/src/ui/occupant_menu/list.vala:114
 msgid "Member"
-msgstr "Membru/ă"
+msgstr "สมาชิก"
 
 #: main/src/ui/file_send_overlay.vala:84
 msgid "The file exceeds the server's maximum upload size."
-msgstr "Fișierul depășește dimensiunea maximă de încărcare a serverului."
+msgstr "ไฟล์เกินขนาดอัพโหลดสูงสุดของเซิร์ฟเวอร์"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
 #: main/src/ui/conversation_content_view/message_widget.vala:95
 msgid "Message too long"
-msgstr "Mesaj prea lung"
+msgstr "ข้อความยาวเกินไป"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
 #: main/src/ui/conversation_content_view/message_widget.vala:161
 msgid "edited"
-msgstr "editat"
+msgstr "แก้ไขแล้ว"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
 #: main/src/ui/conversation_content_view/message_widget.vala:170
 msgid "pending…"
-msgstr "în așteptare…"
+msgstr "รอดำเนินการ…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
 #: main/src/ui/conversation_content_view/message_widget.vala:185
 msgid "delivery failed"
-msgstr "livrare eșuată"
+msgstr "ล้มเหลว"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "Necriptat"
+msgstr "ไม่เข้ารหัส"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
-msgstr "Nu se poate transmite mesajul"
+msgstr "ไม่สามารถส่งข้อความได้"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
@@ -391,15 +387,13 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "Acum %i minut"
-msgstr[1] "Acum %i minute"
-msgstr[2] "Acum %i de minute"
+msgstr[0] "%i นาทีที่แล้ว"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:343
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
-msgstr "Chiar acum"
+msgstr "เมื่อกี้นี้"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:151
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:176
@@ -407,36 +401,36 @@ msgstr "Chiar acum"
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
-msgstr "Eu"
+msgstr "ฉัน"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:182
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr "Imagine trimisă"
+msgstr "ส่งรูปภาพแล้ว"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:182
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
-msgstr "Fișier trimis"
+msgstr "ส่งไฟล์แล้ว"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:184
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr "Imagine primitä"
+msgstr "ภาพที่ได้รับ"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:184
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr "Fișier primit"
+msgstr "ได้รับไฟล์แล้ว"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr "Apel efectuat"
+msgstr "การโทรออก"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:193
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -444,320 +438,319 @@ msgstr "Apel efectuat"
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr "Apel primit"
+msgstr "สายเรียกเข้า"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:330
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
-msgstr "%d %b"
+msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:334
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
-msgstr "Ieri"
+msgstr "เมื่อวาน"
 
 #: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
-msgstr "Utilizator"
+msgstr "ผู้ใช้"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:145
 #: main/src/ui/call_window/call_window_controller.vala:151
 msgid "Invite"
-msgstr "Invită"
+msgstr "เชิญ"
 
 #: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
-msgstr "Pornește o conversație privată"
+msgstr "เริ่มการสนทนาส่วนตัว"
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
-msgstr "Dă afară"
+msgstr "เตะ"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
-msgstr "Acordă permisiunea de a scrie"
+msgstr "อนุญาตเขียนอนุญาต"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
-msgstr "Revoca permisiunea de a scrie"
+msgstr "เพิกถอนสิทธิ์การเขียน"
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
-msgstr "Invită la o conferință"
+msgstr "เชิญเข้าร่วมการประชุม"
 
 #: main/src/ui/conversation_view_controller.vala:203
 msgid "Select file"
-msgstr "Selectare fișier"
+msgstr "เลือกไฟล์"
 
 #: main/src/ui/util/helper.vala:65
 #, c-format
 msgid "%s from %s"
-msgstr "%s de la %s"
+msgstr "%s จาก %s"
 
 #: main/src/ui/util/data_forms.vala:31
 msgid "Name of the room"
-msgstr "Numele discuției"
+msgstr "ชื่อห้อง"
 
 #: main/src/ui/util/data_forms.vala:34
 msgid "Description of the room"
-msgstr "Descrierea discuției"
+msgstr "รายละเอียดห้อง"
 
 #: main/src/ui/util/data_forms.vala:37
 msgid "Persistent"
-msgstr "Persistentă"
+msgstr "คงอยู่"
 
 #: main/src/ui/util/data_forms.vala:38
 msgid "The room will persist after the last occupant leaves"
-msgstr "Discuția va continua să existe și după ce ultima persoană va ieși"
+msgstr "ห้องจะยังคงอยู่หลังจากผู้ใช้คนสุดท้ายออกไป"
 
 #: main/src/ui/util/data_forms.vala:41
 msgid "Publicly searchable"
-msgstr "Vizibilă public"
+msgstr "ค้นหาได้สาธารณะ"
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr "Membrii pot schimba subiectul"
+msgstr "ผู้เข้าใช้อาจเปลี่ยนเรื่องได้"
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
-msgstr "Permisiunea de a vizualiza JID-uri"
+msgstr "อนุญาตให้ดูรายการ JIDs"
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr "Cine are voie să vadă JID-urile ocupanților?"
+msgstr "ใครได้รับอนุญาตให้ดู JIDs ของผู้อยู่อาศัย ?"
 
 #: main/src/ui/util/data_forms.vala:51
 #: main/data/preferences_window/account_preferences_subpage.ui:82
 #: main/data/add_conversation/conference_details_fragment.ui:162
 #: main/data/add_conversation/add_groupchat_dialog.ui:122
 msgid "Password"
-msgstr "Parolă"
+msgstr "รหัสผ่าน"
 
 #: main/src/ui/util/data_forms.vala:55
 msgid "Moderated"
-msgstr "Moderată"
+msgstr "การควบคุมดูแล"
 
 #: main/src/ui/util/data_forms.vala:56
 msgid "Only occupants with voice may send messages"
-msgstr "Doar membrii cu drept de voce vor putea trimite mesaje"
+msgstr "เฉพาะผู้อยู่อาศัยที่มีเสียงเท่านั้นที่สามารถส่งข้อความได้"
 
 #: main/src/ui/util/data_forms.vala:59
 msgid "Members only"
-msgstr "Doar pentru membri"
+msgstr "เฉพาะสมาชิกเท่านั้น"
 
 #: main/src/ui/util/data_forms.vala:60
 msgid "Only members may enter the room"
-msgstr "Numai membrii se pot alătura discuției"
+msgstr "เฉพาะสมาชิกเท่านั้นที่สามารถเข้าห้องได้"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
-msgstr "Această conferință nu vă permite să trimiteți mesaje."
+msgstr "การประชุมนี้ไม่อนุญาตให้คุณส่งข้อความ"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
-msgstr "Solicitare permisiune"
+msgstr "ขออนุญาต"
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
 #: main/data/file_send_overlay.ui:24
 msgid "Send a file"
-msgstr "Trimite fișier"
+msgstr "ส่งไฟล์"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr "Începe un apel"
+msgstr "เริ่มการโทร"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
-msgstr "Apel audio"
+msgstr "โทรเสียง"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr "Apel video"
+msgstr "วิดีโอคอล"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
 #: main/data/gtk/help-overlay.ui:43
 msgid "Search messages"
-msgstr "Caută mesaje"
+msgstr "ค้นหาข้อความ"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr "Detalii conversație"
+msgstr "รายละเอียดการสนทนา"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr "Închide conversație"
+msgstr "ปิดการสนทนา"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr "Informații de depanare"
+msgstr "ข้อมูลการดีบัก"
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr "Se apelează…"
+msgstr "กำลังโทร…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr "Sună…"
+msgstr "กำลังเรียก…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr "%s a încheiat apelul"
+msgstr "%s สิ้นสุดการโทร"
 
 #: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr "%s a refuzat apelul"
+msgstr "%s ปฏิเสธการโทร"
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr "Camere"
+msgstr "กล้องถ่ายรูป"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr "Nici o cameră găsită."
+msgstr "ไม่พบกล้อง"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr "Microfoane"
+msgstr "ไมโครโฟน"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr "Nici un microfon găsit."
+msgstr "ไม่พบไมโครโฟน"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr "Difuzoare"
+msgstr "ลำโพง"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr "Nici un difuzor găsit."
+msgstr "ไม่พบลำโพง"
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr "Invitați la apel"
+msgstr "เชิญโทร"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
 #: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
-msgstr "Pornește o conversație"
+msgstr "เริ่มการสนทนา"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:90
 msgid "Start"
-msgstr "Pornire"
+msgstr "เริ่ม"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
 #: main/src/ui/application.vala:293 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr "Alăturați-vă canalului"
+msgstr "เข้าร่วมช่อง"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:45
 #: main/data/preferences_window/add_account_dialog.ui:246
 msgid "Next"
-msgstr "Următorul"
+msgstr "ต่อไป"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
 #: main/src/ui/application.vala:293 main/data/join_room_dialog2.ui:190
 msgid "Join"
-msgstr "Alăturați-vă"
+msgstr "เข้าร่วม"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Joining…"
-msgstr "Conectare…"
+msgstr "เข้าร่วม…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:164
 msgid "Password required to enter room"
-msgstr "Este necesară o parolă pentru a te putea alătura acestei discuții"
+msgstr "ต้องใช้รหัสผ่านเพื่อเข้าห้อง"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Banned from joining or creating conference"
-msgstr "Aveți interdicție de a vă alătura sau de a crea o conferință"
+msgstr "ต้องใช้รหัสผ่านเพื่อเข้าห้อง"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Room does not exist"
-msgstr "Această discuție nu există"
+msgstr "ห้องไม่มีอยู่"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Not allowed to create room"
-msgstr "Este interzisă crearea unei discuții"
+msgstr "ห้ามสร้างห้อง"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr "Discuție accesibilă numai membrilor"
+msgstr "ห้องสำหรับสมาชิกเท่านั้น"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr "Alegeți un nume diferit"
+msgstr "เลือกชื่อเล่นอื่น"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
-msgstr "Discuția are prea mulți membrii"
+msgstr "มีคนอยู่ในห้องมากเกินไป"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
-msgstr "Adaugă"
+msgstr "เพิ่ม"
 
 #: main/src/ui/application.vala:284 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr "Despre Dino"
+msgstr "เกี่ยวกับไดโน"
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
-msgstr "Azi"
+msgstr "วันนี้"
 
 #: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
 msgid "%a, %b %d"
-msgstr "%a, %d %b"
+msgstr ""
 
 #: main/src/ui/global_search.vala:181
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] "%i rezultat de căutare"
-msgstr[1] "%i rezultate de căutare"
-msgstr[2] "%i de rezultate de căutare"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/global_search.vala:208
 #, c-format
 msgid "In %s"
-msgstr "În %s"
+msgstr ""
 
 #: main/src/ui/global_search.vala:208
 #, c-format
 msgid "With %s"
-msgstr "Cu %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr "Apel video primit"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr "Apel de grup video primit"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr "Apelul de grup primit"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
 #: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr "Respinge"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
@@ -770,12 +763,12 @@ msgstr "Respinge"
 #: main/src/ui/conversation_content_view/subscription_notification.vala:67
 #: main/data/call_widget.ui:81
 msgid "Accept"
-msgstr "Acceptă"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:91
 #: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
-msgstr "Cerere de abonare"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:98
 #: main/src/ui/notifier_gnotifications.vala:133
@@ -784,399 +777,397 @@ msgstr "Cerere de abonare"
 #: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:68
 msgid "Deny"
-msgstr "Refuză"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:123
 #: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
-msgstr "Invitaţie la %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:124
 #: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
-msgstr "%s v-a invitat la %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:141
 #: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
-msgstr "Solicitare de permisiune"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:142
 #: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr "%s solicită permisiunea de a scrie în %s"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:24
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:34
 msgid "On"
-msgstr "Da"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:35
 msgid "Off"
-msgstr "Nu"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
-msgstr "Trimite notificare la tastare"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:23
 #: main/src/ui/contact_details/settings_provider.vala:33
 #, c-format
 msgid "Default: %s"
-msgstr "Implicit: %s"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:32
 msgid "Send read receipts"
-msgstr "Trimite notificare la primire"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr "Solicita permisiunea de a trimite mesaje"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:24
 msgid "Request"
-msgstr "Cerere"
+msgstr ""
 
 #: main/src/ui/main_window.vala:151
 msgid "Welcome to Dino!"
-msgstr "Bine ați venit la Dino!"
+msgstr ""
 
 #: main/src/ui/main_window.vala:152
 msgid "Sign in or create an account to get started."
-msgstr "Autentificați-vă sau creați un cont pentru a începe."
+msgstr ""
 
 #: main/src/ui/main_window.vala:153
 msgid "Set up account"
-msgstr "Configurare cont"
+msgstr ""
 
 #: main/src/ui/main_window.vala:161
 msgid "Manage accounts"
-msgstr "Administrare conturi"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
 msgid "XMPP Address"
-msgstr "Adresă XMPP"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr "Nume afișat"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
 msgid "Topic"
-msgstr "Subiect"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/message_widget.vala:233
 msgid "Edit message"
-msgstr "Editare mesaj"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr "Tu"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr "Adaugă reacție"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:42
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
 msgid "Open"
-msgstr "Deschide"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
 #: main/src/ui/conversation_content_view/file_widget.vala:167
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
-msgstr "Salvează ca…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr "%s, %s și încă %i tastează…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr "%s, %s și %s tastează…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
-msgstr "%s și %s tastează…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
-msgstr "%s tastează…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr "Apelul a început"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr "A început acum %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr "Ați recepționat acest apel pe un alt dispozitiv"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr "Apel încheiat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr "S-a încheiat la %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr "A durat %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr "Apel ratat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr "Ați pierdut acest apel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr "%s a pierdut acest apel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr "Apel refuzat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr "Ați refuzat acest apel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr "%s a refuzat acest apel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr "Apelul a eșuat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] "%i oră"
-msgstr[1] "%i ore"
-msgstr[2] "%i de ore"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] "%i minut"
-msgstr[1] "%i minute"
-msgstr[2] "%i de minut"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr "câteva secunde"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr "Livrat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr "Citit"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr "Trimite cerere"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr "Nu primiți încă actualizări de stare de la acest contact."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr "Acest contact dorește să vă adauge la lista ei/lui de contacte"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
-msgstr "Această conversație nu acceptă reacții."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:34
 msgid "Reply"
-msgstr "Răspunde"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
-msgstr "Această conversație nu acceptă răspunsuri."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr "Desacărcare %s… (%u%%)"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "Downloading %s…"
-msgstr "Se descarcă %s…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr "Încărcare %s… (%u%%)"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
 msgid "%s offered: %s"
-msgstr "%s a oferit: %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:97
 #, c-format
 msgid "File offered: %s"
-msgstr "Fișier oferit: %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:99
 msgid "File offered"
-msgstr "Fișier oferit"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:105
 msgid "File transfer failed"
-msgstr "Transferul fișierului a eșuat"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:34
 msgid "File"
-msgstr "Fișier"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr "Nou"
+msgstr ""
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "Detalii contact"
+msgstr ""
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
-msgstr "Actualizare mesaj"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr "Autentificare"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
-msgstr "Nu s-a putut stabili o conexiune securizată"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
-msgstr "Înapoi"
+msgstr "กลับ"
 
 #: main/data/preferences_window/add_account_dialog.ui:183
 msgid "Choose a public server"
-msgstr "Alegeți un server public"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:207
 msgid "Or specify a server address"
-msgstr "Sau specificați adresa serverului"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:225
 msgid "Sign in instead"
-msgstr "Înapoi la conectare"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:330
 msgid "All set up!"
-msgstr "Gata!"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:359
 msgid "Finish"
-msgstr "Finalizare"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr "Trimite notificare la _tastare"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
-msgstr "Trimite notificare la _citire"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:25
 msgid "_Notifications"
-msgstr "_Notificări"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:26
 msgid "Notify when a new message arrives"
-msgstr "Notifică atunci când este primit un mesaj nou"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:36
 msgid "_Convert Smileys to Emoji"
-msgstr "Convertește zâmbilicii în _emoji"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
 msgid "Local alias"
-msgstr "Alias local"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
-msgstr "Stare conexiune"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
-msgstr "Elimină cont"
+msgstr ""
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr "Schimbare parolă"
+msgstr ""
 
 #: main/data/preferences_window/change_password_dialog.ui:34
 msgid "Change"
-msgstr "Schimbă"
+msgstr ""
 
 #: main/data/preferences_window/change_password_dialog.ui:61
 msgid "Current password"
-msgstr "Parolă curentă"
+msgstr ""
 
 #: main/data/preferences_window/change_password_dialog.ui:66
 msgid "New password"
-msgstr "Parolă nouă"
+msgstr ""
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr "Confirmare parolă"
+msgstr ""
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
-msgstr "General"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr "Arată preferințe"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr "Scurtături de tastatură"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
-msgstr "Discuție"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
@@ -1184,39 +1175,39 @@ msgstr ""
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
-msgstr "Navigare"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:66
 msgid "Jump to next conversation"
-msgstr "Salt la următoarea conversație"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:72
 msgid "Jump to previous conversation"
-msgstr "Salt la conversația anterioară"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
 #: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
-msgstr "Cont"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr "Nume"
+msgstr ""
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr "Alias"
+msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
-msgstr "Adaugă contact"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
-msgstr "Client XMPP de discuții modern"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1224,9 +1215,6 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino este un client de chat modern, cu sursă deschisă, pentru calculatoare. "
-"Se concentrează să furnizeze o experiență Jabber/XMPP clară și fiabilă, "
-"ținând cont de confidențialitatea dumneavoastră."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1234,185 +1222,45 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"Suportă criptare de la un capăt la altul prin intermediul OMEMO și OpenPGP, "
-"și permite configurarea caracteristicilor legate de confidențialitate precum "
-"trimiterea notificărilor de primire și tastare."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
-"Dino preia istoricul discuțiilor de pe server și sincronizează mesajele cu "
-"celelalte dispozitive."
 
 #: main/data/main_window.ui:89
 msgid "You have no open chats"
-msgstr "Nu aveți nici o discuție deschisă"
+msgstr ""
 
 #: main/data/main_window.ui:90
 msgid "Click + to start a chat or join a channel"
-msgstr "Apăsați + pentru a porni o discuție sau să vă alăturați unui grup"
+msgstr ""
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr "Nici o căutare activă"
+msgstr ""
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr "Tastați ceva pentru a porni căutarea"
+msgstr ""
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr "Nici un mesaj nu se potrivește"
+msgstr ""
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr "Verificați ortografia sau încercați să eliminați filtre"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:61
 msgid "Send"
-msgstr "Trimite"
+msgstr ""
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr "Preferințe"
+msgstr ""
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
-msgstr "Scurtături de tastatură"
-
-#~ msgid "Remove"
-#~ msgstr "Șterge"
-
-#, c-format
-#~ msgid "Sign in to %s"
-#~ msgstr "Autentificare în %s"
-
-#~ msgid "No accounts configured"
-#~ msgstr "Nici un cont configurat"
-
-#~ msgid "Add an account"
-#~ msgstr "Adaugă un cont"
-
-#~ msgid "Pick another server"
-#~ msgstr "Alege alt server"
-
-#~ msgid "Local Settings"
-#~ msgstr "Setări locale"
-
-#~ msgid "Notifications"
-#~ msgstr "Notificări"
-
-#~ msgid "Pin conversation"
-#~ msgstr "Fixează discuția"
-
-#~ msgid "Pins the conversation to the top of the conversation list"
-#~ msgstr "Fixează discuția în partea de sus a listei de discuții"
-
-#~ msgid "Only when mentioned"
-#~ msgstr "Doar la mențiuni"
-
-#~ msgid "Permissions"
-#~ msgstr "Permisiuni"
-
-#~ msgid "Conference Details"
-#~ msgstr "Detalii conferință"
-
-#~ msgid "Communication and status updates in either direction are blocked"
-#~ msgstr ""
-#~ "Comunicațiile și actualizările de stare sunt blocate în ambele sensuri"
-
-#~ msgid "A password to restrict access to the room"
-#~ msgstr "O parolă pentru a restricționa accesul la discuție"
-
-#~ msgid "Message history"
-#~ msgstr "Istoric mesaje"
-
-#~ msgid "Maximum amount of backlog issued by the room"
-#~ msgstr "Numărul maxim de mesaje din istoric ce va fi afișat în discuție"
-
-#~ msgid "Convert smileys to emojis"
-#~ msgstr "Convertește zâmbilici în emoticoane"
-
-#~ msgid "Check spelling"
-#~ msgstr "Verificare ortografie"
-
-#~ msgid "Click here to start a conversation or join a channel."
-#~ msgstr ""
-#~ "Apăsați aici pentru a porni o conversație sau a vă alătura unui canal."
-
-#~ msgid "No active conversations"
-#~ msgstr "Nici o conversație activă"
-
-#~ msgid "Main window with conversations"
-#~ msgstr "Fereastra principală de conversații"
-
-#~ msgid "%s, %s and %i others"
-#~ msgstr "%s, %s și încă %i alții"
-
-#~ msgid "You can now start using %s"
-#~ msgstr "Acum puteți utiliza %s"
-
-#~ msgid "Open Registration"
-#~ msgstr "Deschis pentru înregistrare"
-
-#~ msgid "Save"
-#~ msgstr "Salvare"
-
-#~ msgid "%s, %s and %s"
-#~ msgstr "%s, %s și %s"
-
-#~ msgid "%s and %s"
-#~ msgstr "%s și %s"
-
-#~ msgid "is typing…"
-#~ msgid_plural "are typing…"
-#~ msgstr[0] "tastează…"
-#~ msgstr[1] "tastează…"
-#~ msgstr[2] "tastează…"
-
-#~ msgid "has stopped typing"
-#~ msgstr "s-a oprit din scris"
-
-#~ msgid "%i search results"
-#~ msgstr "%i rezultate la căutare"
-
-#~ msgid "Discover real JIDs"
-#~ msgstr "Descoperă adresele adevărate"
-
-#~ msgid "Who may discover real JIDs?"
-#~ msgstr "Cine poate descoperi adresele adevărate?"
-
-#~ msgid "Password required for room entry, if any"
-#~ msgstr "Dacă există, o parolă va fi necesară pentru alăturarea la discuție"
-
-#~ msgid "Failed connecting to %s"
-#~ msgstr "Eroare la conectarea cu %s"
-
-#~ msgid "Join Conference"
-#~ msgstr "Alătură-te unei conferințe"
-
-#~ msgid "Quit"
-#~ msgstr "Ieșire"
-
-#~ msgid "JID should be of the form “user@example.com”"
-#~ msgstr "JID trebuie să fie de forma “utilizator@exemplu.ro”"
-
-#~ msgid "Copy Link Address"
-#~ msgstr "Copiază adresa legăturii"
-
-#~ msgid "Copy"
-#~ msgstr "Copiere"
-
-#~ msgid "Select All"
-#~ msgstr "Selectează tot"
-
-#~ msgid "Search"
-#~ msgstr "Căutare"
-
-#~ msgid "Send message marker"
-#~ msgstr "Trimite marcajul mesajului"
-
-#~ msgid "Start Chat"
-#~ msgstr "Pornește o discuție"
+msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
 "PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/hu/>\n"
@@ -111,7 +111,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Kulcs elutasítása"
 
@@ -124,7 +124,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Kulcs elfogadása"
 
@@ -216,58 +216,58 @@ msgstr "OMEMO megbízhatósági döntés szükséges"
 msgid "Did you add a new device for account %s?"
 msgstr "Hozzáadott egy új eszközt a(z) %s fiókhoz?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
 msgstr "OMEMO alapértelmezetten"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "OMEMO-titkosítás engedélyezése az új beszélgetésekhez"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
 msgstr "Titkosítás az új eszközökre"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "Automatikus titkosítás az ettől a partnertől származó új eszközökre."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "Új kulcsok"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Az egyéb eszközeitől származó új titkosítási kulcsok automatikusan el "
 "lesznek fogadva."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
 msgstr "Ez az eszköz"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
 msgstr "Másik eszköz"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
 msgstr "Eszköz"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
 msgstr "Elfogadva"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Elutasítva"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Ellenőrizve"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
 msgstr "Új eszköz"
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2024-12-30 22:56+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-05-06 13:05+0000\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/ru/>\n"
 "Language: ru\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -25,9 +25,9 @@ msgstr "Запрос GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "Объявленный ключ"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -37,7 +37,7 @@ msgstr "Ошибка в GnuPG"
 msgid "No keys available. Generate one!"
 msgstr "Нет доступных ключей. Стоило бы сгенерировать один!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr "Выключено"
 
@@ -47,7 +47,7 @@ msgstr "Отсутствует ключ в связке"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "Отпечаток"
 
 #~ msgid "Encryption"
 #~ msgstr "Шифрование"

@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2024-07-02 11:09+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-10-11 15:07+0000\n"
 "Language-Team: none\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -109,7 +109,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Anahtarı reddet"
 
@@ -120,7 +120,7 @@ msgstr "Bu anahtarı kullanan kişinin cihazıyla şifreli iletişimi engelle."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Kabul"
 
@@ -208,58 +208,58 @@ msgstr "OMEMO güven kararı gerekli"
 msgid "Did you add a new device for account %s?"
 msgstr "%s hesabı için yeni bir cihaz eklediniz mi?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
 msgstr "Öntanımlı olarak OMEMO"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
 msgstr "Yeni sohbetler için OMEMO şifrelemesini etkinleştir"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
 msgstr "Yeni aygıtlara şifrele"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
 msgstr "Bu kişiden yeni aygıtlara otomatik olarak şifrele."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "Yeni anahtarlar"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Diğer cihazlarınızdan gelen yeni şifreleme anahtarları otomatik olarak kabul "
 "edilecek."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Bu aygıt"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Diğer aygıt"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Aygıt"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
-msgid "Device"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Kabul edildi"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Reddedildi"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Onaylandı"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
 msgstr "Yeni aygıt"
 
@@ -269,6 +269,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Her aygıtın kendi OMEMO anahtarı vardır. Mesajlar, yalnızca kendi "
+"anahtarıyla şifrelendiyse bir aygıt tarafından şifresi çözülebilir. Mesajlar "
+"yalnızca kabul edilen aygıtlara şifrelenir."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "OMEMO Anahtar Yönetimi"

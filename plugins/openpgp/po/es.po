@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2024-07-04 00:09+0000\n"
+"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"PO-Revision-Date: 2025-05-11 19:01+0000\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"<jaime.marquinez.ferrandiz@fastmail.net>\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -24,9 +25,10 @@ msgstr "Consultando GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+#, fuzzy
 msgid "Announce key"
-msgstr ""
+msgstr "Anunciar la clave"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -36,7 +38,7 @@ msgstr "Error en GnuPG"
 msgid "No keys available. Generate one!"
 msgstr "No hay claves disponibles. ¡Genera una!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
 msgstr "Desactivado"
 
@@ -45,8 +47,9 @@ msgid "Key not in keychain"
 msgstr "La clave no está en la cadena de claves"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
+#, fuzzy
 msgid "Fingerprint"
-msgstr ""
+msgstr "Huella"
 
 #~ msgid "Encryption"
 #~ msgstr "Encriptación"
