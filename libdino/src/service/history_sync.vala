@@ -121,7 +121,7 @@ public class Dino.HistorySync {
     }
 
     public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
-        debug("Fetch everything for %s %s", mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
+        debug("[%s | %s] Fetch everything %s", account.bare_jid.to_string(), mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
         RowOption latest_row_opt = db.mam_catchup.select()
                 .with(db.mam_catchup.account_id, "=", account.id)
                 .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
@@ -158,9 +158,12 @@ public class Dino.HistorySync {
 
         // Fetch messages between two db ranges and merge them
         while (current_row != null && previous_row != null) {
-            if (current_row[db.mam_catchup.from_end]) return;
+            if (current_row[db.mam_catchup.from_end]) {
+                debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
+                return;
+            }
 
-            debug("[%s] Fetching between ranges %s - %s", mam_server.to_string(), previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
+            debug("[%s | %s] Fetching between ranges %s - %s", account.bare_jid.to_string(), mam_server.to_string(), previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
             current_row = yield fetch_between_ranges(account, mam_server, previous_row, current_row, cancellable);
             if (current_row == null) return;
 
@@ -175,11 +178,19 @@ public class Dino.HistorySync {
         }
 
         // We're at the earliest range. Try to expand it even further back.
-        if (current_row == null || current_row[db.mam_catchup.from_end]) return;
+        if (current_row == null) {
+            debug("[%s | %s] No current range, aborting sync.", account.bare_jid.to_string(), mam_server.to_string());
+            return;
+        } else if (current_row[db.mam_catchup.from_end]) {
+            debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
+            return;
+        }
         // We don't want to fetch before the earliest range over and over again in MUCs if it's after until_earliest_time.
         // For now, don't query if we are within a week of until_earliest_time
-        if (until_earliest_time != null &&
-                current_row[db.mam_catchup.from_time] > until_earliest_time.add(-TimeSpan.DAY * 7).to_unix()) return;
+        if (until_earliest_time != null && current_row[db.mam_catchup.from_time] <= until_earliest_time.to_unix()) {
+            debug("[%s | %s] Current range starting %s is before limit %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string(), until_earliest_time.to_unix().to_string());
+            return;
+        }
         yield fetch_before_range(account, mam_server, current_row, until_earliest_time);
     }
 
@@ -328,20 +339,29 @@ public class Dino.HistorySync {
             page_result = yield get_mam_page(account, query_params, page_result, cancellable);
             debug("[%s | %s] Page result %s (got stanzas: %s)", account.bare_jid.to_string(), query_params.mam_server.to_string(), page_result.page_result.to_string(), (page_result.stanzas != null).to_string());
 
-            if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled || page_result.query_result.first == null) return page_result;
+            if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) return page_result;
 
             string earliest_mam_id = page_result.query_result.first;
-            long earliest_mam_time = (long)mam_times[account][earliest_mam_id].to_unix();
+            long earliest_mam_time = earliest_mam_id != null ? (long)mam_times[account][earliest_mam_id].to_unix() : 0;
 
-            debug("Updating %s to %s, %s", query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
             var query = db.mam_catchup.update()
-                    .with(db.mam_catchup.id, "=", db_id)
-                    .set(db.mam_catchup.from_time, earliest_mam_time)
-                    .set(db.mam_catchup.from_id, earliest_mam_id);
+                    .with(db.mam_catchup.id, "=", db_id);
+            if (earliest_mam_id != null) {
+                debug("[%s | %s] Updating to %s, %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
+                query.set(db.mam_catchup.from_id, earliest_mam_id);
+                if (page_result.page_result != PageResult.NoMoreMessages || query_params.start != null || earliest_mam_time < query_params.start.to_unix()) {
+                    query.set(db.mam_catchup.from_time, earliest_mam_time);
+                }
+            }
 
             if (page_result.page_result == PageResult.NoMoreMessages) {
-                // If the server doesn't have more messages, store that this range is at its end.
-                query.set(db.mam_catchup.from_end, true);
+                // If the server doesn't have more messages, store that this range is at its end or update the from timestamp
+                if (query_params.start != null) {
+                    debug("[%s | %s] Updating to %s based on query", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start.to_string());
+                    query.set(db.mam_catchup.from_time, (long) query_params.start.to_unix());
+                } else {
+                    query.set(db.mam_catchup.from_end, true);
+                }
             }
             query.perform();
         } while (page_result.page_result == PageResult.MorePagesAvailable);
