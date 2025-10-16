@@ -23,7 +23,7 @@ public class Dino.HistorySync {
 
     private HashMap<string, Gee.List<Xmpp.MessageStanza>> stanzas = new HashMap<string, Gee.List<Xmpp.MessageStanza>>();
 
-    public class HistorySync(Database db, StreamInteractor stream_interactor) {
+    public HistorySync(Database db, StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
         this.db = db;
 

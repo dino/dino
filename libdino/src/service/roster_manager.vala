@@ -86,7 +86,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
 
     private HashMap<Jid, Roster.Item> items = new HashMap<Jid, Roster.Item>(Jid.hash_bare_func, Jid.equals_bare_func);
 
-    public class RosterStoreImpl(Account account, Database db) {
+    public RosterStoreImpl(Account account, Database db) {
         this.account = account;
         this.db = db;
 
