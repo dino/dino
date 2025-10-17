@@ -5,6 +5,11 @@ jobs:
     name: "Build"
     runs-on: ubuntu-24.04
     steps:
+      - name: "Setup dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get remove libunwind-14-dev
+          sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libomemo-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
       - name: "Checkout sources"
         uses: actions/checkout@v4
         with:
@@ -14,11 +19,42 @@ jobs:
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
           echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Configure"
+        run: meson setup build
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Test"
+        run: meson test -C build
+  build-vala-nightly:
+    name: "Build with Vala Nightly"
+    runs-on: ubuntu-24.04
+    steps:
       - name: "Setup dependencies"
         run: |
           sudo apt-get update
           sudo apt-get remove libunwind-14-dev
           sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libomemo-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
+      - name: "Install Vala Nightly"
+        run: |
+          sudo apt-get install -y autoconf-archive gobject-introspection libgraphviz-dev
+          git clone https://gitlab.gnome.org/GNOME/vala.git/ vala-nightly
+          pushd vala-nightly
+          ./autogen.sh --prefix=/usr
+          make -j5
+          sudo apt-get remove valac
+          sudo apt-get autoremove
+          sudo make install
+          popd
+          rm -rf vala-nightly
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup matchers"
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
       - name: "Configure"
         run: meson setup build
       - name: "Build"
@@ -26,18 +62,27 @@ jobs:
       - name: "Test"
         run: meson test -C build
   build-flatpak:
-    name: "Build flatpak"
-    runs-on: ubuntu-24.04
+    needs: build
+    name: "Build Flatpak"
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-46
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
       options: --privileged
+    strategy:
+      matrix:
+        variant:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.variant.runner }}
     steps:
       - name: "Checkout sources"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: "Build"
-        uses: flathub-infra/flatpak-github-actions/flatpak-builder@master
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           manifest-path: im.dino.Dino.json
           bundle: im.dino.Dino.flatpak
+          arch: ${{ matrix.variant.arch }}
