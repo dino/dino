@@ -193,7 +193,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
         if (encode == "vaapih264enc") return @" rate-control=vbr";
-        if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency bframes=0 cabac=false dct8x8=false";
+        if (encode == "x264enc") return @" byte-stream=1 speed-preset=faster tune=zerolatency bframes=0 cabac=false dct8x8=false";
 
         // VP8
         if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
