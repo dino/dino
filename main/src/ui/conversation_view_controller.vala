@@ -103,6 +103,29 @@ public class ConversationViewController : Object {
         });
         app.add_action(close_conversation_action);
         app.set_accels_for_action("app.close-current-conversation", KEY_COMBINATION_CLOSE_CONVERSATION);
+
+        SimpleAction copy_file_link_action = new SimpleAction("copy-file-link", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
+        copy_file_link_action.activate.connect((variant) => {
+            int conversation_id = variant.get_child_value(0).get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null || !this.conversation.equals(conversation)) return;
+
+            int content_item_id = variant.get_child_value(1).get_int32();
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, content_item_id);
+            if (content_item == null || content_item.type_ != FileItem.TYPE) return;
+
+	    FileItem file_item = content_item as FileItem;
+	    FileProvider? file_provider = stream_interactor.get_module(FileManager.IDENTITY).select_file_provider(file_item.file_transfer);
+	    if (file_provider == null) return;
+
+	    HttpFileReceiveData? http_receive_data = file_provider.get_file_receive_data(file_item.file_transfer) as HttpFileReceiveData;
+	    if (http_receive_data == null || http_receive_data.url == null) return;
+
+	    main_window.get_clipboard().set_text(http_receive_data.url);
+
+	    view.conversation_frame.ack_file_link_copy();
+        });
+        app.add_action(copy_file_link_action);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {

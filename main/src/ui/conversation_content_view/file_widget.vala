@@ -34,6 +34,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
         if (stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(file_item.conversation, content_item) != null) {
             actions.add(get_reply_action(content_item, file_item.conversation, stream_interactor));
             actions.add(get_reaction_action(content_item, file_item.conversation, stream_interactor));
+            actions.add(get_file_link_action(content_item, file_item.conversation, stream_interactor));
         }
         return actions;
     }

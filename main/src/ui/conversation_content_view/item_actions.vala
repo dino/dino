@@ -48,4 +48,15 @@ namespace Dino.Ui {
         }
         return action;
     }
+
+    public Plugins.MessageAction get_file_link_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
+        Plugins.MessageAction action = new Plugins.MessageAction();
+        action.name = "copy-file-link";
+        action.icon_name = "dino-chain-link-symbolic";
+        action.tooltip = _("Copy file link");
+        action.callback = () => {
+            GLib.Application.get_default().activate_action("copy-file-link", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(conversation.id), new GLib.Variant.int32(content_item.id) }));
+        };
+	return action;
+    }
 }

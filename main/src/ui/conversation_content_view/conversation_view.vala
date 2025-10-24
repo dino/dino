@@ -71,6 +71,13 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         reaction_button.popover = chooser;
         action_buttons["reaction"] = reaction_button;
         message_menu_box.append(reaction_button);
+
+        var copy_file_link_button = new Button() { name="copy-file-link" };
+        copy_file_link_button.clicked.connect((button) => {
+            on_action_button_clicked(button, null);
+        });
+        action_buttons["copy-file-link"] = copy_file_link_button;
+        message_menu_box.append(copy_file_link_button);
     }
 
     public ConversationView init(StreamInteractor stream_interactor) {
@@ -613,6 +620,24 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 //        notifications.@foreach((widget) => { notifications.remove(widget); });
         notification_revealer.transition_duration = 0;
         notification_revealer.set_reveal_child(false);
+    }
+
+    public void ack_file_link_copy() {
+        Button? button = action_buttons["copy-file-link"] as Button;
+        if (button == null) return;
+
+        string original_icon_name = button.icon_name;
+
+        button.sensitive = false;
+        button.icon_name = "check-plain-symbolic";
+        button.add_css_class("force-contrast");
+
+        uint ack_link_copy_highlight_timeout = Timeout.add(1000, () => {
+            button.icon_name = original_icon_name;
+            button.remove_css_class("force-contrast");
+            button.sensitive = true;
+            return false;
+        });
     }
 }
 
