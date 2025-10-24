@@ -106,16 +106,6 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #endif
                         "x264enc"
                     };
-                case "vp9":
-                    return new string[] {
-#if ENABLE_MSDK
-                        "msdkvp9enc",
-#endif
-#if ENABLE_VAAPI
-                        "vaapivp9enc",
-#endif
-                        "vp9enc"
-                    };
                 case "vp8":
                     return new string[] {
 #if ENABLE_MSDK
@@ -158,16 +148,6 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #endif
                         "avdec_h264"
                     };
-                case "vp9":
-                    return new string[] {
-#if ENABLE_MSDK
-                        "msdkvp9dec",
-#endif
-#if ENABLE_VAAPI
-                        "vaapivp9dec",
-#endif
-                        "vp9dec"
-                    };
                 case "vp8":
                     return new string[] {
 #if ENABLE_MSDK
@@ -199,10 +179,6 @@ public class Dino.Plugins.Rtp.CodecUtil {
         if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
         if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
 
-        // VP9
-        if (encode == "msdkvp9enc" || encode == "vaapivp9enc") return " rate-control=vbr target-percentage=90";
-        if (encode == "vp9enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
-
         // OPUS
         if (encode == "opusenc") {
             if (payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " audio-type=voice inband-fec=true";
@@ -231,14 +207,11 @@ public class Dino.Plugins.Rtp.CodecUtil {
             case "msdkh264enc":
             case "vaapih264enc":
             case "x264enc":
-            case "msdkvp9enc":
-            case "vaapivp9enc":
             case "msdkvp8enc":
             case "vaapivp8enc":
                 bitrate = uint.min(2048000, bitrate);
                 encode.set("bitrate", bitrate);
                 return bitrate;
-            case "vp9enc":
             case "vp8enc":
                 bitrate = uint.min(2147483, bitrate);
                 encode.set("target-bitrate", bitrate * 1024);
@@ -271,8 +244,8 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
-        if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
-        if (decode == "vp8dec" || decode == "vp9dec") return " threads=8";
+        if (decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
+        if (decode == "vp8dec") return " threads=8";
         return null;
     }
 
