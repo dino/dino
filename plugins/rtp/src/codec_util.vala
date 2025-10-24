@@ -156,7 +156,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #if ENABLE_VAAPI
                         "vaapih264dec",
 #endif
-                        null
+                        "avdec_h264"
                     };
                 case "vp9":
                     return new string[] {
@@ -265,6 +265,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_decode_prefix(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
+        if (decode == "avdec_h264") return "h264parse ! ";
         return null;
     }
 
