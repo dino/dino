@@ -156,6 +156,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
 
+        // Parse server stanza-id
         Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         if (mam_message_flag != null && mam_message_flag.mam_id != null) {
@@ -175,6 +176,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             }
         }
 
+        // Parse times
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
         DateTime now = new DateTime.from_unix_utc(new DateTime.now_utc().to_unix()); // Remove milliseconds. They are not stored in the db and might lead to ordering issues when compared with times from the db.
         if (new_message.local_time == null || new_message.local_time.compare(now) > 0) new_message.local_time = now;
@@ -184,6 +186,15 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (new_message.time == null || new_message.time.compare(new_message.local_time) > 0) new_message.time = new_message.local_time;
 
         new_message.type_ = yield determine_message_type(account, message, new_message);
+
+        // Parse occupant ids (in MUCs)
+        if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
+            bool muc_supports_occupant_ids = entity_info.has_feature_cached(account, message.from.bare_jid, Xmpp.Xep.OccupantIds.NS_URI);
+            string? occupant_id = OccupantIds.get_occupant_id(message.stanza);
+            if (muc_supports_occupant_ids && occupant_id != null) {
+                new_message.occupant_db_id = stream_interactor.get_module(OccupantIdStore.IDENTITY).cache_occupant_id(account, occupant_id, message.from);
+            }
+        }
 
         return new_message;
     }
