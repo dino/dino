@@ -274,19 +274,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             }
         }
 
-        Adw.AboutWindow about_window = new Adw.AboutWindow();
-        about_window.application_icon = "im.dino.Dino";
-        about_window.application_name = "Dino";
-        about_window.issue_url = "https://github.com/dino/dino/issues";
-        about_window.destroy_with_parent = true;
-        about_window.transient_for = window;
-        about_window.modal = true;
-        about_window.title = _("About Dino");
-        about_window.version = version;
-        about_window.website = "https://dino.im/";
-        about_window.copyright = "Copyright © 2016-2025 - Dino Team";
-        about_window.license_type = License.GPL_3_0;
-        about_window.present();
+        Adw.AboutDialog about_dialog = new Adw.AboutDialog();
+        about_dialog.application_icon = "im.dino.Dino";
+        about_dialog.application_name = "Dino";
+        about_dialog.issue_url = "https://github.com/dino/dino/issues";
+        about_dialog.title = _("About Dino");
+        about_dialog.version = version;
+        about_dialog.website = "https://dino.im/";
+        about_dialog.copyright = "Copyright © 2016-2025 - Dino Team";
+        about_dialog.license_type = License.GPL_3_0;
+        about_dialog.present(window);
     }
 
     private void show_join_muc_dialog(Account? account, string jid) {
