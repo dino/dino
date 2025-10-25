@@ -147,6 +147,12 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #if ENABLE_VAAPI
                         "vah264dec",
 #endif
+#if ENABLE_V4L2
+                        "v4l2h264dec",
+#endif
+#if ENABLE_V4L2SL
+                        "v4l2slh264dec",
+#endif
                         "avdec_h264"
                     };
                 case "vp8":
@@ -156,6 +162,12 @@ public class Dino.Plugins.Rtp.CodecUtil {
 #endif
 #if ENABLE_VAAPI
                         "vavp8dec",
+#endif
+#if ENABLE_V4L2
+                        "v4l2vp8dec",
+#endif
+#if ENABLE_V4L2SL
+                        "v4l2slvp8dec",
 #endif
                         "vp8dec"
                     };
@@ -240,13 +252,13 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_decode_prefix(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
-        if (decode == "vah264dec" || decode == "avdec_h264") return "h264parse ! ";
+        if (decode == "vah264dec" || decode == "v4l2h264dec" || decode == "v4l2slh264dec" || decode == "avdec_h264") return "h264parse ! ";
         return null;
     }
 
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
-        if (decode == "vavp8dec" || decode == "vah264dec") return " max-errors=100";
+        if (decode == "vavp8dec" || decode == "v4l2vp8dec" || decode == "v4l2slvp8dec" || decode == "vah264dec" || decode == "v4l2h264dec" || decode == "v4l2slh264dec") return " max-errors=100";
         if (decode == "vp8dec") return " threads=8";
         return null;
     }
