@@ -271,7 +271,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
             supported_elements.add(element_name);
             return true;
         } else {
-            warning("%s is not installed or supported on this system", element_name);
+            info("%s is not installed or supported on this system", element_name);
             unsupported_elements.add(element_name);
             return false;
         }
