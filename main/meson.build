@@ -170,6 +170,12 @@ if get_option('rtp').allowed() and dep_gstreamer.found() and dep_gstreamer_app.f
     if get_option('rtp-vp9')
         vala_args += ['-D', 'ENABLE_VP9']
     endif
+    if get_option('rtp-v4l2')
+        vala_args += ['-D', 'ENABLE_V4L2']
+    endif
+    if get_option('rtp-v4l2-sl')
+        vala_args += ['-D', 'ENABLE_V4L2SL']
+    endif
     vala_args += ['-D', 'WITH_RTP']
 
     summary('Voice/video calls (rtp)', true, bool_yn: true, section: 'Plugins')
@@ -177,6 +183,8 @@ if get_option('rtp').allowed() and dep_gstreamer.found() and dep_gstreamer_app.f
     summary('VP9 codec', get_option('rtp-vp9'), bool_yn: true, section: 'RTP configuration')
     summary('Intel MediaSDK', get_option('rtp-msdk'), bool_yn: true, section: 'RTP configuration')
     summary('Video Acceleration API', get_option('rtp-vaapi'), bool_yn: true, section: 'RTP configuration')
+    summary('V4L2 API (stateful)', get_option('rtp-v4l2'), bool_yn: true, section: 'RTP configuration')
+    summary('V4L2 API (stateless)', get_option('rtp-v4l2-sl'), bool_yn: true, section: 'RTP configuration')
     summary('Voice preprocessing', dep_webrtc_audio_processing.found() and get_option('voice-processing').allowed(), bool_yn: true, section: 'RTP configuration')
 else
     summary('Voice/video calls (rtp)', false, bool_yn: true, section: 'Plugins')

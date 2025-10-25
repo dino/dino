@@ -12,6 +12,8 @@ option('rtp-h264', type: 'boolean', value: false, description: 'H264 codec')
 option('rtp-msdk', type: 'boolean', value: false, description: 'Intel MediaSDK')
 option('rtp-vaapi', type: 'boolean', value: false, description: 'Video Acceleration API')
 option('rtp-vp9', type: 'boolean', value: false, description: 'VP9 codec')
+option('rtp-v4l2', type: 'boolean', value: false, description: 'V4L2 API (stateful)')
+option('rtp-v4l2-sl', type: 'boolean', value: false, description: 'V4L2 API (stateless)')
 
 # Legacy plugin
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
