@@ -12,4 +12,6 @@ option('plugin-notification-sound', type: 'feature', value: 'disabled', descript
 option('plugin-rtp-h264', type: 'feature', value: 'auto', description: 'H264 codec')
 option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Intel MediaSDK')
 option('plugin-rtp-vaapi', type: 'feature', value: 'auto', description: 'Video Acceleration API')
+option('plugin-rtp-v4l2', type: 'feature', value: 'disabled', description: 'V4L2 API (stateful)')
+option('plugin-rtp-v4l2-sl', type: 'feature', value: 'auto', description: 'V4L2 API (stateless)')
 option('plugin-rtp-webrtc-audio-processing', value: 'auto', type: 'feature', description: 'Voice preprocessing')
