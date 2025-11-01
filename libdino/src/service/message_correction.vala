@@ -92,6 +92,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+        // Check if we already know a newer correction for this message
         if (unmatched_corrections.has_key(conversation) && unmatched_corrections[conversation].size > 0) {
             ContentItem? remove_from_list = null;
             bool? ret = null;
@@ -128,62 +129,62 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         }
 
         if (replace_id != null) {
-            var correction_message = message;
-            correction_message.edit_to = replace_id; // This isn't persisted TODO
-
-            // Check if it's maybe accepted by the XEP rules (for MUCs without occupant id)
-            if (conversation.type_.is_muc_semantic()) {
-                if (last_messages.has_key(conversation) && last_messages[conversation].has_key(correction_message.from)) {
-                    var last_message = last_messages[conversation][correction_message.from];
-                    // TODO this should be the referencing id (-> in MUCs the server id), but this implementation is temporarily for backwards-compatibility.
-                    bool acceptable = last_message.stanza_id == replace_id;
-                    if (acceptable) {
-                        return process_in_order_correction(conversation, last_messages[conversation][correction_message.from], correction_message);
-                    }
-                }
-            }
-
-            Message? original_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(replace_id, conversation);
-            if (original_message != null && is_correction_acceptable(original_message, correction_message)) {
-                return process_in_order_correction(conversation, original_message, correction_message);
-            }
-            return false;
+            message.edit_to = replace_id; // This isn't persisted here, but later after verifying that it's an allowed edit TODO?
+            return process_unverified_in_order_correction(conversation, message, replace_id);
         }
         return false;
     }
 
-    private bool process_wrong_order_correction(Conversation conversation, Message earlier_message, MessageItem correction_message) {
-        if (!is_correction_acceptable(earlier_message, correction_message.message)) {
+    private bool process_wrong_order_correction(Conversation conversation, Message earlier_message, MessageItem correction_item) {
+        if (!is_correction_acceptable(earlier_message, correction_item.message)) {
             return false;
         }
 
+        db.message_correction.insert()
+                .value(db.message_correction.message_id, correction_item.message.id)
+                .value(db.message_correction.to_stanza_id, correction_item.message.edit_to)
+                .perform();
+
         db.content_item.update()
-                .with(db.content_item.id, "=", correction_message.id)
+                .with(db.content_item.id, "=", correction_item.id)
                 .set(db.content_item.time, (long) earlier_message.time.to_unix())
                 .set(db.content_item.local_time, (long) earlier_message.local_time.to_unix())
                 .perform();
 
-        correction_message.time = earlier_message.time;
-
-        on_received_correction(conversation, correction_message.message.id);
+        on_received_correction(conversation, correction_item.message.id);
 
         return true;
     }
 
-    private bool process_in_order_correction(Conversation conversation, Message original_message, Message correction_message) {
-        int message_id_to_be_updated = get_latest_correction_message_id(conversation, correction_message.edit_to);
-        if (message_id_to_be_updated == -1) {
-            message_id_to_be_updated = original_message.id;
+    private bool process_unverified_in_order_correction(Conversation conversation, Message correction_message, string replace_id) {
+        // Legacy logic for MUCs without occupant id support
+        if (conversation.type_.is_muc_semantic()) {
+            if (last_messages.has_key(conversation) && last_messages[conversation].has_key(correction_message.from)) {
+                var last_message = last_messages[conversation][correction_message.from];
+                bool acceptable = last_message.stanza_id == replace_id;
+                if (acceptable) {
+                    return process_in_order_correction(conversation, last_messages[conversation][correction_message.from], correction_message);
+                }
+            }
         }
 
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_referencing_id(conversation, correction_message.edit_to);
+        Message? original_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(replace_id, conversation);
+        if (original_message != null && is_correction_acceptable(original_message, correction_message)) {
+            correction_message.edit_to = replace_id;
+            return process_in_order_correction(conversation, original_message, correction_message);
+        }
+        return false;
+    }
+
+    private bool process_in_order_correction(Conversation conversation, Message original_message, Message correction_message) {
+        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_message(conversation, original_message);
 
         db.message_correction.insert()
                 .value(db.message_correction.message_id, correction_message.id)
                 .value(db.message_correction.to_stanza_id, correction_message.edit_to)
                 .perform();
 
-        int current_correction_message_id = get_latest_correction_message_id(conversation, correction_message.edit_to);
+        int current_correction_message_id = get_latest_correction_message_id(conversation, original_message);
         if (content_item != null) {
             db.content_item.update()
                     .with(db.content_item.id, "=", content_item.id)
@@ -208,16 +209,19 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         }
     }
 
-    public int get_latest_correction_message_id(Conversation conversation, string stanza_ref_id) {
+    public int get_latest_correction_message_id(Conversation conversation, Message message) {
         var qry = db.message_correction.select({db.message.id})
                 .join_with(db.message, db.message.id, db.message_correction.message_id)
                 .with(db.message.account_id, "=", conversation.account.id)
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
-                .with(db.message_correction.to_stanza_id, "=", stanza_ref_id)
+                .with(db.message_correction.to_stanza_id, "=", message.edit_to ?? message.stanza_id)
                 .order_by(db.message.time, "DESC");
 
-        if (conversation.counterpart.resourcepart != null) {
-            qry.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
+        if (message.occupant_db_id != -1) {
+            qry.outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
+                .with(db.message_occupant_id.occupant_id, "=", message.occupant_db_id);
+        } else if (message.counterpart.resourcepart != null) {
+            qry.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
         }
         RowOption row = qry.single().row();
         if (row.is_present()) {
