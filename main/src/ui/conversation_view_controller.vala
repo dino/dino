@@ -249,7 +249,7 @@ public class ConversationViewController : Object {
                 }
             }
             if (!something_works && limits.has_key(0)) {
-                if (!something_works && file_info.get_size() > limits[0]) {
+                if (!something_works && file_info.get_size() > limits[0] && overlay != null) {
                     overlay.set_file_too_large();
                 }
             }
@@ -257,8 +257,10 @@ public class ConversationViewController : Object {
 
         overlay.close.connect(() => {
             // We don't want drag'n'drop to be active while the overlay is active
+            view.remove_overlay_dialog();
             overlay_dialog = null;
             update_file_upload_status.begin();
+            overlay = null;
         });
 
         view.add_overlay_dialog(overlay.get_widget());

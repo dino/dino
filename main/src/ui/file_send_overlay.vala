@@ -6,16 +6,16 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class FileSendOverlay {
+public class FileSendOverlay : Object {
 
     public signal void close();
     public signal void send_file();
 
     public Box main_box;
-    public Button close_button;
-    public Button send_button;
-    public SizingBin file_widget_insert;
-    public Label info_label;
+    public unowned Button close_button;
+    public unowned Button send_button;
+    public unowned SizingBin file_widget_insert;
+    public unowned Label info_label;
 
     private bool can_send = true;
 
@@ -28,11 +28,11 @@ public class FileSendOverlay {
         info_label = (Label) builder.get_object("info_label");
 
         close_button.clicked.connect(() => {
-            do_close();
+            close();
         });
         send_button.clicked.connect(() => {
             send_file();
-            do_close();
+            close();
         });
 
         load_file_widget.begin(file, file_info);
@@ -48,7 +48,7 @@ public class FileSendOverlay {
         var key_events = new EventControllerKey();
         key_events.key_pressed.connect((keyval) => {
             if (keyval == Gdk.Key.Escape) {
-                do_close();
+                close();
             }
             return false;
         });
@@ -85,12 +85,6 @@ public class FileSendOverlay {
         Util.force_error_color(info_label);
         send_button.sensitive = false;
         can_send = false;
-    }
-
-    private void do_close() {
-        this.close();
-        main_box.unparent();
-        main_box.destroy();
     }
 
     public Widget get_widget() {
