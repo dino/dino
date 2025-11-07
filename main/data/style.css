@@ -239,6 +239,7 @@ window.dino-main .dino-white-overlay {
     background: @theme_base_color;
 }
 
+/* TODO remove */
 window.dino-main .dino-file-overlay {
     border-radius: 5px;
     border: 1px solid alpha(black, 0.2);

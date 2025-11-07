@@ -1,73 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
     <requires lib="gtk" version="4.0"/>
-    <object class="GtkBox" id="main_box">
-        <property name="hexpand">0</property>
-        <property name="vexpand">0</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <style>
-            <class name="background"/>
-            <class name="dino-file-overlay"/>
-        </style>
+    <template class="DinoUiFileSendOverlay">
+        <property name="title" translatable="1">Send a file</property>
         <child>
             <object class="GtkBox">
                 <property name="orientation">vertical</property>
-                <property name="margin-end">20</property>
-                <property name="margin-start">20</property>
+                <child>
+                    <object class="AdwHeaderBar">
+                        <style>
+                            <class name="flat"/>
+                        </style>
+                    </object>
+                </child>
                 <child>
                     <object class="GtkBox">
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">10</property>
+                        <property name="margin-start">14</property>
+                        <property name="margin-end">14</property>
+                        <property name="margin-top">14</property>
+                        <property name="margin-bottom">14</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="spacing">14</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                            <object class="GtkLabel">
-                                <property name="label" translatable="1">Send a file</property>
-                                <property name="hexpand">1</property>
-                                <attributes>
-                                    <attribute name="weight" value="PANGO_WEIGHT_BOLD"></attribute>
-                                </attributes>
+                            <object class="DinoUiSizingBin" id="file_widget_insert">
+                                <property name="halign">center</property>
                             </object>
                         </child>
                         <child>
-                            <object class="GtkButton" id="close_button">
-                                <property name="focusable">1</property>
-                                <style>
-                                    <class name="titlebutton"/>
-                                    <class name="close"/>
-                                </style>
+                            <object class="GtkBox">
+                                <property name="halign">end</property>
+                                <property name="spacing">5</property>
                                 <child>
-                                    <object class="GtkImage">
-                                        <property name="icon-name">window-close-symbolic</property>
+                                    <object class="GtkLabel" id="info_label"/>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="send_button">
+                                        <property name="label" translatable="1">Send</property>
+                                        <property name="focusable">1</property>
+                                        <style>
+                                            <class name="suggested-action"/>
+                                        </style>
                                     </object>
                                 </child>
                             </object>
                         </child>
                     </object>
                 </child>
-                <child>
-                    <object class="DinoUiSizingBin" id="file_widget_insert">
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkBox">
-                        <property name="margin-top">15</property>
-                        <property name="margin-bottom">15</property>
-                        <property name="spacing">5</property>
-                        <child>
-                            <object class="GtkLabel" id="info_label"/>
-                        </child>
-                        <child>
-                            <object class="GtkButton" id="send_button">
-                                <property name="label" translatable="1">Send</property>
-                                <property name="focusable">1</property>
-                                <style>
-                                    <class name="suggested-action"/>
-                                </style>
-                            </object>
-                        </child>
-                    </object>
-                </child>
             </object>
         </child>
-    </object>
+    </template>
 </interface>
