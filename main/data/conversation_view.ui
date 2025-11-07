@@ -68,6 +68,14 @@
                         </child>
                     </object>
                 </child>
+                <child type="overlay">
+                    <object class="GtkRevealer" id="content_revealer">
+                        <property name="transition-type">crossfade</property>
+                        <property name="transition-duration">100</property>
+                        <property name="reveal-child">False</property>
+                        <property name="visible">False</property>
+                    </object>
+                </child>
             </object>
         </child>
     </template>

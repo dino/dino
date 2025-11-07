@@ -16,6 +16,7 @@ public class ConversationView : Widget {
     [GtkChild] public unowned ChatInput.View chat_input;
     [GtkChild] public unowned ConversationSummary.ConversationView conversation_frame;
     [GtkChild] public unowned Revealer white_revealer;
+    [GtkChild] public unowned Revealer content_revealer;
 
     public ListView list_view = new ListView(null, null);
 
@@ -31,24 +32,25 @@ public class ConversationView : Widget {
     }
 
     public void add_overlay_dialog(Widget widget) {
-        Revealer revealer = new Revealer() { transition_type=RevealerTransitionType.CROSSFADE , transition_duration= 100 };
-        revealer.set_child(widget);
+        content_revealer.set_child(widget);
 
-        overlay.add_overlay(revealer);
-
-        revealer.reveal_child = true;
+        content_revealer.visible = true;
+        content_revealer.reveal_child = true;
         white_revealer.visible = true;
         white_revealer.reveal_child = true;
-        widget.destroy.connect(() => {
-            overlay.remove_overlay(revealer);
-            white_revealer.reveal_child = false;
-            chat_input.do_focus();
-        });
+    }
+
+    public void remove_overlay_dialog() {
+        white_revealer.reveal_child = false;
+        content_revealer.reveal_child = false;
+        chat_input.do_focus();
     }
 
     private void on_child_revealed_changed() {
         if (!white_revealer.child_revealed) {
             white_revealer.visible = false;
+            content_revealer.visible = false;
+            content_revealer.set_child(null);
         }
     }
 }
