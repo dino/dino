@@ -19,10 +19,10 @@ public class FileSendOverlay : Adw.Dialog {
     private bool can_send = true;
 
     public FileSendOverlay(File file, FileInfo file_info) {
-        send_button.clicked.connect(() => {
-            send_file();
-            close();
-        });
+//        send_button.clicked.connect(() => {
+//            send_file();
+//            close();
+//        });
 
         load_file_widget.begin(file, file_info);
     }

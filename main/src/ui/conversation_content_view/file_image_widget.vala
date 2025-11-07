@@ -60,17 +60,17 @@ public class FileImageWidget : Widget {
 
         overlay.insert_after(this, null);
 
-        GestureClick gesture_click_controller = new GestureClick();
-        gesture_click_controller.button = 1; // listen for left clicks
-        gesture_click_controller.released.connect(on_image_clicked);
-        stack.add_controller(gesture_click_controller);
-
-        EventControllerMotion this_motion_events = new EventControllerMotion();
-        this.add_controller(this_motion_events);
-        this_motion_events.enter.connect((controller, x, y) => {
-            (controller.widget as FileImageWidget).on_motion_event_enter();
-        });
-        attach_on_motion_event_leave(this_motion_events, button);
+//        GestureClick gesture_click_controller = new GestureClick();
+//        gesture_click_controller.button = 1; // listen for left clicks
+//        gesture_click_controller.released.connect(on_image_clicked);
+//        stack.add_controller(gesture_click_controller);
+//
+//        EventControllerMotion this_motion_events = new EventControllerMotion();
+//        this.add_controller(this_motion_events);
+//        this_motion_events.enter.connect((controller, x, y) => {
+//            (controller.widget as FileImageWidget).on_motion_event_enter();
+//        });
+//        attach_on_motion_event_leave(this_motion_events, button);
     }
 
     private static void attach_on_motion_event_leave(EventControllerMotion this_motion_events, MenuButton button) {
@@ -124,12 +124,12 @@ public class FileImageWidget : Widget {
             transmission_progress.visible = true;
             show_image_overlay_toolbar = false;
         } else if (transmission_progress.visible) {
-            Timeout.add(250, () => {
-                transmission_progress.transferred_size = transmission_progress.file_size;
-                transmission_progress.visible = false;
-                show_image_overlay_toolbar = true;
-                return false;
-            });
+//            Timeout.add(250, () => {
+//                transmission_progress.transferred_size = transmission_progress.file_size;
+//                transmission_progress.visible = false;
+//                show_image_overlay_toolbar = true;
+//                return false;
+//            });
         }
 
         if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
