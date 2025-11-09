@@ -62,7 +62,11 @@ public static string color_for_show(string show) {
 }
 
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
-    return Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
+    string display_name =  Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
+    if (conversation.counterpart.equals_bare(conversation.account.bare_jid)) {
+        display_name = _("Notes to myself (%s)").printf(display_name);
+    }
+    return display_name;
 }
 
 public static string get_participant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid participant, bool me_is_me = false) {

@@ -98,6 +98,19 @@ public class Dino.Ui.ViewModel.PreferencesWindow : Object {
         update_data();
     }
 
+    public void open_notes_to_myself(Account account, string alias) {
+        try {
+            stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, account.bare_jid, alias);
+        } catch (InvalidJidError e) {
+            warning("Tried to add contact with invalid Jid: %s", e.message);
+        }
+        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(account.bare_jid, account, Conversation.Type.CHAT);
+        stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
+
+        Application app = GLib.Application.get_default() as Application;
+        app.controller.select_conversation(conversation);
+    }
+
     public ChangePasswordDialog get_change_password_dialog_model() {
         return new ChangePasswordDialog() {
             account = selected_account.account,

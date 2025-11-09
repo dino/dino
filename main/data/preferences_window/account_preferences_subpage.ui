@@ -117,6 +117,17 @@
                         </child>
                       </object>
                     </child>
+                    <child>
+                      <object class="AdwActionRow" id="open_notes_to_myself">
+                        <property name="title" translatable="yes">Open notes to myself</property>
+                        <child type="suffix">
+                          <object class="GtkButton" id="open_notes_to_myself_button">
+                            <property name="label">Open</property>
+                            <property name="valign">center</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>

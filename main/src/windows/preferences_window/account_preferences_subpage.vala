@@ -22,6 +22,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
     [GtkChild] public unowned Widget button_container;
     [GtkChild] public unowned Button remove_account_button;
     [GtkChild] public unowned Button disable_account_button;
+    [GtkChild] public unowned Button open_notes_to_myself_button;
 
     public Account account { get { return model.selected_account.account; } }
     public ViewModel.PreferencesWindow model { get; set; }
@@ -48,6 +49,9 @@ public class Dino.Ui.AccountPreferencesSubpage : Gtk.Box {
         });
         remove_account_button.clicked.connect(() => {
             show_remove_account_dialog();
+        });
+        open_notes_to_myself_button.clicked.connect(() => {
+            model.open_notes_to_myself(account, local_alias.text);
         });
         password_change.activatable_widget = new Label("");
         password_change.activated.connect(() => {
