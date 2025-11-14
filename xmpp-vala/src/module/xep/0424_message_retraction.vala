@@ -1,12 +1,19 @@
 namespace Xmpp.Xep.MessageRetraction {
 
-    private const string NS_URI = "urn:xmpp:message-retract:1";
+    public const string NS_URI = "urn:xmpp:message-retract:1";
 
     public static string? get_retract_id(MessageStanza message) {
-        StanzaNode? node = message.stanza.get_subnode("retract", NS_URI);
-        if (node == null) return null;
+        StanzaNode? retract_node = message.stanza.get_subnode("retract", NS_URI);
+        if (retract_node == null) return null;
 
-        return node.get_attribute("id");
+        return retract_node.get_attribute("id");
+    }
+
+    public static void set_retract_id(MessageStanza message, string message_id) {
+        StanzaNode retract_node = (new StanzaNode.build("retract", NS_URI))
+                .add_self_xmlns()
+                .put_attribute("id", message_id);
+        message.stanza.put_node(retract_node);
     }
 
     public class Module : XmppStreamModule {

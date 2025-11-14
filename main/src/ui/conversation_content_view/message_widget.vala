@@ -36,7 +36,8 @@ public class MessageMetaItem : ContentMetaItem {
         message_item = content_item as MessageItem;
         this.stream_interactor = stream_interactor;
 
-        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_received_correction);
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect(on_updated_item);
+        stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.connect(on_updated_item);
 
         label.activate_link.connect(on_label_activate_link);
 
@@ -157,6 +158,10 @@ public class MessageMetaItem : ContentMetaItem {
 
         string dim_color = Util.is_dark_theme(this.label) ? "#BDBDBD" : "#707070";
 
+        if (message.body == "") {
+            markup_text = @"<i><span size='small' color='$dim_color'>%s</span></i>".printf(_("Message deleted"));
+            theme_dependent = true;
+        }
         if (message.edit_to != null) {
             markup_text += @"  <span size='small' color='$dim_color'>(%s)</span>".printf(_("edited"));
             theme_dependent = true;
@@ -231,6 +236,7 @@ public class MessageMetaItem : ContentMetaItem {
             action1.name = "correction";
             action1.icon_name = "document-edit-symbolic";
             action1.tooltip = _("Edit message");
+            action1.shortcut_action = false;
             action1.callback = () => {
                 this.in_edit_mode = true;
             };
@@ -239,6 +245,9 @@ public class MessageMetaItem : ContentMetaItem {
 
         actions.add(get_reply_action(content_item, message_item.conversation, stream_interactor));
         actions.add(get_reaction_action(content_item, message_item.conversation, stream_interactor));
+
+        var delete_action = get_delete_action(content_item, message_item.conversation, stream_interactor);
+        if (delete_action != null) actions.add(delete_action);
 
         return actions;
     }
@@ -277,7 +286,7 @@ public class MessageMetaItem : ContentMetaItem {
         }
     }
 
-    private void on_received_correction(ContentItem content_item) {
+    private void on_updated_item(ContentItem content_item) {
         if (this.content_item.id == content_item.id) {
             this.content_item = content_item;
             message_item = content_item as MessageItem;
@@ -294,7 +303,8 @@ public class MessageMetaItem : ContentMetaItem {
     }
 
     public override void dispose() {
-        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.disconnect(on_received_correction);
+        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.disconnect(on_updated_item);
+        stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.disconnect(on_updated_item);
         this.notify["in-edit-mode"].disconnect(on_in_edit_mode_changed);
         if (marked_notify_handler_id != -1) {
             this.disconnect(marked_notify_handler_id);

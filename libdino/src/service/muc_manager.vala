@@ -353,6 +353,13 @@ public class MucManager : StreamInteractionModule, Object {
         return null;
     }
 
+    public Xep.Muc.Role? get_own_role(Conversation conversation) {
+        Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        if (own_jid == null) return null;
+
+        return stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account);
+    }
+
     public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
         Xep.Muc.Flag? flag = get_muc_flag(account);
         if (flag != null) {
@@ -698,6 +705,13 @@ public class MucManager : StreamInteractionModule, Object {
                     message.real_jid = real_jid.bare_jid;
                 }
             }
+
+            string? occupant_id = Xep.OccupantIds.get_occupant_id(stanza.stanza);
+            if (occupant_id != null) {
+                message.occupant_db_id = stream_interactor.get_module(OccupantIdStore.IDENTITY)
+                        .cache_occupant_id(conversation.account, occupant_id, message.from);
+            }
+
             Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.counterpart.bare_jid, conversation.account);
             if (stanza.id != null && own_muc_jid != null && message.from.equals(own_muc_jid)) {
                 Entities.Message? m = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza.id, conversation);

@@ -59,6 +59,7 @@ sources = files(
     'src/service/history_sync.vala',
     'src/service/jingle_file_transfers.vala',
     'src/service/message_correction.vala',
+    'src/service/message_deletion.vala',
     'src/service/message_processor.vala',
     'src/service/message_storage.vala',
     'src/service/module_manager.vala',

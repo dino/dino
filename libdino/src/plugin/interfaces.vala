@@ -164,6 +164,7 @@ public delegate void MessageActionEvoked(Variant? variant);
 public class MessageAction : Object {
     public string name;
     public bool sensitive = true;
+    public bool shortcut_action = true;
     public string icon_name;
     public string? tooltip;
     public Object? popover;

@@ -59,6 +59,7 @@ public interface Application : GLib.Application {
         Replies.start(stream_interactor, db);
         FallbackBody.start(stream_interactor, db);
         ContactModels.start(stream_interactor);
+        MessageDeletion.start(stream_interactor, db);
         StatelessFileSharing.start(stream_interactor, db);
 
         create_actions();

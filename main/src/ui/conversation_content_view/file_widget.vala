@@ -31,10 +31,12 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
 
         Gee.List<Plugins.MessageAction> actions = new ArrayList<Plugins.MessageAction>();
 
-        if (stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(file_item.conversation, content_item) != null) {
-            actions.add(get_reply_action(content_item, file_item.conversation, stream_interactor));
-            actions.add(get_reaction_action(content_item, file_item.conversation, stream_interactor));
-        }
+        actions.add(get_reply_action(content_item, file_item.conversation, stream_interactor));
+        actions.add(get_reaction_action(content_item, file_item.conversation, stream_interactor));
+
+        var delete_action = get_delete_action(content_item, file_item.conversation, stream_interactor);
+        if (delete_action != null) actions.add(delete_action);
+
         return actions;
     }
 }

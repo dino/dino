@@ -77,6 +77,11 @@ public class ConversationSelectorRow : ListBoxRow {
                 content_item_received(item);
             }
         });
+        stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.connect((item) => {
+            if (last_content_item != null && last_content_item.id == item.id) {
+                content_item_received(item);
+            }
+        });
 
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
@@ -161,8 +166,13 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label += ": ";
                     }
 
-                    change_label_attribute(message_label, attr_style_new(Pango.Style.NORMAL));
-                    message_label.label = Util.summarize_whitespaces_to_space(body);
+                    if (message_item.message.body == "") {
+                        change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
+                        message_label.label = _("Message deleted");
+                    } else {
+                        change_label_attribute(message_label, attr_style_new(Pango.Style.NORMAL));
+                        message_label.label = Util.summarize_whitespaces_to_space(body);
+                    }
 
                     break;
                 case FileItem.TYPE:

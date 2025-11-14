@@ -51,26 +51,45 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         // Setup all message menu buttons
         var correction_button = new Button() { name="correction" };
         correction_button.clicked.connect((button) => {
-            on_action_button_clicked(button, null);
+            on_action_button_clicked("correction", null);
         });
         action_buttons["correction"] = correction_button;
         message_menu_box.append(correction_button);
 
-        var reply_button = new Button() { name="reply" };
-        reply_button.clicked.connect((button) => {
-            on_action_button_clicked(button, null);
-        });
-        action_buttons["reply"] = reply_button;
-        message_menu_box.append(reply_button);
-
         var reaction_button = new MenuButton() { name="reaction" };
         EmojiChooser chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {
-            on_action_button_clicked(reaction_button, new GLib.Variant.string(emoji));
+            on_action_button_clicked("reaction", new GLib.Variant.string(emoji));
         });
         reaction_button.popover = chooser;
         action_buttons["reaction"] = reaction_button;
         message_menu_box.append(reaction_button);
+
+        var reply_button = new Button() { name="reply" };
+        reply_button.clicked.connect((button) => {
+            on_action_button_clicked("reply", null);
+        });
+        action_buttons["reply"] = reply_button;
+        message_menu_box.append(reply_button);
+
+        var delete_button = new Button() { name="delete" };
+        delete_button.clicked.connect((button) => {
+            on_action_button_clicked("delete", null);
+        });
+        action_buttons["delete"] = delete_button;
+        message_menu_box.append(delete_button);
+
+        var menu_button = new MenuButton() { name="menu", tooltip_text=_("More actions") };
+        action_buttons["menu"] = menu_button;
+        message_menu_box.append(menu_button);
+
+        SimpleAction action_action = new SimpleAction("action", VariantType.STRING);
+        action_action.activate.connect((parameter) => {
+            on_action_button_clicked(parameter.get_string());
+        });
+        SimpleActionGroup action_group = new SimpleActionGroup();
+        action_group.insert(action_action);
+        this.insert_action_group("action", action_group);
     }
 
     public ConversationView init(StreamInteractor stream_interactor) {
@@ -139,7 +158,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private bool is_highlight_fixed() {
         foreach (Widget widget in action_buttons.values) {
             MenuButton? menu_button = widget as MenuButton;
-            if (menu_button != null && menu_button.popover.visible) return true;
+            if (menu_button != null && menu_button.popover != null && menu_button.popover.visible) return true;
 
             ToggleButton? toggle_button = widget as ToggleButton;
             if (toggle_button != null && toggle_button.active) return true;
@@ -224,24 +243,35 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         if (message_actions != null) {
             message_menu_box.visible = true;
 
+            Menu menu_model = new Menu();
+            ((MenuButton)action_buttons["menu"]).menu_model = menu_model;
+
             foreach (Widget widget in action_buttons.values) {
                 widget.visible = false;
             }
 
             // Configure as many buttons as we need with the actions for the current meta item
             foreach (var message_action in current_message_actions) {
-                Widget button_widget = action_buttons[message_action.name];
-                button_widget.visible = true;
-                if (message_action.name == "reaction") {
-                    MenuButton button = (MenuButton) button_widget;
-                    button.sensitive = message_action.sensitive;
-                    button.icon_name = message_action.icon_name;
-                    button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
-                } else if (message_action.callback != null) {
-                    Button button = (Button) button_widget;
-                    button.sensitive = message_action.sensitive;
-                    button.icon_name = message_action.icon_name;
-                    button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                if (message_action.shortcut_action) {
+                    Widget button_widget = action_buttons[message_action.name];
+                    button_widget.visible = true;
+
+                    if (message_action.name == "reaction") {
+                        MenuButton button = (MenuButton) button_widget;
+                        button.sensitive = message_action.sensitive;
+                        button.icon_name = message_action.icon_name;
+                        button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                    } else if (message_action.callback != null) {
+                        Button button = (Button) button_widget;
+                        button.sensitive = message_action.sensitive;
+                        button.icon_name = message_action.icon_name;
+                        button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                    }
+                } else {
+                    MenuItem item = new MenuItem(message_action.tooltip, null);
+                    item.set_action_and_target_value("action.action", new GLib.Variant.string(message_action.name));
+                    menu_model.append_item(item);
+                    action_buttons["menu"].visible = true;
                 }
             }
         } else {
@@ -510,9 +540,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             (upper_item.mark == Message.Marked.WONTSEND) == (lower_item.mark == Message.Marked.WONTSEND);
     }
 
-    private void on_action_button_clicked(Widget widget, GLib.Variant? variant = null) {
+    private void on_action_button_clicked(string action_name, GLib.Variant? variant = null) {
         foreach (var action in message_actions) {
-            if (action.name != widget.name) continue;
+            if (action.name != action_name) continue;
             action.callback(variant);
         }
     }
