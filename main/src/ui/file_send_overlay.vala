@@ -6,53 +6,27 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
-public class FileSendOverlay : Object {
+[GtkTemplate (ui = "/im/dino/Dino/file_send_overlay.ui")]
+public class FileSendOverlay : Adw.Dialog {
 
-    public signal void close();
-    public signal void send_file();
+    public signal void send_file(File file);
 
-    public Box main_box;
-    public unowned Button close_button;
-    public unowned Button send_button;
-    public unowned SizingBin file_widget_insert;
-    public unowned Label info_label;
+    [GtkChild] protected unowned Button send_button;
+    [GtkChild] protected unowned SizingBin file_widget_insert;
+    [GtkChild] protected unowned Label info_label;
 
+    private File file;
     private bool can_send = true;
 
     public FileSendOverlay(File file, FileInfo file_info) {
-        Builder builder = new Builder.from_resource("/im/dino/Dino/file_send_overlay.ui");
-        main_box = (Box) builder.get_object("main_box");
-        close_button = (Button) builder.get_object("close_button");
-        send_button = (Button) builder.get_object("send_button");
-        file_widget_insert = (SizingBin) builder.get_object("file_widget_insert");
-        info_label = (Label) builder.get_object("info_label");
-
-        close_button.clicked.connect(() => {
-            close();
-        });
-        send_button.clicked.connect(() => {
-            send_file();
-            close();
-        });
-
+        this.file = file;
         load_file_widget.begin(file, file_info);
+    }
 
-        main_box.realize.connect(() => {
-            if (can_send) {
-                send_button.grab_focus();
-            } else {
-                close_button.grab_focus();
-            }
-        });
-
-        var key_events = new EventControllerKey();
-        key_events.key_pressed.connect((keyval) => {
-            if (keyval == Gdk.Key.Escape) {
-                close();
-            }
-            return false;
-        });
-        this.main_box.add_controller(key_events);
+    [GtkCallback]
+    private void on_send_button_clicked() {
+        send_file(file);
+        close();
     }
 
     private async void load_file_widget(File file, FileInfo file_info) {
@@ -85,10 +59,6 @@ public class FileSendOverlay : Object {
         Util.force_error_color(info_label);
         send_button.sensitive = false;
         can_send = false;
-    }
-
-    public Widget get_widget() {
-        return main_box;
     }
 }
 

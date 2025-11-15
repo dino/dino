@@ -109,9 +109,6 @@ public class ConversationViewController : Object {
         if (this.conversation != null) {
             conversation.notify["encryption"].disconnect(update_file_upload_status);
         }
-        if (overlay_dialog != null) {
-            overlay_dialog.destroy();
-        }
 
         this.conversation = conversation;
 
@@ -154,7 +151,7 @@ public class ConversationViewController : Object {
         bool upload_available = yield stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         chat_input_controller.set_file_upload_active(upload_available);
 
-        if (upload_available && overlay_dialog == null) {
+        if (upload_available) {
             if (drop_event_controller.widget == null) {
                 view.add_controller(drop_event_controller);
             }
@@ -218,8 +215,8 @@ public class ConversationViewController : Object {
             return;
         }
 
-        FileSendOverlay overlay = new FileSendOverlay(file, file_info);
-        overlay.send_file.connect(() => send_file(file));
+        FileSendOverlay file_send_overlay = new FileSendOverlay(file, file_info);
+        file_send_overlay.send_file.connect(send_file);
 
         stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
             HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);
@@ -230,22 +227,18 @@ public class ConversationViewController : Object {
                 }
             }
             if (!something_works && limits.has_key(0)) {
-                if (!something_works && file_info.get_size() > limits[0] && overlay != null) {
-                    overlay.set_file_too_large();
+                if (!something_works && file_info.get_size() > limits[0] && file_send_overlay != null) {
+                    file_send_overlay.set_file_too_large();
                 }
             }
         });
 
-        overlay.close.connect(() => {
+        file_send_overlay.closed.connect(() => {
             // We don't want drag'n'drop to be active while the overlay is active
-            view.remove_overlay_dialog();
-            overlay_dialog = null;
             update_file_upload_status.begin();
-            overlay = null;
         });
 
-        view.add_overlay_dialog(overlay.get_widget());
-        overlay_dialog = overlay.get_widget();
+        file_send_overlay.present(view);
 
         update_file_upload_status.begin();
     }

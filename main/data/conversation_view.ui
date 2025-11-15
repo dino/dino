@@ -2,78 +2,50 @@
 <interface>
     <template class="DinoUiConversationView">
         <child>
-            <object class="GtkOverlay" id="overlay">
+            <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <style>
+                    <class name="dino-conversation"/>
+                </style>
                 <child>
-                    <object class="GtkBox">
-                        <property name="orientation">vertical</property>
-                        <style>
-                            <class name="dino-conversation"/>
-                        </style>
+                    <object class="GtkOverlay" id="conversation_overlay">
+                        <property name="vexpand">True</property>
                         <child>
-                            <object class="GtkOverlay" id="conversation_overlay">
-                                <property name="vexpand">True</property>
+                            <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
+                            </object>
+                        </child>
+                        <child type="overlay">
+                            <object class="GtkRevealer" id="goto_end_revealer">
+                                <property name="halign">end</property>
+                                <property name="valign">end</property>
+                                <property name="transition-type">crossfade</property>
+                                <property name="margin-end">30</property>
+                                <property name="margin-bottom">30</property>
                                 <child>
-                                    <object class="DinoUiConversationSummaryConversationView" id="conversation_frame">
-                                    </object>
-                                </child>
-                                <child type="overlay">
-                                    <object class="GtkRevealer" id="goto_end_revealer">
+                                    <object class="GtkButton" id="goto_end_button">
+                                        <property name="width-request">30</property>
+                                        <property name="height-request">30</property>
+                                        <property name="vexpand">False</property>
                                         <property name="halign">end</property>
                                         <property name="valign">end</property>
-                                        <property name="transition-type">crossfade</property>
-                                        <property name="margin-end">30</property>
-                                        <property name="margin-bottom">30</property>
+                                        <style>
+                                            <class name="circular"/>
+                                            <class name="opaque"/>
+                                        </style>
                                         <child>
-                                            <object class="GtkButton" id="goto_end_button">
-                                                <property name="width-request">30</property>
-                                                <property name="height-request">30</property>
-                                                <property name="vexpand">False</property>
-                                                <property name="halign">end</property>
-                                                <property name="valign">end</property>
-                                                <style>
-                                                    <class name="circular"/>
-                                                    <class name="opaque"/>
-                                                </style>
-                                                <child>
-                                                    <object class="GtkImage">
-                                                        <property name="icon-name">go-down-symbolic</property>
-                                                        <property name="icon-size">1</property>
-                                                    </object>
-                                                </child>
+                                            <object class="GtkImage">
+                                                <property name="icon-name">go-down-symbolic</property>
+                                                <property name="icon-size">1</property>
                                             </object>
                                         </child>
                                     </object>
                                 </child>
                             </object>
                         </child>
-                        <child>
-                            <object class="DinoUiChatInputView" id="chat_input">
-                            </object>
-                        </child>
                     </object>
                 </child>
-                <child type="overlay">
-                    <object class="GtkRevealer" id="white_revealer">
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">200</property>
-                        <property name="reveal-child">False</property>
-                        <property name="visible">False</property>
-                        <child>
-                            <object class="GtkBox">
-                                <property name="opacity">0.7</property>
-                                <style>
-                                    <class name="dino-white-overlay"/>
-                                </style>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child type="overlay">
-                    <object class="GtkRevealer" id="content_revealer">
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">100</property>
-                        <property name="reveal-child">False</property>
-                        <property name="visible">False</property>
+                <child>
+                    <object class="DinoUiChatInputView" id="chat_input">
                     </object>
                 </child>
             </object>
