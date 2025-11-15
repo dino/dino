@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="Adw" version="1.0"/>
+    <requires lib="gtk" version="4.0"/>
+    <object class="AdwToggleGroup" id="mute_switch_chat">
+        <child>
+            <object class="AdwToggle">
+                <property name="icon-name">dino-bell-large</property>
+                <property name="name">notification.on</property>
+                <property name="tooltip" translatable="yes">Enable notifications</property>
+            </object>
+        </child>
+        <child>
+            <object class="AdwToggle">
+                <property name="icon-name">dino-bell-large-none</property>
+                <property name="name">notification.off</property>
+                <property name="tooltip" translatable="yes">Disable notifications</property>
+            </object>
+        </child>
+    </object>
+    <object class="AdwToggleGroup" id="mute_switch_muc">
+        <child>
+            <object class="AdwToggle">
+                <property name="icon-name">dino-bell-large</property>
+                <property name="name">notification.on</property>
+                <property name="tooltip" translatable="yes">Notify for all messages</property>
+            </object>
+        </child>
+        <child>
+            <object class="AdwToggle">
+                <property name="icon-name">dino-mention-symbolic</property>
+                <property name="name">notification.highlight</property>
+                <property name="tooltip" translatable="yes">Notify only for mentions</property>
+            </object>
+        </child>
+        <child>
+            <object class="AdwToggle">
+                <property name="icon-name">dino-bell-large-none</property>
+                <property name="name">notification.off</property>
+                <property name="tooltip" translatable="yes">Disable notifications</property>
+            </object>
+        </child>
+    </object>
+    <object class="GtkButton" id="reset_button">
+        <property name="icon-name">edit-clear-symbolic</property>
+        <property name="name">notification.default</property>
+        <property name="tooltip-text" translatable="yes">Reset to default</property>
+    </object>
+</interface>

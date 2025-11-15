@@ -45,6 +45,7 @@
     <file>icons/scalable/status/dino-bell-large-none-symbolic.svg</file>
     <file>icons/scalable/status/dino-bell-large-symbolic.svg</file>
     <file>icons/scalable/status/dino-block-symbolic.svg</file>
+    <file>icons/scalable/status/dino-mention-symbolic.svg</file>
     <file>icons/scalable/status/dino-party-popper-symbolic.svg</file>
     <file>icons/scalable/status/dino-security-high-symbolic.svg</file>
     <file>icons/scalable/status/dino-status-away.svg</file>
@@ -73,6 +74,7 @@
     <file>menu_encryption.ui</file>
     <file>message_item_widget_edit_mode.ui</file>
     <file>muc_member_list_row.ui</file>
+    <file>mute_toggle.ui</file>
     <file>occupant_list.ui</file>
     <file>occupant_list_item.ui</file>
     <file>quote.ui</file>
