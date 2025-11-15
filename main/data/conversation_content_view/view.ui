@@ -26,6 +26,7 @@
                                                 <property name="margin-end">10</property>
                                                 <property name="halign">end</property>
                                                 <property name="valign">start</property>
+                                                <property name="visible">False</property>
                                                 <style>
                                                     <class name="card"/>
                                                     <class name="toolbar"/>
