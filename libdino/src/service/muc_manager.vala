@@ -110,7 +110,9 @@ public class MucManager : StreamInteractionModule, Object {
                     }
                     if (!mucs_sync_cancellables[account].has_key(jid.bare_jid)) {
                         mucs_sync_cancellables[account][jid.bare_jid] = new Cancellable();
-                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], conversation.active_last_changed, (_, res) => {
+                        // If the conversation was newly opened, fetch a bit before
+                        DateTime fetch_from_time = conversation.active_last_changed.add(-TimeSpan.DAY * 5);
+                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], fetch_from_time, (_, res) => {
                             history_sync.fetch_everything.end(res);
                             mucs_sync_cancellables[account].unset(jid.bare_jid);
                         });
