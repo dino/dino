@@ -109,6 +109,7 @@ sources = files(
     'src/module/xep/0308_last_message_correction.vala',
     'src/module/xep/0313_2_message_archive_management.vala',
     'src/module/xep/0313_message_archive_management.vala',
+    'src/module/xep/0317_hats.vala',
     'src/module/xep/0333_chat_markers.vala',
     'src/module/xep/0334_message_processing_hints.vala',
     'src/module/xep/0353_jingle_message_initiation.vala',
