@@ -40,6 +40,18 @@ public class MainWindowController : Object {
 
     }
 
+    public void set_unread() {
+        int all_unread = 0;
+        foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
+            all_unread += stream_interactor.get_module(ChatInteraction.IDENTITY).get_num_unread(conversation);
+        }
+        string title_ = "Dino";
+        if(all_unread>0) {
+            title_ = "Dino ("+all_unread.to_string()+")";
+        }
+        window.set_title(title_);
+    }
+
     public void set_window(MainWindow window) {
         this.window = window;
 
@@ -131,6 +143,7 @@ public class MainWindowController : Object {
         if (do_reset_search) {
             reset_search_entry();
         }
+	this.set_unread();
     }
 
     private void check_unset_conversation() {
