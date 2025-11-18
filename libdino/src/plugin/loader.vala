@@ -2,6 +2,9 @@ using Gee;
 
 namespace Dino.Plugins {
 
+[CCode (cname = "DINO_PLUGIN_SUFFIX")]
+extern const string PLUGIN_SUFFIX;
+
 private class Info : Object {
     public Module module;
     public Type gtype;
@@ -38,7 +41,7 @@ public class Loader : Object {
                 Dir dir = Dir.open(path, 0);
                 string? file = null;
                 while ((file = dir.read_name()) != null) {
-                    if (file.has_suffix(Module.SUFFIX)) plugin_names.add(file);
+                    if (file.has_suffix(PLUGIN_SUFFIX)) plugin_names.add(file);
                 }
             } catch (Error e) {
                 // Ignore this folder
