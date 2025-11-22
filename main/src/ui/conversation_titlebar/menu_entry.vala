@@ -18,17 +18,26 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
         Menu menu_model = new Menu();
         menu_model.append(_("Conversation Details"), "conversation.details");
+        menu_model.append(_("Select Messages"), "conversation.select-messages");
         menu_model.append(_("Close Conversation"), "app.close-current-conversation");
         Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
         button.popover = popover_menu;
 
         SimpleActionGroup action_group = new SimpleActionGroup();
+
         SimpleAction details_action = new SimpleAction("details", null);
         details_action.activate.connect((parameter) => {
             var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("about")});
             GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
         action_group.insert(details_action);
+
+        SimpleAction select_messages_action = new SimpleAction("select-messages", null);
+        select_messages_action.activate.connect((parameter) => {
+            GLib.Application.get_default().activate_action("select-messages", new Variant.int32(conversation.id));
+        });
+        action_group.insert(select_messages_action);
+
         button.insert_action_group("conversation", action_group);
     }
 

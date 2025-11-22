@@ -28,6 +28,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
+    private Gee.TreeSet<ContentItem> selected_content_items = new TreeSet<ContentItem>(compare_content_items);
     private Gee.List<Widget> widget_order = new Gee.ArrayList<Widget>();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
@@ -227,6 +228,16 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
             // Move message menu
             message_menu_box.margin_top = (int)(widget_y + MESSAGE_MENU_BOX_OFFSET);
+        }
+    }
+
+    public void show_selection_checkboxes(bool enable) {
+        foreach (ConversationItemSkeleton skeleton in item_item_skeletons.values) {
+            skeleton.show_selection_checkbox(enable);
+        }
+        if (!enable) {
+            selected_content_items.clear();
+            GLib.Application.get_default().activate_action("update-selected-messages-counter", 0);
         }
     }
 
@@ -447,7 +458,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             item_item_skeletons.unset(item);
 
             if (item is ContentMetaItem) {
-                content_items.remove((ContentMetaItem)item);
+                ContentMetaItem content_meta_item = (ContentMetaItem)item;
+                content_items.remove(content_meta_item);
+                selected_content_items.remove(content_meta_item.content_item);
             }
             meta_items.remove(item);
             skeleton.dispose();
@@ -482,6 +495,58 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     public void remove_notification(Widget widget) {
         notification_revealer.reveal_child = false;
         notifications.remove(widget);
+    }
+
+    public void select_item(ContentItem item) {
+        lock (selected_content_items) {
+            if (!selected_content_items.contains(item)) {
+                selected_content_items.add(item);
+                GLib.Application.get_default().activate_action("update-selected-messages-counter", selected_content_items.size);
+            }
+        }
+    }
+
+    public void unselect_item(ContentItem item) {
+        lock (selected_content_items) {
+            if (selected_content_items.contains(item)) {
+                selected_content_items.remove(item);
+                GLib.Application.get_default().activate_action("update-selected-messages-counter", selected_content_items.size);
+            }
+        }
+    }
+
+    public string selection_to_text() {
+        StringBuilder sb = new StringBuilder();
+        bool first = true;
+        foreach (ContentItem item in selected_content_items) {
+            string display_room = Util.get_participant_display_name(stream_interactor, conversation, item.jid);
+            string msg_text;
+            switch (item.type_) {
+                case MessageItem.TYPE:
+                    MessageItem message_item = item as MessageItem;
+                    msg_text = Dino.message_body_without_reply_fallback(message_item.message);
+                    break;
+                case FileItem.TYPE:
+                    FileItem file_item = item as FileItem;
+                    FileTransfer transfer = file_item.file_transfer;
+                    bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
+                    msg_text = ( file_is_image ? _("(Image %s)") : _("(File %s)") ).printf(transfer.file_name);
+                    break;
+                case CallItem.TYPE:
+                    CallItem call_item = item as CallItem;
+                    msg_text = call_item.call.direction == Call.DIRECTION_OUTGOING ? _("(Outgoing call)") : _("(Incoming call)");
+                    break;
+                default:
+                    msg_text = "<Unknown message>";
+                    break;
+            }
+            if (!first) {
+                sb.append("\n\n");
+            }
+            sb.append(@"$display_room, [$(item.time.format("%Y-%m-%d %H:%M:%S"))]\n$msg_text");
+            first = false;
+        }
+        return sb.str;
     }
 
     private Widget insert_new(Plugins.MetaConversationItem item) {
@@ -602,6 +667,13 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
+    private static int compare_content_items(ContentItem a, ContentItem b) {
+        int cmp1 = a.time.compare(b.time);
+        if (cmp1 != 0) return cmp1;
+
+        return a.id - b.id;
+    }
+
     private static int compare_content_meta_items(ContentMetaItem a, ContentMetaItem b) {
         return compare_meta_items(a, b);
     }
@@ -631,6 +703,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             widget.dispose();
         }
         widgets.clear();
+        selected_content_items.clear();
 
         Widget? notification = notifications.get_first_child();
         while (notification != null) {
