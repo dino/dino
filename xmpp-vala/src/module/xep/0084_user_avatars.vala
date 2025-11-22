@@ -26,7 +26,10 @@ namespace Xmpp.Xep.UserAvatars {
     }
 
     public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) {
-        Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, jid, NS_URI_DATA);
+        Gee.ArrayList<StanzaNode> req_items = new Gee.ArrayList<StanzaNode>();
+        req_items.add(new StanzaNode.build("item", NS_URI_DATA).put_attribute("id", hash));
+
+        Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, jid, NS_URI_DATA, req_items);
         if (items == null || items.size == 0 || items[0].sub_nodes.size == 0) return null;
 
         StanzaNode node = items[0].sub_nodes[0];
