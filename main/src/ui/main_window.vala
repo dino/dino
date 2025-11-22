@@ -13,6 +13,8 @@ public class MainWindow : Adw.ApplicationWindow {
 
     [GtkChild] public Stack stack;
     [GtkChild] public Adw.NavigationSplitView navigation_split_view;
+    [GtkChild] public Separator page_separator;
+    [GtkChild] public Adw.ToolbarView sidebar_toolbar_view;
 
     [GtkChild] public MenuButton add_button;
     [GtkChild] public MenuButton menu_button;
@@ -56,6 +58,12 @@ public class MainWindow : Adw.ApplicationWindow {
 
         conversation_selector.init(stream_interactor);
         conversation_selector.conversation_selected.connect_after(() => { navigation_split_view.show_content = true; });
+
+        page_separator.set_cursor_from_name("ew-resize");
+        GestureDrag gesture_drag_controller = new GestureDrag();
+        gesture_drag_controller.button = 1; // listen for left clicks
+        gesture_drag_controller.drag_update.connect(on_separator_drag_update);
+        page_separator.add_controller(gesture_drag_controller);
 
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
@@ -143,6 +151,10 @@ public class MainWindow : Adw.ApplicationWindow {
         Builder menu_builder = new Builder.from_resource("/im/dino/Dino/menu_app.ui");
         MenuModel menu_menu_model = menu_builder.get_object("menu_app") as MenuModel;
         menu_button.set_menu_model(menu_menu_model);
+    }
+
+    private void on_separator_drag_update(double offset_x, double offset_y) {
+        sidebar_toolbar_view.set_size_request(sidebar_toolbar_view.get_width() + (int) offset_x, -1);
     }
 }
 
