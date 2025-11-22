@@ -101,12 +101,14 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                     Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(parsed_jid, accounts[0], Conversation.Type.CHAT);
                     stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
                     controller.select_conversation(conversation);
+                    window.navigation_split_view.show_content = true;
                 } else {
                     AddChatDialog dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
                     dialog.set_filter(jid);
                     dialog.set_transient_for(window);
                     dialog.added.connect((conversation) => {
                         controller.select_conversation(conversation);
+                        window.navigation_split_view.show_content = true;
                     });
                     dialog.present();
                 }
@@ -141,6 +143,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         open_conversation_action.activate.connect((variant) => {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(variant.get_int32());
             if (conversation != null) controller.select_conversation(conversation);
+            window.navigation_split_view.show_content = true;
             Util.present_window(window);
         });
         add_action(open_conversation_action);
@@ -172,6 +175,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             AddChatDialog add_chat_dialog = new AddChatDialog(stream_interactor, stream_interactor.get_accounts());
             add_chat_dialog.set_transient_for(window);
             add_chat_dialog.added.connect((conversation) => controller.select_conversation(conversation));
+            add_chat_dialog.added.connect_after(() => { window.navigation_split_view.show_content = true; });
             add_chat_dialog.present();
         });
         add_action(contacts_action);
