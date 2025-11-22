@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
 "PO-Revision-Date: 2024-09-10 14:09+0000\n"
 "Language-Team: none\n"
 "Language: lt\n"
@@ -20,10 +20,10 @@ msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:293
+#: main/src/ui/application.vala:290
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -50,7 +50,7 @@ msgid "Select avatar"
 msgstr "Pasirinkti avatarą"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
 msgstr "Pasirinkti"
 
@@ -62,36 +62,36 @@ msgstr "Paveikslai"
 msgid "All files"
 msgstr "Visi failai"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:156
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
 msgstr "Šalinti paskyrą %s?"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:188
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
 msgstr "Jungiamasi…"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:190
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
 msgstr "Prisijungta"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:192
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
 msgstr "Atsijungta"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:203
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
 msgstr "Neteisingas slaptažodis"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:205
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
 msgstr "Negaliojantis TLS liudijimas"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:208
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:210
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:207
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
 msgstr "Klaida"
 
@@ -294,27 +294,27 @@ msgstr "Administratorius"
 msgid "Member"
 msgstr "Narys"
 
-#: main/src/ui/file_send_overlay.vala:84
+#: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Failas viršija didžiausią įkėlimo į serverį dydį."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:95
+#: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
 msgstr "Žinutė per ilga"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:161
+#: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
 msgstr "redaguota"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:170
+#: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
 msgstr "laukiama…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:185
+#: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
 msgstr "pristatymas nepavyko"
 
@@ -367,7 +367,7 @@ msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:337
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
@@ -375,7 +375,7 @@ msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
@@ -383,7 +383,7 @@ msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
@@ -393,49 +393,54 @@ msgstr[1] "prieš %i minutes"
 msgstr[2] "prieš %i minučių"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:343
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "Ką tik"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:151
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:176
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:191
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:186
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:201
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "Aš"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:171
+#: main/src/ui/conversation_content_view/message_widget.vala:162
+msgid "Message deleted"
+msgstr ""
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Paveikslas išsiųstas"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Failas išsiųstas"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "Paveikslas gautas"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "Failas gautas"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
 msgstr "Išeinantis skambutis"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
@@ -443,13 +448,13 @@ msgstr "Išeinantis skambutis"
 msgid "Incoming call"
 msgstr "Įeinantis skambutis"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:330
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%b %d"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "Vakar"
@@ -484,7 +489,7 @@ msgstr "Panaikinti leidimą rašyti"
 msgid "Invite to Conference"
 msgstr "Pakviesti į konferenciją"
 
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
 msgstr "Pasirinkti failą"
 
@@ -557,7 +562,7 @@ msgid "Request permission"
 msgstr "Užklausti leidimo"
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
-#: main/data/file_send_overlay.ui:24
+#: main/data/file_send_overlay.ui:5
 msgid "Send a file"
 msgstr "Siųsti failą"
 
@@ -648,7 +653,7 @@ msgid "Start"
 msgstr "Pradėti"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:293 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Prisijungti prie kanalo"
@@ -660,7 +665,7 @@ msgstr "Kitas"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:293 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Prisijungti"
 
@@ -701,7 +706,7 @@ msgstr "Kambaryje per daug žmonių"
 msgid "Add"
 msgstr "Pridėti"
 
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Apie Dino"
 
@@ -872,9 +877,13 @@ msgstr "Atvaizduojamas vardas"
 msgid "Topic"
 msgstr "Tema"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:233
+#: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
 msgstr "Taisyti žinutę"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:82
+msgid "More actions"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -891,7 +900,7 @@ msgid "Open"
 msgstr "Atidaryti"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:167
+#: main/src/ui/conversation_content_view/file_widget.vala:169
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Išsaugoti kaip…"
@@ -1024,6 +1033,11 @@ msgstr "Atsakyti"
 #: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
 msgstr "Šis pokalbis nepalaiko atsakymų."
+
+#: main/src/ui/conversation_content_view/item_actions.vala:61
+#: main/src/ui/conversation_content_view/item_actions.vala:64
+msgid "Delete message"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1267,7 +1281,7 @@ msgstr "Nėra atitinkančių žinučių"
 msgid "Check the spelling or try to remove filters"
 msgstr "Patikrinkite rašybą arba pabandykite pašalinti filtrus"
 
-#: main/data/file_send_overlay.ui:61
+#: main/data/file_send_overlay.ui:41
 msgid "Send"
 msgstr "Siųsti"
 

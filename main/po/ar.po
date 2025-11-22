@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 21:57+0200\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
 "PO-Revision-Date: 2025-07-29 03:02+0000\n"
 "Language-Team: Arabic <https://hosted.weblate.org/projects/dino/translations/"
 "ar/>\n"
@@ -21,10 +21,10 @@ msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:293
+#: main/src/ui/application.vala:290
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -51,7 +51,7 @@ msgid "Select avatar"
 msgstr "اختر الصورة الرمزية"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
 msgstr "اختر"
 
@@ -63,36 +63,36 @@ msgstr "الصور"
 msgid "All files"
 msgstr "كافة الملفات"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:156
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
 msgstr "أأزيلُ الحساب %s؟"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:188
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
 msgstr "يتَّصِل …"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:190
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
 msgstr "مُتَّصل"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:192
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
 msgstr "غير مُتَّصل"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:203
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
 msgstr "كلمة السر خاطئة"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:205
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
 msgstr "شهادة بروتوكول طبقة المنافذ الآمنة (TLS) غير صالحة"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:208
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:210
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:207
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
 msgstr "خطأ"
 
@@ -295,27 +295,27 @@ msgstr "مدير"
 msgid "Member"
 msgstr "عضو"
 
-#: main/src/ui/file_send_overlay.vala:84
+#: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
 msgstr "حجم الملف يتجاوز الحد الذي يسمح به الخادوم."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:95
+#: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
 msgstr "الرسالة طويلة جدًا"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:161
+#: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
 msgstr "مُعَدَّلة"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:170
+#: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
 msgstr "في انتظار الإرسال…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:185
+#: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
 msgstr "فشل التسليم"
 
@@ -368,7 +368,7 @@ msgid "%a, %l∶%M %p"
 msgstr "%A، %Ol:%OM %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:337
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
@@ -376,7 +376,7 @@ msgid "%H∶%M"
 msgstr "%OH:%OM"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
@@ -384,7 +384,7 @@ msgid "%l∶%M %p"
 msgstr "%Ol:%OM %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
@@ -397,49 +397,54 @@ msgstr[4] "منذ %i دقيقة"
 msgstr[5] "منذ %i دقيقة"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:343
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "الآن"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:151
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:176
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:191
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:186
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:201
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "أنا"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:171
+#: main/src/ui/conversation_content_view/message_widget.vala:162
+msgid "Message deleted"
+msgstr ""
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "أُرسلت الصورة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "أُرسل الملف"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "استُلِمَت صورة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "استُلِم ملف"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
 msgstr "مكالمة صادرة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
@@ -447,13 +452,13 @@ msgstr "مكالمة صادرة"
 msgid "Incoming call"
 msgstr "مكالمة واردة"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:330
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%Od %b"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "البارحة"
@@ -488,7 +493,7 @@ msgstr "أبطِل تصريح الكتابة"
 msgid "Invite to Conference"
 msgstr "ادعُ إلى المؤتمر"
 
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
 msgstr "اختر ملفًا"
 
@@ -561,7 +566,7 @@ msgid "Request permission"
 msgstr "اطلب الإذن"
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
-#: main/data/file_send_overlay.ui:24
+#: main/data/file_send_overlay.ui:5
 msgid "Send a file"
 msgstr "أرسِل ملفًا"
 
@@ -652,7 +657,7 @@ msgid "Start"
 msgstr "ابدأ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:293 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "انضم إلى قناة"
@@ -664,7 +669,7 @@ msgstr "التالي"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:293 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "انضم"
 
@@ -705,7 +710,7 @@ msgstr "الغرفة مكتظة"
 msgid "Add"
 msgstr "أضِف"
 
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "عَنْ Dino"
 
@@ -879,9 +884,13 @@ msgstr "اسم العرض"
 msgid "Topic"
 msgstr "الموضوع"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:233
+#: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
 msgstr "عَدِّل الرسالة"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:82
+msgid "More actions"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -898,7 +907,7 @@ msgid "Open"
 msgstr "افتح"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:167
+#: main/src/ui/conversation_content_view/file_widget.vala:169
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "احفظ باسم…"
@@ -1037,6 +1046,11 @@ msgstr "ردّ"
 #: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
 msgstr "لا تدعم هذه المحادثة الردود."
+
+#: main/src/ui/conversation_content_view/item_actions.vala:61
+#: main/src/ui/conversation_content_view/item_actions.vala:64
+msgid "Delete message"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1276,7 +1290,7 @@ msgstr "لا رسائل متطابقة"
 msgid "Check the spelling or try to remove filters"
 msgstr "تحقق مِن التدقيق الإملائي أو حاول إزالة المرشحات"
 
-#: main/data/file_send_overlay.ui:61
+#: main/data/file_send_overlay.ui:41
 msgid "Send"
 msgstr "أرسل"
 

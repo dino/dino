@@ -1,59 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: dino-openpgp-0.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-02-25 04:41+0000\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
-"openpgp/nl/>\n"
-"Language: nl\n"
+"PO-Revision-Date: 2025-10-27 13:02+0000\n"
+"Language-Team: none\n"
+"Language: isv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
-msgstr "Bezig met aanroepen van GnuPG"
+msgstr "Poprošenje GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 #: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "Zadany ključ"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
-msgstr "Fout in GnuPG"
+msgstr "Grěška v GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 msgid "No keys available. Generate one!"
-msgstr "Geen sleutels beschikbaar. Genereer een sleutel!"
+msgstr "Nema dostupnyh ključev. Sgenerujte jedin!"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
-msgstr "Uitgeschakeld"
+msgstr "Izključeno"
 
 #: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
-msgstr "Sleutel niet in sleutelbos"
+msgstr "Nema ključa v svezku ključev"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
-
-#~ msgid "Encryption"
-#~ msgstr "Encryptie"
-
-#~ msgid "Key publishing disabled"
-#~ msgstr "Sleutelpublicatie uitgeschakeld"
-
-#~ msgid "Select key"
-#~ msgstr "Kies een sleutel"
-
-#~ msgid "Loading…"
-#~ msgstr "Bezig met laden…"
-
-#~ msgid "OpenPGP"
-#~ msgstr "OpenPGP"
+msgstr "Odtisk/odpečatok prsta"

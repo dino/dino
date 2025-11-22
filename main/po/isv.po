@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2022-10-17 00:56+0000\n"
+"PO-Revision-Date: 2025-10-27 13:02+0000\n"
 "Language-Team: none\n"
-"Language: ko\n"
+"Language: isv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
@@ -29,95 +29,95 @@ msgstr ""
 #: main/data/add_conversation/add_groupchat_dialog.ui:12
 #: main/data/add_conversation/add_contact_dialog.ui:13
 msgid "Cancel"
-msgstr "취소"
+msgstr "Anulovati"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:65
 msgid "Connect"
-msgstr "연결"
+msgstr "Sjediniti se"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr ""
+msgstr "Izključiti konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr ""
+msgstr "Vključiti konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
-msgstr "아바타 선택"
+msgstr "Izbrati avatar"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
-msgstr "선택"
+msgstr "Izbrati"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Images"
-msgstr "이미지"
+msgstr "Obrazky"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:142
 msgid "All files"
-msgstr "모든 파일"
+msgstr "Vse fajly"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
-msgstr "%s 계정을 삭제하시겠습니까?"
+msgstr "Odstraniti konto %s?"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
-msgstr "연결 중…"
+msgstr "Sjedinjenje…"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
-msgstr "연결 됨"
+msgstr "Sjedinjeno"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
-msgstr "연결 해제 됨"
+msgstr "Odsjedinjeno"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
-msgstr "잘못된 비밀번호"
+msgstr "Nevěrna parola"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
-msgstr "올바르지 않은 TLS 인증서"
+msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:207
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
-msgstr "오류"
+msgstr "Grěška"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
 #: main/data/preferences_window/preferences_dialog.ui:11
 msgid "Accounts"
-msgstr "계정"
+msgstr "Konta"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Izključeny konta"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
 msgid "Add Account"
-msgstr "계정 추가"
+msgstr "Dodati konto"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
 #: main/src/ui/main_window.vala:160
 msgid "No active accounts"
-msgstr "활성화 된 계정이 없습니다"
+msgstr "Nema aktivnyh konta"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
-msgstr "가입"
+msgstr "Vojdti"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
@@ -126,39 +126,37 @@ msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:145
 msgid "Its security certificate is not trusted by your operating system."
-msgstr "보안 인증서가 운영체제로부터 신뢰되지 않았습니다"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:147
-#, fuzzy
 msgid "Its security certificate is issued to another domain."
-msgstr "보안 인증서가 다른 도메인으로부터 발급되었습니다."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:149
 msgid "Its security certificate will only become valid in the future."
-msgstr "보안 인증서가 미래에 유효합니다."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:151
 msgid "Its security certificate is expired."
-msgstr "보안 인증서가 만료되었습니다."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:159
 #: main/data/preferences_window/add_account_dialog.ui:111
 msgid "Create account"
-msgstr "계정 생성"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:178
 #, c-format
 msgid "You can now use the account %s."
-msgstr "이제 %s 계정을 쓸 수 있습니다."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:224
 msgid "Wrong username or password"
-msgstr "잘못된 유저명이거나 비밀번호"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:227
-#, fuzzy
 msgid "Something went wrong"
-msgstr "무엇인가 잘 못 되었습니다."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:248
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
@@ -166,7 +164,7 @@ msgstr "무엇인가 잘 못 되었습니다."
 #: main/src/ui/notifier_freedesktop.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr "%s에 연결하지 못했습니다"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:255
 #: main/src/windows/preferences_window/add_account_dialog.vala:265
@@ -174,34 +172,34 @@ msgstr "%s에 연결하지 못했습니다"
 #: main/src/windows/preferences_window/add_account_dialog.vala:359
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Invalid address"
-msgstr "잘못된 주소"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:293
 msgid "No response from server"
-msgstr "서버로부터 응답이 없습니다"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:304
 #, c-format
 msgid "Register on %s"
-msgstr "%s에 등록"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:307
 msgid "The server requires to sign up through a website"
-msgstr "이 서버는 웹사이트를 통한 가입만이 가능합니다"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:309
 msgid "Open website"
-msgstr "웹사이트 열기"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:321
 #: main/data/preferences_window/add_account_dialog.ui:294
 msgid "Register"
-msgstr "등록"
+msgstr "Zaregistrovati se"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:323
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr "가입하는 법에 관한 정보는 %s를 확인하세요"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
@@ -213,19 +211,19 @@ msgstr ""
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr ""
+msgstr "Odblokirovati"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr ""
+msgstr "Zafiksirovano"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr ""
+msgstr "Zafiksirovati"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr ""
+msgstr "Zablokovano"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
@@ -233,12 +231,12 @@ msgstr ""
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
-msgstr "차단"
+msgstr "Zablokovati"
 
 #: main/src/windows/conversation_details.vala:131
 #: main/src/windows/conversation_details.vala:132
 msgid "Mute"
-msgstr ""
+msgstr "Izključiti zvuk"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
@@ -251,7 +249,7 @@ msgstr ""
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr ""
+msgstr "Zvuk izključen je"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
@@ -260,76 +258,76 @@ msgstr ""
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr ""
+msgstr "Informacija"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
-msgstr "설정"
+msgstr "Nastavjenja"
 
 #: main/src/windows/conversation_details.vala:222
 msgid "Room Configuration"
-msgstr "방 설정"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr ""
+msgstr "Šifrovanje"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
 msgid "Members"
-msgstr "구성원들"
+msgstr "Učestniki"
 
 #: main/src/view_model/conversation_details.vala:131
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
-msgstr "소유자"
+msgstr "Vlastnik"
 
 #: main/src/view_model/conversation_details.vala:132
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "Admin"
-msgstr "관리자"
+msgstr "Administrator"
 
 #: main/src/view_model/conversation_details.vala:133
 #: main/src/ui/occupant_menu/list.vala:114
 msgid "Member"
-msgstr "구성원"
+msgstr "Učestnik"
 
 #: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
-msgstr "파일이 서버 허용 최대 용량을 초과하였습니다."
+msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
 #: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
-msgstr "메세지가 너무 김"
+msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
 #: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
-msgstr "수정됨"
+msgstr "redaktovano"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
 #: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
-msgstr "대기중…"
+msgstr "čekanje…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
 #: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
-msgstr "전송 실패"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "비암호화"
+msgstr "Ne zašifrovano"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
-msgstr "메세지를 보낼 수 없음"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
@@ -373,7 +371,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
 msgid "%H∶%M"
-msgstr ""
+msgstr "%H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:348
@@ -389,13 +387,14 @@ msgstr ""
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "%i 분 이전에"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
-msgstr "방금 전"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:186
@@ -403,7 +402,7 @@ msgstr "방금 전"
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
-msgstr "나"
+msgstr "Ja"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
@@ -414,30 +413,30 @@ msgstr ""
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr "이미지 전송 됨"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
-msgstr "파일 전송 됨"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr "이미지 수신 됨"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr "파일 수신 됨"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr "전화 송신 중"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -445,7 +444,7 @@ msgstr "전화 송신 중"
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr "전화 수신 중"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
@@ -456,41 +455,41 @@ msgstr ""
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
-msgstr "어제"
+msgstr "Včera"
 
 #: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
-msgstr "사용자"
+msgstr "Koristnik"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:145
 #: main/src/ui/call_window/call_window_controller.vala:151
 msgid "Invite"
-msgstr "초대"
+msgstr "Pozvati"
 
 #: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
-msgstr "사적 대화 시작하기"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
-msgstr "추방"
+msgstr "Izgnati"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
-msgstr "쓰기 권한 부여"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
-msgstr "쓰기 권한 회수"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
-msgstr "대화 그룹에 초대"
+msgstr ""
 
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
-msgstr "파일 선택"
+msgstr ""
 
 #: main/src/ui/util/helper.vala:65
 #, c-format
@@ -499,91 +498,88 @@ msgstr ""
 
 #: main/src/ui/util/data_forms.vala:31
 msgid "Name of the room"
-msgstr "방의 이름"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:34
 msgid "Description of the room"
-msgstr "방의 설명"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:37
-#, fuzzy
 msgid "Persistent"
-msgstr "유지성"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:38
 msgid "The room will persist after the last occupant leaves"
-msgstr "방이 마지막 구성원이 나가도 유지됩니다"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:41
 msgid "Publicly searchable"
-msgstr "공개적으로 검색 가능"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr "참여자가 주제를 바꿈"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
-msgstr "JID를 볼 권한"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr "누가 참여자들의 JID를 볼 수 있게 허용했습니까?"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:51
 #: main/data/preferences_window/account_preferences_subpage.ui:82
 #: main/data/add_conversation/conference_details_fragment.ui:162
 #: main/data/add_conversation/add_groupchat_dialog.ui:122
 msgid "Password"
-msgstr "비밀번호"
+msgstr "Parola"
 
 #: main/src/ui/util/data_forms.vala:55
-#, fuzzy
 msgid "Moderated"
-msgstr "조정됨"
+msgstr "Moderujemy"
 
 #: main/src/ui/util/data_forms.vala:56
 msgid "Only occupants with voice may send messages"
-msgstr "발언 가능한 참여자만이 메세지를 보낼 수 있습니다"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:59
 msgid "Members only"
-msgstr "회원 전용"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:60
 msgid "Only members may enter the room"
-msgstr "회원만이 방에 들어올 수 있습니다"
+msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
-#, fuzzy
 msgid "This conference does not allow you to send messages."
-msgstr "이 대화 그룹에서의 메세지 전송이 허가되지 않았습니다."
+msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
-msgstr "권한 요청"
+msgstr ""
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
 #: main/data/file_send_overlay.ui:5
 msgid "Send a file"
-msgstr "파일 전송"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr "전화 걸기"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
-msgstr "음성 통화"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr "영상 통화"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
 #: main/data/gtk/help-overlay.ui:43
 msgid "Search messages"
-msgstr "메세지 검색"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
@@ -594,128 +590,127 @@ msgid "Close Conversation"
 msgstr ""
 
 #: main/src/ui/call_window/participant_widget.vala:115
-#, fuzzy
 msgid "Debug information"
-msgstr "정보 디버그"
+msgstr ""
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr "전화 거는 중…"
+msgstr "Pozov…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr "전화 수신 중…"
+msgstr "Zvon…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr "%s 가 통화를 종료함"
+msgstr ""
 
 #: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr "%s 가 통화를 거부함"
+msgstr ""
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr "카메라"
+msgstr "Kamery"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr "카메라를 찾지 못했습니다."
+msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr "마이크"
+msgstr "Mikrofony"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr "마이크를 찾지 못했습니다."
+msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr "스피커"
+msgstr "Glasniky/Zvučniky"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr "스피커를 찾지 못했습니다."
+msgstr ""
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr "통화에 초대"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
 #: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
-msgstr "대화 시작"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:90
 msgid "Start"
-msgstr "시작"
+msgstr "Početi"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
 #: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr "채널 참가"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:45
 #: main/data/preferences_window/add_account_dialog.ui:246
 msgid "Next"
-msgstr "다음"
+msgstr "Dalje"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
 #: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
 msgid "Join"
-msgstr "참가"
+msgstr "Sjediniti se"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Joining…"
-msgstr "참가 중…"
+msgstr "Sjedinjenje…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:164
 msgid "Password required to enter room"
-msgstr "방에 참가하기 위해 비밀번호가 필요합니다"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Banned from joining or creating conference"
-msgstr "참여하거나 만든 그룹 대화에서 추방됐습니다"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Room does not exist"
-msgstr "방이 존재하지 않습니다"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Not allowed to create room"
-msgstr "방 생성이 허용되지 않았습니다"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr "회원 전용 방"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr "다른 닉네임을 고르세요"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
-msgstr "방에 사용자가 너무 많습니다"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
-msgstr "추가"
+msgstr "Dodati"
 
 #: main/src/ui/application.vala:281 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr "Dino에 대하여"
+msgstr ""
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
-msgstr "오늘"
+msgstr "Dnes"
 
 #: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
@@ -726,7 +721,8 @@ msgstr ""
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] "%i 개의 검색 결과"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/global_search.vala:208
 #, c-format
@@ -736,31 +732,31 @@ msgstr ""
 #: main/src/ui/global_search.vala:208
 #, c-format
 msgid "With %s"
-msgstr "%s와 함께"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr "영상 통화 수신중"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr "그룹 영상 통화 수신중"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr "그룹 통화 수신중"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
 #: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr "거부"
+msgstr "Odkloniti"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
@@ -773,12 +769,12 @@ msgstr "거부"
 #: main/src/ui/conversation_content_view/subscription_notification.vala:67
 #: main/data/call_widget.ui:81
 msgid "Accept"
-msgstr "허용"
+msgstr "Prijeti"
 
 #: main/src/ui/notifier_gnotifications.vala:91
 #: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
-msgstr "친구 추가 요청"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:98
 #: main/src/ui/notifier_gnotifications.vala:133
@@ -787,82 +783,82 @@ msgstr "친구 추가 요청"
 #: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:68
 msgid "Deny"
-msgstr "거부"
+msgstr "Odkloniti"
 
 #: main/src/ui/notifier_gnotifications.vala:123
 #: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
-msgstr "%s로 초대됨"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:124
 #: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
-msgstr "%s가 %s로 초대함"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:141
 #: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
-msgstr "권한 요구"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:142
 #: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr "%s가 %s에 쓰기 권한을 요청함"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:24
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:34
 msgid "On"
-msgstr "켜기"
+msgstr "Vključeno"
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:35
 msgid "Off"
-msgstr "끄기"
+msgstr "Izključeno"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
-msgstr "입력 중 알림 전송"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:23
 #: main/src/ui/contact_details/settings_provider.vala:33
 #, c-format
 msgid "Default: %s"
-msgstr "기본값: %s"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:32
 msgid "Send read receipts"
-msgstr "읽음 알림 전송"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr "메세지 전송을 위한 권한 요청"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:24
 msgid "Request"
-msgstr "요청"
+msgstr ""
 
 #: main/src/ui/main_window.vala:151
 msgid "Welcome to Dino!"
-msgstr "Dino에 오신 것을 환영합니다!"
+msgstr ""
 
 #: main/src/ui/main_window.vala:152
 msgid "Sign in or create an account to get started."
-msgstr "로그인 또는 계정을 생성 하십시오."
+msgstr ""
 
 #: main/src/ui/main_window.vala:153
 msgid "Set up account"
-msgstr "계정 설정"
+msgstr ""
 
 #: main/src/ui/main_window.vala:161
 msgid "Manage accounts"
-msgstr "계정 관리"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
@@ -898,107 +894,108 @@ msgstr ""
 #: main/src/ui/conversation_content_view/file_image_widget.vala:42
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
 msgid "Open"
-msgstr "열기"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
 #: main/src/ui/conversation_content_view/file_widget.vala:169
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
-msgstr "로 저장…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr "%s, %s 그리고 %i 사람들이 입력 중…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr "%s와(과) %s, %s이(가) 입력 중…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
-msgstr "%s와(과) %s이(가) 입력 중…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
-msgstr "%s 이(가) 입력 중…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr "통화 시작 됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr "%s 전에 시작 됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr "다른 장치로 통화를 제어하고 있습니다"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr "통화 종료 됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr "%s에 종료 됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
-#, fuzzy, c-format
+#, c-format
 msgid "Lasted %s"
-msgstr "마지막 내역 %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
-#, fuzzy
 msgid "Call missed"
-msgstr "부재된 통화"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr "통화를 받지 않았습니다"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr "%s이(가) 통화를 받지 않음"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr "통화 거부됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr "통화를 거부했습니다"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr "%s이(가) 통화를 거부했습니다"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr "통화 실패"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] "%i 시간"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] "%i 분"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr "몇 초 전"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
@@ -1018,7 +1015,7 @@ msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr "이 연락처가 당신을 연락처에 추가하길 원합니다"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:21
 msgid "This conversation does not support reactions."
@@ -1045,7 +1042,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "Downloading %s…"
-msgstr "%s로 다운로드 중…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
@@ -1053,22 +1050,22 @@ msgid "Uploading %s… (%u%%)"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
-#, fuzzy, c-format
+#, c-format
 msgid "%s offered: %s"
-msgstr "%s 전송 됨: %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:97
-#, fuzzy, c-format
+#, c-format
 msgid "File offered: %s"
-msgstr "파일 전송됨: %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:99
 msgid "File offered"
-msgstr "파일 전송 됨"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:105
 msgid "File transfer failed"
-msgstr "전송 실패"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:34
 msgid "File"
@@ -1080,11 +1077,11 @@ msgstr ""
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "연락처 세부 사항"
+msgstr ""
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
-msgstr "메세지 수정"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
@@ -1092,31 +1089,31 @@ msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
-msgstr "보안 연결을 설정 할 수 없음"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
-msgstr "이전"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:183
 msgid "Choose a public server"
-msgstr "공용 서버 선택"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:207
 msgid "Or specify a server address"
-msgstr "또는 구체적인 서버 주소 입력"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:225
 msgid "Sign in instead"
-msgstr "로그인 하기"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:330
 msgid "All set up!"
-msgstr "모든 설정이 끝났습니다!"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:359
 msgid "Finish"
-msgstr "완료"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
@@ -1132,16 +1129,15 @@ msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:26
 msgid "Notify when a new message arrives"
-msgstr "새로운 메세지 수신시에 알림"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:36
 msgid "_Convert Smileys to Emoji"
 msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
-#, fuzzy
 msgid "Local alias"
-msgstr "내부 가칭"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
@@ -1174,7 +1170,7 @@ msgstr ""
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
-msgstr "전역"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
@@ -1186,7 +1182,7 @@ msgstr ""
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
-msgstr "대화"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
@@ -1194,39 +1190,39 @@ msgstr ""
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
-msgstr "창 제어"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:66
 msgid "Jump to next conversation"
-msgstr "다음 대화로 넘어가기"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:72
 msgid "Jump to previous conversation"
-msgstr "이전 대화로 넘어가기"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
 #: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
-msgstr "계정"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr "닉네임"
+msgstr ""
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr "가칭"
+msgstr ""
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
-msgstr "연락처 추가"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
-msgstr "현대 XMPP 채팅 클라이언트"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1234,9 +1230,6 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino는 데스크탑을 위한 현대 오픈소스 채팅 클라이언트입니다. 깔끔하고 신뢰 할 "
-"수 있는 Jabber/XMPP 경험을 개인정보 보호 중시와 함께 제공할 수 있도록 주력하"
-"고 있습니다."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1244,44 +1237,40 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"OMEMO와 OpenPGP를 통한 종단간 암호화를 지원하며 프라이버시와 관련된 읽음 확인"
-"이나 입력 알림기능을 설정할 수 있습니다."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
-msgstr "Dino는 서버와 타 장치와의 메세지 동기화로부터 기록을 불러옵니다."
+msgstr ""
 
 #: main/data/main_window.ui:89
 msgid "You have no open chats"
-msgstr "열린 채팅이 없습니다"
+msgstr ""
 
 #: main/data/main_window.ui:90
 msgid "Click + to start a chat or join a channel"
 msgstr ""
 
 #: main/data/global_search.ui:27
-#, fuzzy
 msgid "No active search"
-msgstr "검색 결과가 없음"
+msgstr ""
 
 #: main/data/global_search.ui:28
-#, fuzzy
 msgid "Type to start a search"
-msgstr "검색하려면 입력하세요"
+msgstr ""
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr "해당하는 메세지가 없음"
+msgstr ""
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr "오타를 확인해보거나 필터를 제거해보세요"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:41
 msgid "Send"
-msgstr "보내기"
+msgstr ""
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
@@ -1289,57 +1278,4 @@ msgstr ""
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
-msgstr "키보드 단축키"
-
-#~ msgid "Remove"
-#~ msgstr "삭제"
-
-#, c-format
-#~ msgid "Sign in to %s"
-#~ msgstr "%s에 로그인"
-
-#~ msgid "No accounts configured"
-#~ msgstr "어떤 계정도 설정되지 않음"
-
-#~ msgid "Add an account"
-#~ msgstr "계정 추가"
-
-#~ msgid "Pick another server"
-#~ msgstr "다른 서버 선택"
-
-#, fuzzy
-#~ msgid "Local Settings"
-#~ msgstr "일부 설정"
-
-#~ msgid "Notifications"
-#~ msgstr "알림"
-
-#~ msgid "Only when mentioned"
-#~ msgstr "언급 되었을 때만"
-
-#~ msgid "Permissions"
-#~ msgstr "권한"
-
-#~ msgid "Conference Details"
-#~ msgstr "대화 그룹 세부 사항"
-
-#~ msgid "Communication and status updates in either direction are blocked"
-#~ msgstr "양방향에서의 소통과 상태 갱신이 차단됩니다"
-
-#~ msgid "A password to restrict access to the room"
-#~ msgstr "방에 접근을 제한하기 위한 비밀번호"
-
-#~ msgid "Message history"
-#~ msgstr "메세지 기록"
-
-#~ msgid "Maximum amount of backlog issued by the room"
-#~ msgstr "최대 로그 수가 방에 의해 제한됩니다"
-
-#~ msgid "Convert smileys to emojis"
-#~ msgstr "웃음 모양을 이모티콘으로 변환"
-
-#~ msgid "Check spelling"
-#~ msgstr "맞춤법 확인"
-
-#~ msgid "Click here to start a conversation or join a channel."
-#~ msgstr "대화를 시작하거나 채널에 들어가려면 여기를 누르세요."
+msgstr ""

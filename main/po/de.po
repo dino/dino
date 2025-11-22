@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 21:57+0200\n"
-"PO-Revision-Date: 2025-03-13 23:17+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-11-05 10:51+0000\n"
 "Language-Team: German <https://hosted.weblate.org/projects/dino/translations/"
 "de/>\n"
 "Language: de\n"
@@ -11,14 +11,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:293
+#: main/src/ui/application.vala:290
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -45,7 +45,7 @@ msgid "Select avatar"
 msgstr "Profilbild auswählen"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
 msgstr "Auswählen"
 
@@ -57,36 +57,36 @@ msgstr "Bilder"
 msgid "All files"
 msgstr "Alle Dateien"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:156
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
 msgstr "Konto %s löschen?"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:188
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
 msgstr "Verbinden…"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:190
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
 msgstr "Verbunden"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:192
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
 msgstr "Nicht verbunden"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:203
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
 msgstr "Passwort falsch"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:205
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
 msgstr "Ungültiges TLS-Zertifikat"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:208
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:210
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:207
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
 msgstr "Fehler"
 
@@ -290,27 +290,27 @@ msgstr "Admin"
 msgid "Member"
 msgstr "Mitglied"
 
-#: main/src/ui/file_send_overlay.vala:84
+#: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Die Datei übersteigt die maximale Uploadgröße des Servers."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:95
+#: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
 msgstr "Nachricht zu lang"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:161
+#: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
 msgstr "bearbeitet"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:170
+#: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
 msgstr "ausstehend…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:185
+#: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
 msgstr "Zustellung fehlgeschlagen"
 
@@ -363,7 +363,7 @@ msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:337
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
@@ -371,7 +371,7 @@ msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
@@ -379,7 +379,7 @@ msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
@@ -388,49 +388,54 @@ msgstr[0] "vor %i Minute"
 msgstr[1] "vor %i Minuten"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:343
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "Gerade eben"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:151
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:176
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:191
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:186
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:201
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "Ich"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:171
+#: main/src/ui/conversation_content_view/message_widget.vala:162
+msgid "Message deleted"
+msgstr ""
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Bild gesendet"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Datei gesendet"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "Bild empfangen"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "Datei empfangen"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
 msgstr "Ausgehender Anruf"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
@@ -438,13 +443,13 @@ msgstr "Ausgehender Anruf"
 msgid "Incoming call"
 msgstr "Eingehender Anruf"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:330
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%d. %b"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "Gestern"
@@ -479,7 +484,7 @@ msgstr "Schreibberechtigung entziehen"
 msgid "Invite to Conference"
 msgstr "Zur Konferenz einladen"
 
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
 msgstr "Datei auswählen"
 
@@ -553,7 +558,7 @@ msgid "Request permission"
 msgstr "Berechtigung anfordern"
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
-#: main/data/file_send_overlay.ui:24
+#: main/data/file_send_overlay.ui:5
 msgid "Send a file"
 msgstr "Datei senden"
 
@@ -644,7 +649,7 @@ msgid "Start"
 msgstr "Starten"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:293 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Kanal beitreten"
@@ -656,7 +661,7 @@ msgstr "Weiter"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:293 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Beitreten"
 
@@ -697,7 +702,7 @@ msgstr "Zu viele Nutzer im Raum"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Info zu Dino"
 
@@ -867,9 +872,13 @@ msgstr "Angezeigter Name"
 msgid "Topic"
 msgstr "Thema"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:233
+#: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
 msgstr "Nachricht bearbeiten"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:82
+msgid "More actions"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -886,7 +895,7 @@ msgid "Open"
 msgstr "Öffnen"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:167
+#: main/src/ui/conversation_content_view/file_widget.vala:169
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Speichern unter…"
@@ -1017,6 +1026,11 @@ msgstr "Antworten"
 #: main/src/ui/conversation_content_view/item_actions.vala:44
 msgid "This conversation does not support replies."
 msgstr "Diese Unterhaltung unterstützt keine Antworten."
+
+#: main/src/ui/conversation_content_view/item_actions.vala:61
+#: main/src/ui/conversation_content_view/item_actions.vala:64
+msgid "Delete message"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1170,7 +1184,7 @@ msgstr "Unterhaltung"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr ""
+msgstr "Unterhaltung schließen"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
@@ -1260,7 +1274,7 @@ msgstr "Keine Nachrichten gefunden"
 msgid "Check the spelling or try to remove filters"
 msgstr "Überprüfe die Schreibweise oder entferne Filter"
 
-#: main/data/file_send_overlay.ui:61
+#: main/data/file_send_overlay.ui:41
 msgid "Send"
 msgstr "Senden"
 

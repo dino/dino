@@ -29,7 +29,7 @@
   <launchable type="desktop-id">im.dino.Dino.desktop</launchable>
   <releases>
     <release date="2025-04-11" version="0.5">
-      <description>
+      <description translate="no">
         <p>The 0.5 release improves the user experience around file transfers and includes two completely reworked dialogs.</p>
       </description>
     </release>
@@ -76,19 +76,19 @@
   <screenshots>
     <screenshot type="default">
       <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-main-2244x1644@2.png</image>
-      <caption>Main screen</caption>
+      <caption translate="no">Main screen</caption>
     </screenshot>
     <screenshot>
       <image type="source" width="1441" height="929" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-call-1441x929@2.png</image>
-      <caption>Video call screen</caption>
+      <caption translate="no">Video call screen</caption>
     </screenshot>
     <screenshot>
       <image type="source" width="2244" height="1644" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-search-2244x1644@2.png</image>
-      <caption>Main screen featuring search overlay</caption>
+      <caption translate="no">Main screen featuring search overlay</caption>
     </screenshot>
     <screenshot>
       <image type="source" width="964" height="1552" scale="2">https://dino.im/img/appdata/screenshot-dino-0.4-mobile-964x1552@2.png</image>
-      <caption>Main screen in mobile size window</caption>
+      <caption translate="no">Main screen in mobile size window</caption>
     </screenshot>
   </screenshots>
   <translation type="gettext">dino</translation>

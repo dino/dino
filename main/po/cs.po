@@ -7,22 +7,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 21:57+0200\n"
-"PO-Revision-Date: 2023-05-19 07:48+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-11-22 16:50+0100\n"
 "Language-Team: none\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Poedit 3.7\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:293
+#: main/src/ui/application.vala:290
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -38,18 +38,18 @@ msgstr "Připojit"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr ""
+msgstr "Deaktivovat účet"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr ""
+msgstr "Aktivovat účet"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
 msgstr "Vybrat avatar"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
 msgstr "Vybrat"
 
@@ -61,36 +61,36 @@ msgstr "Obrázky"
 msgid "All files"
 msgstr "Všechny soubory"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:156
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
 msgstr "Odstranit účet %s?"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:188
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
 msgstr "Připojování…"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:190
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
 msgstr "Připojeno"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:192
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
 msgstr "Odpojeno"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:203
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
 msgstr "Nesprávné heslo"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:205
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
 msgstr "Neplatný TLS certifikát"
 
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:208
-#: main/src/windows/preferences_window/account_preferences_subpage.vala:210
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:207
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
 msgstr "Chyba"
 
@@ -102,7 +102,7 @@ msgstr "Účty"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Deaktivované účty"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -203,31 +203,31 @@ msgstr "Podívejte se na %s pro získání informací ohledně způsobu přihlá
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
-msgstr ""
+msgstr "Zablokovat uživatele"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block entire domain"
-msgstr ""
+msgstr "Zablokovat celou doménu"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr ""
+msgstr "Odblokovat"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr ""
+msgstr "Připnuto"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr ""
+msgstr "Připnout"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr ""
+msgstr "Zablokováno"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr ""
+msgstr "Doména zablokována"
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
@@ -236,29 +236,29 @@ msgstr "Zablokovat"
 #: main/src/windows/conversation_details.vala:131
 #: main/src/windows/conversation_details.vala:132
 msgid "Mute"
-msgstr ""
+msgstr "Ztlumit"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Notifikace zapnuty"
 
 #: main/src/windows/conversation_details.vala:136
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Notifikace při zmínění"
 
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr ""
+msgstr "Ztlumeno"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Notifikace vypnuty"
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr ""
+msgstr "Informace"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
@@ -271,7 +271,7 @@ msgstr "Nastavení místnosti"
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr ""
+msgstr "Šifrování"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -293,27 +293,27 @@ msgstr "Admin"
 msgid "Member"
 msgstr "Člen"
 
-#: main/src/ui/file_send_overlay.vala:84
+#: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
 msgstr "Velikost souboru překračuje maximální limit nastavený na serveru."
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
-#: main/src/ui/conversation_content_view/message_widget.vala:95
+#: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
 msgstr "Zpráva je příliš dlouhá"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
-#: main/src/ui/conversation_content_view/message_widget.vala:161
+#: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
 msgstr "upraveno"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
-#: main/src/ui/conversation_content_view/message_widget.vala:170
+#: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
 msgstr "čeká na vyřízení…"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
-#: main/src/ui/conversation_content_view/message_widget.vala:185
+#: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
 msgstr "doručení selhalo"
 
@@ -366,7 +366,7 @@ msgid "%a, %l∶%M %p"
 msgstr "%a, %l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:337
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
 #, no-c-format
@@ -374,7 +374,7 @@ msgid "%H∶%M"
 msgstr "%H∶%M"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:135
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
 #: main/src/ui/conversation_content_view/call_widget.vala:175
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
 #, no-c-format
@@ -382,7 +382,7 @@ msgid "%l∶%M %p"
 msgstr "%l∶%M %p"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:139
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
 #, c-format
 msgid "%i min ago"
@@ -392,49 +392,54 @@ msgstr[1] "Před %i minutami"
 msgstr[2] "Před %i minutami"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:343
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
 msgstr "Nyní"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:151
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:176
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:191
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:186
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:201
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
 msgstr "Já"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:171
+#: main/src/ui/conversation_content_view/message_widget.vala:162
+msgid "Message deleted"
+msgstr ""
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
 msgstr "Obrázek byl odeslán"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:182
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
 msgstr "Soubor byl odeslán"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
 msgstr "Obrázek byl přijat"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:184
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
 msgstr "Soubor byl přijat"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
 msgstr "Odchozí hovor"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:193
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
@@ -442,13 +447,13 @@ msgstr "Odchozí hovor"
 msgid "Incoming call"
 msgstr "Příchozí hovor"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:330
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
 msgstr "%d. %b"
 
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "Včera"
@@ -483,7 +488,7 @@ msgstr "Odebrat práva pro zapisování"
 msgid "Invite to Conference"
 msgstr "Pozvat na konferenci"
 
-#: main/src/ui/conversation_view_controller.vala:203
+#: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
 msgstr "Vybrat soubor"
 
@@ -556,7 +561,7 @@ msgid "Request permission"
 msgstr "Požádat o oprávnění"
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
-#: main/data/file_send_overlay.ui:24
+#: main/data/file_send_overlay.ui:5
 msgid "Send a file"
 msgstr "Odeslat soubor"
 
@@ -579,11 +584,11 @@ msgstr "Hledat zprávy"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Detaily konverzace"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Zavřít konverzaci"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -647,7 +652,7 @@ msgid "Start"
 msgstr "Začít"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:293 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Připojit se ke kanálu"
@@ -659,7 +664,7 @@ msgstr "Další"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:293 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Připojit"
 
@@ -700,7 +705,7 @@ msgstr "V místnosti je příliš mnoho účastníků"
 msgid "Add"
 msgstr "Přidat"
 
-#: main/src/ui/application.vala:284 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "O Dino"
 
@@ -860,20 +865,24 @@ msgstr "Správa účtů"
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP adresa"
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr ""
+msgstr "Zobrazované jméno"
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
 msgid "Topic"
-msgstr ""
+msgstr "Popis"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:233
+#: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
 msgstr "Upravit zprávu"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:82
+msgid "More actions"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -890,7 +899,7 @@ msgid "Open"
 msgstr "Otevřít"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:167
+#: main/src/ui/conversation_content_view/file_widget.vala:169
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Uložit jako…"
@@ -1002,11 +1011,11 @@ msgstr "Přečteno"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Poslat žádost"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Od tohoto kontaktu zatím nedostáváte informace o aktivitě."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
@@ -1024,10 +1033,15 @@ msgstr "Odpovědět"
 msgid "This conversation does not support replies."
 msgstr "Tato konverzace neumožňuje odpovědi."
 
+#: main/src/ui/conversation_content_view/item_actions.vala:61
+#: main/src/ui/conversation_content_view/item_actions.vala:64
+msgid "Delete message"
+msgstr ""
+
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Stahování %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
@@ -1037,7 +1051,7 @@ msgstr "Stahování %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Nahrávání %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
@@ -1063,7 +1077,7 @@ msgstr "Soubor"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Nové"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1075,7 +1089,7 @@ msgstr "Aktualizovat zprávu"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Přihlásit"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1107,15 +1121,15 @@ msgstr "Dokončit"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Posílat _indikace, že píšete"
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Posílat _potvrzení o přečtení"
 
 #: main/data/preferences_window/general_preferences_page.ui:25
 msgid "_Notifications"
-msgstr ""
+msgstr "_Notifikace"
 
 #: main/data/preferences_window/general_preferences_page.ui:26
 msgid "Notify when a new message arrives"
@@ -1123,7 +1137,7 @@ msgstr "Upozornit, jakmile přijde nová zpráva"
 
 #: main/data/preferences_window/general_preferences_page.ui:36
 msgid "_Convert Smileys to Emoji"
-msgstr ""
+msgstr "_Konvertovat smajlíky na emoji"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
 msgid "Local alias"
@@ -1131,31 +1145,31 @@ msgstr "Místní alias"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
-msgstr ""
+msgstr "Stav připojení"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
-msgstr ""
+msgstr "Odebrat účet"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Změnit heslo"
 
 #: main/data/preferences_window/change_password_dialog.ui:34
 msgid "Change"
-msgstr ""
+msgstr "Změnit"
 
 #: main/data/preferences_window/change_password_dialog.ui:61
 msgid "Current password"
-msgstr ""
+msgstr "Současné heslo"
 
 #: main/data/preferences_window/change_password_dialog.ui:66
 msgid "New password"
-msgstr ""
+msgstr "Nové heslo"
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr ""
+msgstr "Potvrďte heslo"
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
@@ -1164,11 +1178,11 @@ msgstr "Obecné"
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Zobrazit předvolby"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Klávesové zkratky"
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
@@ -1176,7 +1190,7 @@ msgstr "Konverzace"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr ""
+msgstr "Zavřít konverzaci"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
@@ -1266,13 +1280,13 @@ msgstr "Žádné odpovídající zprávy"
 msgid "Check the spelling or try to remove filters"
 msgstr "Zkontrolujte pravopis nebo zkuste odstranit filtry"
 
-#: main/data/file_send_overlay.ui:61
+#: main/data/file_send_overlay.ui:41
 msgid "Send"
 msgstr "Odeslat"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "Předvolby"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
