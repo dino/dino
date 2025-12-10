@@ -131,6 +131,7 @@ public class MainWindowController : Object {
         if (do_reset_search) {
             reset_search_entry();
         }
+        window.navigation_split_view.show_content = true;
     }
 
     private void check_unset_conversation() {
