@@ -30,7 +30,7 @@ namespace Dino.Ui {
     public Plugins.MessageAction get_reply_action(ContentItem content_item, Conversation conversation, StreamInteractor stream_interactor) {
         Plugins.MessageAction action = new Plugins.MessageAction();
         action.name = "reply";
-        action.icon_name = "mail-reply-sender-symbolic";
+        action.icon_name = "dino-mail-reply-sender-symbolic";
         action.tooltip = _("Reply");
         action.callback = () => {
             GLib.Application.get_default().activate_action("quote", new GLib.Variant.tuple(new GLib.Variant[] { new GLib.Variant.int32(conversation.id), new GLib.Variant.int32(content_item.id) }));
@@ -57,7 +57,7 @@ namespace Dino.Ui {
 
         Plugins.MessageAction action = new Plugins.MessageAction();
         action.name = "delete";
-        action.icon_name = "user-trash-symbolic";
+        action.icon_name = "dino-user-trash-symbolic";
         action.tooltip = _("Delete message");
         action.shortcut_action = false;
         action.callback = () => {

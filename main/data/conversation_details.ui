@@ -72,7 +72,7 @@
                           <object class="GtkButton" id="pin_button">
                             <child>
                               <object class="AdwButtonContent" id="pin_button_content">
-                                <property name="icon-name">view-pin-symbolic</property>
+                                <property name="icon-name">dino-view-pin-symbolic</property>
                                 <property name="label">Pin</property>
                               </object>
                             </child>
@@ -82,7 +82,7 @@
                           <object class="GtkButton" id="notification_button_toggle">
                             <child>
                               <object class="AdwButtonContent" id="notification_button_toggle_content">
-                                <property name="icon-name">notification-symbolic</property>
+                                <property name="icon-name">dino-notification-symbolic</property>
                                 <property name="label">Mute</property>
                               </object>
                             </child>
@@ -97,13 +97,13 @@
                                 <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="AdwButtonContent" id="notification_button_menu_content">
-                                    <property name="icon-name">notification-symbolic</property>
+                                    <property name="icon-name">dino-notification-symbolic</property>
                                     <property name="label">Mute</property>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="GtkImage">
-                                    <property name="icon-name">pan-down-symbolic</property>
+                                    <property name="icon-name">dino-pan-down-symbolic</property>
                                   </object>
                                 </child>
                               </object>
@@ -115,7 +115,7 @@
                             <property name="menu_model">notification_split_button_menu_model</property>
                             <child>
                               <object class="AdwButtonContent" id="notification_button_split_content">
-                                <property name="icon-name">notification-symbolic</property>
+                                <property name="icon-name">dino-notification-symbolic</property>
                                 <property name="label">Mute</property>
                               </object>
                             </child>

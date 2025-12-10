@@ -16,7 +16,7 @@
                         </style>
                         <child>
                             <object class="GtkButton" id="back_button">
-                                <property name="icon-name">go-previous-symbolic</property>
+                                <property name="icon-name">dino-go-previous-symbolic</property>
                                 <property name="visible">False</property>
                             </object>
                         </child>
@@ -134,7 +134,7 @@
                                                         <property name="spacing">20</property>
                                                         <child>
                                                             <object class="GtkImage">
-                                                                <property name="icon-name">channel-insecure-symbolic</property>
+                                                                <property name="icon-name">dino-channel-insecure-symbolic</property>
                                                                 <property name="pixel-size">72</property>
                                                                 <property name="margin-top">10</property>
                                                                 <style>

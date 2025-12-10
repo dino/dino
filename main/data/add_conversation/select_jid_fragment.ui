@@ -53,7 +53,7 @@
                                             <object class="GtkButton" id="add_button">
                                                 <child>
                                                     <object class="GtkImage">
-                                                        <property name="icon-name">list-add-symbolic</property>
+                                                        <property name="icon-name">dino-list-add-symbolic</property>
                                                         <property name="icon-size">normal</property>
                                                     </object>
                                                 </child>
@@ -64,7 +64,7 @@
                                                 <property name="sensitive">0</property>
                                                 <child>
                                                     <object class="GtkImage">
-                                                        <property name="icon-name">list-remove-symbolic</property>
+                                                        <property name="icon-name">dino-list-remove-symbolic</property>
                                                         <property name="icon-size">normal</property>
                                                     </object>
                                                 </child>

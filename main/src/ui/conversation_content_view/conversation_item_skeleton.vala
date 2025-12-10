@@ -152,13 +152,13 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             string? icon_name = null;
             var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
             if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
-            encryption_image.icon_name = icon_name ?? "changes-prevent-symbolic";
+            encryption_image.icon_name = icon_name ?? "dino-changes-prevent-symbolic";
             encryption_image.visible = true;
         }
 
         if (item.encryption == Encryption.NONE) {
             if (conversation.encryption != Encryption.NONE) {
-                encryption_image.icon_name = "changes-allow-symbolic";
+                encryption_image.icon_name = "dino-changes-allow-symbolic";
                 encryption_image.tooltip_text = Util.string_if_tooltips_active(_("Unencrypted"));
                 Util.force_error_color(encryption_image);
                 encryption_image.visible = true;
@@ -198,7 +198,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                 received_image.tooltip_text = Util.string_if_tooltips_active(_("Read"));
                 break;
             case Message.Marked.WONTSEND:
-                received_image.icon_name = "dialog-warning-symbolic";
+                received_image.icon_name = "dino-dialog-warning-symbolic";
                 Util.force_error_color(received_image);
                 Util.force_error_color(time_label);
                 string error_text = Util.string_if_tooltips_active(_("Unable to send message"));

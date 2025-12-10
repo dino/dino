@@ -13,7 +13,7 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
 
     construct  {
         this.title = _("Accounts");
-        this.icon_name = "system-users-symbolic";
+        this.icon_name = "dino-system-users-symbolic";
 
         this.notify["model"].connect(() => {
             model.update.connect(refresh);
@@ -26,7 +26,7 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
 
         active_accounts = new Adw.PreferencesGroup() { title=_("Accounts")};
         disabled_accounts = new Adw.PreferencesGroup() { title=_("Disabled accounts")};
-        Button add_account_button = new Button.from_icon_name("list-add-symbolic");
+        Button add_account_button = new Button.from_icon_name("dino-list-add-symbolic");
         add_account_button.add_css_class("flat");
         add_account_button.tooltip_text = _("Add Account");
         active_accounts.header_suffix = add_account_button;
@@ -50,7 +50,7 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
                 title = account_details.bare_jid.to_string()
             };
             row.add_prefix(new AvatarPicture() { valign=Align.CENTER, height_request=35, width_request=35, model = account_details.avatar_model });
-            row.add_suffix(new Image.from_icon_name("go-next-symbolic"));
+            row.add_suffix(new Image.from_icon_name("dino-go-next-symbolic"));
             row.activatable = true;
 
             if (account_details.account.enabled) {

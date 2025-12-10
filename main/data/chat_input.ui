@@ -18,7 +18,7 @@
                         </style>
                         <child>
                             <object class="GtkButton" id="file_button">
-                                <property name="icon-name">mail-attachment-symbolic</property>
+                                <property name="icon-name">dino-mail-attachment-symbolic</property>
                                 <property name="valign">start</property>
                                 <style>
                                     <class name="flat"/>
@@ -53,7 +53,7 @@
                         </child>
                         <child>
                             <object class="GtkMenuButton" id="emoji_button">
-                                <property name="icon-name">emoji-people-symbolic</property>
+                                <property name="icon-name">dino-emoji-people-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="valign">start</property>
                                 <style>
@@ -65,7 +65,7 @@
                         </child>
                         <child>
                             <object class="GtkMenuButton" id="encryption_button">
-                                <property name="icon-name">changes-allow-symbolic</property>
+                                <property name="icon-name">dino-changes-allow-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="valign">start</property>
                                 <style>

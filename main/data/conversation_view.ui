@@ -34,7 +34,7 @@
                                         </style>
                                         <child>
                                             <object class="GtkImage">
-                                                <property name="icon-name">go-down-symbolic</property>
+                                                <property name="icon-name">dino-go-down-symbolic</property>
                                                 <property name="icon-size">1</property>
                                             </object>
                                         </child>

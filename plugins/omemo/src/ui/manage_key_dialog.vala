@@ -66,7 +66,7 @@ public class ManageKeyDialog : Gtk.Dialog {
 
         verify_no_button.clicked.connect(() => {
             return_to_main = false;
-            confirm_image.set_from_icon_name("dialog-warning-symbolic");
+            confirm_image.set_from_icon_name("dino-dialog-warning-symbolic");
             confirm_title_label.label = _("Fingerprints do not match");
             confirm_desc_label.set_markup(_("Please verify that you are comparing the correct fingerprint. If fingerprints do not match, %s's account may be compromised and you should consider rejecting this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
             manage_stack.set_visible_child_name("confirm");
@@ -155,7 +155,7 @@ public class ManageKeyDialog : Gtk.Dialog {
                 return_to_main = true;
                 current_response = TrustLevel.UNTRUSTED;
             } else if (row == accept_row) {
-                confirm_image.set_from_icon_name("check-plain-symbolic");
+                confirm_image.set_from_icon_name("dino-check-plain-symbolic");
                 confirm_title_label.label = _("Accept key");
                 confirm_desc_label.set_markup(_("You will be able to exchange encrypted messages with the device of %s that uses this key.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 manage_stack.set_visible_child_name("confirm");

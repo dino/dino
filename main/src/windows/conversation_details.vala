@@ -89,7 +89,7 @@ namespace Dino.Ui.ConversationDetails {
         }
 
         private void update_pinned_button() {
-            pin_button_content.icon_name = "view-pin-symbolic";
+            pin_button_content.icon_name = "dino-view-pin-symbolic";
             pin_button_content.label = model.pinned ? _("Pinned") : _("Pin");
             if (model.pinned) {
                 pin_button.add_css_class("accent");

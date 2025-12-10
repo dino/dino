@@ -49,12 +49,12 @@
                             </style>
                             <child>
                               <object class="GtkButton" id="edit_avatar_button">
-                                <property name="icon-name">document-edit-symbolic</property>
+                                <property name="icon-name">dino-document-edit-symbolic</property>
                               </object>
                             </child>
                             <child>
                               <object class="GtkButton" id="remove_avatar_button">
-                                <property name="icon-name">user-trash-symbolic</property>
+                                <property name="icon-name">dino-user-trash-symbolic</property>
                               </object>
                             </child>
                           </object>
@@ -92,7 +92,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkImage">
-                                    <property name="icon-name">go-next-symbolic</property>
+                                    <property name="icon-name">dino-go-next-symbolic</property>
                                   </object>
                                 </child>
                               </object>

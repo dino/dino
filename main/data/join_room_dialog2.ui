@@ -9,7 +9,7 @@
           <object class="AdwHeaderBar" id="header_bar">
             <child>
               <object class="GtkButton" id="back_button">
-                <property name="icon-name">go-previous-symbolic</property>
+                <property name="icon-name">dino-go-previous-symbolic</property>
               </object>
             </child>
             <style>
@@ -111,7 +111,7 @@
                     </binding>
                     <child>
                       <object class="GtkImage">
-                        <property name="icon-name">system-users-symbolic</property>
+                        <property name="icon-name">dino-system-users-symbolic</property>
                         <property name="pixel-size">10</property>
                       </object>
                     </child>
@@ -159,7 +159,7 @@
                             </child>
                             <child>
                               <object class="GtkImage">
-                                <property name="icon-name">document-edit-symbolic</property>
+                                <property name="icon-name">dino-document-edit-symbolic</property>
                               </object>
                             </child>
                           </object>

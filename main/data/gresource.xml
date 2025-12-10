@@ -21,10 +21,29 @@
     <file>file_send_overlay.ui</file>
     <file>global_search.ui</file>
     <file>gtk/help-overlay.ui</file>
-    <file>icons/scalable/actions/check-plain-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-check-plain-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-document-edit-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-document-save-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-edit-copy-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-emoji-people-symbolic.svg</file>
     <file>icons/scalable/actions/dino-emoticon-add-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-go-down-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-go-next-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-go-previous-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-list-add-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-list-remove-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-loupe-large-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-mail-attachment-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-mail-reply-sender-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-notification-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-open-menu-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-pan-down-symbolic.svg</file>
     <file>icons/scalable/actions/dino-qr-code-symbolic.svg</file>
-    <file>icons/scalable/actions/small-x-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-small-x-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-user-trash-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-view-more-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-view-pin-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-window-close-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino-symbolic.svg</file>
     <file>icons/scalable/apps/im.dino.Dino.svg</file>
     <file>icons/scalable/devices/dino-device-desktop-symbolic.svg</file>
@@ -41,17 +60,26 @@
     <file>icons/scalable/mimetypes/dino-file-symbolic.svg</file>
     <file>icons/scalable/mimetypes/dino-file-table-symbolic.svg</file>
     <file>icons/scalable/mimetypes/dino-file-video-symbolic.svg</file>
-    <file>icons/scalable/status/dino-double-tick-symbolic.svg</file>
+    <file>icons/scalable/status/dino-audio-input-microphone-symbolic.svg</file>
     <file>icons/scalable/status/dino-bell-large-none-symbolic.svg</file>
     <file>icons/scalable/status/dino-bell-large-symbolic.svg</file>
     <file>icons/scalable/status/dino-block-symbolic.svg</file>
+    <file>icons/scalable/status/dino-changes-allow-symbolic.svg</file>
+    <file>icons/scalable/status/dino-changes-prevent-symbolic.svg</file>
+    <file>icons/scalable/status/dino-channel-insecure-symbolic.svg</file>
+    <file>icons/scalable/status/dino-dialog-warning-symbolic.svg</file>
+    <file>icons/scalable/status/dino-double-tick-symbolic.svg</file>
+    <file>icons/scalable/status/dino-face-uncertain-symbolic.svg</file>
+    <file>icons/scalable/status/dino-microphone-disabled-symbolic.svg</file>
     <file>icons/scalable/status/dino-party-popper-symbolic.svg</file>
+    <file>icons/scalable/status/dino-preferences-system-symbolic.svg</file>
     <file>icons/scalable/status/dino-security-high-symbolic.svg</file>
     <file>icons/scalable/status/dino-status-away.svg</file>
     <file>icons/scalable/status/dino-status-chat.svg</file>
     <file>icons/scalable/status/dino-status-dnd.svg</file>
-    <file>icons/scalable/status/dino-status-online.svg</file>
     <file>icons/scalable/status/dino-status-offline.svg</file>
+    <file>icons/scalable/status/dino-status-online.svg</file>
+    <file>icons/scalable/status/dino-system-users-symbolic.svg</file>
     <file>icons/scalable/status/dino-tick-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-off-symbolic.svg</file>
     <file>icons/scalable/status/dino-video-symbolic.svg</file>

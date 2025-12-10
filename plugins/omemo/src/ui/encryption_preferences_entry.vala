@@ -152,7 +152,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         var own_action_box = new Box(Orientation.HORIZONTAL, 6);
         var show_qrcode_button = new MenuButton() { icon_name="dino-qr-code-symbolic", valign=Align.CENTER };
         own_action_box.append(show_qrcode_button);
-        var copy_button = new Button() { icon_name="edit-copy-symbolic", valign=Align.CENTER };
+        var copy_button = new Button() { icon_name="dino-edit-copy-symbolic", valign=Align.CENTER };
         copy_button.clicked.connect(() => { copy_button.get_clipboard().set_text(fingerprint); });
         own_action_box.append(copy_button);
 
@@ -278,7 +278,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        accept_button.set_icon_name("check-plain-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
+        accept_button.set_icon_name("dino-check-plain-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
         accept_button.add_css_class("suggested-action");
         accept_button.tooltip_text = _("Accept key");
 

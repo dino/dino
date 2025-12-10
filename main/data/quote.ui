@@ -65,7 +65,7 @@
     </child>
     <child>
       <object class="GtkButton" id="abort-button">
-        <property name="icon-name">window-close-symbolic</property>
+        <property name="icon-name">dino-window-close-symbolic</property>
         <property name="has-frame">False</property>
         <property name="valign">center</property>
         <layout>

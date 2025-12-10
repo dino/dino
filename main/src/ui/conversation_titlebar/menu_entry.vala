@@ -11,7 +11,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     StreamInteractor stream_interactor;
     private Conversation? conversation;
 
-    MenuButton button = new MenuButton() { icon_name="view-more-symbolic" };
+    MenuButton button = new MenuButton() { icon_name="dino-view-more-symbolic" };
 
     public MenuEntry(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;

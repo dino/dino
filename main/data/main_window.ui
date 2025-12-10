@@ -35,7 +35,7 @@
                                                                 <property name="has-frame">False</property>
                                                                 <child>
                                                                     <object class="GtkImage">
-                                                                        <property name="icon-name">list-add-symbolic</property>
+                                                                        <property name="icon-name">dino-list-add-symbolic</property>
                                                                         <property name="icon-size">normal</property>
                                                                     </object>
                                                                 </child>
@@ -46,7 +46,7 @@
                                                                 <property name="has-frame">False</property>
                                                                 <child>
                                                                     <object class="GtkImage">
-                                                                        <property name="icon-name">open-menu-symbolic</property>
+                                                                        <property name="icon-name">dino-open-menu-symbolic</property>
                                                                         <property name="icon-size">normal</property>
                                                                     </object>
                                                                 </child>

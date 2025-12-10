@@ -10,21 +10,21 @@
       <object class="DinoUiPreferencesWindowAccounts" id="accounts_page">
         <property name="title" translatable="yes">Accounts</property>
         <property name="name">accounts</property>
-        <property name="icon-name">system-users-symbolic</property>
+        <property name="icon-name">dino-system-users-symbolic</property>
       </object>
     </child>
     <child>
       <object class="DinoUiPreferencesWindowEncryption" id="encryption_page">
         <property name="title" translatable="yes">Encryption</property>
         <property name="name">encryption</property>
-        <property name="icon-name">changes-prevent-symbolic</property>
+        <property name="icon-name">dino-changes-prevent-symbolic</property>
       </object>
     </child>
     <child>
       <object class="DinoUiGeneralPreferencesPage" id="general_page">
         <property name="title" translatable="yes">General</property>
         <property name="name">general</property>
-        <property name="icon-name">preferences-system-symbolic</property>
+        <property name="icon-name">dino-preferences-system-symbolic</property>
         <property name="model" bind-source="model" bind-property="general-page" bind-flags="sync-create" />
       </object>
     </child>

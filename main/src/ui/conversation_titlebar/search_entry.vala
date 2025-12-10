@@ -12,7 +12,7 @@ public class SearchMenuEntry : Plugins.ConversationTitlebarEntry, Object {
     public ToggleButton button = new ToggleButton() { tooltip_text=Util.string_if_tooltips_active(_("Search messages")) };
 
     public SearchMenuEntry() {
-        button.set_icon_name("system-search-symbolic");
+        button.set_icon_name("dino-loupe-large-symbolic");
     }
 
     public new void set_conversation(Conversation conversation) { }

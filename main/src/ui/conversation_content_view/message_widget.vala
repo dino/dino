@@ -234,7 +234,7 @@ public class MessageMetaItem : ContentMetaItem {
         if (correction_allowed) {
             Plugins.MessageAction action1 = new Plugins.MessageAction();
             action1.name = "correction";
-            action1.icon_name = "document-edit-symbolic";
+            action1.icon_name = "dino-document-edit-symbolic";
             action1.tooltip = _("Edit message");
             action1.shortcut_action = false;
             action1.callback = () => {
