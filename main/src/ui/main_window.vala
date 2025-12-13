@@ -38,6 +38,7 @@ public class MainWindow : Adw.ApplicationWindow {
     class construct {
         var shortcut = new Shortcut(new KeyvalTrigger(Key.F, ModifierType.CONTROL_MASK), new CallbackAction((widget, args) => {
             ((MainWindow) widget).search_flap.reveal_flap = true;
+            ((MainWindow) widget).navigation_split_view.show_content = true;
             return false;
         }));
         add_shortcut(shortcut);
