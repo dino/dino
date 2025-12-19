@@ -6,6 +6,7 @@ dependencies = [
     dep_libcanberra,
     dep_qlite,
     dep_xmpp_vala,
+    dep_gio,
 ]
 sources = files(
     'src/plugin.vala',
