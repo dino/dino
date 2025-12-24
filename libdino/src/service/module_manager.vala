@@ -58,6 +58,7 @@ public class ModuleManager {
             module_map[account].add(new Presence.Module());
             module_map[account].add(new Xmpp.MessageModule());
             module_map[account].add(new Xmpp.MessageArchiveManagement.Module());
+            module_map[account].add(new Xep.Hats.Module());
             module_map[account].add(new Xep.MessageCarbons.Module());
             module_map[account].add(new Xep.BitsOfBinary.Module());
             module_map[account].add(new Xep.Muc.Module());
