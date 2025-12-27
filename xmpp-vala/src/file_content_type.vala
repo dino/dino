@@ -18,7 +18,7 @@ namespace Xmpp {
             this.from_file_info(file_info);
         }
 
-        public string get_mime_type() {
+        public string? get_mime_type() {
             return ContentType.get_mime_type(content_type);
         }
 
