@@ -38,6 +38,12 @@
                                             </object>
                                         </child>
                                         <child>
+                                            <object class="GtkImage" id="status_dot">
+                                                <property name="pixel-size">8</property>
+                                                <property name="margin-end">7</property>
+                                            </object>
+                                        </child>
+                                        <child>
                                             <object class="GtkLabel" id="time_label">
                                                 <property name="hexpand">False</property>
                                                 <property name="xalign">1</property>
