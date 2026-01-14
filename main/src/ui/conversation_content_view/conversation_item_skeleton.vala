@@ -104,19 +104,17 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         this.notify["item-mark"].connect_after(update_received_mark);
         update_received_mark();
 
-        // Connect presence signals to update status dot for direct chats
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((jid, account) => {
-                if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
-                    update_status_dot();
-                }
-            });
-            presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
-                if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
-                    update_status_dot();
-                }
-            });
-        }
+        // Connect presence signals to update status dot
+        presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((jid, account) => {
+            if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
+                update_status_dot();
+            }
+        });
+        presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
+            if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
+                update_status_dot();
+            }
+        });
 
         update_status_dot();
     }
@@ -230,16 +228,24 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_status_dot() {
-        // Only show status dot for direct chats and when showing skeleton
-        if (!show_skeleton || conversation.type_ != Conversation.Type.CHAT) {
+        // Only show status dot when showing skeleton
+        if (!show_skeleton) {
             status_dot.visible = false;
             return;
         }
 
         // Don't show status dot for own messages
-        if (item.jid.equals_bare(conversation.account.bare_jid)) {
+        if (conversation.type_ == Conversation.Type.CHAT && item.jid.equals_bare(conversation.account.bare_jid)) {
+            // In direct chats
             status_dot.visible = false;
             return;
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            // In group chats
+            Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            if (own_jid != null && item.jid.equals(own_jid)) {
+                status_dot.visible = false;
+                return;
+            }
         }
 
         status_dot.visible = true;
