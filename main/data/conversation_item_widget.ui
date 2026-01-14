@@ -32,6 +32,16 @@
       </object>
     </child>
     <child>
+      <object class="GtkImage" id="status_dot">
+        <property name="pixel-size">8</property>
+        <property name="valign">baseline</property>
+        <layout>
+          <property name="column">2</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
       <object class="GtkLabel" id="time_label">
         <property name="xalign">0</property>
         <property name="valign">baseline</property>
@@ -42,7 +52,7 @@
           <class name="dim-label"/>
         </style>
         <layout>
-          <property name="column">2</property>
+          <property name="column">3</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -53,7 +63,7 @@
         <property name="pixel-size">12</property>
         <property name="margin-top">2</property>
         <layout>
-          <property name="column">3</property>
+          <property name="column">4</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -66,7 +76,7 @@
         <property name="halign">start</property>
         <property name="hexpand">True</property>
         <layout>
-          <property name="column">4</property>
+          <property name="column">5</property>
           <property name="row">0</property>
         </layout>
       </object>

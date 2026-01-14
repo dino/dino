@@ -11,6 +11,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     public Grid main_grid { get; set; }
     public Label name_label { get; set; }
+    public Image status_dot { get; set; }
     public Label time_label { get; set; }
     public AvatarPicture avatar_picture { get; set; }
     public Image encryption_image { get; set; }
@@ -36,6 +37,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     private uint time_update_timeout = 0;
     private ulong updated_roster_handler_id = 0;
+    private ulong[] presence_handler_ids = new ulong[0];
 
     public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
@@ -50,6 +52,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         main_grid = (Grid) builder.get_object("main_grid");
         main_grid.add_css_class("message-box");
         name_label = (Label) builder.get_object("name_label");
+        status_dot = (Image) builder.get_object("status_dot");
         time_label = (Label) builder.get_object("time_label");
         avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
         encryption_image = (Image) builder.get_object("encrypted_image");
@@ -100,6 +103,22 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         item.bind_property("mark", this, "item-mark", BindingFlags.SYNC_CREATE);
         this.notify["item-mark"].connect_after(update_received_mark);
         update_received_mark();
+
+        // Connect presence signals to update status dot for direct chats
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((jid, account) => {
+                if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
+                    update_status_dot();
+                }
+            });
+            presence_handler_ids += stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
+                if (account.equals(conversation.account) && jid.equals_bare(item.jid)) {
+                    update_status_dot();
+                }
+            });
+        }
+
+        update_status_dot();
     }
 
     public void set_widget(Object object, Plugins.WidgetType type, int priority) {
@@ -111,7 +130,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         int row_no = 1;
         for (int i = 0; i < 5; i++) {
             if (!content_widgets.has_key(i)) continue;
-            main_grid.attach(content_widgets[i], 1, row_no, 4, 1);
+            main_grid.attach(content_widgets[i], 1, row_no, 5, 1);
             row_no++;
         }
     }
@@ -119,6 +138,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     private void update_margin() {
         avatar_picture.visible = show_skeleton;
         name_label.visible = show_skeleton;
+        update_status_dot();
         time_label.visible = show_skeleton;
         encryption_image.visible = show_skeleton;
         received_image.visible = show_skeleton;
@@ -189,7 +209,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
 
     private void update_received_mark() {
         switch (content_meta_item.mark) {
-            case Message.Marked.RECEIVED: 
+            case Message.Marked.RECEIVED:
                 received_image.icon_name = "dino-tick-symbolic";
                 received_image.tooltip_text = Util.string_if_tooltips_active(_("Delivered"));
                 break;
@@ -206,6 +226,45 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
                 time_label.tooltip_text = error_text;
                 break;
             default: received_image.icon_name = null; break;
+        }
+    }
+
+    private void update_status_dot() {
+        // Only show status dot for direct chats and when showing skeleton
+        if (!show_skeleton || conversation.type_ != Conversation.Type.CHAT) {
+            status_dot.visible = false;
+            return;
+        }
+
+        // Don't show status dot for own messages
+        if (item.jid.equals_bare(conversation.account.bare_jid)) {
+            status_dot.visible = false;
+            return;
+        }
+
+        status_dot.visible = true;
+
+        // If not connected, show offline status for all
+        if (stream_interactor.connection_manager.get_state(conversation.account) != ConnectionManager.ConnectionState.CONNECTED) {
+            status_dot.set_from_icon_name("dino-status-offline");
+            return;
+        }
+
+        Gee.List<Xmpp.Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(item.jid, conversation.account);
+        if (full_jids != null) {
+            var statuses = new ArrayList<string>();
+            foreach (var full_jid in full_jids) {
+                statuses.add(stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account));
+            }
+
+            if (statuses.contains(Xmpp.Presence.Stanza.SHOW_DND)) status_dot.set_from_icon_name("dino-status-dnd");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_CHAT)) status_dot.set_from_icon_name("dino-status-chat");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_ONLINE)) status_dot.set_from_icon_name("dino-status-online");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_AWAY)) status_dot.set_from_icon_name("dino-status-away");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_XA)) status_dot.set_from_icon_name("dino-status-away");
+            else status_dot.set_from_icon_name("dino-status-offline");
+        } else {
+            status_dot.set_from_icon_name("dino-status-offline");
         }
     }
 
@@ -274,6 +333,9 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
             updated_roster_handler_id = 0;
         }
+        foreach (var handler_id in presence_handler_ids) {
+            stream_interactor.get_module(PresenceManager.IDENTITY).disconnect(handler_id);
+        }
         reactions_controller = null;
 
         // Children won't be disposed automatically
@@ -301,6 +363,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             received_image.unparent();
             received_image.dispose();
             received_image = null;
+        }
+        if (status_dot != null) {
+            status_dot.unparent();
+            status_dot.dispose();
+            status_dot = null;
         }
         base.dispose();
     }
