@@ -38,6 +38,17 @@ public class MainWindowController : Object {
         });
         app.add_action(jump_to_conversatio_message_action);
 
+        SimpleAction select_messages_action = new SimpleAction("select-messages", VariantType.INT32);
+        select_messages_action.activate.connect((variant) => {
+            if (window.conversation_view == null || this.conversation == null) return;
+
+            int conversation_id = variant.get_int32();
+            Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+            if (conversation == null || !this.conversation.equals(conversation)) return;
+
+            toggle_selection_mode(true);
+        });
+        app.add_action(select_messages_action);
     }
 
     public void set_window(MainWindow window) {
@@ -70,6 +81,12 @@ public class MainWindowController : Object {
         });
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("preferences", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
+
+        window.selection_cancel.clicked.connect(() => { toggle_selection_mode(false); });
+        window.selection_copy.clicked.connect(() => {
+            window.get_clipboard().set_text(window.conversation_view.conversation_frame.selection_to_text());
+            toggle_selection_mode(false);
+        });
 
 //        ConversationListModel list_model = new ConversationListModel(stream_interactor);
 //        list_model.closed_conversation.connect((conversation) => {
@@ -119,7 +136,7 @@ public class MainWindowController : Object {
         update_stack_state();
     }
 
-    public void select_conversation(Conversation? conversation, bool do_reset_search = true, bool default_initialize_conversation = true) {
+    public void select_conversation(Conversation? conversation, bool do_reset_toolbars = true, bool default_initialize_conversation = true) {
         this.conversation = conversation;
 
         conversation_view_controller.select_conversation(conversation, default_initialize_conversation);
@@ -128,8 +145,9 @@ public class MainWindowController : Object {
         conversation.active = true; // only for conversation_selected
         window.conversation_selector.on_conversation_selected(conversation); // In case selection was not via ConversationSelector
 
-        if (do_reset_search) {
+        if (do_reset_toolbars) {
             reset_search_entry();
+            toggle_selection_mode(false);
         }
         window.navigation_split_view.show_content = true;
     }
@@ -181,6 +199,11 @@ public class MainWindowController : Object {
 
     private void close_search() {
         conversation_view_controller.search_menu_entry.button.active = false;
+    }
+
+    private void toggle_selection_mode(bool enable) {
+        window.conversation_view.conversation_frame.show_selection_checkboxes(enable);
+        window.show_selection_toolbar(enable);
     }
 }
 
