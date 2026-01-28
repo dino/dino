@@ -23,10 +23,14 @@ namespace Dino {
         DBusNotifications? ret = null;
         Cancellable cancellable = new Cancellable();
 
-        uint timeout_handle_id = Timeout.add_seconds(10, () => {
-            warning("Timeout waiting for org.freedesktop.Notifications DBus instance");
-            cancellable.cancel();
-            Idle.add(get_notifications_dbus.callback);
+        uint timeout_handle_id = 0;
+        timeout_handle_id = Timeout.add_seconds(10, () => {
+            if (timeout_handle_id != 0) {
+                warning("Timeout waiting for org.freedesktop.Notifications DBus instance");
+                timeout_handle_id = 0;
+                cancellable.cancel();
+                Idle.add(get_notifications_dbus.callback);
+            }
             return false;
         });
 
@@ -38,12 +42,12 @@ namespace Dino {
             }
             if (timeout_handle_id != 0) {
                 Source.remove(timeout_handle_id);
+                timeout_handle_id = 0;
                 Idle.add(get_notifications_dbus.callback);
             }
         });
 
         yield;
-        timeout_handle_id = 0;
 
         return ret;
     }
