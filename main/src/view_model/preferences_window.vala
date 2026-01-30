@@ -111,6 +111,7 @@ public class Dino.Ui.ViewModel.PreferencesWindow : Object {
         settings.bind_property("send-marker", general_page, "send-marker", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         settings.bind_property("notifications", general_page, "notifications", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
         settings.bind_property("convert-utf8-smileys", general_page, "convert-emojis", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+        settings.bind_property("publish-tune", general_page, "publish-tune", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
     }
 }
 

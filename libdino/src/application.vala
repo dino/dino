@@ -59,6 +59,7 @@ public interface Application : GLib.Application {
         FallbackBody.start(stream_interactor, db);
         ContactModels.start(stream_interactor);
         StatelessFileSharing.start(stream_interactor, db);
+        TuneManager.start(stream_interactor, db, settings);
 
         create_actions();
 

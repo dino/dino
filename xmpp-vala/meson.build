@@ -68,6 +68,7 @@ sources = files(
     'src/module/xep/0085_chat_state_notifications.vala',
     'src/module/xep/0104_http_scheme_url_data.vala',
     'src/module/xep/0115_entity_capabilities.vala',
+    'src/module/xep/0118_user_tune.vala',
     'src/module/xep/0166_jingle/component.vala',
     'src/module/xep/0166_jingle/content.vala',
     'src/module/xep/0166_jingle/content_description.vala',

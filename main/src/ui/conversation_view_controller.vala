@@ -89,6 +89,13 @@ public class ConversationViewController : Object {
             }
         });
 
+        // Listen for tune updates from contacts
+        stream_interactor.get_module(TuneManager.IDENTITY).contact_tune_changed.connect((account, jid, tune) => {
+            if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals_bare(jid)) {
+                update_conversation_topic();
+            }
+        });
+
         stream_interactor.get_module(FileManager.IDENTITY).upload_available.connect(update_file_upload_status);
 
         // Headerbar plugins
@@ -196,9 +203,33 @@ public class ConversationViewController : Object {
             } else {
                 conversation_topic = null;
             }
+        } else if (conversation.type_ == Conversation.Type.CHAT) {
+            // For 1-on-1 chats, show the contact's currently playing tune if available
+            Xmpp.Xep.UserTune.Tune? tune = stream_interactor.get_module(TuneManager.IDENTITY).get_contact_tune(
+                conversation.account, conversation.counterpart
+            );
+            if (tune != null && !tune.is_empty()) {
+                string tune_text = format_tune_display(tune);
+                conversation_topic = Markup.escape_text(tune_text);
+            } else {
+                conversation_topic = null;
+            }
         } else {
             conversation_topic = null;
         }
+    }
+
+    private string format_tune_display(Xmpp.Xep.UserTune.Tune tune) {
+        string result = "♪ ";
+        if (tune.artist != null && tune.artist.length > 0) {
+            result += tune.artist;
+            if (tune.title != null && tune.title.length > 0) {
+                result += " – " + tune.title;
+            }
+        } else if (tune.title != null && tune.title.length > 0) {
+            result += tune.title;
+        }
+        return result;
     }
 
     private async void on_clipboard_paste() {

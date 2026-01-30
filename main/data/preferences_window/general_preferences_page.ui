@@ -64,5 +64,22 @@
         </child>
       </object>
     </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwActionRow">
+            <property name="title" translatable="yes">Publish currently _playing music</property>
+            <property name="subtitle" translatable="yes">Share your currently playing track to your contacts</property>
+            <property name="use-underline">True</property>
+            <property name="activatable-widget">tune_switch</property>
+            <child type="suffix">
+              <object class="GtkSwitch" id="tune_switch">
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

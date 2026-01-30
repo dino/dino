@@ -1246,3 +1246,11 @@ msgstr ""
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
 msgstr ""
+
+#: main/data/preferences_window/general_preferences_page.ui:71
+msgid "Publish currently _playing music"
+msgstr ""
+
+#: main/data/preferences_window/general_preferences_page.ui:72
+msgid "Share your currently playing track to your contacts"
+msgstr ""
