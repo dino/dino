@@ -59,6 +59,7 @@ public interface Application : GLib.Application {
         FallbackBody.start(stream_interactor, db);
         ContactModels.start(stream_interactor);
         StatelessFileSharing.start(stream_interactor, db);
+        TuneManager.start(stream_interactor, db, settings);
 
         create_actions();
 
@@ -67,6 +68,7 @@ public interface Application : GLib.Application {
             restore();
         });
         shutdown.connect(() => {
+            stream_interactor.get_module(TuneManager.IDENTITY).shutdown();
             stream_interactor.connection_manager.make_offline_all();
         });
         open.connect((files, hint) => {

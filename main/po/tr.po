@@ -1387,3 +1387,11 @@ msgstr "Klavye Kısayolları"
 
 #~ msgid "Password required for room entry, if any"
 #~ msgstr "Odaya giriş için yapmak için parola ( gerekirse )"
+
+#: main/data/preferences_window/general_preferences_page.ui:71
+msgid "Publish currently _playing music"
+msgstr "Dinlediğim _şarkıyı yayınla"
+
+#: main/data/preferences_window/general_preferences_page.ui:72
+msgid "Share your currently playing track to your contacts"
+msgstr "Şu an çalan parçayı kişilerinizle paylaşın"

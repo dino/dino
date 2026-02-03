@@ -26,6 +26,7 @@ dependencies = [
 sources = files(
     'src/application.vala',
     'src/dbus/login1.vala',
+    'src/dbus/mpris.vala',
     'src/dbus/notifications.vala',
     'src/dbus/upower.vala',
     'src/entity/account.vala',
@@ -73,6 +74,7 @@ sources = files(
     'src/service/sfs_metadata.vala',
     'src/service/stateless_file_sharing.vala',
     'src/service/stream_interactor.vala',
+    'src/service/tune_manager.vala',
     'src/service/util.vala',
     'src/util/display_name.vala',
     'src/util/limit_input_stream.vala',

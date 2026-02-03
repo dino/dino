@@ -12,6 +12,7 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        publish_tune_ = col_to_bool_or_default("publish_tune", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -77,6 +78,18 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private bool publish_tune_;
+    public bool publish_tune {
+        get { return publish_tune_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "publish_tune", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            publish_tune_ = value;
         }
     }
 
