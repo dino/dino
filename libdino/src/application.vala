@@ -68,6 +68,7 @@ public interface Application : GLib.Application {
             restore();
         });
         shutdown.connect(() => {
+            stream_interactor.get_module(TuneManager.IDENTITY).shutdown();
             stream_interactor.connection_manager.make_offline_all();
         });
         open.connect((files, hint) => {

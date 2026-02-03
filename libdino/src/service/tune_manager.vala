@@ -153,6 +153,13 @@ public class TuneManager : StreamInteractionModule, Object {
         initialized = false;
     }
 
+    // Should be called when closing the application 
+    public void shutdown() {
+        debug("[TuneManager] Shutdown requested");
+        clear_tune_all_accounts();
+        shutdown_mpris_watcher();
+    }
+
     /**
      * Handle DBus name ownership changes (player appearing/disappearing).
      */
