@@ -62,8 +62,17 @@ public class Dino.LimitInputStream : InputStream, PollableInputStream {
     }
 
     public ssize_t read_nonblocking_fn(uint8[] buffer) throws Error {
+        if (remaining_bytes == 0) return 0;
         if (!is_readable()) throw new IOError.WOULD_BLOCK("Stream is not readable");
-        return read(buffer);
+        int original_buffer_length = buffer.length;
+        if (remaining_bytes != -1 && (int64) buffer.length > remaining_bytes) {
+            // Never read more than remaining_bytes by limiting the buffer length
+            buffer.length = (int) remaining_bytes;
+        }
+        ssize_t read_bytes = ((PollableInputStream)inner).read_nonblocking_fn(buffer);
+        this.retrieved_bytes += read_bytes;
+        buffer.length = original_buffer_length;
+        return read_bytes;
     }
 
     public override bool close(Cancellable? cancellable = null) throws IOError {
