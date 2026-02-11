@@ -205,6 +205,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         int width, height;
         caps.get_structure(0).get_int("width", out width);
         caps.get_structure(0).get_int("height", out height);
+
         debug("Input resolution changed: %ix%i", width, height);
         // Invoke signal on GTK main loop as recipients are likely to use it for doing GTK operations
         Idle.add(() => {
@@ -221,7 +222,7 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
         if (connected_stream == null) return;
         plugin.pause();
         pipe.add(sink);
-        prepare = Gst.parse_bin_from_description(@"videoconvert name=video_widget_$(id)_convert", true);
+        prepare = Gst.parse_bin_from_description(@"videoflip video-direction=auto name=video_widget_$(id)_orientation ! videoconvert name=video_widget_$(id)_convert", true);
         prepare.name = @"video_widget_$(id)_prepare";
         prepare.get_static_pad("sink").notify["caps"].connect(input_caps_changed);
         pipe.add(prepare);
