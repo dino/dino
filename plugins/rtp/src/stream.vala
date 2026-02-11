@@ -779,6 +779,8 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 }
 
 public class Dino.Plugins.Rtp.VideoStream : Stream {
+    public bool flip { get; set; default = false; }
+
     private Gee.List<Gst.Element> outputs = new ArrayList<Gst.Element>();
     private Gst.Element output_tee;
     private Gst.Element rotate;
@@ -792,7 +794,7 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
     public override void create() {
         incoming_video_orientation_changed_handler = incoming_video_orientation_changed.connect(on_video_orientation_changed);
         plugin.pause();
-        rotate = Gst.ElementFactory.make("videoflip", @"video_rotate_$rtpid");
+        rotate = Gst.ElementFactory.make("taginject", @"video_taginject_$rtpid");
         pipe.add(rotate);
         output_tee = Gst.ElementFactory.make("tee", @"video_tee_$rtpid");
         output_tee.@set("allow-not-linked", true);
@@ -810,16 +812,20 @@ public class Dino.Plugins.Rtp.VideoStream : Stream {
         if (rotate != null) {
             switch (degree) {
                 case 0:
-                    rotate.@set("method", 0);
+                    rotate.@set("tags", "image-orientation=rotate-0");
+                    this.set("flip", false);
                     break;
                 case 90:
-                    rotate.@set("method", 1);
+                    rotate.@set("tags", "image-orientation=rotate-90");
+                    this.set("flip", true);
                     break;
                 case 180:
-                    rotate.@set("method", 2);
+                    rotate.@set("tags", "image-orientation=rotate-180");
+                    this.set("flip", false);
                     break;
                 case 270:
-                    rotate.@set("method", 3);
+                    rotate.@set("tags", "image-orientation=rotate-270");
+                    this.set("flip", true);
                     break;
             }
         }
