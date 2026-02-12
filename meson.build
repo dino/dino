@@ -20,7 +20,7 @@ endforeach
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
-dep_glib = dependency('glib-2.0')
+dep_glib = dependency('glib-2.0', version: '>=2.64.0')
 dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
 dep_gmodule = dependency('gmodule-2.0')
 dep_gpgme = dependency('gpgme', disabler: true, required: get_option('plugin-openpgp'))
