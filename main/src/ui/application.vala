@@ -69,6 +69,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
 
         activate.connect(() => {
+            bool first_activation = (window == null);
             if (window == null) {
                 controller = new MainWindowController(this, stream_interactor, db);
                 config = new Config(db);
@@ -76,7 +77,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
-            window.present();
+            // Don't present on first activation if start_minimized is set
+            if (!(first_activation && settings.start_minimized)) {
+                window.present();
+            }
         });
     }
 
