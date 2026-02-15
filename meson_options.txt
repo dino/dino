@@ -15,3 +15,5 @@ option('rtp-vp9', type: 'boolean', value: false, description: 'VP9 codec')
 
 # Legacy plugin
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
+
+option('libportal', type: 'feature', value: 'auto', description: 'Autostart and running in background support')
