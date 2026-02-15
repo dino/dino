@@ -19,6 +19,13 @@ void main(string[] args) {
         Plugins.Loader loader = new Plugins.Loader(app);
         loader.load_all();
 
+        if (loader.loaded("tray-icon.so")) {
+            app.has_tray_icon = true;
+        } else {
+          // XXX messy
+          debug("tray-icon.so is missing, so start_minimized will be ignored loaded");
+        }
+
         app.run(args);
         loader.shutdown();
     } catch (Error e) {
