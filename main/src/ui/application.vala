@@ -16,6 +16,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     public MainWindowController controller;
 
     public Database db { get; set; }
+    public bool has_tray_icon = false;
     public Dino.Entities.Settings settings { get; set; }
     private Config config { get; set; }
     public StreamInteractor stream_interactor { get; set; }
@@ -77,8 +78,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
-            // Don't present on first activation if start_minimized is set
-            if (!(first_activation && settings.start_minimized)) {
+            if (!has_tray_icon || !(first_activation && settings.start_minimized)) {
                 window.present();
             }
         });
@@ -309,4 +309,3 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         dialog.present();
     }
 }
-

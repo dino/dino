@@ -295,6 +295,12 @@ namespace Dino.Plugins.TrayIcon {
       } else {
         // Case 3
         debug("Minimizing disabled because no tray detected.");
+        // in case start_minimized is active, show
+        // XXX this is helpfully defensive; it covers someone turning on start_minimized, then switching DEs to one without a tray;
+        // but it doesn't cover someone accidentaly uninstalling this plugin. For that, the main application examines whether this plugin exists. Kind of fragile.
+        // A proper fix requires rearranging this init to be sync, not async.
+        //
+        ((GLib.Application) app).activate();
       }
 
       // this.main_window = app.window, indirectly
