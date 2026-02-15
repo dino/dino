@@ -39,5 +39,22 @@
         </child>
       </object>
     </child>
+    <child>
+      <object class="AdwPreferencesGroup" id="desktop_environment_group">
+        <property name="title" translatable="yes">Desktop environment intregration</property>
+        <child>
+          <object class="AdwSwitchRow" id="run_in_background_row">
+            <property name="title" translatable="yes">Run in _Background</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwSwitchRow" id="autostart_row">
+            <property name="title" translatable="yes">_Autostart</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

@@ -12,6 +12,8 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        run_in_background_ = col_to_bool_or_default("run_in_background", false);
+        autostart_ = col_to_bool_or_default("autostart", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -77,6 +79,30 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private bool run_in_background_;
+    public bool run_in_background {
+        get { return run_in_background_; }
+        set {
+            db.settings.upsert()
+                    .value(db.settings.key, "run_in_background", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
+            run_in_background_ = value;
+        }
+    }
+
+    private bool autostart_;
+    public bool autostart {
+        get { return autostart_; }
+        set {
+            db.settings.upsert()
+                    .value(db.settings.key, "autostart", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
+            autostart_ = value;
         }
     }
 
