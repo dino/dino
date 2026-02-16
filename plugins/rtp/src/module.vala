@@ -157,11 +157,6 @@ public class Dino.Plugins.Rtp.Module : JingleRtp.Module {
             yield add_if_supported(list, media, h264);
             h264.rtcp_fbs.add_all(rtcp_fbs);
 #endif
-#if ENABLE_VP9
-            var vp9 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP9", id = 97 };
-            vp9.rtcp_fbs.add_all(rtcp_fbs);
-            yield add_if_supported(list, media, vp9);
-#endif
             var vp8 = new JingleRtp.PayloadType() { clockrate = 90000, name = "VP8", id = 98 };
             vp8.rtcp_fbs.add_all(rtcp_fbs);
             yield add_if_supported(list, media, vp8);

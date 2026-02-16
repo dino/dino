@@ -9,8 +9,9 @@ option('plugin-openpgp', type: 'feature', value: 'auto', description: 'End-to-en
 option('plugin-rtp', type: 'feature', value: 'enabled', description: 'Voice/video calls')
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
 
-option('plugin-rtp-h264', type: 'feature', value: 'disabled', description: 'H264 codec')
+option('plugin-rtp-h264', type: 'feature', value: 'auto', description: 'H264 codec')
 option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Intel MediaSDK')
-option('plugin-rtp-vaapi', type: 'feature', value: 'disabled', description: 'Video Acceleration API')
-option('plugin-rtp-vp9', type: 'feature', value: 'disabled', description: 'VP9 codec')
+option('plugin-rtp-vaapi', type: 'feature', value: 'auto', description: 'Video Acceleration API')
+option('plugin-rtp-v4l2', type: 'feature', value: 'disabled', description: 'V4L2 API (stateful)')
+option('plugin-rtp-v4l2-sl', type: 'feature', value: 'auto', description: 'V4L2 API (stateless)')
 option('plugin-rtp-webrtc-audio-processing', value: 'auto', type: 'feature', description: 'Voice preprocessing')
