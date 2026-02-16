@@ -159,7 +159,7 @@ public static string format_time(DateTime datetime, string format_24h, string fo
 
 public static Regex get_url_regex() {
     if (URL_REGEX == null) {
-        URL_REGEX = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)\S+)/;
+        URL_REGEX = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)\S+)/i;
     }
     return URL_REGEX;
 }
@@ -220,9 +220,9 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
 
     if (parse_quotes) {
         string gt = already_escaped ? "&gt;" : ">";
-        Regex quote_regex = new Regex("((?<=\n)" + gt + ".*(\n|$))|(^" + gt + ".*(\n|$))");
+        Regex quote_regex = new Regex("((?<=\n)" + gt + ".*(\n|$))|(^" + gt + ".*(\n|$))", RegexCompileFlags.CASELESS);
         MatchInfo quote_match_info;
-        quote_regex.match(s.down(), 0, out quote_match_info);
+        quote_regex.match(s, 0, out quote_match_info);
         if (quote_match_info.matches()) {
             int start, end;
 
@@ -238,12 +238,12 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
 
     if (parse_links && !already_escaped) {
         MatchInfo match_info;
-        get_url_regex().match(s.down(), 0, out match_info);
+        get_url_regex().match(s, 0, out match_info);
         while (match_info.matches()) {
             int start, end;
             match_info.fetch_pos(0, out start, out end);
             string link = s[start:end];
-            if (GLib.Uri.parse_scheme(link) in ALLOWED_SCHEMAS) {
+            if (GLib.Uri.parse_scheme(link).down() in ALLOWED_SCHEMAS) {
                 Map<unichar, unichar> matching_chars = get_matching_chars();
                 unichar close_char;
                 int last_char_index = link.length;
@@ -293,9 +293,9 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
 
     if (highlight_word != null) {
         try {
-            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b");
+            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b", RegexCompileFlags.CASELESS);
             MatchInfo match_info;
-            highlight_regex.match(s.down(), 0, out match_info);
+            highlight_regex.match(s, 0, out match_info);
             if (match_info.matches()) {
                 int start, end;
                 match_info.fetch_pos(0, out start, out end);
@@ -315,9 +315,9 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
-                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc, RegexCompileFlags.CASELESS);
                 MatchInfo match_info;
-                regex.match(s.down(), 0, out match_info);
+                regex.match(s, 0, out match_info);
                 if (match_info.matches()) {
                     int start, end;
                     match_info.fetch_pos(2, out start, out end);
