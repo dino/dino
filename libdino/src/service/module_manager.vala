@@ -88,6 +88,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.Muji.Module());
             module_map[account].add(new Xep.CallInvites.Module());
             module_map[account].add(new Xep.Coin.Module());
+            module_map[account].add(new Xep.UserNickname.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }
