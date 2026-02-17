@@ -27,6 +27,11 @@ public class MainWindow : Adw.ApplicationWindow {
     [GtkChild] private Stack right_stack;
     [GtkChild] public Adw.Bin search_frame;
 
+    [GtkChild] private Box selection_toolbar;
+    [GtkChild] public Button selection_cancel;
+    [GtkChild] public Label selection_counter;
+    [GtkChild] public Button selection_copy;
+
     public GlobalSearch global_search;
 
     public WelcomePlaceholder welcome_placeholder = new WelcomePlaceholder();
@@ -61,10 +66,16 @@ public class MainWindow : Adw.ApplicationWindow {
         global_search = new GlobalSearch(stream_interactor);
         search_frame.set_child(global_search.get_widget());
 
+        update_selection_counter(0);
+
         create_add_menu(add_button, menu_button);
 
         stack.add_named(welcome_placeholder, "welcome_placeholder");
         stack.add_named(accounts_placeholder, "accounts_placeholder");
+    }
+
+    public void update_selection_counter(int messages_count) {
+        selection_counter.label = _("%i messages selected").printf(messages_count);
     }
 
     public enum StackState {
@@ -132,6 +143,10 @@ public class MainWindow : Adw.ApplicationWindow {
                 config.window_height = default_height;
             }
         }
+    }
+
+    public void show_selection_toolbar(bool enable) {
+        selection_toolbar.visible = enable;
     }
 
     private static void create_add_menu(MenuButton add_button, MenuButton menu_button) {

@@ -190,6 +190,18 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
         add_action(accept_muc_invite_action);
 
+        SimpleAction select_message_action = new SimpleAction("select-message", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
+        select_message_action.activate.connect((variant) => { select_message(variant, true); });
+        add_action(select_message_action);
+
+        SimpleAction unselect_message_action = new SimpleAction("unselect-message", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.INT32}));
+        unselect_message_action.activate.connect((variant) => { select_message(variant, false); });
+        add_action(unselect_message_action);
+
+        SimpleAction update_selected_messages_counter_action = new SimpleAction("update-selected-messages-counter", VariantType.INT32);
+        update_selected_messages_counter_action.activate.connect((variant) => { window.update_selection_counter(variant.get_int32()); });
+        add_action(update_selected_messages_counter_action);
+
         SimpleAction accept_voice_request_action = new SimpleAction("accept-voice-request", new VariantType.tuple(new VariantType[]{VariantType.INT32, VariantType.STRING}));
         accept_voice_request_action.activate.connect((variant) => {
             int conversation_id = variant.get_child_value(0).get_int32();
@@ -304,5 +316,22 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
         dialog.present();
     }
+
+    private void select_message(Variant variant, bool enable) {
+        int conversation_id = variant.get_child_value(0).get_int32();
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_by_id(conversation_id);
+        if (conversation == null) return;
+
+        int content_item_id = variant.get_child_value(1).get_int32();
+        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, content_item_id);
+        if (content_item == null) return;
+
+        if (enable) {
+            window.conversation_view.conversation_frame.select_item(content_item);
+        } else {
+            window.conversation_view.conversation_frame.unselect_item(content_item);
+        }
+    }
+
 }
 
