@@ -40,6 +40,14 @@ private class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
             return;
         }
 
+        GPG.Key key_check = GPGHelper.get_public_key(db.get_account_key(conversation.account));
+        if (key_check.expired || key_check.revoked){
+            string status_str = key_check.expired ? " is expired." : " is revoked.";
+            debug("GPG public key %s is NOT fine for encryption: it %s.\n", key_check.fpr, status_str);
+            input_status_callback(new Plugins.InputFieldStatus("Your GPG key " + key_check.fpr + status_str, Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));
+            return;
+        }
+
         if (conversation.type_ == Conversation.Type.CHAT) {
             string? key_id = stream_interactor.get_module(Manager.IDENTITY).get_key_id(conversation.account, conversation.counterpart);
             if (key_id == null) {

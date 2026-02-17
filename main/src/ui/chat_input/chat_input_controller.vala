@@ -27,6 +27,7 @@ public class ChatInputController : Object {
     private ChatTextViewController chat_text_view_controller;
 
     private ContentItem? quoted_content_item = null;
+    private Encryption encryption_mode;
 
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
@@ -104,7 +105,7 @@ public class ChatInputController : Object {
 
     private void on_encryption_changed(Encryption encryption) {
         reset_input_field_status();
-
+        this.encryption_mode = encryption;
         if (encryption == Encryption.NONE) return;
 
         Application app = GLib.Application.get_default() as Application;
@@ -129,6 +130,9 @@ public class ChatInputController : Object {
     }
 
     private void send_text() {
+        // Double check GPG keys before sending in case of expired / revoked keys while Dino is in use
+        if (this.encryption_mode == Encryption.PGP) on_encryption_changed(this.encryption_mode);
+
         // Don't do anything if we're in a NO_SEND state. Don't clear the chat input, don't send.
         if (input_field_status.input_state == Plugins.InputFieldStatus.InputState.NO_SEND) {
             chat_input.highlight_state_description();

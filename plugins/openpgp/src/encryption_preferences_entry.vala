@@ -43,10 +43,22 @@ namespace Dino.Plugins.OpenPgp {
             preferences_group.add(drop_down);
 
             string_list.append(_("Disabled"));
+
+            // Cleanup revoked or expired keys, except if linked to an account
             for (int i = 0; i < keys.size; i++) {
-                string_list.append(@"$(keys[i].uids[0].uid)\n$(keys[i].fpr.substring(24, 16))");
+                if (keys[i].revoked || keys[i].expired){
+                    if (keys[i].fpr != plugin.db.get_account_key(account)) keys.remove(keys[i]);
+                }
+            }
+
+            for (int i = 0; i < keys.size; i++) {
+                var key_status="";
+                if (keys[i].revoked) key_status = _("\nKey is revoked!");
+                if (keys[i].expired) key_status = _("\nKey is expired!");
+                string_list.append(@"$(keys[i].uids[0].uid)\n$(keys[i].fpr.substring(24, 16))$(key_status)");
                 if (keys[i].fpr == plugin.db.get_account_key(account)) {
                     drop_down.selected = i + 1;
+                    if (keys[i].expired || keys[i].revoked) drop_down.add_css_class("error");
                 }
             }
 
