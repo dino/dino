@@ -20,6 +20,7 @@ public class Loader : Object {
     private string[] search_paths;
     private RootInterface[] plugins = new RootInterface[0];
     private Info[] infos = new Info[0];
+    private HashSet<string> loaded_plugin_names = new HashSet<string>();
 
     public Loader(Application app) {
         this.app = app;
@@ -85,7 +86,13 @@ public class Loader : Object {
         plugins += plugin;
         plugin.registered(app);
 
+        loaded_plugin_names.add(name);
+
         return plugin;
+    }
+
+    public bool loaded(string name) {
+       return loaded_plugin_names.contains(name);
     }
 
     public void shutdown() {

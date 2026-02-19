@@ -93,6 +93,13 @@ public static string get_cache_dir() {
     return Path.build_filename(Environment.get_user_cache_dir(), "dino");
 }
 
+public static bool is_gnome_desktop() {
+    string? desktop = Environment.get_variable("XDG_CURRENT_DESKTOP");
+    if (desktop == null) return false;
+    string desktop_lower = desktop.down();
+    return desktop_lower.contains("gnome") || desktop_lower.contains("unity");
+}
+
 [CCode (cname = "dino_gettext", cheader_filename = "dino_i18n.h")]
 public static extern unowned string _(string s);
 
