@@ -113,7 +113,6 @@ public class Module : XmppStreamModule {
 
             stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
 
-            query_room_info.begin(stream, bare_jid);
             stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
 
             var promise = new Promise<JoinResult?>();
@@ -358,6 +357,8 @@ public class Module : XmppStreamModule {
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
+
+                        query_room_info.begin(stream, bare_jid);
 
                         // TODO only query that if we actually have the rights to
                         query_affiliation.begin(stream, bare_jid, "member");
