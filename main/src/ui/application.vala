@@ -16,12 +16,13 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     public MainWindowController controller;
 
     public Database db { get; set; }
-    public bool has_tray_icon = false;
     public Dino.Entities.Settings settings { get; set; }
     private Config config { get; set; }
     public StreamInteractor stream_interactor { get; set; }
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
+
+    public bool has_tray_plugin { get; set; default = false; }
 
     internal static bool print_version = false;
     private const OptionEntry[] options = {
@@ -70,7 +71,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         });
 
         activate.connect(() => {
-            bool first_activation = (window == null);
             if (window == null) {
                 controller = new MainWindowController(this, stream_interactor, db);
                 config = new Config(db);
@@ -78,8 +78,10 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
-            if (!has_tray_icon || !(first_activation && settings.start_minimized)) {
-                window.present();
+            if (!(has_tray_plugin && settings.minimized)) {
+                if(window != null) {
+                    window.present();
+                }
             }
         });
     }
