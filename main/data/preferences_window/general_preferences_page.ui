@@ -39,16 +39,5 @@
         </child>
       </object>
     </child>
-    <child>
-      <object class="AdwPreferencesGroup">
-        <child>
-          <object class="AdwSwitchRow" id="start_minimized_row">
-            <property name="title" translatable="yes">Start _Minimized</property>
-            <property name="subtitle" translatable="yes">Hide main window on startup</property>
-            <property name="use-underline">True</property>
-          </object>
-        </child>
-      </object>
-    </child>
   </template>
 </interface>
