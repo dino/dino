@@ -18,14 +18,6 @@ namespace Dino.Plugins.TrayIcon {
     private DBusNotifications? dbus_notifications = null;
     private Gtk.Window? main_window = null;
 
-    /* API */
-    public /*async*/ bool minimizable() {
-      // TODO: we should *wait* here until we're initialized
-      //
-      if (persistent_notification_active || tray_item != null)return true;
-      return false;
-    }
-
     /* Utilities */
     private static bool is_gnome_desktop() {
       // detect if running under GNOME (or Unity, which is Ubuntu's fork)
@@ -43,15 +35,28 @@ namespace Dino.Plugins.TrayIcon {
         main_window = window;
         debug("main window registered");
 
-        if (minimizable()) {
+        // Do we have somewhere to minimize to?
+        if (persistent_notification_active || tray_item != null) {
           main_window.hide_on_close = true;
         }
 
         // When window visibility changes, the SNI tray needs to switch between saying Show/Hide
         main_window.notify["visible"].connect(() => {
-          debug("notify[visible] fired: visible=%s", main_window.visible.to_string());
           update_tray(); // XXX this is a bit wasteful because it also runs the persistent_notification stuff
+
+          // sync minimized, so that dino restart in the same state it was in when it quit
+          ((Dino.Application) app).settings.minimized = (main_window.hide_on_close && !main_window.visible);
+
+          debug("notify[visible] fired: visible=%s, settings.minimized=%s", main_window.visible.to_string(), ((Dino.Application) app).settings.minimized.to_string());
         });
+
+        if (!main_window.hide_on_close) {
+          // override settings.minimized
+          //
+          // it's rare but possible, say by switching DEs while minimized,
+          // to end up without the window showing.
+          main_window.present();
+        }
       }
     }
 
@@ -252,7 +257,7 @@ namespace Dino.Plugins.TrayIcon {
       // - KDE also supports this, but it annoyingly doesn't respect the priority hint and always pops the notification upo.
       // If there were a way to make the notification persistent but only appear for a moment that might be an okay compromise
       // 2. Fall back to KDE'StatusNotifierItem system, which is widely supported
-      // 3. Disable tray icons -- and therefore settings.start_minimized -- entirely.
+      // 3. Disable tray icons -- and therefore settings.minimized -- entirely.
       if (is_gnome_desktop() && (yield has_persistent_notifications())) {
         // Case 1
         setup_persistent_notification();
@@ -271,7 +276,7 @@ namespace Dino.Plugins.TrayIcon {
       } else {
         // Case 3
         debug("Minimizing disabled because no tray detected.");
-        // in case start_minimized is active, show
+        // this overrides settings.minimized
         ((GLib.Application) app).activate();
       }
 
