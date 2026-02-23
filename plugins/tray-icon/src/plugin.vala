@@ -35,30 +35,6 @@ namespace Dino.Plugins.TrayIcon {
       return desktop.contains("gnome") || desktop.contains("unity");
     }
 
-    private async bool has_dbus_name(string name) {
-      try {
-        var connection = yield Bus.get(BusType.SESSION);
-
-        Variant result = yield connection.call("org.freedesktop.DBus", // bus name
-          "/org/freedesktop/DBus", // object path
-          "org.freedesktop.DBus", // interface
-          "NameHasOwner", // method
-          new Variant ("(s)", name),
-          new VariantType ("(b)"), // expected reply
-          DBusCallFlags.NONE,
-          -1,
-          null);
-
-        bool has_owner;
-        result.get("(b)", out has_owner);
-
-        return has_owner;
-      } catch (Error e) {
-        warning("Failed to query D-Bus: %s", e.message);
-      }
-      return false;
-    }
-
     /* Shared state */
     private void setup_main_window(Gtk.Window window) {
       debug("main window added");
@@ -170,13 +146,13 @@ namespace Dino.Plugins.TrayIcon {
       // compatibility, other DEs *pretend to be KDE* if they have a tray.
       // For example, here's sway:
       // https://github.com/Alexays/Waybar/blob/e4e47cad5c9efec3462e0c239ea1015931864984/src/modules/sni/watcher.cpp#L9-L15
-      var has_owner = yield has_dbus_name("org.kde.StatusNotifierWatcher");
-      if (has_owner) {
+      var has_sni = yield dbus_service_available("org.kde.StatusNotifierWatcher");
+      if (has_sni) {
         debug("SNI tray detected");
       } else {
         debug("SNI tray NOT detected");
       }
-      return has_owner;
+      return has_sni;
     }
 
     private void setup_sni_tray() {
@@ -267,7 +243,7 @@ namespace Dino.Plugins.TrayIcon {
         });
       });
 
-      if(yield has_dbus_name("org.freedesktop.Notifications")) {
+      if(yield dbus_service_available("org.freedesktop.Notifications")) {
         dbus_notifications = yield get_notifications_dbus();
       }
 
