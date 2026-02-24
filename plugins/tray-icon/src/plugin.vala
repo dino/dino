@@ -74,7 +74,7 @@ namespace Dino.Plugins.TrayIcon {
         // When window visibility changes, the SNI tray needs to switch between saying Show/Hide
         main_window.notify["visible"].connect(() => {
           debug("notify[visible] fired: visible=%s", main_window.visible.to_string());
-          update_notice(); // XXX this is a bit wasteful because it also runs the persistent_notification stuff
+          update_tray(); // XXX this is a bit wasteful because it also runs the persistent_notification stuff
         });
       }
     }
@@ -256,13 +256,13 @@ namespace Dino.Plugins.TrayIcon {
       // Sniff the number of unread messages
       app.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((_x, _y) => {
         // on new message
-        update_notice();
+        update_tray();
       });
       app.stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((_) => {
         // on user clicking to a conversation (and hence 'reading' its unread messages).
         // The update is deferred the Idle loop to ensure the decrement has actually happened.
         GLib.Idle.add(() => {
-          update_notice();
+          update_tray();
           return GLib.Source.REMOVE;
         });
       });
@@ -280,7 +280,7 @@ namespace Dino.Plugins.TrayIcon {
       if (is_gnome_desktop() && (yield has_persistent_notifications())) {
         // Case 1
         setup_persistent_notification();
-        // note that the notification isn't actually sent until update_notice()
+        // note that the notification isn't actually sent until update_tray()
 
         // Keep app when window closed
         ((GLib.Application) app).hold();
@@ -311,7 +311,7 @@ namespace Dino.Plugins.TrayIcon {
       }
 
       // Initialize notification/tray content
-      update_notice();
+      update_tray();
     }
 
     public void registered(Dino.Application app) {
@@ -351,7 +351,7 @@ namespace Dino.Plugins.TrayIcon {
       return total;
     }
 
-    private void update_notice() {
+    private void update_tray() {
       // Update the summary text displayed on the notification/tray icon
       string body;
       int unread = get_unread_count();
