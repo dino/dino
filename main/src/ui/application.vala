@@ -22,8 +22,6 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     public Plugins.Registry plugin_registry { get; set; default = new Plugins.Registry(); }
     public SearchPathGenerator? search_path_generator { get; set; }
 
-    public bool has_tray_plugin { get; set; default = false; }
-
     internal static bool print_version = false;
     private const OptionEntry[] options = {
         { "version", 0, 0, OptionArg.NONE, ref print_version, "Display version number", null },
@@ -78,11 +76,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
             }
-            if (!(has_tray_plugin && settings.minimized)) {
-                if(window != null) {
-                    window.present();
-                }
-            }
+            window.present();
         });
     }
 

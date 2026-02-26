@@ -17,134 +17,37 @@ namespace Dino.Plugins.TrayIcon {
     public Dino.Application app;
     private DBusNotifications? dbus_notifications = null;
     private Gtk.Window? main_window = null;
+    private StatusNotifierItem? tray_item;
 
     /* Utilities */
-    private static bool is_gnome_desktop() {
-      // detect if running under GNOME (or Unity, which is Ubuntu's fork)
-      string? desktop = Environment.get_variable("XDG_CURRENT_DESKTOP");
-      if (desktop == null)return false;
-      desktop = desktop.down();
-      return desktop.contains("gnome") || desktop.contains("unity");
+
+    private int get_unread_count() {
+      int total = 0;
+      var conversation_manager = app.stream_interactor.get_module(ConversationManager.IDENTITY);
+      var chat_interaction = app.stream_interactor.get_module(ChatInteraction.IDENTITY);
+      foreach (Conversation conversation in conversation_manager.get_active_conversations()) {
+        total += chat_interaction.get_num_unread(conversation);
+      }
+      return total;
     }
 
-    /* Shared state */
-    private void setup_main_window(Gtk.Window window) {
-      debug("main window added");
-      // note that this is a signal handler, it doens't happen immediately!
-      if (main_window == null) {
-        main_window = window;
-        debug("main window registered");
+    private void toggle_window() {
+      if (this.main_window == null) {
+        debug("toggle_window(): main_window not yet defined");
+        ((GLib.Application) app).activate();
+        return;
+      }
 
-        // Do we have somewhere to minimize to?
-        if (persistent_notification_active || tray_item != null) {
-          main_window.hide_on_close = true;
-        }
-
-        // When window visibility changes, the SNI tray needs to switch between saying Show/Hide
-        main_window.notify["visible"].connect(() => {
-          update_tray(); // XXX this is a bit wasteful because it also runs the persistent_notification stuff
-
-          // sync minimized, so that dino restart in the same state it was in when it quit
-          ((Dino.Application) app).settings.minimized = (main_window.hide_on_close && !main_window.visible);
-
-          debug("notify[visible] fired: visible=%s, settings.minimized=%s", main_window.visible.to_string(), ((Dino.Application) app).settings.minimized.to_string());
-        });
-
-        if (!main_window.hide_on_close) {
-          // override settings.minimized
-          //
-          // it's rare but possible, say by switching DEs while minimized,
-          // to end up without the window showing.
-          main_window.present();
-        }
+      debug("toggle_window(): main_window currently visible = %s", main_window.visible.to_string());
+      if (main_window.visible) {
+        main_window.set_visible(false);
+      } else {
+        // using present() also foregrounds the window, in most environments
+        main_window.present();
       }
     }
 
-    /* Case 1: Persistent Notification */
-
-    private bool persistent_notification_active = false;
-    private uint32 persistent_notification_id = 0;
-
-    private async bool has_persistent_notifications() {
-      // detect if we're in a desktop environment with persistent notifications
-      // if so, we know we can use them instead of a system tray icon,
-      // similar to how Android handles background apps.
-
-      if (dbus_notifications == null) {
-        return false;
-      }
-
-      // Query capabilities
-      // see https://specifications.freedesktop.org/notification/latest-single/#id-1.10.3.2.5
-      try {
-        string[] caps;
-        yield dbus_notifications.get_capabilities(out caps);
-
-        foreach (string cap in caps) {
-          if (cap == "persistence") {
-            debug("Persistent notifications capability detected");
-            return true;
-          }
-        }
-      } catch (Error e) {
-        warning("Could not query DBUS notificationn capabilities: %s", e.message);
-      }
-
-      debug("Persistent notifications capability NOT detected");
-      return false;
-    }
-
-    private void setup_persistent_notification() {
-      persistent_notification_active = true;
-
-      // Connect to notification action
-      dbus_notifications.action_invoked.connect((notification_id, action) => {
-        debug(@"persistent notification $notification_id clicked");
-        if (notification_id == persistent_notification_id && action == "default") {
-          toggle_window();
-        }
-      });
-    }
-
-    private async void update_persistent_notification(string body) {
-      if (dbus_notifications == null)return;
-      if (!persistent_notification_active)return;
-
-      string title = "Dino";
-
-      HashTable<string, Variant> hints = new HashTable<string, Variant> (null, null);
-      hints["desktop-entry"] = new Variant.string("im.dino.Dino");
-      hints["category"] = new Variant.string("presence");
-      hints["resident"] = new Variant.boolean(true); // Keep notification after click
-      hints["urgency"] = new Variant.byte(0); // don't popup, just appear in tray
-      hints["suppress-sound"] = new Variant.boolean(true);
-
-      string[] actions = new string[] { "default", "Toggle Dino" };
-
-      try {
-        // replaces_id updatesi the existing notification
-        persistent_notification_id = yield dbus_notifications.notify("Dino",
-          persistent_notification_id, // Replace existing notification; on *init*, this is 0 which is ..special? I guess? Means "create a new one"?
-          "im.dino.Dino",
-          title,
-          body,
-          actions,
-          hints,
-          0 // No timeout
-        );
-      } catch (Error e) {
-        warning("Persistent notification: Failed to send notification: %s", e.message);
-      }
-    }
-
-    private void shutdown_persistent_notification() {
-      if (dbus_notifications != null && persistent_notification_id != 0) {
-        dbus_notifications.close_notification.begin(persistent_notification_id, (_, res) => { dbus_notifications.close_notification.end(res); });
-      }
-    }
-
-    /* Case 2: StatusNotifierItem system tray */
-    private StatusNotifierItem? tray_item;
+    /* SNI */
 
     private async bool has_sni_tray() {
       // KDE invented StatusNotifierItem (SNI)-based system trays; and for
@@ -161,7 +64,6 @@ namespace Dino.Plugins.TrayIcon {
     }
 
     private void setup_sni_tray() {
-      // setup SNI-based tray icon
 
       tray_item = new StatusNotifierItem() {
         id = "im.dino.Dino",
@@ -172,20 +74,22 @@ namespace Dino.Plugins.TrayIcon {
         text_direction = Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL ? "rtl" : "ltr"
       };
 
+      // a click on the icon
       tray_item.activate.connect((_x, _y) => {
         debug("tray icon click toggling");
         toggle_window();
       });
 
       // Setup attached menu
+      var menu = new GLib.Menu();
+      tray_item.menu_model = menu;
+      // a click on the 'Show/Hide' menu item
       var toggle_action = new GLib.SimpleAction("tray-toggle", null);
       toggle_action.activate.connect(() => {
         debug("tray icon menu toggling");
         toggle_window();
       });
       ((GLib.Application) app).add_action(toggle_action);
-      var menu = new GLib.Menu();
-      tray_item.menu_model = menu;
       menu.append("Show", "app.tray-toggle");
       menu.append("Quit", "app.quit");
 
@@ -194,6 +98,7 @@ namespace Dino.Plugins.TrayIcon {
     }
 
     private void update_sni_tray(string body) {
+      // write a status message to the tray icon (usually shown on hover)
       if (tray_item != null) {
         string title = "Dino";
         tray_item.tool_tip = DBusStatusNotifierItemToolTip() {
@@ -231,10 +136,71 @@ namespace Dino.Plugins.TrayIcon {
       }
     }
 
+    /* Main */
+
+    private void update_tray() {
+      debug("update_tray(): visible=%s", main_window.visible.to_string());
+
+      // Update the summary text displayed on the notification/tray icon
+      string body;
+      int unread = get_unread_count();
+      if (unread == 0) {
+        body = "No unread messages";
+      } else if (unread == 1) {
+        body = "1 unread message";
+      } else {
+        body = @"$unread unread messages";
+      }
+
+      update_sni_tray(body);
+    }
+
+    /* Plugin interface (i.e. Hooking into the rest of the app) */
+
+    private void setup_main_window(Gtk.Window window) {
+      // note that this is a signal handler, it doens't happen immediately!
+      if (main_window == null) {
+        main_window = window;
+        debug("Connected to main_window");
+
+        // Do we have somewhere to minimize to?
+        if (tray_item != null) {
+          main_window.hide_on_close = true;
+        }
+
+        // When window visibility changes, the SNI tray needs to switch between saying Show/Hide
+        main_window.notify["visible"].connect(update_tray);
+
+        if (!main_window.hide_on_close) {
+          // override settings.minimized
+          //
+          // it's rare but possible, say by switching DEs while minimized,
+          // to end up without the window showing.
+          main_window.present();
+        }
+      }
+    }
+
     private async void _registered(Dino.Application app) {
       this.app = app;
 
-      // Sniff the number of unread messages
+      if(yield dbus_service_available("org.freedesktop.Notifications")) {
+        dbus_notifications = yield get_notifications_dbus();
+      }
+
+      // Decide if we're can make a tray icon
+      if (yield has_sni_tray()) {
+        setup_sni_tray();
+
+        // Keep app when window closed
+        ((GLib.Application) app).hold();
+        debug("Backgrounding to StatusNotifier tray icon.");
+      } else {
+        debug("Backgrounding disabled because no tray detected.");
+        // ensure app is shown in case some other part of the code tried to hide it
+        ((GLib.Application) app).activate();
+      }
+
       app.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((_x, _y) => {
         // on new message
         update_tray();
@@ -248,42 +214,11 @@ namespace Dino.Plugins.TrayIcon {
         });
       });
 
-      if(yield dbus_service_available("org.freedesktop.Notifications")) {
-        dbus_notifications = yield get_notifications_dbus();
-      }
-
-      // Decide if and how we're going to make a tray icon
-      // 1. Prefer GNOME's notification area, since Dino is a Vala app and hence most at home in GNOME
-      // - KDE also supports this, but it annoyingly doesn't respect the priority hint and always pops the notification upo.
-      // If there were a way to make the notification persistent but only appear for a moment that might be an okay compromise
-      // 2. Fall back to KDE'StatusNotifierItem system, which is widely supported
-      // 3. Disable tray icons -- and therefore settings.minimized -- entirely.
-      if (is_gnome_desktop() && (yield has_persistent_notifications())) {
-        // Case 1
-        setup_persistent_notification();
-        // note that the notification isn't actually sent until update_tray()
-
-        // Keep app when window closed
-        ((GLib.Application) app).hold();
-        debug("Minimizing Dino to Freedesktop persistent Notifications.");
-      } else if (yield has_sni_tray()) {
-        // Case 2
-        setup_sni_tray();
-
-        // Keep app when window closed
-        ((GLib.Application) app).hold();
-        debug("Minimizing dino to StatusNotifier tray icon.");
-      } else {
-        // Case 3
-        debug("Minimizing disabled because no tray detected.");
-        // this overrides settings.minimized
-        ((GLib.Application) app).activate();
-      }
-
-      // this.main_window = app.window, indirectly
-      // The window might already exist by the time we run OR it might not so we have to catch both cases
-      // also: it's important this happens AFTER init'ing the tray
-      // because that tells us if it's okay to hide_on_close.
+      // this.main_window = app.window, and configure it.
+      // It's important this happens last because it assumes setup_sni_tray has run.
+      //
+      // Notice the window might already exist OR we might need to wait for it async
+      // depending on the order dino chose to initialize.
       unowned var windows = ((Gtk.Application) app).get_windows();
       if (windows.length() > 0 && main_window == null) {
         setup_main_window(windows.data);
@@ -293,17 +228,11 @@ namespace Dino.Plugins.TrayIcon {
         });
       }
 
-      // Initialize notification/tray content
+      // Initialize tray content
       update_tray();
     }
 
     public void registered(Dino.Application app) {
-      // override settings.minimized
-      //
-      // in the rare case that someone minimizes then corrupts
-      // or deletes this plugin, make sure not to brick dino.
-      app.has_tray_plugin = true;
-
       // we have a bunch of async code we're forced to call
       // so just jump into it immediately and do everything async
       //  (this has to be called in the idle loop because the event loop _is not running yet_ during plugin load
@@ -314,53 +243,11 @@ namespace Dino.Plugins.TrayIcon {
       });
     }
 
-    private void toggle_window() {
-      var has_window = main_window != null;
-      debug(@"toggle_window(): has_window = $has_window");
-      if (this.main_window == null) {
-        ((GLib.Application) app).activate();
-        return;
-      }
-
-      debug("toggle_window called, current visible=%s", main_window.visible.to_string());
-      if (main_window.visible) {
-        main_window.set_visible(false);
-      } else {
-        main_window.present();
-      }
-    }
-
-    private int get_unread_count() {
-      int total = 0;
-      var conversation_manager = app.stream_interactor.get_module(ConversationManager.IDENTITY);
-      var chat_interaction = app.stream_interactor.get_module(ChatInteraction.IDENTITY);
-      foreach (Conversation conversation in conversation_manager.get_active_conversations()) {
-        total += chat_interaction.get_num_unread(conversation);
-      }
-      return total;
-    }
-
-    private void update_tray() {
-      // Update the summary text displayed on the notification/tray icon
-      string body;
-      int unread = get_unread_count();
-      if (unread == 0) {
-        body = "No unread messages";
-      } else if (unread == 1) {
-        body = "1 unread message";
-      } else {
-        body = @"$unread unread messages";
-      }
-
-      update_persistent_notification.begin(body, (_, res) => { update_persistent_notification.end(res); });
-      update_sni_tray(body);
-    }
-
     public void shutdown() {
-      shutdown_persistent_notification();
       shutdown_sni_tray();
 
       ((GLib.Application) app).release(); // XXX is this safe to call outside the if?regardless
     }
+
   }
 }

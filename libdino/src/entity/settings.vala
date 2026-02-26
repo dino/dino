@@ -12,7 +12,6 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
-        minimized_ = col_to_bool_or_default("minimized", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -78,20 +77,6 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
-        }
-    }
-
-    // This is a _hidden_ setting; it stores the state of the window for the
-    // tray-icon plugin. It's not user-visible, which is an awkward fit for here.
-    private bool minimized_;
-    public bool minimized {
-        get { return minimized_; }
-        set {
-            db.settings.upsert()
-                .value(db.settings.key, "minimized", true)
-                .value(db.settings.value, value.to_string())
-                .perform();
-            minimized_ = value;
         }
     }
 
