@@ -16,8 +16,6 @@ public interface Application : GLib.Application {
     public abstract Plugins.Registry plugin_registry { get; set; }
     public abstract SearchPathGenerator? search_path_generator { get; set; }
 
-    public abstract bool has_tray_plugin { get; set; }
-
     internal static string print_xmpp;
 
     private const OptionEntry[] options = {
