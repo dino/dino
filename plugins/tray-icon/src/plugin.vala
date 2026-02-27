@@ -8,6 +8,9 @@ using Dino.Entities;
      G_MESSAGES_DEBUG="TrayIcon" ./build/main/dino
 
    (recall that you [can](https://github.com/dino/dino/wiki/Debugging) add other modules, space-separated, to debug at the same time)
+  p
+
+
  */
 
 namespace Dino.Plugins.TrayIcon {
@@ -76,12 +79,12 @@ namespace Dino.Plugins.TrayIcon {
         title = "Dino",
         status = "Active",
         icon_name = "im.dino.Dino",
+        attention_icon_name = "im.dino.Dino-attention",
         text_direction = Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL ? "rtl" : "ltr"
       };
 
       // a click on the icon
       tray_item.activate.connect((_x, _y) => {
-        debug("tray icon click toggling");
         toggle_window();
       });
 
@@ -91,7 +94,6 @@ namespace Dino.Plugins.TrayIcon {
       // a click on the 'Show/Hide' menu item
       var toggle_action = new GLib.SimpleAction("tray-toggle", null);
       toggle_action.activate.connect(() => {
-        debug("tray icon menu toggling");
         toggle_window();
       });
       ((GLib.Application) app).add_action(toggle_action);
@@ -109,7 +111,7 @@ namespace Dino.Plugins.TrayIcon {
 
       bool visible = main_window != null && main_window.visible;
       int unread = get_unread_count();
-      debug("update_tray: window visible = %s, unread = %d", visible.to_string(), unread);
+      // debug("update_tray: window visible = %s, unread = %d", visible.to_string(), unread);
 
       if(unread != last_unread) {
         if (unread == 0) {
@@ -128,7 +130,7 @@ namespace Dino.Plugins.TrayIcon {
           body = @"$unread unread messages";
         }
 
-        debug("setting tray message: %s", body); // beware: is this a privacy leak?
+        debug("setting tray message: '%s'", body); // beware: is this a privacy leak?
         tray_item.tool_tip = DBusStatusNotifierItemToolTip() {
           icon_name = "im.dino.Dino",
           icon = {},
@@ -141,7 +143,7 @@ namespace Dino.Plugins.TrayIcon {
 
       if(visible != last_visible) {
         // Toggle the label on the menu item
-        debug("toggling menu item to %s", visible ? "Hide" : "Show");
+        debug("toggling menu item to '%s'", visible ? "Hide" : "Show");
 
         var menu = tray_item.menu_model as GLib.Menu;
         menu.remove(0);
@@ -165,7 +167,7 @@ namespace Dino.Plugins.TrayIcon {
       // note that this is a signal handler, it doens't happen immediately!
       if (main_window == null) {
         main_window = window;
-        debug("Connected to main_window");
+        debug("tray plugin connected to main_window");
 
         // Do we have somewhere to minimize to?
         if (tray_item != null) {
