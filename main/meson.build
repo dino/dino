@@ -144,10 +144,14 @@ endif
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_rpath: default_install_rpath)
 
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino-attention.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino-attention-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
 # these icons are actuallty 128, but there's no apps/128 folder in KDE's themes; apps/48 is the closest.
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic-light.svg', install_dir: get_option('datadir') / 'icons/breeze/apps/48', rename: 'im.dino.Dino-symbolic.svg')
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic-dark.svg', install_dir: get_option('datadir') / 'icons/breeze-dark/apps/48', rename: 'im.dino.Dino-symbolic.svg')
+install_data('data/icons/scalable/apps/im.dino.Dino-attention-symbolic-light.svg', install_dir: get_option('datadir') / 'icons/breeze/apps/48', rename: 'im.dino.Dino-attention-symbolic.svg')
+install_data('data/icons/scalable/apps/im.dino.Dino-attention-symbolic-dark.svg', install_dir: get_option('datadir') / 'icons/breeze-dark/apps/48', rename: 'im.dino.Dino-attention-symbolic.svg')
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
 install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')
