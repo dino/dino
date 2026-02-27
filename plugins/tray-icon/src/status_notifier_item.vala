@@ -1,5 +1,23 @@
 namespace Dino.Plugins.TrayIcon {
 
+/* To debug this
+
+dbus-monitor \
+  "type='signal',interface='com.canonical.dbusmenu'" \
+  "type='method_call',interface='com.canonical.dbusmenu'" \
+  "type='signal',interface='org.kde.StatusNotifierItem'" \
+  "type='method_call',interface='org.kde.StatusNotifierItem'" \
+  "type='method_return'"
+
+You can clean it up a lot by watching it for a moment and reading
+off the 'sender' and 'destination'; replace the last line with:
+  "type='method_return',sender=:1.8,destination=:1.274" \
+  "type='method_return',sender=:1.274,destination=:1.8"
+
+and replace 1.8 and 1.274 with the numbers currently in use on your system.
+
+*/
+
 [DBus (name = "org.kde.StatusNotifierWatcher")]
 private interface DBusStatusNotifierWatcher : Object {
     [DBus (name = "RegisterStatusNotifierItem")]
@@ -272,8 +290,42 @@ private class DBusMenu : Object {
         return false;
     }
 
+    private static void collect_all_ids(int32 parent_id, MenuModel model, Gee.ArrayList<int32> result) {
+        int32[] children = get_children_ids(parent_id, model);
+        foreach (int32 child_id in children) {
+            result.add(child_id);
+            collect_all_ids(child_id, model, result);
+        }
+    }
+
+    public void all_items_properties_updated() {
+        var all_ids = new Gee.ArrayList<int32>();
+        collect_all_ids(0, item.menu_model, all_ids);
+
+        Variant[] items = {};
+        foreach (int32 id in all_ids) {
+            var props = get_properties(id, item.menu_model);
+            if (props == null || props.size == 0) continue;
+
+            var dict = new VariantDict();
+            foreach (var entry in props) {
+                dict.insert_value(entry.key, entry.value);
+            }
+
+            var item_builder = new VariantBuilder(new VariantType("(ia{sv})"));
+            item_builder.add("i", id);
+            item_builder.add_value(dict.end());
+            items += item_builder.end();
+        }
+
+        var updated = new Variant.array(new VariantType("(ia{sv})"), items);
+        var removed = new Variant.array(new VariantType("(ias)"), {});
+
+        items_properties_updated(updated, removed);
+    }
+
     [DBus (name = "ItemsPropertiesUpdated")]
-    public signal void item_properties_updated([DBus (signature = "a(ia{sv})")] Variant updated_properties, [DBus (signature = "a(ias)")] Variant removed_properties);
+    public signal void items_properties_updated([DBus (signature = "a(ia{sv})")] Variant updated_properties, [DBus (signature = "a(ias)")] Variant removed_properties);
     [DBus (name = "LayoutUpdated")]
     public signal void layout_updated(uint32 revision, int32 parent);
     [DBus (name = "ItemActivationRequested")]
@@ -319,7 +371,34 @@ public class StatusNotifierItem : Object {
 
     public void notify_menu_updated() {
         if (dbus_menu != null) {
+            // Sync the current state of the menu to the systray over DBus.
+            //
+            // - Can't detect what changes have happened since last call
+            //   so always resyncs the full menu state. ItemsPropertiesUpdated
+            //   is designed to send a diff but computing that is incredibly
+            //   error-prone so we don't [^1].
+            //
+            // - Some (most?) DEs always resync the full menu on LayoutUpdated
+            //   anyway; and menu updates happen rarely so it's not a big
+            //   problem to add a few stray DBus messages.
+            //
+            // [^1]: Canonical Ltd designed ItemsPropertiesUpdated; they also,
+            //       later, wrote the GNOME 3 systray extension and there they
+            //       straight up igore the diff attached to ItemsPropertiesUpdated;
+            //       they need to hear it but it always triggers a full resync [^2].
+            // [^2]: But other DEs do pay attention to the details in
+            //       ItemsPropertiesUpdated; however they all seem to be ones that
+            //       treat LayoutUpdated as a trigger for a full resync, so it's
+            //       redundant there.
             dbus_menu.layout_updated(++menu_model_revision, 0);
+            dbus_menu.all_items_properties_updated();
+
+            // Anoother strategy:
+            // - in Electron every menu update has to be a full new menu
+            //   (https://github.com/electron/electron/blob/master/docs/api/tray.md)
+            //   and it (somewhere, unclear to us where) tracks a global counter
+            //   of menu items so it can generate fresh IDs on every GetLayout,
+            //   which forces the systray to follow up with GetGroupProperties.
         }
     }
 
