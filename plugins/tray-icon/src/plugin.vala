@@ -15,9 +15,13 @@ namespace Dino.Plugins.TrayIcon {
   public class Plugin : RootInterface, Object {
 
     public Dino.Application app;
-    private DBusNotifications? dbus_notifications = null;
     private Gtk.Window? main_window = null;
     private StatusNotifierItem? tray_item;
+    // state caching for safety and avoidance of redundancy
+    private bool app_held = false;
+    private int last_unread = -1;
+    private bool last_visible = false;
+
 
     /* Utilities */
 
@@ -33,15 +37,16 @@ namespace Dino.Plugins.TrayIcon {
 
     private void toggle_window() {
       if (this.main_window == null) {
-        debug("toggle_window(): main_window not yet defined");
+        debug("toggle_window: main_window not yet defined");
         ((GLib.Application) app).activate();
         return;
       }
 
-      debug("toggle_window(): main_window currently visible = %s", main_window.visible.to_string());
       if (main_window.visible) {
+        debug("toggle_window: hiding");
         main_window.set_visible(false);
       } else {
+        debug("toggle_window: showing");
         // using present() also foregrounds the window, in most environments
         main_window.present();
       }
@@ -49,21 +54,21 @@ namespace Dino.Plugins.TrayIcon {
 
     /* SNI */
 
-    private async bool has_sni_tray() {
+    private async bool has_tray() {
       // KDE invented StatusNotifierItem (SNI)-based system trays; and for
       // compatibility, other DEs *pretend to be KDE* if they have a tray.
       // For example, here's sway:
       // https://github.com/Alexays/Waybar/blob/e4e47cad5c9efec3462e0c239ea1015931864984/src/modules/sni/watcher.cpp#L9-L15
       var has_sni = yield dbus_service_available("org.kde.StatusNotifierWatcher");
       if (has_sni) {
-        debug("SNI tray detected");
+        debug("StatusNotifierItem system tray detected");
       } else {
-        debug("SNI tray NOT detected");
+        debug("StatusNotifierItem system tray NOT detected");
       }
       return has_sni;
     }
 
-    private void setup_sni_tray() {
+    private void setup_tray() {
 
       tray_item = new StatusNotifierItem() {
         id = "im.dino.Dino",
@@ -90,69 +95,68 @@ namespace Dino.Plugins.TrayIcon {
         toggle_window();
       });
       ((GLib.Application) app).add_action(toggle_action);
-      menu.append("Show", "app.tray-toggle");
+      last_visible = main_window != null && main_window.visible;
+      menu.append(last_visible ? "Hide" : "Show", "app.tray-toggle");
       menu.append("Quit", "app.quit");
 
       // Hook it up to the OS
       tray_item.register();
     }
 
-    private void update_sni_tray(string body) {
-      // write a status message to the tray icon (usually shown on hover)
-      if (tray_item != null) {
-        string title = "Dino";
+
+    private void update_tray() {
+      if (tray_item == null)return;
+
+      bool visible = main_window != null && main_window.visible;
+      int unread = get_unread_count();
+      debug("update_tray: window visible = %s, unread = %d", visible.to_string(), unread);
+
+      if(unread != last_unread) {
+        if (unread == 0) {
+          tray_item.status = "Active";
+        } else {
+          tray_item.status = "NeedsAttention";
+        }
+
+        // write a status message to the tray icon (usually shown on hover)
+        string body;
+        if (unread == 0) {
+          body = "No unread messages";
+        } else if (unread == 1) {
+          body = "1 unread message";
+        } else {
+          body = @"$unread unread messages";
+        }
+
+        debug("setting tray message: %s", body); // beware: is this a privacy leak?
         tray_item.tool_tip = DBusStatusNotifierItemToolTip() {
           icon_name = "im.dino.Dino",
           icon = {},
-          title = title,
+          title = "Dino",
           body = body
         };
 
-        if (body != "No unread messages") { // XXX janky, we translate get_unread_count() to a bool to a string and back to a bool
-          tray_item.status = "NeedsAttention";
-        } else {
-          tray_item.status = "Active";
-        }
+        last_unread = unread;
+      }
 
-        bool is_visible = main_window != null && main_window.visible;
-        debug("Tray icon: window visible=%s", is_visible.to_string());
-        // Modify menu in-place: remove first item and re-add with correct label
-        // XXX this is ignored under GNOME's https://extensions.gnome.org/extension/615/appindicator-support/ (a problem we sidestep by not using SNI on GNOME, but still, it would be good to fix)
-        // TODO: before removing, maybe verify what the previous state was?
+      if(visible != last_visible) {
+        // Toggle the label on the menu item
+        debug("toggling menu item to %s", visible ? "Hide" : "Show");
+
         var menu = tray_item.menu_model as GLib.Menu;
         menu.remove(0);
-        if (is_visible) {
-          menu.prepend("Hide", "app.tray-toggle");
-        } else {
-          menu.prepend("Show", "app.tray-toggle");
-        }
+        menu.prepend(visible ? "Hide" : "Show", "app.tray-toggle");
+
         tray_item.notify_menu_updated();
+
+        last_visible = visible;
       }
     }
 
-    private void shutdown_sni_tray() {
+    private void shutdown_tray() {
       if (tray_item != null) {
         tray_item.unregister();
       }
-    }
-
-    /* Main */
-
-    private void update_tray() {
-      debug("update_tray(): visible=%s", main_window.visible.to_string());
-
-      // Update the summary text displayed on the notification/tray icon
-      string body;
-      int unread = get_unread_count();
-      if (unread == 0) {
-        body = "No unread messages";
-      } else if (unread == 1) {
-        body = "1 unread message";
-      } else {
-        body = @"$unread unread messages";
-      }
-
-      update_sni_tray(body);
     }
 
     /* Plugin interface (i.e. Hooking into the rest of the app) */
@@ -181,19 +185,17 @@ namespace Dino.Plugins.TrayIcon {
       }
     }
 
+
     private async void _registered(Dino.Application app) {
       this.app = app;
 
-      if(yield dbus_service_available("org.freedesktop.Notifications")) {
-        dbus_notifications = yield get_notifications_dbus();
-      }
-
       // Decide if we're can make a tray icon
-      if (yield has_sni_tray()) {
-        setup_sni_tray();
+      if (yield has_tray()) {
+        setup_tray();
 
         // Keep app when window closed
         ((GLib.Application) app).hold();
+        app_held = true;
         debug("Backgrounding to StatusNotifier tray icon.");
       } else {
         debug("Backgrounding disabled because no tray detected.");
@@ -215,7 +217,7 @@ namespace Dino.Plugins.TrayIcon {
       });
 
       // this.main_window = app.window, and configure it.
-      // It's important this happens last because it assumes setup_sni_tray has run.
+      // It's important this happens last because it assumes setup_tray has run.
       //
       // Notice the window might already exist OR we might need to wait for it async
       // depending on the order dino chose to initialize.
@@ -244,9 +246,11 @@ namespace Dino.Plugins.TrayIcon {
     }
 
     public void shutdown() {
-      shutdown_sni_tray();
+      shutdown_tray();
 
-      ((GLib.Application) app).release(); // XXX is this safe to call outside the if?regardless
+      if(app_held) {
+        ((GLib.Application) app).release(); // XXX is this safe to call outside the if?regardless
+      }
     }
 
   }
