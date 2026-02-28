@@ -369,6 +369,11 @@ public class StatusNotifierItem : Object {
     public signal void secondary_activate(int x, int y);
     public signal void scroll(int delta, string orientation);
 
+    // Fired after successfully registering with the system tray
+    public signal void exists();
+    // Fired when the StatusNotifierWatcher disappears *or* was not found
+    public signal void absent();
+
     public void notify_menu_updated() {
         if (dbus_menu != null) {
             // Sync the current state of the menu to the systray over DBus.
@@ -409,6 +414,7 @@ public class StatusNotifierItem : Object {
     private string name { owned get { return @"$id-$((int)Posix.getpid())-$registration_id"; } }
     private bool registered;
     private uint name_owner_id;
+    private uint sni_watcher_id = 0;
     private DBusConnection dbus_connection;
     private uint dbus_item_registration_id;
     private uint dbus_menu_registration_id;
@@ -433,46 +439,45 @@ public class StatusNotifierItem : Object {
         notify["menu-model"].connect((o, _) => ((StatusNotifierItem)o).dbus_menu.layout_updated(++((StatusNotifierItem)o).menu_model_revision, 0));
     }
 
+    private async void on_tray_appeared(DBusConnection conn, string watcher_name, string owner) {
+        try {
+            DBusStatusNotifierWatcher watcher = yield Bus.get_proxy<DBusStatusNotifierWatcher>(
+                BusType.SESSION, "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher");
+            yield watcher.register_item(name);
+            registered = true;
+            exists();
+        } catch (Error e) {
+            warning("Failed to register with StatusNotifierWatcher: %s", e.message);
+        }
+    }
+
+    private void on_tray_vanished(DBusConnection conn, string watcher_name) {
+        registered = false;
+        absent();
+    }
+
     private void on_name_acquired(DBusConnection dbus_connection) {
-        Bus.get_proxy.begin<DBusStatusNotifierWatcher>(BusType.SESSION, "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher", 0, null, (obj, res) => {
-            try {
-                DBusStatusNotifierWatcher watcher = Bus.get_proxy.end(res);
-
-                watcher.host_registered.connect(() => {
-                    if (!(name in watcher.registered_items)) {
-                        watcher.register_item.begin(name, (obj, res) => {
-                            try {
-                                watcher.register_item.end(res);
-                            } catch (Error e) {
-                                warning("Failed to register with StatusNotifierWatcher: %s", e.message);
-                            }
-                        });
-                    }
-                });
-
-                watcher.register_item.begin(name, (obj, res) => {
-                    try {
-                        watcher.register_item.end(res);
-                    } catch (Error e) {
-                        warning("Failed to register with StatusNotifierWatcher: %s", e.message);
-                    }
-                });
-            } catch (Error e) {
-                warning("Failed to get StatusNotifierWatcher proxy: %s", e.message);
-            }
-        });
+        debug("StatusNotifierItem: acquired DBus name %s", name);
+        // Now that we are registered to DBus, attempt to connect to the system tray
+        sni_watcher_id = Bus.watch_name(BusType.SESSION, "org.kde.StatusNotifierWatcher", BusNameWatcherFlags.NONE,
+            (conn, n, owner) => on_tray_appeared.begin(conn, n, owner, (_, res) => on_tray_appeared.end(res)),
+            on_tray_vanished);
     }
 
     public void register() {
-        if (registered) return;
+        if (name_owner_id != 0) return;
         if (id == null) critical("StatusNotifierItem.id not set before registering");
-        name_owner_id = Bus.own_name(BusType.SESSION, name, BusNameOwnerFlags.NONE, on_bus_aquired, on_name_acquired, () => warning("Could not acquire name: %s", name));
-        registered = true;
+        name_owner_id = Bus.own_name(BusType.SESSION, name, BusNameOwnerFlags.NONE, on_bus_aquired, on_name_acquired,
+            () => warning("Could not acquire name: %s", name));
     }
 
     public void unregister() {
-        if (!registered) return;
-        if (name_owner_id != 0) Bus.unown_name(name_owner_id);
+        if (name_owner_id == 0) return;
+        if (sni_watcher_id != 0) {
+            Bus.unwatch_name(sni_watcher_id);
+            sni_watcher_id = 0;
+        }
+        Bus.unown_name(name_owner_id);
         name_owner_id = 0;
         if (dbus_item_registration_id != 0 && dbus_connection != null) dbus_connection.unregister_object(dbus_item_registration_id);
         if (dbus_menu_registration_id != 0 && dbus_connection != null) dbus_connection.unregister_object(dbus_menu_registration_id);
