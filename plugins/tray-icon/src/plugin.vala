@@ -21,7 +21,7 @@ namespace Dino.Plugins.TrayIcon {
     private Gtk.Window? main_window = null;
     private StatusNotifierItem? tray_item;
     // state caching for safety and avoidance of redundancy
-    private bool app_held = false;
+    private bool tray_active = false;
     private int last_unread = -1;
     private bool last_visible = false;
 
@@ -45,7 +45,7 @@ namespace Dino.Plugins.TrayIcon {
         return;
       }
 
-      if (main_window.visible) {
+      if (main_window.visible && main_window.hide_on_close) {
         debug("toggle_window: hiding");
         main_window.set_visible(false);
       } else {
@@ -56,20 +56,6 @@ namespace Dino.Plugins.TrayIcon {
     }
 
     /* SNI */
-
-    private async bool has_tray() {
-      // KDE invented StatusNotifierItem (SNI)-based system trays; and for
-      // compatibility, other DEs *pretend to be KDE* if they have a tray.
-      // For example, here's sway:
-      // https://github.com/Alexays/Waybar/blob/e4e47cad5c9efec3462e0c239ea1015931864984/src/modules/sni/watcher.cpp#L9-L15
-      var has_sni = yield dbus_service_available("org.kde.StatusNotifierWatcher");
-      if (has_sni) {
-        debug("StatusNotifierItem system tray detected");
-      } else {
-        debug("StatusNotifierItem system tray NOT detected");
-      }
-      return has_sni;
-    }
 
     private void setup_tray() {
 
@@ -102,6 +88,36 @@ namespace Dino.Plugins.TrayIcon {
       menu.append("Quit", "app.quit");
 
       // Hook it up to the OS
+      tray_item.exists.connect(() => {
+        // Tray exists.
+        debug("StatusNotifierItem system tray detected");
+        if (!tray_active) {
+          ((GLib.Application) app).hold();
+          tray_active = true;
+        }
+        if (main_window != null) {
+          main_window.hide_on_close = true;
+        }
+        update_tray();
+      });
+
+      tray_item.absent.connect(() => {
+        // Tray crash/restart, or just not there
+        if (tray_active) {
+          ((GLib.Application) app).release();
+          tray_active = false;
+          debug("StatusNotifierItem system tray lost");
+        }
+
+        // ensure that the window doesn't get lost if we lose the tray
+        if (main_window != null) {
+          main_window.hide_on_close = false;
+          if(!main_window.visible) {
+            toggle_window();
+          }
+        }
+      });
+
       tray_item.register();
     }
 
@@ -158,6 +174,12 @@ namespace Dino.Plugins.TrayIcon {
     private void shutdown_tray() {
       if (tray_item != null) {
         tray_item.unregister();
+        tray_item = null;
+        if(tray_active) {
+          ((GLib.Application) app).release();
+          // TODO can this be merged with the tray_item.absent handler?
+          tray_active = false;
+        }
       }
     }
 
@@ -170,7 +192,7 @@ namespace Dino.Plugins.TrayIcon {
         debug("tray plugin connected to main_window");
 
         // Do we have somewhere to minimize to?
-        if (tray_item != null) {
+        if (tray_active) {
           main_window.hide_on_close = true;
         }
 
@@ -178,32 +200,15 @@ namespace Dino.Plugins.TrayIcon {
         main_window.notify["visible"].connect(update_tray);
 
         if (!main_window.hide_on_close) {
-          // override settings.minimized
-          //
-          // it's rare but possible, say by switching DEs while minimized,
-          // to end up without the window showing.
           main_window.present();
         }
       }
     }
 
-
-    private async void _registered(Dino.Application app) {
+    public void registered(Dino.Application app) {
       this.app = app;
 
-      // Decide if we're can make a tray icon
-      if (yield has_tray()) {
-        setup_tray();
-
-        // Keep app when window closed
-        ((GLib.Application) app).hold();
-        app_held = true;
-        debug("Backgrounding to StatusNotifier tray icon.");
-      } else {
-        debug("Backgrounding disabled because no tray detected.");
-        // ensure app is shown in case some other part of the code tried to hide it
-        ((GLib.Application) app).activate();
-      }
+      setup_tray();
 
       app.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((_x, _y) => {
         // on new message
@@ -231,28 +236,10 @@ namespace Dino.Plugins.TrayIcon {
           setup_main_window(window);
         });
       }
-
-      // Initialize tray content
-      update_tray();
-    }
-
-    public void registered(Dino.Application app) {
-      // we have a bunch of async code we're forced to call
-      // so just jump into it immediately and do everything async
-      //  (this has to be called in the idle loop because the event loop _is not running yet_ during plugin load
-      // so if we try to immediately jump we risk deadlocking.
-      Idle.add(() => {
-        _registered.begin(app, (_, res) => { _registered.end(res); });
-        return GLib.Source.REMOVE;
-      });
     }
 
     public void shutdown() {
       shutdown_tray();
-
-      if(app_held) {
-        ((GLib.Application) app).release(); // XXX is this safe to call outside the if?regardless
-      }
     }
 
   }
