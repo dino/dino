@@ -138,8 +138,11 @@ namespace Dino.Plugins.TrayIcon {
       if(unread != last_unread) {
         if (unread == 0) {
           tray_item.status = "Active";
+          tray_item.icon_name = "im.dino.Dino";
         } else {
           tray_item.status = "NeedsAttention";
+          // snixembed and waybar ignore attention_icon_name, so override the primary icon
+          tray_item.icon_name = "im.dino.Dino-attention";
         }
 
         // write a status message to the tray icon (usually shown on hover)
