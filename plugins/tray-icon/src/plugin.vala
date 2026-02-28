@@ -22,6 +22,7 @@ namespace Dino.Plugins.TrayIcon {
     private StatusNotifierItem? tray_item;
     // state caching for safety and avoidance of redundancy
     private bool tray_active = false;
+    private bool hide_desired = false; // what state the user wants; only matters if the tray restarts under us.
     private int last_unread = -1;
     private bool last_visible = false;
 
@@ -48,10 +49,12 @@ namespace Dino.Plugins.TrayIcon {
       if (main_window.visible && main_window.hide_on_close) {
         debug("toggle_window: hiding");
         main_window.set_visible(false);
+        hide_desired = true;
       } else {
         debug("toggle_window: showing");
         // using present() also foregrounds the window, in most environments
         main_window.present();
+        hide_desired = false;
       }
     }
 
@@ -97,6 +100,9 @@ namespace Dino.Plugins.TrayIcon {
         }
         if (main_window != null) {
           main_window.hide_on_close = true;
+          if(hide_desired) {
+            main_window.set_visible(false);
+          }
         }
         update_tray();
       });
@@ -113,7 +119,7 @@ namespace Dino.Plugins.TrayIcon {
         if (main_window != null) {
           main_window.hide_on_close = false;
           if(!main_window.visible) {
-            toggle_window();
+            main_window.set_visible(true);
           }
         }
       });
