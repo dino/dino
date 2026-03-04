@@ -163,7 +163,7 @@ public class ConversationViewController : Object {
     }
 
     private void update_conversation_topic(string? subtitle = null) {
-        string? str = null;
+        string str = "";
         if (subtitle != null) {
             str = Util.summarize_whitespaces_to_space(subtitle);
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
