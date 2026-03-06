@@ -22,7 +22,6 @@ dependencies = [
     dep_gmodule,
     dep_qlite,
     dep_xmpp_vala,
-    meson.get_compiler('vala').find_library('posix'),
 ]
 sources = files(
     'src/application.vala',
