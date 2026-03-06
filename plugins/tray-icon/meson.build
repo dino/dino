@@ -11,7 +11,6 @@ dependencies = [
 sources = files(
     'src/plugin.vala',
     'src/register_plugin.vala',
-    'src/status_notifier_item.vala',
 )
 c_args = [
     '-DG_LOG_DOMAIN="TrayIcon"',

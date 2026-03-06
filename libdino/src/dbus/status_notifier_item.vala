@@ -1,4 +1,4 @@
-namespace Dino.Plugins.TrayIcon {
+namespace Dino {
 
 /* To debug this
 
