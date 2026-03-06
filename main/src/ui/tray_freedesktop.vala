@@ -13,9 +13,9 @@ using Dino.Entities;
 
  */
 
-namespace Dino.Plugins.TrayIcon {
+namespace Dino.Ui {
 
-  public class Plugin : RootInterface, Object {
+  public class FreedesktopTrayIcon : Object {
 
     public Dino.Application app;
     private Gtk.Window? main_window = null;
@@ -192,13 +192,11 @@ namespace Dino.Plugins.TrayIcon {
       }
     }
 
-    /* Plugin interface (i.e. Hooking into the rest of the app) */
-
     private void setup_main_window(Gtk.Window window) {
       // note that this is a signal handler, it doens't happen immediately!
       if (main_window == null) {
         main_window = window;
-        debug("tray plugin connected to main_window");
+        debug("tray connected to main_window");
 
         // Do we have somewhere to minimize to?
         if (tray_active) {
@@ -210,7 +208,7 @@ namespace Dino.Plugins.TrayIcon {
       }
     }
 
-    public void registered(Dino.Application app) {
+    public FreedesktopTrayIcon(Dino.Application app) {
       this.app = app;
 
       setup_tray();
@@ -241,10 +239,8 @@ namespace Dino.Plugins.TrayIcon {
           setup_main_window(window);
         });
       }
-    }
 
-    public void shutdown() {
-      shutdown_tray();
+      ((GLib.Application) app).shutdown.connect(shutdown_tray);
     }
 
   }

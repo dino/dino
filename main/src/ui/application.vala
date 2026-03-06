@@ -14,6 +14,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 
     public MainWindow window;
     public MainWindowController controller;
+    private FreedesktopTrayIcon tray_icon;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
@@ -42,6 +43,8 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 print(@"Dino $(Dino.get_version())\n");
                 Process.exit(0);
             }
+
+            tray_icon = new FreedesktopTrayIcon(this);
 
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
             get_notifications_dbus.begin((_, res) => {
