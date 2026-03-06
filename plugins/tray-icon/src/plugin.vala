@@ -73,7 +73,7 @@ namespace Dino.Plugins.TrayIcon {
       };
 
       // a click on the icon
-      tray_item.activate.connect((_x, _y) => {
+      tray_item.activate.connect(() => {
         toggle_window();
       });
 
@@ -215,11 +215,11 @@ namespace Dino.Plugins.TrayIcon {
 
       setup_tray();
 
-      app.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((_x, _y) => {
+      app.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(() => {
         // on new message
         update_tray();
       });
-      app.stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect((_) => {
+      app.stream_interactor.get_module(ChatInteraction.IDENTITY).focused_in.connect(() => {
         // on user clicking to a conversation (and hence 'reading' its unread messages).
         // The update is deferred the Idle loop to ensure the decrement has actually happened.
         GLib.Idle.add(() => {
