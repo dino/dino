@@ -207,10 +207,6 @@ namespace Dino.Plugins.TrayIcon {
 
         // When window visibility changes, the SNI tray needs to switch between saying Show/Hide
         main_window.notify["visible"].connect(update_tray);
-
-        if (!main_window.hide_on_close) {
-          main_window.present();
-        }
       }
     }
 
