@@ -118,6 +118,30 @@
             ]
         },
         {
+            "_comment": "Why is this not part of the Gnome SDK?!",
+            "name": "libportal",
+            "buildsystem": "meson",
+            "config-opts": [
+                "-Ddocs=false",
+                "-Dintrospection=true",
+                "-Dvapi=true"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/flatpak/libportal.git",
+                    "commit": "8f5dc8d192f6e31dafe69e35219e3b707bde71ce",
+                    "tag": "0.9.1",
+                    "x-checker-data": {
+                        "type": "anitya",
+                        "project-id": 230124,
+                        "stable-only": true,
+                        "tag-template": "$version"
+                    }
+                }
+            ]
+        },
+        {
             "name": "dino",
             "buildsystem": "meson",
             "builddir": true,
