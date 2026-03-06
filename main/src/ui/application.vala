@@ -14,6 +14,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 
     public MainWindow window;
     public MainWindowController controller;
+    private LauncherEntry launcher_entry;
 
     public Database db { get; set; }
     public Dino.Entities.Settings settings { get; set; }
@@ -55,15 +56,11 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 }
             });
 
+            launcher_entry = new LauncherEntry(stream_interactor);
+
             notification_events.notify_content_item.connect((content_item, conversation) => {
                 // Set urgency hint also if (normal) notifications are disabled
-                // Don't set urgency hint in GNOME, produces "Window is active" notification
-                var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
-                if (desktop_env == null || !desktop_env.down().contains("gnome")) {
-                    if (this.active_window != null) {
-//                        this.active_window.urgency_hint = true;
-                    }
-                }
+                launcher_entry.urgency_hint = true;
             });
             stream_interactor.get_module(FileManager.IDENTITY).add_metadata_provider(new Util.AudioVideoFileMetadataProvider());
         });
@@ -75,6 +72,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 window = new MainWindow(this, stream_interactor, db, config);
                 controller.set_window(window);
                 if ((get_flags() & ApplicationFlags.IS_SERVICE) == ApplicationFlags.IS_SERVICE) window.hide_on_close = true;
+                window.notify["is-active"].connect(() => launcher_entry.urgency_hint = false);
             }
             window.present();
         });
