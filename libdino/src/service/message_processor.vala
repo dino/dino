@@ -425,9 +425,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (message.quoted_item_id != 0) {
             ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
             if (quoted_content_item != null) {
-                Jid? quoted_sender = message.from;
+                Jid quoted_sender = quoted_content_item.jid;
                 string? quoted_stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, quoted_content_item);
-                if (quoted_sender != null && quoted_stanza_id != null) {
+                if (quoted_stanza_id != null) {
                     Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
                 }
 
