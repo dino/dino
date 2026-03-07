@@ -60,7 +60,16 @@ namespace Dino.Ui {
 
       // a click on the icon
       tray_item.activate.connect(() => {
-        toggle_window();
+        if(attention) {
+          // hiding tricks most window managers
+          // into focusing the presented window
+          // but also generally loses the workspace it was on
+          app.window.hide();
+          app.window.present();
+          hide_desired = false;
+        } else {
+          toggle_window();
+        }
       });
 
       // Setup attached menu
