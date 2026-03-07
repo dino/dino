@@ -53,6 +53,7 @@
     </child>
     <child>
       <object class="GtkLabel" id="message">
+        <property name="use_markup">1</property>
         <property name="ellipsize">end</property>
         <property name="halign">start</property>
         <property name="xalign">0</property>
