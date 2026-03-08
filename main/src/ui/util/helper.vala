@@ -62,6 +62,11 @@ public static string color_for_show(string show) {
 }
 
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
+    if (conversation.type_ == Conversation.Type.CHAT &&
+            conversation.counterpart.equals_bare(conversation.account.bare_jid)) {
+        // Support the virtual "Note to Self" contact added by RosterList.fetch_roster_items()
+        return _("Note to Self");
+    }
     return Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
 }
 
