@@ -67,6 +67,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.ChatStateNotifications.Module());
             module_map[account].add(new Xep.ChatMarkers.Module());
             module_map[account].add(new Xep.Ping.Module());
+            module_map[account].add(new Xep.EntityTime.Module());
             module_map[account].add(new Xep.DelayedDelivery.Module());
             module_map[account].add(new StreamError.Module());
             module_map[account].add(new Xep.InBandRegistration.Module());

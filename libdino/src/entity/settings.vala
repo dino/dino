@@ -9,6 +9,7 @@ public class Settings : Object {
 
         send_typing_ = col_to_bool_or_default("send_typing", true);
         send_marker_ = col_to_bool_or_default("send_marker", true);
+        share_time_ = col_to_bool_or_default("share_time", true);
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
@@ -40,6 +41,18 @@ public class Settings : Object {
                     .value(db.settings.value, value.to_string())
                     .perform();
             send_marker_ = value;
+        }
+    }
+
+    private bool share_time_;
+    public bool share_time {
+        get { return share_time_; }
+        set {
+            db.settings.upsert()
+                    .value(db.settings.key, "share_time", true)
+                    .value(db.settings.value, value.to_string())
+                    .perform();
+            share_time_ = value;
         }
     }
 

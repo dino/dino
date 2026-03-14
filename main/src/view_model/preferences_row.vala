@@ -6,6 +6,7 @@ using Gee;
 namespace Dino.Ui.ViewModel.PreferencesRow {
     public abstract class Any : Object {
         public string title { get; set; }
+        public bool visible { get; set; default=true; }
 
         public string? media_type { get; set; }
         public string? media_uri { get; set; }

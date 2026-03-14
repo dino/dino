@@ -88,6 +88,9 @@ namespace Xmpp {
         public ErrorStanza.feature_not_implemented(string? human_readable = null) {
             this.build(TYPE_MODIFY, CONDITION_FEATURE_NOT_IMPLEMENTED, human_readable, null);
         }
+        public ErrorStanza.forbidden(string? human_readable = null) {
+            this.build(TYPE_AUTH, CONDITION_FORBIDDEN, human_readable, null);
+        }
         public ErrorStanza.item_not_found(StanzaNode? application_condition = null) {
             this.build(TYPE_CANCEL, CONDITION_ITEM_NOT_FOUND, null, application_condition);
         }

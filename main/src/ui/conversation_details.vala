@@ -20,6 +20,11 @@ namespace Dino.Ui.ConversationDetails {
                 model.data_form_bak = model.data_form.stanza_node.to_string();
             });
         }
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            stream_interactor.get_module(EntityInfo.IDENTITY).get_utc_offset_minutes_for_bare_jid.begin(conversation.account, conversation.counterpart, (_, res) => {
+                model.utc_offset_minutes = stream_interactor.get_module(EntityInfo.IDENTITY).get_utc_offset_minutes_for_bare_jid.end(res);
+            });
+        }
     }
 
     public void bind_dialog(Model.ConversationDetails model, ViewModel.ConversationDetails view_model, StreamInteractor stream_interactor) {
@@ -100,7 +105,7 @@ namespace Dino.Ui.ConversationDetails {
         view_model.pin_changed.connect(() => {
             model.conversation.pinned = model.conversation.pinned == 1 ? 0 : 1;
         });
-        view_model.block_changed.connect((action) => {
+        view_model.block_changed.connect((view_model, action) => {
             switch (action) {
                 case USER:
                     stream_interactor.get_module(BlockingManager.IDENTITY).block(model.conversation.account, model.conversation.counterpart);
@@ -133,35 +138,67 @@ namespace Dino.Ui.ConversationDetails {
             }
         });
 
-        view_model.notification_flipped.connect(() => {
+        view_model.notification_flipped.connect((view_model) => {
             model.conversation.notify_setting = view_model.notification == ON ? Conversation.NotifySetting.OFF : Conversation.NotifySetting.ON;
         });
     }
 
+    private static string format_utc_offset_minutes(int utc_offset_minutes) {
+        var datetime = new DateTime.now(new TimeZone.offset(utc_offset_minutes * 60));
+        return datetime.format(Util.is_24h_format() ?
+                /* xgettext:no-c-format */ /* Weekday and time in 24h format (w/o seconds) */ _("%A, %H∶%M") :
+                /* xgettext:no-c-format */ /* Weekday and time in 12h format (w/o seconds) */ _("%A, %l∶%M %p"));
+    }
+
+    private uint get_interval_till_next_full_minute() {
+        return 60000 - (int) (new DateTime.now_utc().get_seconds()*1000d);
+    }
+
+    private static void notify_binding_once(Binding binding) {
+        binding.source.notify_property(binding.source_property);
+    }
+
     public void set_about_rows(Model.ConversationDetails model, ViewModel.ConversationDetails view_model, StreamInteractor stream_interactor) {
+        Conversation conversation = model.conversation;
         view_model.about_rows.append(new ViewModel.PreferencesRow.Text() {
             title = _("XMPP Address"),
-            text = model.conversation.counterpart.to_string()
+            text = conversation.counterpart.to_string()
         });
-        if (model.conversation.type_ == Conversation.Type.CHAT) {
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            var display_name = model.display_name;
             var about_row = new ViewModel.PreferencesRow.Entry() {
                 title = _("Display name"),
-                text = model.display_name.display_name
+                text = display_name.display_name
             };
-            about_row.changed.connect(() => {
-                if (about_row.text != model.display_name.display_name) {
-                    stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(model.conversation.account, model.conversation.counterpart, about_row.text);
+            about_row.changed.connect((about_row) => {
+                if (about_row.text != display_name.display_name) {
+                    stream_interactor.get_module(RosterManager.IDENTITY).set_jid_handle(conversation.account, conversation.counterpart, about_row.text);
                 }
             });
             view_model.about_rows.append(about_row);
+            var time_row = new ViewModel.PreferencesRow.Text() {
+                title = _("Local Time")
+            };
+            model.bind_property("utc-offset-minutes", time_row, "visible", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
+                int utc_offset_minutes = (int) from;
+                to = utc_offset_minutes != int.MIN;
+                return true;
+            });
+            model.bind_property("utc-offset-minutes", time_row, "text", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
+                var interval = get_interval_till_next_full_minute();
+                to = format_utc_offset_minutes((int) from);
+                WeakTimeout.add_once(interval, binding, notify_binding_once);
+                return true;
+            });
+            view_model.about_rows.append(time_row);
         }
-        if (model.conversation.type_ == Conversation.Type.GROUPCHAT) {
-            var topic = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(model.conversation.counterpart, model.conversation.account);
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            var topic = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
 
             Ui.ViewModel.PreferencesRow.Any preferences_row = null;
-            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(model.conversation.counterpart, model.conversation.account);
+            Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
             if (own_muc_jid != null) {
-                Xep.Muc.Role? own_role = stream_interactor.get_module(MucManager.IDENTITY).get_role(own_muc_jid, model.conversation.account);
+                Xep.Muc.Role? own_role = stream_interactor.get_module(MucManager.IDENTITY).get_role(own_muc_jid, conversation.account);
                 if (own_role != null) {
                     if (own_role == MODERATOR) {
                         var preferences_row_entry = new ViewModel.PreferencesRow.Entry() {
@@ -170,7 +207,7 @@ namespace Dino.Ui.ConversationDetails {
                         };
                         preferences_row_entry.changed.connect(() => {
                             if (preferences_row_entry.text != topic) {
-                                stream_interactor.get_module(MucManager.IDENTITY).change_subject(model.conversation.account, model.conversation.counterpart, preferences_row_entry.text);
+                                stream_interactor.get_module(MucManager.IDENTITY).change_subject(conversation.account, conversation.counterpart, preferences_row_entry.text);
                             }
                         });
                         preferences_row = preferences_row_entry;
@@ -205,8 +242,9 @@ namespace Dino.Ui.ConversationDetails {
         });
 
         Plugins.ContactDetails contact_details = new Plugins.ContactDetails();
+        var settings_rows = dialog.model.settings_rows;
         contact_details.add_settings_action_row.connect((entry_row_model) => {
-            dialog.model.settings_rows.append((Ui.ViewModel.PreferencesRow.Any) entry_row_model);
+            settings_rows.append((Ui.ViewModel.PreferencesRow.Any) entry_row_model);
         });
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_contact_details_entry(new ContactDetails.SettingsProvider(stream_interactor));

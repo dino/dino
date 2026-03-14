@@ -100,7 +100,7 @@ public class Module : XmppStreamModule {
                 x_node.put_node(history_node);
 
                 if (history_since != null) {
-                    history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
+                    history_node.set_attribute("since", DateTimeProfiles.format_time(history_since));
                 } else if (!receive_history) {
                     history_node.set_attribute("maxchars", "0");
                 }

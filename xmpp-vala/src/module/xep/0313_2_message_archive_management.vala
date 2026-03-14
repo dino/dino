@@ -49,12 +49,12 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         }
         if (mam_params.start != null) {
             DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="start" };
-            field.set_value_string(DateTimeProfiles.to_datetime(mam_params.start));
+            field.set_value_string(DateTimeProfiles.format_time(mam_params.start));
             fields.add(field);
         }
         if (mam_params.end != null && mam_params.end_id == null && !mam_params.use_ns2_extended) {
             DataForms.DataForm.Field field = new DataForms.DataForm.Field() { var="end" };
-            field.set_value_string(DateTimeProfiles.to_datetime(mam_params.end));
+            field.set_value_string(DateTimeProfiles.format_time(mam_params.end));
             fields.add(field);
         }
 

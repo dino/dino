@@ -4,7 +4,7 @@ public const string NS_URI = "urn:xmpp:delay";
 
 public static DateTime? get_time_for_node(StanzaNode node) {
     string? time = node.get_attribute("stamp");
-    if (time != null) return DateTimeProfiles.parse_string(time);
+    if (time != null) return DateTimeProfiles.parse_time(time);
     return null;
 }
 
@@ -24,7 +24,7 @@ public class Module : XmppStreamModule {
 
     public static void set_message_delay(MessageStanza message, DateTime datetime) {
         StanzaNode delay_node = (new StanzaNode.build("delay", NS_URI)).add_self_xmlns();
-        delay_node.put_attribute("stamp", DateTimeProfiles.to_datetime(datetime));
+        delay_node.put_attribute("stamp", DateTimeProfiles.format_time(datetime));
         message.stanza.put_node(delay_node);
     }
 

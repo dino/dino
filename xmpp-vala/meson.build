@@ -93,6 +93,7 @@ sources = files(
     'src/module/xep/0191_blocking_command.vala',
     'src/module/xep/0198_stream_management.vala',
     'src/module/xep/0199_ping.vala',
+    'src/module/xep/0202_entity_time.vala',
     'src/module/xep/0203_delayed_delivery.vala',
     'src/module/xep/0215_external_service_discovery.vala',
     'src/module/xep/0231_bits_of_binary.vala',

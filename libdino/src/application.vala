@@ -52,7 +52,7 @@ public interface Application : GLib.Application {
         NotificationEvents.start(stream_interactor);
         SearchProcessor.start(stream_interactor, db);
         Register.start(stream_interactor, db);
-        EntityInfo.start(stream_interactor, db);
+        EntityInfo.start(stream_interactor, db, settings);
         MessageCorrection.start(stream_interactor, db);
         FileTransferStorage.start(stream_interactor, db);
         Reactions.start(stream_interactor, db);

@@ -6,6 +6,27 @@
         <property name="orientation">vertical</property>
         <property name="margin-top">4</property>
         <child>
+            <object class="GtkBox" id="unavailable_box">
+                <property name="margin_start">14</property>
+                <property name="margin_end">14</property>
+                <property name="visible">False</property>
+                <style>
+                    <class name="time-offset" />
+                </style>
+                <child>
+                    <object class="GtkImage" id="unavailable_icon">
+                        <property name="icon-name">dino-clock-alt-symbolic</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="unavailable_label">
+                        <property name="margin_start">8</property>
+                        <property name="ellipsize">end</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+        <child>
                     <object class="GtkBox" id="outer_box">
                         <property name="margin_start">14</property>
                         <property name="margin_end">14</property>

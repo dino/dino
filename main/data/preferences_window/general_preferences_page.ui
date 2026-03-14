@@ -16,6 +16,13 @@
             <property name="use-underline">True</property>
           </object>
         </child>
+        <child>
+          <object class="AdwSwitchRow" id="time_row">
+            <property name="title" translatable="yes">Share Local T_ime</property>
+            <property name="subtitle" translatable="yes">Share your current time with contacts to see their local time in return</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>

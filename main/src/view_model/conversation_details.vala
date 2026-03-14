@@ -84,6 +84,7 @@ public class Dino.Ui.Model.ConversationDetails : Object {
     public string? data_form_bak;
     public bool blocked { get; set; }
     public bool domain_blocked { get; set; }
+    public int utc_offset_minutes { get; set; default = int.MIN; }
 
     public GLib.ListStore members = new GLib.ListStore(typeof(Ui.Model.ConferenceMember));
 

@@ -3,6 +3,7 @@ using Gtk;
 public class Dino.Ui.ViewModel.GeneralPreferencesPage : Object {
     public bool send_typing { get; set; }
     public bool send_marker { get; set; }
+    public bool share_time { get; set; }
     public bool notifications { get; set; }
     public bool convert_emojis { get; set; }
 }
@@ -11,6 +12,7 @@ public class Dino.Ui.ViewModel.GeneralPreferencesPage : Object {
 public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
     [GtkChild] private unowned Adw.SwitchRow typing_row;
     [GtkChild] private unowned Adw.SwitchRow marker_row;
+    [GtkChild] private unowned Adw.SwitchRow time_row;
     [GtkChild] private unowned Adw.SwitchRow notification_row;
     [GtkChild] private unowned Adw.SwitchRow emoji_row;
 
@@ -29,6 +31,7 @@ public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
             model_bindings = new Binding[] {
                 model.bind_property("send-typing", typing_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
                 model.bind_property("send-marker", marker_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
+                model.bind_property("share-time", time_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
                 model.bind_property("notifications", notification_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
                 model.bind_property("convert-emojis", emoji_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL)
             };

@@ -13,23 +13,35 @@ public class EntityInfo : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private EntityCapabilitiesStorage entity_capabilities_storage;
-
+    private Dino.Entities.Settings settings;
 
     private HashMap<Jid, string> entity_caps_hashes = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
     private HashMap<string, Gee.List<string>> entity_features = new HashMap<string, Gee.List<string>>();
     private HashMap<Jid, Gee.List<string>> jid_features = new HashMap<Jid, Gee.List<string>>(Jid.hash_func, Jid.equals_func);
     private HashMap<string, Gee.Set<Identity>> entity_identity = new HashMap<string, Gee.Set<Identity>>();
     private HashMap<Jid, Gee.Set<Identity>> jid_identity = new HashMap<Jid, Gee.Set<Identity>>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, int> jid_utc_offset_minutes = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, int> jid_utc_offset_cache_timeout = new HashMap<Jid, int>(Jid.hash_func, Jid.equals_func);
 
-    public static void start(StreamInteractor stream_interactor, Database db) {
-        EntityInfo m = new EntityInfo(stream_interactor, db);
+    public static void start(StreamInteractor stream_interactor, Database db, Dino.Entities.Settings settings) {
+        EntityInfo m = new EntityInfo(stream_interactor, db, settings);
         stream_interactor.add_module(m);
+        WeakRef m_weak = WeakRef(m);
+        ulong handler_id = settings.notify["share-time"].connect(() => {
+            EntityInfo? entity_info = m_weak.get() as EntityInfo;
+            if (entity_info != null) {
+                entity_info.jid_utc_offset_minutes.clear();
+                entity_info.jid_utc_offset_cache_timeout.clear();
+            }
+        });
+        m.weak_ref(() => settings.disconnect(handler_id));
     }
 
-    private EntityInfo(StreamInteractor stream_interactor, Database db) {
+    private EntityInfo(StreamInteractor stream_interactor, Database db, Dino.Entities.Settings settings) {
         this.stream_interactor = stream_interactor;
         this.db = db;
         this.entity_capabilities_storage = new EntityCapabilitiesStorage(db);
+        this.settings = settings;
 
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
@@ -76,6 +88,45 @@ public class EntityInfo : StreamInteractionModule, Object {
         }
 
         return null;
+    }
+
+    public async int get_utc_offset_minutes_for_full_jid(Account account, Jid full_jid) {
+        if (!settings.share_time) return int.MIN;
+        if (!yield has_feature(account, full_jid, EntityTime.NS_URI)) return int.MIN;
+        int monotonic_time_minutes = (int) (get_monotonic_time() / 1000000l);
+        if (jid_utc_offset_minutes.has_key(full_jid)) {
+            if (jid_utc_offset_cache_timeout[full_jid] > monotonic_time_minutes) {
+                return jid_utc_offset_minutes.get(full_jid);
+            } else {
+                jid_utc_offset_minutes.unset(full_jid);
+                jid_utc_offset_cache_timeout.unset(full_jid);
+            }
+        }
+        XmppStream? stream = stream_interactor.get_stream(account);
+        if (stream == null) return int.MIN;
+        DateTime? time = yield stream.get_module(EntityTime.Module.IDENTITY).query_time(stream, full_jid);
+        int utc_offset = time == null ? int.MIN : (int) (time.get_utc_offset() / TimeSpan.MINUTE);
+        jid_utc_offset_minutes.set(full_jid, utc_offset);
+        jid_utc_offset_cache_timeout.set(full_jid, monotonic_time_minutes + 3 * 60 * 60);
+        return utc_offset;
+    }
+
+    public async int get_utc_offset_minutes_for_bare_jid(Account account, Jid bare_jid) {
+        if (stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, bare_jid) == null) return int.MIN;
+        int utc_offset_minutes = int.MIN;
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(bare_jid, account);
+        if (full_jids != null) {
+            foreach (Jid full_jid in full_jids) {
+                int jid_utc_offset_minutes = yield get_utc_offset_minutes_for_full_jid(account, full_jid);
+                if (utc_offset_minutes == int.MIN) {
+                    utc_offset_minutes = jid_utc_offset_minutes;
+                } else if (jid_utc_offset_minutes != int.MIN && utc_offset_minutes != jid_utc_offset_minutes) {
+                    // Return early, time zones don't match
+                    return int.MIN;
+                }
+            }
+        }
+        return utc_offset_minutes;
     }
 
     public async bool has_feature(Account account, Jid jid, string feature) {
@@ -248,6 +299,10 @@ public class EntityInfo : StreamInteractionModule, Object {
 
     private void initialize_modules(Account account, ArrayList<XmppStreamModule> modules) {
         modules.add(new Xep.EntityCapabilities.Module(entity_capabilities_storage));
+        var entity_time_module = modules.first_match((it) => it is EntityTime.Module) as EntityTime.Module;
+        if (entity_time_module != null) {
+            settings.bind_property("share-time", entity_time_module, "enabled", BindingFlags.SYNC_CREATE);
+        }
     }
 }
 

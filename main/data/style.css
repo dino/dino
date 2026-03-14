@@ -233,6 +233,15 @@ window.dino-main .dino-sidebar frame.auto-complete list > row {
     transition: none;
 }
 
+/* Time offset warning */
+
+.dino-main .dino-conversation .time-offset {
+    background-color: var(--shade-color);
+    opacity: 80%;
+    padding: 12px;
+    border-radius: 6px 6px 0 0;
+}
+
 /* Chat Input*/
 
 /* These rules are direved from the libadwaita style for activateable entry rows */
