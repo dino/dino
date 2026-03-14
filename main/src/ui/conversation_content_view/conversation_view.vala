@@ -44,40 +44,32 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     ContentMetaItem? current_meta_item = null;
     double last_y = -1;
 
+    private Button create_action_button(string action_name) {
+        var button = new Button() { name=action_name };
+        button.clicked.connect(on_action_button_clicked);
+        action_buttons[action_name] = button;
+        message_menu_box.append(button);
+        return button;
+    }
+
     construct {
         this.layout_manager = new BinLayout();
         main_wrap_box.layout_manager = new BinLayout();
 
         // Setup all message menu buttons
-        var correction_button = new Button() { name="correction" };
-        correction_button.clicked.connect((button) => {
-            on_action_button_clicked("correction", null);
-        });
-        action_buttons["correction"] = correction_button;
-        message_menu_box.append(correction_button);
+        create_action_button("correction");
 
         var reaction_button = new MenuButton() { name="reaction" };
         EmojiChooser chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {
-            on_action_button_clicked("reaction", new GLib.Variant.string(emoji));
+            invoke_message_action("reaction", new GLib.Variant.string(emoji));
         });
         reaction_button.popover = chooser;
         action_buttons["reaction"] = reaction_button;
         message_menu_box.append(reaction_button);
 
-        var reply_button = new Button() { name="reply" };
-        reply_button.clicked.connect((button) => {
-            on_action_button_clicked("reply", null);
-        });
-        action_buttons["reply"] = reply_button;
-        message_menu_box.append(reply_button);
-
-        var delete_button = new Button() { name="delete" };
-        delete_button.clicked.connect((button) => {
-            on_action_button_clicked("delete", null);
-        });
-        action_buttons["delete"] = delete_button;
-        message_menu_box.append(delete_button);
+        create_action_button("reply");
+        create_action_button("delete");
 
         var menu_button = new MenuButton() { name="menu", tooltip_text=_("More actions") };
         action_buttons["menu"] = menu_button;
@@ -85,7 +77,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
         SimpleAction action_action = new SimpleAction("action", VariantType.STRING);
         action_action.activate.connect((parameter) => {
-            on_action_button_clicked(parameter.get_string());
+            on_action_selected(parameter.get_string());
         });
         SimpleActionGroup action_group = new SimpleActionGroup();
         action_group.insert(action_action);
@@ -540,11 +532,95 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             (upper_item.mark == Message.Marked.WONTSEND) == (lower_item.mark == Message.Marked.WONTSEND);
     }
 
-    private void on_action_button_clicked(string action_name, GLib.Variant? variant = null) {
-        foreach (var action in message_actions) {
-            if (action.name != action_name) continue;
-            action.callback(variant);
+    private void on_action_button_clicked(Button button) {
+        on_action_selected(button.name);
+    }
+
+    private void on_action_selected(string action_name) {
+        if (currently_highlighted != null) {
+            currently_highlighted.grab_focus();
         }
+        switch (action_name) {
+            case "reaction":
+                critical("Action unsupported for direct activation: %s", action_name);
+                break;
+            case "delete":
+                on_delete_action_selected();
+                break;
+            default:
+                invoke_message_action(action_name);
+                break;
+        }
+    }
+
+    private void on_delete_action_selected() {
+        if (currently_highlighted == null) {
+            critical("No message selected");
+            return;
+        }
+        Plugins.MessageAction? delete_action = null;
+        foreach (var action in message_actions) {
+            if (action.name == "delete") {
+                delete_action = action;
+            }
+        }
+        if (delete_action == null || delete_action.extras == null || !delete_action.extras.is_of_type(VariantType.BOOLEAN)) {
+            critical(@"Delete action unavailable or can_delete_for_everyone not set");
+            return;
+        }
+        bool can_delete_for_everyone = delete_action.extras.get_boolean();
+        Adw.AlertDialog dialog = new Adw.AlertDialog(_("Delete message"), null) { content_width = 350, follows_content_size = false };
+        if (can_delete_for_everyone) {
+            CheckButton check_button = new CheckButton() { label="Delete for everyone", active=true };
+
+            Box extra_child = new Box(Orientation.VERTICAL, 8);
+            extra_child.append(new Label("Would you like to remove this message for everyone or just for yourself?") { xalign=0, use_markup=true, wrap=true });
+            extra_child.append(new Label("The message will only be deleted for others <b>if their app supports it</b>!") { xalign=0, use_markup=true, wrap=true });
+            extra_child.append(check_button);
+            dialog.extra_child = extra_child;
+
+            check_button.toggled.connect(() => {
+                dialog.remove_response("delete");
+                dialog.remove_response("cancel");
+                if (check_button.active) {
+                    dialog.add_response("delete", "Delete for everyone");
+                } else {
+                    dialog.add_response("delete", "Only delete for yourself");
+                }
+                dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE);
+                dialog.add_response("cancel", _("Cancel"));
+            });
+            dialog.response.connect((response) => {
+                if (response == "delete") {
+                    invoke_message_action("delete", new GLib.Variant.boolean(check_button.active));
+                }
+            });
+            dialog.add_response("delete", "Delete for everyone");
+            dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE);
+            dialog.add_response("cancel", _("Cancel"));
+        } else {
+            dialog.extra_child = new Label("This message <b>can't be deleted</b> for everyone. Would you like to remove it only for yourself?") { use_markup=true, wrap=true };
+            dialog.add_response("delete", "Only delete for myself");
+            dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE);
+            dialog.add_response("cancel", _("Cancel"));
+            dialog.response.connect((response) => {
+                if (response == "delete") {
+                    invoke_message_action("delete", new GLib.Variant.boolean(false));
+                }
+            });
+        }
+        dialog.close_response = "cancel";
+        dialog.present(currently_highlighted);
+    }
+
+    private void invoke_message_action(string action_name, GLib.Variant? variant = null) {
+        foreach (var action in message_actions) {
+            if (action.name == action_name) {
+                action.callback(variant);
+                return;
+            }
+        }
+        warning("Unknown action invoked: %s", action_name);
     }
 
     private void on_upper_notify() {

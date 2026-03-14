@@ -169,6 +169,7 @@ public class MessageAction : Object {
     public string? tooltip;
     public Object? popover;
     public MessageActionEvoked? callback;
+    public Variant? extras;
 }
 
 public abstract class MetaConversationNotification : Object {
