@@ -15,6 +15,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     public AvatarPicture avatar_picture { get; set; }
     public Image encryption_image { get; set; }
     public Image received_image { get; set; }
+    private CheckButton select { get; set; }
 
     private HashMap<int, Widget> content_widgets = new HashMap<int, Widget>();
 
@@ -54,6 +55,9 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
         encryption_image = (Image) builder.get_object("encrypted_image");
         received_image = (Image) builder.get_object("marked_image");
+        select = (CheckButton) builder.get_object("select");
+
+        select.add_css_class("select");
 
         widget = item.get_widget(this, Plugins.WidgetType.GTK4) as Widget;
         if (widget != null) {
@@ -75,6 +79,48 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             reactions_controller.box_activated.connect(on_reaction_box_activated);
             reactions_controller.init();
         }
+
+        Application app = GLib.Application.get_default() as Application;
+        select.toggled.connect(() => {
+            if (content_meta_item == null) return;
+
+            var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(content_meta_item.content_item.id)});
+            if (select.get_active()) {
+                app.activate_action("select-message", variant);
+                main_grid.add_css_class("select-mode");
+            } else {
+                app.activate_action("unselect-message", variant);
+                main_grid.remove_css_class("select-mode");
+            }
+        });
+
+        GestureClick click = new GestureClick();
+        click.pressed.connect((gesture, x, y) => {
+            if (!select.visible) return;
+
+            // ignore clicks on the checkbox itself as they would trigger two activations
+            Graphene.Rect select_bounds;
+            bool ok = select.compute_bounds(main_grid, out select_bounds);
+            if (ok) {
+                Graphene.Point cursor = new Graphene.Point();
+                cursor.init((float) x, (float) y);
+                if (ok && select_bounds.contains_point(cursor)) {
+                    return;
+                }
+            }
+
+            select.set_active(!select.active);
+        });
+        main_grid.add_controller(click);
+
+        GestureLongPress longpress = new GestureLongPress();
+        longpress.pressed.connect((gesture, x, y) => {
+            if (select.visible) return;
+
+            app.activate_action("select-messages", new Variant.int32(conversation.id));
+            select.set_active(true);
+        });
+        main_grid.add_controller(longpress);
 
         update_margin();
     }
@@ -107,11 +153,13 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             content_widget.unparent();
         }
 
-        content_widgets[priority] = (Widget) object;
+        Widget content_widget = (Widget) object;
+        content_widget.add_css_class("conversation-meta-item");
+        content_widgets[priority] = content_widget;
         int row_no = 1;
         for (int i = 0; i < 5; i++) {
             if (!content_widgets.has_key(i)) continue;
-            main_grid.attach(content_widgets[i], 1, row_no, 4, 1);
+            main_grid.attach(content_widgets[i], 2, row_no, 4, 1);
             row_no++;
         }
     }
@@ -265,6 +313,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         return main_grid;
     }
 
+    public void show_selection_checkbox(bool enable) {
+        select.visible = enable;
+        select.set_active(false);
+    }
+
     public override void dispose() {
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
@@ -301,6 +354,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             received_image.unparent();
             received_image.dispose();
             received_image = null;
+        }
+        if (select != null) {
+            select.unparent();
+            select.dispose();
+            select = null;
         }
         base.dispose();
     }
