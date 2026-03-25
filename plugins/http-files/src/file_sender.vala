@@ -79,7 +79,7 @@ public class HttpFileSender : FileSender, Object {
             Xep.OutOfBandData.add_url_to_message(stanza, send_data.url_down);
             var sources = new ArrayList<Xep.StatelessFileSharing.Source>();
             sources.add(new Xep.StatelessFileSharing.HttpSource() { url = send_data.url_down });
-            string attach_to_id = MessageStorage.get_reference_id(file_share_message);
+            string attach_to_id = stream_interactor.get_module(MessageStorage.IDENTITY).get_reference_id(file_share_message, conversation);
             Xep.StatelessFileSharing.set_sfs_attachment(stanza, attach_to_id, file_transfer.file_sharing_id, sources);
 
             var stream = stream_interactor.get_stream(conversation.account);

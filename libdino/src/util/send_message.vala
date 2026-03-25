@@ -13,6 +13,7 @@ namespace Dino {
         if (correction_to != null) {
             string correction_to_stanza_id = correction_to.edit_to ?? correction_to.stanza_id;
             out_message.edit_to = correction_to_stanza_id;
+            out_message.edit_to_id = correction_to.edit_to == null ? correction_to.id : 0;
             stream_interactor.get_module(MessageCorrection.IDENTITY).set_correction(conversation, out_message, correction_to);
         }
 

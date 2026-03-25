@@ -49,6 +49,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         db.message_correction.insert()
                 .value(db.message_correction.message_id, message.id)
                 .value(db.message_correction.to_stanza_id, reference_stanza_id)
+                .value(db.message_correction.to_message_db_id, old_message.id)
                 .perform();
 
         db.content_item.update()
@@ -92,6 +93,12 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public override string[] after_actions { get { return after_actions_const; } }
 
     public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+
+        string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);
+        if (replace_id != null) {
+            message.edit_to = replace_id; // This isn't persisted here, but later after verifying that it's an allowed edit TODO?
+        }
+
         // Check if we already know a newer correction for this message
         if (unmatched_corrections.has_key(conversation) && unmatched_corrections[conversation].size > 0) {
             ContentItem? remove_from_list = null;
@@ -99,7 +106,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             foreach (var unmatched_correction_item in unmatched_corrections[conversation]) {
                 MessageItem unmatched_correction_message_item = unmatched_correction_item as MessageItem;
                 if (unmatched_correction_message_item != null) {
-                    if (MessageStorage.get_reference_id(message) == unmatched_correction_message_item.message.edit_to) {
+                    if (stream_interactor.get_module(MessageStorage.IDENTITY).get_reference_id(message, conversation) == unmatched_correction_message_item.message.edit_to) {
                         debug("Matching original message to correction retrospectively %s", unmatched_correction_message_item.message.edit_to);
                         remove_from_list = unmatched_correction_item;
                         ret = process_wrong_order_correction(conversation, message, unmatched_correction_message_item);
@@ -112,8 +119,6 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             if (remove_from_list != null) unmatched_corrections[conversation].remove(remove_from_list);
             if (ret != null) return ret;
         }
-
-        string? replace_id = Xep.LastMessageCorrection.get_replace_id(stanza);
 
         // Store the latest message for every resource. This enables the corrections-allowed-check specified in the XEP.
         // This is only needed for MUCs - In case the MUC doesn't support occupant ids, the last message can still be corrected.
@@ -129,7 +134,6 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         }
 
         if (replace_id != null) {
-            message.edit_to = replace_id; // This isn't persisted here, but later after verifying that it's an allowed edit TODO?
             return process_unverified_in_order_correction(conversation, message, replace_id);
         }
         return false;
@@ -140,10 +144,14 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             return false;
         }
 
-        db.message_correction.insert()
+        var qry = db.message_correction.insert()
                 .value(db.message_correction.message_id, correction_item.message.id)
-                .value(db.message_correction.to_stanza_id, correction_item.message.edit_to)
+                .value(db.message_correction.to_stanza_id, correction_item.message.edit_to);
+        if (earlier_message.edit_to == null) {
+            // If this is the original message, link the id
+            qry.value(db.message_correction.to_message_db_id, earlier_message.id)
                 .perform();
+        }
 
         db.content_item.update()
                 .with(db.content_item.id, "=", correction_item.id)
@@ -171,6 +179,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         Message? original_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(replace_id, conversation);
         if (original_message != null && is_correction_acceptable(original_message, correction_message)) {
             correction_message.edit_to = replace_id;
+            correction_message.edit_to_id = original_message.id;
             return process_in_order_correction(conversation, original_message, correction_message);
         }
         return false;
@@ -182,6 +191,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         db.message_correction.insert()
                 .value(db.message_correction.message_id, correction_message.id)
                 .value(db.message_correction.to_stanza_id, correction_message.edit_to)
+                .value(db.message_correction.to_message_db_id, original_message.id)
                 .perform();
 
         int current_correction_message_id = get_latest_correction_message_id(conversation, original_message);

@@ -121,7 +121,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Message? message = get_message_for_content_item(conversation, content_item);
         if (message == null) return null;
 
-        return MessageStorage.get_reference_id(message);
+        return stream_interactor.get_module(MessageStorage.IDENTITY).get_reference_id(message, conversation);
     }
 
     public Jid? get_message_sender_for_content_item(Conversation conversation, ContentItem content_item) {

@@ -68,6 +68,7 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
+    public int edit_to_id { get; set; default=0; }
     public int quoted_item_id { get; private set; default=0; }
 
     private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
@@ -113,6 +114,7 @@ public class Message : Object {
         occupant_db_id = row[db.message_occupant_id.occupant_id];
 
         edit_to = row[db.message_correction.to_stanza_id];
+        edit_to_id = row[db.message_correction.to_message_db_id];
         quoted_item_id = row[db.reply.quoted_content_item_id];
 
         notify.connect(on_update);

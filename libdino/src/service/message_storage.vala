@@ -204,8 +204,21 @@ public class MessageStorage : StreamInteractionModule, Object {
         }
     }
 
-    public static string? get_reference_id(Message message) {
-        if (message.edit_to != null) return message.edit_to;
+    public string? get_reference_id(Message message, Conversation conversation) {
+        if (message.edit_to != null) {
+            // This is a message edit, so the reference id should be the one of the original message
+            if (message.type_ == Message.Type.CHAT) {
+                return message.edit_to;
+            } else {
+                if (message.edit_to_id != 0) {
+                    Message original_message = get_message_by_id(message.edit_to_id, conversation);
+                    return original_message.server_id;
+                } else {
+                    // We don't know the original message, so taking the server id of the correction is the best we can do
+                    return message.server_id;
+                }
+            }
+        }
 
         if (message.type_ == Message.Type.CHAT) {
             return message.stanza_id;

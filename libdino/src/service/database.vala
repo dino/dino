@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 30;
+    private const int VERSION = 31;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -134,10 +134,11 @@ public class Database : Qlite.Database {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> message_id = new Column.Integer("message_id") { unique=true };
         public Column<string> to_stanza_id = new Column.Text("to_stanza_id");
+        public Column<int> to_message_db_id = new Column.Integer("to_message_db_id") { min_version=31 };
 
         internal MessageCorrectionTable(Database db) {
             base(db, "message_correction");
-            init({id, message_id, to_stanza_id});
+            init({id, message_id, to_stanza_id, to_message_db_id});
             index("message_correction_to_stanza_id_idx", {to_stanza_id});
         }
     }
