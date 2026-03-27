@@ -62,7 +62,22 @@ public class ConversationSelector : Widget {
             add_conversation(conversation);
         }
         list_box.select_row(rows[conversation]);
+#if GTK_4_12
+        scroll_to_row(rows[conversation]);
+#endif
     }
+
+#if GTK_4_12
+    private void scroll_to_row(ConversationSelectorRow row) {
+        Gtk.Widget? ancestor = this;
+        while (ancestor != null && !(ancestor is Gtk.Viewport)) {
+            ancestor = ancestor.get_parent();
+        }
+        if (ancestor == null) return;
+        ((Gtk.Viewport) ancestor).scroll_to(row, null);
+    }
+#endif
+
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
         if (rows.has_key(conversation)) {
