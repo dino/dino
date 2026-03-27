@@ -11,6 +11,7 @@ dependencies = [
     dep_qlite,
     dep_xmpp_vala,
     meson.get_compiler('vala').find_library('posix'),
+    dep_libportal_gtk4,
 ]
 sources = files(
     'src/main.vala',
@@ -141,6 +142,10 @@ endif
 if meson.get_compiler('vala').version().version_compare('=0.56.12')
     vala_args += ['-D', 'VALA_0_56_12']
 endif
+use_libportal = get_option('libportal').allowed() and dep_libportal_gtk4.found()
+if use_libportal
+    vala_args += ['-D', 'LIBPORTAL']
+endif
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_rpath: default_install_rpath)
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
@@ -148,3 +153,5 @@ install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_optio
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
 install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')
+
+summary('Autostart and running in background support', use_libportal, section: 'Main')
