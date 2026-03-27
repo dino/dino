@@ -200,13 +200,13 @@ public class ReactionsWidget : Grid {
         // so many subwidgets, emojistuff
         // But what about all the other widgets?
 
-        if (add_button != null){
+        if (add_button != null) {
             add_button.unparent();
             add_button.dispose();
             add_button = null;
         }
 
-        if (chooser != null){
+        if (chooser != null) {
             chooser.unparent();
             chooser.dispose();
             chooser = null;
