@@ -212,7 +212,6 @@ public class ReactionsWidget : Grid {
             chooser = null;
         }
 
-
         base.dispose();
     }
 }
