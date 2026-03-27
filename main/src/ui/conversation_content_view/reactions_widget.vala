@@ -25,7 +25,7 @@ public class ReactionsController : Object {
         this.stream_interactor = stream_interactor;
     }
 
-    public void destroy() {
+    ~ReactionsController() {
         if (widget != null ) {
             widget.unparent();
             widget.dispose();
