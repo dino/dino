@@ -124,54 +124,6 @@ void signal_vala_hmac_sha256_cleanup(void *hmac_context, void *user_data) {
     }
 }
 
-int signal_vala_sha512_digest_init(void **digest_context, void *user_data) {
-    gcry_md_hd_t* ctx = malloc(sizeof(gcry_mac_hd_t));
-    if (!ctx) return SG_ERR_NOMEM;
-
-    if (gcry_md_open(ctx, GCRY_MD_SHA512, 0)) {
-        free(ctx);
-        return SG_ERR_UNKNOWN;
-    }
-
-    *digest_context = ctx;
-
-    return SG_SUCCESS;
-}
-
-int signal_vala_sha512_digest_update(void *digest_context, const uint8_t *data, size_t data_len, void *user_data) {
-    gcry_md_hd_t* ctx = digest_context;
-
-    gcry_md_write(*ctx, data, data_len);
-
-    return SG_SUCCESS;
-}
-
-int signal_vala_sha512_digest_final(void *digest_context, signal_buffer **output, void *user_data) {
-    size_t len = gcry_md_get_algo_dlen(GCRY_MD_SHA512);
-    gcry_md_hd_t* ctx = digest_context;
-
-    uint8_t* md = gcry_md_read(*ctx, GCRY_MD_SHA512);
-    if (!md) return SG_ERR_UNKNOWN;
-
-    gcry_md_reset(*ctx);
-
-    signal_buffer *output_buffer = signal_buffer_create(md, len);
-    free(md);
-    if (!output_buffer) return SG_ERR_NOMEM;
-
-    *output = output_buffer;
-
-    return SG_SUCCESS;
-}
-
-void signal_vala_sha512_digest_cleanup(void *digest_context, void *user_data) {
-    gcry_md_hd_t* ctx = digest_context;
-    if (ctx) {
-        gcry_md_close(*ctx);
-        free(ctx);
-    }
-}
-
 const int aes_cipher(int cipher, size_t key_len, int* algo, int* mode) {
     switch (key_len) {
         case 16:
@@ -364,10 +316,10 @@ void setup_signal_vala_crypto_provider(signal_context *context)
             .hmac_sha256_update_func = signal_vala_hmac_sha256_update,
             .hmac_sha256_final_func = signal_vala_hmac_sha256_final,
             .hmac_sha256_cleanup_func = signal_vala_hmac_sha256_cleanup,
-            .sha512_digest_init_func = signal_vala_sha512_digest_init,
-            .sha512_digest_update_func = signal_vala_sha512_digest_update,
-            .sha512_digest_final_func = signal_vala_sha512_digest_final,
-            .sha512_digest_cleanup_func = signal_vala_sha512_digest_cleanup,
+            .sha512_digest_init_func = NULL,
+            .sha512_digest_update_func = NULL,
+            .sha512_digest_final_func = NULL,
+            .sha512_digest_cleanup_func = NULL,
             .encrypt_func = signal_vala_encrypt,
             .decrypt_func = signal_vala_decrypt,
             .user_data = 0
