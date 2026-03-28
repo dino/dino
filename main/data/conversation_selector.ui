@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <template class="DinoUiConversationSelector" parent="GtkWidget">
+        <child>
+            <object class="GtkScrolledWindow" id="scrolled">
+                <property name="hscrollbar_policy">never</property>
+                <property name="vexpand">1</property>
+                <child>
+                    <object class="GtkListBox" id="list_box">
+                        <property name="hexpand">1</property>
+                        <style>
+                            <class name="navigation-sidebar"/>
+                        </style>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>
