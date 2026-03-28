@@ -1,7 +1,12 @@
 using Dino.Entities;
 
 namespace Dino {
-extern const string VERSION;
+
+public string get_version() { return VERSION; }
+public string get_short_version() {
+    if (!VERSION.contains("~")) return VERSION;
+    return VERSION.split("~")[0] + "+";
+}
 
 public interface Application : GLib.Application {
 
@@ -34,12 +39,15 @@ public interface Application : GLib.Application {
         PresenceManager.start(stream_interactor);
         CounterpartInteractionManager.start(stream_interactor);
         BlockingManager.start(stream_interactor);
+        Calls.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
+        OccupantIdStore.start(stream_interactor, db);
         MucManager.start(stream_interactor);
         AvatarManager.start(stream_interactor, db);
         UserNickManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
+        CallStore.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
         NotificationEvents.start(stream_interactor);
@@ -47,15 +55,19 @@ public interface Application : GLib.Application {
         Register.start(stream_interactor, db);
         EntityInfo.start(stream_interactor, db);
         MessageCorrection.start(stream_interactor, db);
+        FileTransferStorage.start(stream_interactor, db);
+        Reactions.start(stream_interactor, db);
+        Replies.start(stream_interactor, db);
+        FallbackBody.start(stream_interactor, db);
+        ContactModels.start(stream_interactor);
+        MessageDeletion.start(stream_interactor, db);
+        StatelessFileSharing.start(stream_interactor, db);
 
         create_actions();
 
         startup.connect(() => {
             stream_interactor.connection_manager.log_options = print_xmpp;
-            Idle.add(() => {
-                restore();
-                return false;
-            });
+            restore();
         });
         shutdown.connect(() => {
             stream_interactor.connection_manager.make_offline_all();

@@ -7,46 +7,55 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-01-28 23:24+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2024-09-15 20:09+0000\n"
 "Language-Team: none\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"<shirahara@users.noreply.hosted.weblate.org>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "キーの発行は無効"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "GnuPG でのエラー"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "キーがありません。生成しましょう！"
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "キーを選択"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "読み込んでいます…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "GnuPG に問い合わせています"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG でのエラー"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "キーがありません。生成しましょう！"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr "無効"
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "キーはキーチェーンにありません"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "暗号化"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Encryption"
+#~ msgstr "暗号化"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "キーの発行は無効"
+
+#~ msgid "Select key"
+#~ msgstr "キーを選択"
+
+#~ msgid "Loading…"
+#~ msgstr "読み込んでいます…"

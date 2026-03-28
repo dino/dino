@@ -5,8 +5,6 @@ namespace Xmpp.Xep.ServiceDiscovery {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "service_discovery");
 
-    private HashMap<Jid, Gee.List<Item>?> entity_items = new HashMap<Jid, Gee.List<Item>?>(Jid.hash_func, Jid.equals_func);
-
     private Gee.Set<string> own_features_ = new HashSet<string>();
     public Gee.List<string> own_features {
         owned get {
@@ -19,10 +17,6 @@ public class Flag : XmppStreamFlag {
     private Gee.Set<Identity> own_identities_ = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
     public Gee.Set<Identity> own_identities {
         owned get { return own_identities_.read_only_view; }
-    }
-
-    public void set_entity_items(Jid jid, Gee.List<Item>? features) {
-        entity_items[jid] = features;
     }
 
     public void add_own_feature(string feature) {

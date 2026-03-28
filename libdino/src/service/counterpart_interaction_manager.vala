@@ -67,8 +67,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.ChatMarkers.Module.IDENTITY).marker_received.connect( (stream, jid, marker, id, message_stanza) => {
             on_chat_marker_received.begin(account, jid, marker, id, message_stanza);
         });
-        stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id) => {
-            on_receipt_received(account, jid, id);
+        stream_interactor.module_manager.get_module(account, Xep.MessageDeliveryReceipts.Module.IDENTITY).receipt_received.connect((stream, jid, id, stanza) => {
+            on_receipt_received(account, jid, id, stanza);
         });
         stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state, stanza) => {
             on_chat_state_received.begin(account, jid, state, stanza);
@@ -95,7 +95,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         // Don't show our own (other devices) typing notification
         if (jid.equals_bare(account.bare_jid)) return;
 
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(jid, account, stanza.type_);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(stanza.from, stanza.to, account, stanza.type_);
         if (conversation == null) return;
 
         // Don't show our own typing notification in MUCs
@@ -118,7 +118,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     }
 
     private async void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id, MessageStanza message_stanza) {
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(jid, account, message_stanza.type_);
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(message_stanza.from, message_stanza.to, account, message_stanza.type_);
         if (conversation == null) return;
         handle_chat_marker(conversation, jid, marker, stanza_id);
     }
@@ -141,6 +141,10 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             Entities.Message? message = null;
             if (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
                 message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(stanza_id, conversation);
+                // Outdated clients might use the message id. Or in MUCs that don't send server ids.
+                if (message == null) {
+                    message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+                }
             } else {
                 message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
             }
@@ -149,7 +153,9 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
             if (conversation.read_up_to != null && conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
             conversation.read_up_to = message;
 
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
+            // TODO: This only marks messages as read, not http file transfers.
+            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, message.id);
+            if (content_item == null) return;
             ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
             if (read_up_to_item != null && read_up_to_item.compare(content_item) > 0) return;
             conversation.read_up_to_item = content_item.id;
@@ -194,8 +200,8 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         }
     }
 
-    private void on_receipt_received(Account account, Jid jid, string id) {
-        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.CHAT);
+    private void on_receipt_received(Account account, Jid jid, string id, MessageStanza stanza) {
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(stanza.from, stanza.to, account, stanza.type_);
         if (conversation == null) return;
         handle_chat_marker(conversation, jid,Xep.ChatMarkers.MARKER_RECEIVED, id);
     }

@@ -19,43 +19,30 @@ public class View : Box {
     private Conversation? conversation;
     private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
 
-    [GtkChild] public Frame frame;
-    [GtkChild] public ChatTextView chat_text_view;
-    [GtkChild] public Box outer_box;
-    [GtkChild] public Button file_button;
-    [GtkChild] public Separator file_separator;
-    [GtkChild] public Label chat_input_status;
+    [GtkChild] public unowned Box quote_box;
+    [GtkChild] public unowned ChatTextView chat_text_view;
+    [GtkChild] public unowned Button file_button;
+    [GtkChild] public unowned MenuButton emoji_button;
+    [GtkChild] public unowned MenuButton encryption_button;
+    [GtkChild] public unowned Separator file_separator;
+    [GtkChild] public unowned Label chat_input_status;
 
     public EncryptionButton encryption_widget;
 
     public View init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
 
-        encryption_widget = new EncryptionButton(stream_interactor) { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
+        encryption_widget = new EncryptionButton(stream_interactor, encryption_button);
 
-        file_button.get_style_context().add_class("dino-attach-button");
+        EmojiChooser chooser = new EmojiChooser();
+        chooser.emoji_picked.connect((emoji) => {
+            chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
+        });
+        chooser.closed.connect(do_focus);
 
-        encryption_widget.get_style_context().add_class("dino-chatinput-button");
+        emoji_button.set_popover(chooser);
 
-        // Emoji button for emoji picker (recents don't work < 3.22.19, category icons don't work <3.23.2)
-        if (Gtk.get_major_version() >= 3 && Gtk.get_minor_version() >= 24) {
-            MenuButton emoji_button = new MenuButton() { relief=ReliefStyle.NONE, margin_top=3, valign=Align.START, visible=true };
-            emoji_button.get_style_context().add_class("flat");
-            emoji_button.get_style_context().add_class("dino-chatinput-button");
-            emoji_button.image = new Image.from_icon_name("dino-emoticon-symbolic", IconSize.BUTTON) { visible=true };
-
-            EmojiChooser chooser = new EmojiChooser();
-            chooser.emoji_picked.connect((emoji) => {
-                chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);
-            });
-            emoji_button.set_popover(chooser);
-
-            outer_box.add(emoji_button);
-        }
-
-        outer_box.add(encryption_widget);
-
-        Util.force_css(frame, "* { border-radius: 3px; }");
+        file_button.tooltip_text = Util.string_if_tooltips_active(_("Send a file"));
 
         return this;
     }
@@ -80,30 +67,43 @@ public class View : Box {
     public void set_input_state(Plugins.InputFieldStatus.MessageType message_type) {
         switch (message_type) {
             case Plugins.InputFieldStatus.MessageType.NONE:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.INFO:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.WARNING:
-                this.get_style_context().add_class("dino-input-warning");
-                this.get_style_context().remove_class("dino-input-error");
+                this.add_css_class("dino-input-warning");
+                this.remove_css_class("dino-input-error");
                 break;
             case Plugins.InputFieldStatus.MessageType.ERROR:
-                this.get_style_context().remove_class("dino-input-warning");
-                this.get_style_context().add_class("dino-input-error");
+                this.remove_css_class("dino-input-warning");
+                this.add_css_class("dino-input-error");
                 break;
         }
     }
 
     public void highlight_state_description() {
-        chat_input_status.get_style_context().add_class("input-status-highlight-once");
-        Timeout.add_seconds(1, () => {
-            chat_input_status.get_style_context().remove_class("input-status-highlight-once");
+        chat_input_status.add_css_class("input-status-highlight-once");
+        Timeout.add(500, () => {
+            chat_input_status.remove_css_class("input-status-highlight-once");
             return false;
         });
+    }
+
+    public void set_quoted_message(Widget quote_widget) {
+        Widget? quote_box_child = quote_box.get_first_child();
+        if (quote_box_child != null) quote_box.remove(quote_box_child);
+        quote_box.append(quote_widget);
+        quote_box.visible = true;
+    }
+
+    public void unset_quoted_message() {
+        Widget? quote_box_child = quote_box.get_first_child();
+        if (quote_box_child != null) quote_box.remove(quote_box_child);
+        quote_box.visible = false;
     }
 
     public void do_focus() {

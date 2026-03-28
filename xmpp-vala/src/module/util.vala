@@ -12,6 +12,18 @@ public string random_uuid() {
     return "%08x-%04x-%04x-%04x-%04x%08x".printf(b1, b2, b3, b4, b5_1, b5_2);
 }
 
+public Bytes? get_data_for_uri(string uri) {
+    if (uri.has_suffix("@bob.xmpp.org")) {
+        string cid = uri.replace("cid:", "");
+        return Xep.BitsOfBinary.known_bobs[cid];
+    } else if (uri.has_prefix("data:image/png;base64,")) {
+        return new Bytes.take(Base64.decode(uri.replace("data:image/png;base64,", "")));
+    } else {
+        warning("Couldn't parse data from uri %s", uri);
+        return null;
+    }
+}
+
 public abstract class StanzaListener<T> : OrderedListener {
 
     public abstract async bool run(XmppStream stream, T stanza);

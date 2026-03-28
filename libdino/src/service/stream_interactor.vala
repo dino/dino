@@ -9,8 +9,9 @@ public class StreamInteractor : Object {
 
     public signal void account_added(Account account);
     public signal void account_removed(Account account);
+    public signal void stream_resumed(Account account, XmppStream stream);
     public signal void stream_negotiated(Account account, XmppStream stream);
-    public signal void attached_modules(Account account, XmppStream stream);
+    public signal void stream_attached_modules(Account account, XmppStream stream);
 
     public ModuleManager module_manager;
     public ConnectionManager connection_manager;
@@ -21,6 +22,9 @@ public class StreamInteractor : Object {
         connection_manager = new ConnectionManager(module_manager);
 
         connection_manager.stream_opened.connect(on_stream_opened);
+        connection_manager.stream_attached_modules.connect((account, stream) => {
+            stream_attached_modules(account, stream);
+        });
     }
 
     public void connect_account(Account account) {
@@ -70,6 +74,8 @@ public class StreamInteractor : Object {
             var flag = stream.get_flag(Xep.StreamManagement.Flag.IDENTITY);
             if (flag == null || flag.resumed == false) {
                 stream_negotiated(account, stream);
+            } else if (flag != null && flag.resumed == true) {
+                stream_resumed(account, stream);
             }
         });
     }
@@ -83,7 +89,12 @@ public class ModuleIdentity<T> : Object {
     }
 
     public T? cast(StreamInteractionModule module) {
+#if VALA_0_56_11
+        // We can't typecheck due to compiler bug
+        return (T) module;
+#else
         return module.get_type().is_a(typeof(T)) ? (T?) module : null;
+#endif
     }
 
     public bool matches(StreamInteractionModule module) {

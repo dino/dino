@@ -7,6 +7,7 @@ class StanzaTest : Gee.TestCase {
         add_async_test("node_one", (cb) => { test_node_one.begin(cb); });
         add_async_test("typical_stream", (cb) => { test_typical_stream.begin(cb); });
         add_async_test("ack_stream", (cb) => { test_ack_stream.begin(cb); });
+        add_test("get_attribute_(u)int", test_get_attribute_int);
     }
 
     private async void test_node_one(Gee.TestFinishedCallback cb) {
@@ -65,7 +66,7 @@ class StanzaTest : Gee.TestCase {
         try {
             yield reader.read_node();
             fail_if_reached("end of stream should be reached");
-        } catch (XmlError.EOF e) {
+        } catch (IOError.CLOSED e) {
             return;
         } catch (Error e) {
             fail_if_reached("Unexpected error");
@@ -110,6 +111,29 @@ class StanzaTest : Gee.TestCase {
         yield reader.read_node();
         yield fail_if_not_end_of_stream(reader);
         cb();
+    }
+
+    private void test_get_attribute_int() {
+        var stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "42");
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), 42);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 42);
+
+        stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "-42");
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -42);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
+
+        stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns();
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
+
+        stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "0x42");
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
+
+        stanza_node = new StanzaNode.build("test", "ns").add_self_xmlns().put_attribute("bar", "str");
+        fail_if_not_eq_int(stanza_node.get_attribute_int("bar", -2), -2);
+        fail_if_not_eq_uint(stanza_node.get_attribute_uint("bar", 3), 3);
+
     }
 
 }

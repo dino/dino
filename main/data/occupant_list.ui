@@ -2,30 +2,23 @@
 <interface>
     <requires lib="gtk+" version="3.22"/>
     <template class="DinoUiOccupantMenuList">
-        <property name="visible">True</property>
         <child>
             <object class="GtkBox">
                 <property name="orientation">vertical</property>
-                <property name="visible">True</property>
                 <child>
-                    <object class="GtkToolItem">
-                        <property name="visible">True</property>
-                        <child>
-                            <object class="GtkSearchEntry" id="search_entry">
-                                <property name="margin">8</property>
-                                <property name="visible">True</property>
-                            </object>
-                        </child>
+                    <object class="GtkSearchEntry" id="search_entry">
+                        <property name="margin_top">8</property>
+                        <property name="margin_bottom">8</property>
+                        <property name="margin_start">8</property>
+                        <property name="margin_end">8</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkScrolledWindow">
                         <property name="max_content_height">500</property>
                         <property name="propagate_natural_height">True</property>
-                        <property name="visible">True</property>
                         <child>
                             <object class="GtkListBox" id="list_box">
-                                <property name="visible">True</property>
                             </object>
                         </child>
                     </object>

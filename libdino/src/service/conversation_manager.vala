@@ -29,6 +29,8 @@ public class ConversationManager : StreamInteractionModule, Object {
         stream_interactor.account_removed.connect(on_account_removed);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new MessageListener(stream_interactor));
         stream_interactor.get_module(MessageProcessor.IDENTITY).message_sent.connect(handle_sent_message);
+        stream_interactor.get_module(Calls.IDENTITY).call_incoming.connect(handle_new_call);
+        stream_interactor.get_module(Calls.IDENTITY).call_outgoing.connect(handle_new_call);
     }
 
     public Conversation create_conversation(Jid jid, Account account, Conversation.Type? type = null) {
@@ -46,18 +48,28 @@ public class ConversationManager : StreamInteractionModule, Object {
 
         // Create a new converation
         Conversation conversation = new Conversation(jid, account, type);
+        // Set encryption for conversation
+        if (type == Conversation.Type.CHAT ||
+                (type == Conversation.Type.GROUPCHAT && stream_interactor.get_module(MucManager.IDENTITY).is_private_room(account, jid))) {
+            conversation.encryption = Application.get_default().settings.get_default_encryption(account);
+        } else {
+            conversation.encryption = Encryption.NONE;
+        }
+
         add_conversation(conversation);
         conversation.persist(db);
         return conversation;
     }
 
     public Conversation? get_conversation_for_message(Entities.Message message) {
-        if (message.type_ == Entities.Message.Type.CHAT) {
-            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.CHAT);
-        } else if (message.type_ == Entities.Message.Type.GROUPCHAT) {
-            return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.GROUPCHAT);
-        } else if (message.type_ == Entities.Message.Type.GROUPCHAT_PM) {
-            return create_conversation(message.counterpart, message.account, Conversation.Type.GROUPCHAT_PM);
+        if (conversations.has_key(message.account)) {
+            if (message.type_ == Entities.Message.Type.CHAT) {
+                return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.CHAT);
+            } else if (message.type_ == Entities.Message.Type.GROUPCHAT) {
+                return create_conversation(message.counterpart.bare_jid, message.account, Conversation.Type.GROUPCHAT);
+            } else if (message.type_ == Entities.Message.Type.GROUPCHAT_PM) {
+                return create_conversation(message.counterpart, message.account, Conversation.Type.GROUPCHAT_PM);
+            }
         }
         return null;
     }
@@ -84,15 +96,20 @@ public class ConversationManager : StreamInteractionModule, Object {
         return null;
     }
 
-    public Conversation? approx_conversation_for_stanza(Jid jid, Account account, string msg_ty) {
+    public Conversation? approx_conversation_for_stanza(Jid from, Jid to, Account account, string msg_ty) {
         if (msg_ty == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
-            return get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT);
-        } else if (msg_ty == Xmpp.MessageStanza.TYPE_CHAT && jid.is_full() &&
-                get_conversation(jid.bare_jid, account, Conversation.Type.GROUPCHAT) != null) {
-            var pm = get_conversation(jid, account, Conversation.Type.GROUPCHAT_PM);
+            return get_conversation(from.bare_jid, account, Conversation.Type.GROUPCHAT);
+        }
+
+        Jid counterpart = from.equals_bare(account.bare_jid) ? to : from;
+
+        if (msg_ty == Xmpp.MessageStanza.TYPE_CHAT && counterpart.is_full() &&
+                get_conversation(counterpart.bare_jid, account, Conversation.Type.GROUPCHAT) != null) {
+            var pm = get_conversation(counterpart, account, Conversation.Type.GROUPCHAT_PM);
             if (pm != null) return pm;
         }
-        return get_conversation(jid.bare_jid, account, Conversation.Type.CHAT);
+
+        return get_conversation(counterpart.bare_jid, account, Conversation.Type.CHAT);
     }
 
     public Conversation? get_conversation_by_id(int id) {
@@ -171,8 +188,8 @@ public class ConversationManager : StreamInteractionModule, Object {
             conversation.last_active = message.time;
 
             if (stanza != null) {
-                bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
-                bool is_recent = message.local_time.compare(new DateTime.now_utc().add_days(-3)) > 0;
+                bool is_mam_message = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(stanza) != null;
+                bool is_recent = message.time.compare(new DateTime.now_utc().add_days(-3)) > 0;
                 if (is_mam_message && !is_recent) return false;
             }
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(conversation);
@@ -183,10 +200,15 @@ public class ConversationManager : StreamInteractionModule, Object {
     private void handle_sent_message(Entities.Message message, Conversation conversation) {
         conversation.last_active = message.time;
 
-        bool is_recent = message.local_time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
+        bool is_recent = message.time.compare(new DateTime.now_utc().add_hours(-24)) > 0;
         if (is_recent) {
             start_conversation(conversation);
         }
+    }
+
+    private void handle_new_call(Call call, CallState state, Conversation conversation) {
+        conversation.last_active = call.time;
+        start_conversation(conversation);
     }
 
     private void add_conversation(Conversation conversation) {

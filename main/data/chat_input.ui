@@ -1,58 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <requires lib="gtk+" version="3.22"/>
+    <requires lib="gtk" version="4.0"/>
     <template class="DinoUiChatInputView">
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
-        <property name="visible">True</property>
-        <style>
-            <class name="dino-chatinput"/>
-        </style>
+        <property name="margin-top">4</property>
         <child>
-            <object class="GtkFrame" id="frame">
-                <property name="margin_start">14</property>
-                <property name="margin_end">14</property>
-                <property name="visible">True</property>
-                <child>
                     <object class="GtkBox" id="outer_box">
-                        <property name="orientation">horizontal</property>
-                        <property name="visible">True</property>
+                        <property name="margin_start">14</property>
+                        <property name="margin_end">14</property>
+                        <style>
+                            <class name="dino-chatinput"/>
+                            <class name="card"/>
+                            <class name="toolbar"/>
+                            <class name="activatable"/>
+                            <class name="compact-card-toolbar"/>
+                        </style>
                         <child>
                             <object class="GtkButton" id="file_button">
-                                <property name="tooltip-text" translatable="yes">Send a file</property>
-                                <property name="can-focus">False</property>
-                                <property name="margin-top">3</property>
-                                <property name="relief">none</property>
+                                <property name="icon-name">dino-mail-attachment-symbolic</property>
                                 <property name="valign">start</property>
-                                <property name="visible">True</property>
                                 <style>
                                     <class name="flat"/>
                                     <class name="dino-chatinput-button"/>
+                                    <class name="dino-attach-button"/>
                                     <class name="image-button"/>
                                 </style>
-                                <child>
-                                    <object class="GtkImage">
-                                        <property name="icon-name">mail-attachment-symbolic</property>
-                                        <property name="icon-size">1</property>
-                                        <property name="visible">True</property>
-                                    </object>
-                                </child>
                             </object>
                         </child>
                         <child>
                             <object class="GtkSeparator" id="file_separator">
                                 <property name="orientation">vertical</property>
-                                <property name="visible">True</property>
                             </object>
                         </child>
                         <child>
-                            <object class="DinoUiChatTextView" id="chat_text_view">
-                                <property name="visible">True</property>
+                            <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                    <object class="GtkBox" id="quote_box">
+                                        <property name="margin-top">10</property>
+                                        <property name="margin-start">10</property>
+                                        <property name="margin-end">10</property>
+                                        <property name="visible">False</property>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="DinoUiChatTextView" id="chat_text_view">
+                                        <property name="margin_start">7</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkMenuButton" id="emoji_button">
+                                <property name="icon-name">dino-emoji-people-symbolic</property>
+                                <property name="has-frame">False</property>
+                                <property name="valign">start</property>
+                                <style>
+                                    <class name="flat"/>
+                                    <class name="dino-chatinput-button"/>
+                                    <class name="image-button"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkMenuButton" id="encryption_button">
+                                <property name="icon-name">dino-changes-allow-symbolic</property>
+                                <property name="has-frame">False</property>
+                                <property name="valign">start</property>
+                                <style>
+                                    <class name="flat"/>
+                                    <class name="dino-chatinput-button"/>
+                                    <class name="image-button"/>
+                                </style>
                             </object>
                         </child>
                     </object>
-                </child>
-            </object>
         </child>
         <child>
             <object class="GtkLabel" id="chat_input_status">
@@ -60,9 +83,9 @@
                 <property name="margin_bottom">3</property>
                 <property name="margin_start">14</property>
                 <property name="margin_end">14</property>
-                <property name="visible">True</property>
+                <property name="wrap">True</property>
                 <attributes>
-                    <attribute name="scale" value="0.8"/>
+                    <attribute name="scale" value="0.8"></attribute>
                 </attributes>
                 <style>
                     <class name="chat-input-status"/>

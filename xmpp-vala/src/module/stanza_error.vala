@@ -60,8 +60,11 @@ namespace Xmpp {
 
         public StanzaNode error_node;
 
-        public ErrorStanza.from_stanza(StanzaNode stanza) {
-            error_node = stanza.get_subnode("error");
+        public static ErrorStanza? from_stanza(StanzaNode stanza) {
+            var error_stanza = new ErrorStanza();
+            error_stanza.error_node = stanza.get_subnode("error");
+            if (error_stanza.error_node == null) return null;
+            return error_stanza;
         }
 
         public ErrorStanza.build(string type, string condition, string? human_readable, StanzaNode? application_condition) {

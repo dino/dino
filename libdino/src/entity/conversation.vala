@@ -22,6 +22,7 @@ public class Conversation : Object {
     public Jid counterpart { get; private set; }
     public string? nickname { get; set; }
     public bool active { get; set; default = false; }
+    public DateTime active_last_changed { get; private set; }
     private DateTime? _last_active;
     public DateTime? last_active {
         get { return _last_active; }
@@ -32,7 +33,7 @@ public class Conversation : Object {
             }
         }
     }
-    public Encryption encryption { get; set; default = Encryption.NONE; }
+    public Encryption encryption { get; set; default = Encryption.UNKNOWN; }
     public Message? read_up_to { get; set; }
     public int read_up_to_item { get; set; default=-1; }
 
@@ -41,8 +42,9 @@ public class Conversation : Object {
 
     public enum Setting { DEFAULT, ON, OFF }
     public Setting send_typing { get; set; default = Setting.DEFAULT; }
-
     public Setting send_marker { get; set; default = Setting.DEFAULT; }
+
+    public int pinned { get; set; default = 0; }
 
     private Database? db;
 
@@ -63,6 +65,7 @@ public class Conversation : Object {
         if (type_ == Conversation.Type.GROUPCHAT_PM) counterpart = counterpart.with_resource(resource);
         nickname = type_ == Conversation.Type.GROUPCHAT ? resource : null;
         active = row[db.conversation.active];
+        active_last_changed = new DateTime.from_unix_utc(row[db.conversation.active_last_changed]);
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
         encryption = (Encryption) row[db.conversation.encryption];
@@ -72,21 +75,26 @@ public class Conversation : Object {
         notify_setting = (NotifySetting) row[db.conversation.notification];
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
+        pinned = row[db.conversation.pinned];
 
         notify.connect(on_update);
     }
 
     public void persist(Database db) {
         this.db = db;
+        this.active_last_changed = new DateTime.now_utc();
+
         var insert = db.conversation.insert()
                 .value(db.conversation.account_id, account.id)
                 .value(db.conversation.jid_id, db.get_jid_id(counterpart))
                 .value(db.conversation.type_, type_)
                 .value(db.conversation.encryption, encryption)
                 .value(db.conversation.active, active)
+                .value(db.conversation.active_last_changed, (long) active_last_changed.to_unix())
                 .value(db.conversation.notification, notify_setting)
                 .value(db.conversation.send_typing, send_typing)
-                .value(db.conversation.send_marker, send_marker);
+                .value(db.conversation.send_marker, send_marker)
+                .value(db.conversation.pinned, pinned);
         if (read_up_to != null) {
             insert.value(db.conversation.read_up_to, read_up_to.id);
         }
@@ -176,7 +184,10 @@ public class Conversation : Object {
             case "nickname":
                 update.set(db.conversation.resource, nickname); break;
             case "active":
-                update.set(db.conversation.active, active); break;
+                update.set(db.conversation.active, active);
+                active_last_changed = new DateTime.now_utc();
+                update.set(db.conversation.active_last_changed, (long) active_last_changed.to_unix());
+                break;
             case "last-active":
                 if (last_active != null) {
                     update.set(db.conversation.last_active, (long) last_active.to_unix());
@@ -190,6 +201,8 @@ public class Conversation : Object {
                 update.set(db.conversation.send_typing, send_typing); break;
             case "send-marker":
                 update.set(db.conversation.send_marker, send_marker); break;
+            case "pinned":
+                update.set(db.conversation.pinned, pinned); break;
         }
         update.perform();
     }

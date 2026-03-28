@@ -98,15 +98,29 @@ public class StanzaNode : StanzaEntry {
     }
 
     public int get_attribute_int(string name, int def = -1, string? ns_uri = null) {
-        string? res = get_attribute(name, ns_uri);
-        if (res == null) return def;
-        return int.parse((!)res);
+        string? attribute_str = get_attribute(name, ns_uri);
+        if (attribute_str == null) return def;
+
+        int res = def;
+        bool parse_success = int.try_parse(attribute_str, out res, null, 10);
+        if (!parse_success) {
+            info("Could not parse int attribute %s: %s", name, attribute_str);
+            return def;
+        }
+        return res;
     }
 
     public uint get_attribute_uint(string name, uint def = 0, string? ns_uri = null) {
-        string? res = get_attribute(name, ns_uri);
-        if (res == null) return def;
-        return (uint) long.parse((!)res);
+        string? attribute_str = get_attribute(name, ns_uri);
+        if (attribute_str == null || attribute_str.strip().has_prefix("-")) return def;
+
+        uint res = def;
+        bool parse_success = uint.try_parse(attribute_str, out res, null, 10);
+        if (!parse_success) {
+            info("Could not parse uint attribute %s: %s", name, attribute_str);
+            return def;
+        }
+        return res;
     }
 
     public bool get_attribute_bool(string name, bool def = false, string? ns_uri = null) {
@@ -336,7 +350,7 @@ public class StanzaNode : StanzaEntry {
             if (((!)val).length > 1000) {
                 return indent + "[... retracted for brevity ...]\n";
             }
-            return indent + ((!)val).replace("\n", indent + "\n") + "\n";
+            return indent + ((!)val).replace("\n",  "\n" + indent) + "\n";
         }
         var sb = new StringBuilder();
         if (no_ns) {
@@ -377,7 +391,7 @@ public class StanzaNode : StanzaEntry {
         }
     }
 
-    public string to_xml(NamespaceState? state = null) throws XmlError {
+    public string to_xml(NamespaceState? state = null) throws IOError {
         NamespaceState my_state = state ?? new NamespaceState.for_stanza();
         if (name == "#text") return val == null ? "" : (!)encoded_val;
         my_state = my_state.push();

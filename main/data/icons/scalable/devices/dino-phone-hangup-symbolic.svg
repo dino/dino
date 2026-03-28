@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="16px"
+   viewBox="0 0 16 16"
+   width="16px"
+   version="1.1"
+   id="svg73815"
+   sodipodi:docname="dino-phone-hangup-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs73819" />
+  <sodipodi:namedview
+     id="namedview73817"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="true"
+     inkscape:zoom="18.223966"
+     inkscape:cx="0.52129158"
+     inkscape:cy="8.944266"
+     inkscape:current-layer="svg73815">
+    <inkscape:grid
+       type="xygrid"
+       id="grid73938" />
+  </sodipodi:namedview>
+  <path
+     d="m 8,3.992188 c -2.511719,0 -5.027344,0.957031 -6.9375,2.863281 L 0.71875,7.203125 c -0.957031,0.957031 -0.957031,2.511719 0,3.46875 l 1.039062,1.039063 c 0.382813,0.382812 1.003907,0.382812 1.386719,0 L 4.1875,10.671875 5.226562,9.632812 c 0.382813,-0.386718 0.382813,-1.003906 0,-1.390624 L 4.730469,7.75 c 2.035156,-1.105469 4.503906,-1.105469 6.539062,0 l -0.496093,0.492188 c -0.382813,0.386718 -0.382813,1.003906 0,1.390624 l 1.039062,1.039063 1.042969,1.039063 c 0.382812,0.382812 1.003906,0.382812 1.386719,0 l 1.039062,-1.039063 c 0.957031,-0.957031 0.957031,-2.511719 0,-3.46875 L 14.9375,6.855469 C 13.027344,4.949219 10.511719,3.992188 8,3.992188 Z"
+     id="path73813"
+     sodipodi:nodetypes="sccssccccccccccssccs" />
+</svg>

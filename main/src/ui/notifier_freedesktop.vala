@@ -1,0 +1,333 @@
+using Gee;
+
+using Dino.Entities;
+using Xmpp;
+
+public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
+
+    public signal void conversation_selected(Conversation conversation);
+
+    private StreamInteractor stream_interactor;
+    private DBusNotifications dbus_notifications;
+    private bool supports_body_markup = false;
+    private bool supports_body_hyperlinks = false;
+
+    private HashMap<Conversation, uint32> content_notifications = new HashMap<Conversation, uint32>(Conversation.hash_func, Conversation.equals_func);
+    private HashMap<Conversation, Gee.List<uint32>> conversation_notifications = new HashMap<Conversation, Gee.List<uint32>>(Conversation.hash_func, Conversation.equals_func);
+    private HashMap<uint32, HashMap<string, ListenerFuncWrapper>> action_listeners = new HashMap<uint32, HashMap<string, ListenerFuncWrapper>>();
+    private HashMap<Call, uint32> call_notifications = new HashMap<Call, uint32>(Call.hash_func, Call.equals_func);
+
+    public FreeDesktopNotifier(StreamInteractor stream_interactor, DBusNotifications dbus_notifications) {
+        this.stream_interactor = stream_interactor;
+        this.dbus_notifications = dbus_notifications;
+
+        init_dbus_notifications.begin();
+    }
+
+    private async void init_dbus_notifications() throws Error {
+        string[] caps;
+        yield dbus_notifications.get_capabilities(out caps);
+        foreach (string cap in caps) {
+            switch (cap) {
+                case "body-markup":
+                    supports_body_markup = true;
+                    break;
+                case "body-hyperlinks":
+                    supports_body_hyperlinks = true;
+                    break;
+            }
+        }
+
+        dbus_notifications.action_invoked.connect((id, action) => {
+            if (action_listeners.has_key(id) && action_listeners[id].has_key(action)) {
+                action_listeners[id][action].func();
+            }
+        });
+
+        dbus_notifications.notification_closed.connect((id) => {
+            action_listeners.unset(id);
+        });
+    }
+
+    public double get_priority() {
+        return 1;
+    }
+
+    public async void notify_message(Message message, Conversation conversation, string conversation_display_name, string? participant_display_name) {
+        string body  = "";
+        if (supports_body_hyperlinks) {
+            body = Util.parse_add_markup(message.body, null, true, false);
+        } else if (supports_body_markup) {
+            body = Markup.escape_text(message.body);
+        } else {
+            body = message.body;
+        }
+        yield notify_content_item(conversation, conversation_display_name, participant_display_name, body);
+    }
+
+    public async void notify_file(FileTransfer file_transfer, Conversation conversation, bool is_image, string conversation_display_name, string? participant_display_name) {
+        string text = "";
+        if (file_transfer.direction == Message.DIRECTION_SENT) {
+            text = is_image ? _("Image sent") : _("File sent");
+        } else {
+            text = is_image ? _("Image received") : _("File received");
+        }
+
+        if (supports_body_markup) {
+            text = "<i>" + text + "</i>";
+        }
+
+        yield notify_content_item(conversation, conversation_display_name, participant_display_name, text);
+    }
+
+    private async void notify_content_item(Conversation conversation, string conversation_display_name, string? participant_display_name, string body_) {
+        string body = body_;
+        if (participant_display_name != null) {
+            if (supports_body_markup) {
+                body = @"<b>$(Markup.escape_text(participant_display_name)):</b> $body";
+            } else {
+                body = @"$participant_display_name: $body";
+            }
+        }
+
+        uint32 replace_id = content_notifications.has_key(conversation) ? content_notifications[conversation] : 0;
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-data"] = yield get_conversation_icon(conversation);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.received");
+        string[] actions = new string[] {"default", "Open conversation"};
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", replace_id, "", conversation_display_name, body, actions, hash_table, -1);
+            content_notifications[conversation] = notification_id;
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing content item notification: %s", e.message);
+        }
+    }
+
+    public async void notify_call(Call call, Conversation conversation, bool video, bool multiparty, string conversation_display_name) {
+        debug("[%s] Call notification", call.account.bare_jid.to_string());
+        string summary = Markup.escape_text(conversation_display_name);
+        string body =  video ? _("Incoming video call") : _("Incoming call");
+        if (multiparty) {
+            body = video ? _("Incoming video group call") : _("Incoming group call");
+        }
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-path"] = "call-start-symbolic";
+        hash_table["sound-name"] = new Variant.string("phone-incoming-call");
+        hash_table["urgency"] = new Variant.byte(2);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("call.incoming");
+        string[] actions = new string[] {"default", "Open conversation", "reject", _("Reject"), "accept", _("Accept")};
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, 0);
+            call_notifications[call] = notification_id;
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
+            });
+            add_action_listener(notification_id, "reject", () => {
+                var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(call.id)});
+                GLib.Application.get_default().activate_action("reject-call", variant);
+            });
+            add_action_listener(notification_id, "accept", () => {
+                var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.int32(call.id)});
+                GLib.Application.get_default().activate_action("accept-call", variant);
+            });
+        } catch (Error e) {
+            warning("Failed showing subscription request notification: %s", e.message);
+        }
+    }
+
+    public async void retract_call_notification(Call call, Conversation conversation) {
+        if (!call_notifications.has_key(call)) return;
+        uint32 notification_id = call_notifications[call];
+        try {
+            yield dbus_notifications.close_notification(notification_id);
+            action_listeners.unset(notification_id);
+            call_notifications.unset(call);
+        } catch (Error e) { }
+    }
+
+    public async void notify_subscription_request(Conversation conversation) {
+        string summary = _("Subscription request");
+        string body = Markup.escape_text(conversation.counterpart.to_string());
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-data"] = yield get_conversation_icon(conversation);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
+        string[] actions = new string[] {"default", "Open conversation", "accept", _("Accept"), "deny", _("Deny")};
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, -1);
+
+            if (!conversation_notifications.has_key(conversation)) {
+                conversation_notifications[conversation] = new ArrayList<uint32>();
+            }
+            conversation_notifications[conversation].add(notification_id);
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
+            });
+            add_action_listener(notification_id, "accept", () => {
+                GLib.Application.get_default().activate_action("accept-subscription", new Variant.int32(conversation.id));
+            });
+            add_action_listener(notification_id, "deny", () => {
+                GLib.Application.get_default().activate_action("deny-subscription", new Variant.int32(conversation.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing subscription request notification: %s", e.message);
+        }
+    }
+
+    public async void notify_connection_error(Account account, ConnectionManager.ConnectionError error) {
+        string summary = _("Could not connect to %s").printf(account.bare_jid.domainpart);
+        string body = "";
+        switch (error.source) {
+            case ConnectionManager.ConnectionError.Source.SASL:
+                body = _("Wrong password");
+                break;
+            case ConnectionManager.ConnectionError.Source.TLS:
+                body = _("Invalid TLS certificate");
+                break;
+            default:
+                break;
+        }
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im.error");
+        string[] actions = new string[] {"default", "Open preferences"};
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, actions, hash_table, -1);
+
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("preferences-account", new Variant.int32(account.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing connection error notification: %s", e.message);
+        }
+    }
+
+    public async void notify_muc_invite(Account account, Jid room_jid, Jid from_jid, string inviter_display_name) {
+        Conversation direct_conversation = new Conversation(from_jid, account, Conversation.Type.CHAT);
+
+        string display_room = room_jid.bare_jid.to_string();
+        string summary = _("Invitation to %s").printf(display_room);
+        string body = _("%s invited you to %s").printf(inviter_display_name, display_room);
+        if (supports_body_markup) {
+            body = Markup.escape_text(body);
+        }
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-data"] = yield get_conversation_icon(direct_conversation);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
+        string[] actions = new string[] {"default", "", "reject", _("Reject"), "accept", _("Accept")};
+
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, -1);
+
+            Conversation group_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(room_jid, account, Conversation.Type.GROUPCHAT);
+            add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
+            });
+            add_action_listener(notification_id, "accept", () => {
+                GLib.Application.get_default().activate_action("open-muc-join", new Variant.int32(group_conversation.id));
+            });
+            add_action_listener(notification_id, "deny", () => {
+                GLib.Application.get_default().activate_action("deny-invite", new Variant.int32(group_conversation.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing muc invite notification: %s", e.message);
+        }
+    }
+
+    public async void notify_voice_request(Conversation conversation, Jid from_jid) {
+
+        string display_name = Util.get_participant_display_name(stream_interactor, conversation, from_jid);
+        string display_room = Util.get_conversation_display_name(stream_interactor, conversation);
+        string summary = _("Permission request");
+        string body = _("%s requests the permission to write in %s").printf(display_name, display_room);
+        if (supports_body_markup) {
+            Markup.escape_text(body);
+        }
+
+        HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
+        hash_table["image-data"] = yield get_conversation_icon(conversation);
+        hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
+        hash_table["category"] = new Variant.string("im");
+        string[] actions = new string[] {"deny", _("Deny"), "accept", _("Accept")};
+
+        try {
+            uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "", summary, body, actions, hash_table, -1);
+
+            add_action_listener(notification_id, "accept", () => {
+                GLib.Application.get_default().activate_action("accept-voice-request", new Variant.int32(conversation.id));
+            });
+            add_action_listener(notification_id, "deny", () => {
+                GLib.Application.get_default().activate_action("deny-voice-request", new Variant.int32(conversation.id));
+            });
+        } catch (Error e) {
+            warning("Failed showing voice request notification: %s", e.message);
+        }
+    }
+
+    public async void retract_content_item_notifications() {
+        foreach (uint32 id in content_notifications.values) {
+            try {
+                dbus_notifications.close_notification.begin(id);
+            } catch (Error e) { }
+        }
+        content_notifications.clear();
+    }
+
+    public async void retract_conversation_notifications(Conversation conversation) {
+        try {
+            if (content_notifications.has_key(conversation)) {
+                dbus_notifications.close_notification.begin(content_notifications[conversation]);
+                content_notifications.unset(conversation);
+            }
+
+            if (conversation_notifications.has_key(conversation)) {
+                foreach (var notification_id in conversation_notifications[conversation]) {
+                    dbus_notifications.close_notification.begin(notification_id);
+                }
+                conversation_notifications.unset(conversation);
+            }
+        } catch (Error e) { }
+    }
+
+    private async Variant get_conversation_icon(Conversation conversation) {
+        CompatAvatarDrawer drawer = new CompatAvatarDrawer() {
+            model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation),
+            width_request = 40,
+            height_request = 40
+        };
+        Cairo.ImageSurface surface = drawer.draw_image_surface();
+        Gdk.Pixbuf avatar = Gdk.pixbuf_get_from_surface(surface, 0, 0, surface.get_width(), surface.get_height());
+        var bytes = avatar.pixel_bytes;
+        var image_bytes = Variant.new_from_data<Bytes>(new VariantType("ay"), bytes.get_data(), true, bytes);
+        return new Variant("(iiibii@ay)", avatar.width, avatar.height, avatar.rowstride, avatar.has_alpha, avatar.bits_per_sample, avatar.n_channels, image_bytes);
+    }
+
+    private void add_action_listener(uint32 id, string name, owned ListenerFunc func) {
+        if (!action_listeners.has_key(id)) {
+            action_listeners[id] = new HashMap<string, ListenerFuncWrapper>();
+        }
+        action_listeners[id][name] = new ListenerFuncWrapper((owned) func);
+    }
+
+    delegate void ListenerFunc();
+    class ListenerFuncWrapper {
+        public ListenerFunc func;
+
+        public ListenerFuncWrapper(owned ListenerFunc func) {
+            this.func = (owned) func;
+        }
+    }
+}

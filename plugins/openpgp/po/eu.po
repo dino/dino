@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
 "PO-Revision-Date: 2018-04-03 15:27+0000\n"
 "Language-Team: Basque <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/eu/>\n"
@@ -18,36 +18,44 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.20-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "Gakoa argitaratzea ezgaituta"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "GnuPG akatsa"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "Gakoa hautatu"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "Kargatzen…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "GnuPGri galdetzen"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG akatsa"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Gakorik ez giltzatakoan"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Enkriptazioa"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Encryption"
+#~ msgstr "Enkriptazioa"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Gakoa argitaratzea ezgaituta"
+
+#~ msgid "Select key"
+#~ msgstr "Gakoa hautatu"
+
+#~ msgid "Loading…"
+#~ msgstr "Kargatzen…"

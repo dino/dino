@@ -68,7 +68,10 @@ public class ContentProvider : ContentItemCollection, Object {
             return new MessageMetaItem(content_item, stream_interactor);
         } else if (content_item.type_ == FileItem.TYPE) {
             return new FileMetaItem(content_item, stream_interactor);
+        } else if (content_item.type_ == CallItem.TYPE) {
+            return new CallMetaItem(content_item, stream_interactor);
         }
+        critical("Got unknown content item type %s", content_item.type_);
         return null;
     }
 }
@@ -79,14 +82,13 @@ public abstract class ContentMetaItem : Plugins.MetaConversationItem {
 
     protected ContentMetaItem(ContentItem content_item) {
         this.jid = content_item.jid;
-        this.sort_time = content_item.sort_time;
-        this.seccondary_sort_indicator = (long) content_item.display_time.to_unix();
-        this.tertiary_sort_indicator = content_item.id;
-        this.display_time = content_item.display_time;
+        this.time = content_item.time;
+        this.secondary_sort_indicator = content_item.id;
         this.encryption = content_item.encryption;
         this.mark = content_item.mark;
 
         content_item.bind_property("mark", this, "mark");
+        content_item.bind_property("encryption", this, "encryption");
 
         this.can_merge = true;
         this.requires_avatar = true;

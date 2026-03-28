@@ -11,6 +11,7 @@ public class Settings : Object {
         send_marker_ = col_to_bool_or_default("send_marker", true);
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
+        check_spelling = col_to_bool_or_default("check_spelling", true);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -64,6 +65,37 @@ public class Settings : Object {
                     .perform();
             convert_utf8_smileys_ = value;
         }
+    }
+
+    // There is currently no spell checking for GTK4, thus there is currently no UI for this setting.
+    private bool check_spelling_;
+    public bool check_spelling {
+        get { return check_spelling_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "check_spelling", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            check_spelling_ = value;
+        }
+    }
+
+    public Encryption get_default_encryption(Account account) {
+        string? setting = db.account_settings.get_value(account.id, "default-encryption");
+        if (setting != null) {
+            return (Encryption) int.parse(setting);
+        }
+        return Encryption.OMEMO;
+    }
+
+    public void set_default_encryption(Account account, Encryption encryption) {
+        db.account_settings.upsert()
+                .value(db.account_settings.key, "default-encryption", true)
+                .value(db.account_settings.account_id, account.id, true)
+                .value(db.account_settings.value, ((int)encryption).to_string())
+                .perform();
+
+
     }
 }
 

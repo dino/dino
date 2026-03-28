@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
 "PO-Revision-Date: 2018-01-24 12:18+0000\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/it/>\n"
@@ -13,39 +13,47 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.19-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "Pubblicazione della chiave disabilitata"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "Errore in GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "Nessuna chiave disponibile. Generane una!"
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "Seleziona una chiave"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "Caricamento…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Interrogando GnuPG"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Errore in GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Nessuna chiave disponibile. Generane una!"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "La chiave non è nel portachiavi"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Crittografia"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Encryption"
+#~ msgstr "Crittografia"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Pubblicazione della chiave disabilitata"
+
+#~ msgid "Select key"
+#~ msgstr "Seleziona una chiave"
+
+#~ msgid "Loading…"
+#~ msgstr "Caricamento…"
 
 #~ msgid "OpenPGP"
 #~ msgstr "OpenPGP"

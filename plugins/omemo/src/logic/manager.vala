@@ -1,5 +1,5 @@
 using Dino.Entities;
-using Signal;
+using Omemo;
 using Qlite;
 using Xmpp;
 using Gee;
@@ -13,11 +13,12 @@ public class Manager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private Database db;
     private TrustManager trust_manager;
+    private HashMap<Account, OmemoEncryptor> encryptors;
     private Map<Entities.Message, MessageState> message_states = new HashMap<Entities.Message, MessageState>(Entities.Message.hash_func, Entities.Message.equals_func);
 
     private class MessageState {
         public Entities.Message msg { get; private set; }
-        public EncryptState last_try { get; private set; }
+        public Xep.Omemo.EncryptState last_try { get; private set; }
         public int waiting_other_sessions { get; set; }
         public int waiting_own_sessions { get; set; }
         public bool waiting_own_devicelist { get; set; }
@@ -26,11 +27,11 @@ public class Manager : StreamInteractionModule, Object {
         public bool will_send_now { get; private set; }
         public bool active_send_attempt { get; set; }
 
-        public MessageState(Entities.Message msg, EncryptState last_try) {
+        public MessageState(Entities.Message msg, Xep.Omemo.EncryptState last_try) {
             update_from_encrypt_status(msg, last_try);
         }
 
-        public void update_from_encrypt_status(Entities.Message msg, EncryptState new_try) {
+        public void update_from_encrypt_status(Entities.Message msg, Xep.Omemo.EncryptState new_try) {
             this.msg = msg;
             this.last_try = new_try;
             this.waiting_other_sessions = new_try.other_unknown;
@@ -59,11 +60,13 @@ public class Manager : StreamInteractionModule, Object {
         }
     }
 
-    private Manager(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
+    private Manager(StreamInteractor stream_interactor, Database db, TrustManager trust_manager, HashMap<Account, OmemoEncryptor> encryptors) {
         this.stream_interactor = stream_interactor;
         this.db = db;
         this.trust_manager = trust_manager;
+        this.encryptors = encryptors;
 
+        stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).pre_message_send.connect(on_pre_message_send);
         stream_interactor.get_module(RosterManager.IDENTITY).mutual_subscription.connect(on_mutual_subscription);
@@ -125,7 +128,7 @@ public class Manager : StreamInteractionModule, Object {
             }
 
             //Attempt to encrypt the message
-            EncryptState enc_state = trust_manager.encrypt(message_stanza, conversation.account.bare_jid, recipients, stream, conversation.account);
+            Xep.Omemo.EncryptState enc_state = encryptors[conversation.account].encrypt(message_stanza, conversation.account.bare_jid, recipients, stream);
             MessageState state;
             lock (message_states) {
                 if (message_states.has_key(message)) {
@@ -180,6 +183,12 @@ public class Manager : StreamInteractionModule, Object {
         StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
         if (module != null) {
             module.request_user_devicelist.begin(stream, account.bare_jid);
+        }
+    }
+
+    private void on_account_added(Account account) {
+        StreamModule module = stream_interactor.module_manager.get_module(account, StreamModule.IDENTITY);
+        if (module != null) {
             module.device_list_loaded.connect((jid, devices) => on_device_list_loaded(account, jid, devices));
             module.bundle_fetched.connect((jid, device_id, bundle) => on_bundle_fetched(account, jid, device_id, bundle));
             module.bundle_fetch_failed.connect((jid) => continue_message_sending(account, jid));
@@ -352,7 +361,7 @@ public class Manager : StreamInteractionModule, Object {
             try {
                 store.identity_key_store.local_registration_id = Random.int_range(1, int32.MAX);
 
-                Signal.ECKeyPair key_pair = Plugin.get_context().generate_key_pair();
+                ECKeyPair key_pair = Plugin.get_context().generate_key_pair();
                 store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
                 store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
 
@@ -411,8 +420,8 @@ public class Manager : StreamInteractionModule, Object {
         return true; // TODO wait for stream?
     }
 
-    public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager) {
-        Manager m = new Manager(stream_interactor, db, trust_manager);
+    public static void start(StreamInteractor stream_interactor, Database db, TrustManager trust_manager, HashMap<Account, OmemoEncryptor> encryptors) {
+        Manager m = new Manager(stream_interactor, db, trust_manager, encryptors);
         stream_interactor.add_module(m);
     }
 }

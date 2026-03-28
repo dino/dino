@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-01-16 00:21+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/hu/>\n"
 "Language: hu\n"
@@ -16,233 +16,309 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:73
-msgid "Manage"
-msgstr ""
-
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
-msgid "This contact has new devices"
-msgstr ""
-
-#: plugins/omemo/src/ui/own_notifications.vala:29
-msgid "OMEMO trust decision required"
-msgstr ""
-
-#: plugins/omemo/src/ui/own_notifications.vala:31
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
-msgid "Did you add a new device for account %s?"
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
 msgstr ""
+"%s nem megbízható eszközt használt. Nem fogja látni az olyan eszközökről "
+"érkező üzeneteket, amelyekben nem bízik meg."
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Eszközök kezelése"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s nem bízik meg ebben az eszközben. Ez azt jelenti, hogy lemaradhat néhány "
+"üzenetről."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Kulcs kezelése"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
-msgid "Manage Key"
-msgstr ""
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
+"Hasonlítsa össze az ujjlenyomatot karakterről karakterre a partnere eszközén "
+"láthatóval."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Az ujjlenyomatok eltérnek"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Fingerprints differ"
-msgstr ""
+msgid "Fingerprints match"
+msgstr "Az ujjlenyomatok egyeznek"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Fingerprints match"
-msgstr ""
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:39
-#: plugins/omemo/src/ui/manage_key_dialog.vala:82
-#: plugins/omemo/src/ui/manage_key_dialog.vala:88
+#: plugins/omemo/src/ui/manage_key_dialog.vala:81
+#: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
 msgstr "Mégse"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:40
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
-msgstr ""
+msgstr "Megerősítés"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Kulcs ellenőrzése"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
-msgid "Verify key"
-msgstr ""
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:61
 #, c-format
 msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
+"%s által az ezt a kulcsot használó eszközről küldött jövőbeli üzenetek ennek "
+"megfelelően lesznek kiemelve a csevegésablakban."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Az ujjlenyomatok nem egyeznek"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
-msgid "Fingerprints do not match"
-msgstr ""
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:72
 #, c-format
 msgid ""
 "Please verify that you are comparing the correct fingerprint. If "
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
+"Ellenőrizze, hogy a megfelelő ujjlenyomatot hasonlítja-e össze. Ha az "
+"ujjlenyomatok nem egyeznek, akkor %s fiókja veszélybe kerülhetett, és "
+"fontolóra kellene vennie a kulcs elutasítását."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
-#, fuzzy
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
-msgstr "Saját ujjlenyomat"
+msgstr "Kulcs ujjlenyomatának ellenőrzése"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
+"Hasonlítsa össze ennek a kulcsnak az ujjlenyomatát a partner eszközén "
+"megjelenített ujjlenyomattal."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
-#: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:256
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
-msgstr ""
+msgstr "Kulcs elutasítása"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
 msgstr ""
+"A titkosított kommunikáció tiltása a partner eszközével, amely ezt a kulcsot "
+"használja."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
-#: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:251
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+#: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
-msgstr ""
+msgstr "Kulcs elfogadása"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
 msgstr ""
+"A titkosított kommunikáció engedélyezése a partner eszközével, amely ezt a "
+"kulcsot használja."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr ""
+msgstr "Ez a kulcs jelenleg %s."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr ""
+msgstr "elfogadott"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
 msgstr ""
+"Ez azt jelenti, hogy %s használhatja titkosított üzenetek fogadásához és "
+"küldéséhez."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr ""
+msgstr "ellenőrzött"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr ""
+msgstr "Ezenkívül ellenőrizve lett, hogy a kulcs egyezik a partner eszközén."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr ""
+msgstr "elutasított"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
+"Ez azt jelenti, hogy %s nem használhatja az Ön üzeneteinek visszafejtésére, "
+"és Ön nem fogja látni az azzal titkosított üzeneteket."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:153
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
 msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
+"Nem fogja látni %s azon eszközéről érkező titkosított üzeneteket, amely ezt "
+"a kulcsot használja. Fordítva, a másik eszköz nem lesz képes többé "
+"visszafejteni az Ön üzeneteit."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:161
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
 msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
+"Ön képes lesz titkosított üzeneteket váltani %s azon eszközével, amely ezt a "
+"kulcsot használja."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:167
+#: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
-msgstr ""
+msgstr "Vissza"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
-#, fuzzy
-msgid "OMEMO Key Management"
-msgstr "OMEMO kulcsok"
+#: plugins/omemo/src/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Kezelés"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
-msgid "Automatically accept new keys"
-msgstr ""
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "Ennek a partnernek új eszközei vannak"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
+#: plugins/omemo/src/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "OMEMO megbízhatósági döntés szükséges"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Own key"
-msgstr ""
+#: plugins/omemo/src/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Hozzáadott egy új eszközt a(z) %s fiókhoz?"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr "OMEMO alapértelmezetten"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "OMEMO-titkosítás engedélyezése az új beszélgetésekhez"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Titkosítás az új eszközökre"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Automatikus titkosítás az ettől a partnertől származó új eszközökre."
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
-msgstr ""
+msgstr "Új kulcsok"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Associated keys"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
-msgid "Inactive keys"
-msgstr ""
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
+"Az egyéb eszközeitől származó új titkosítási kulcsok automatikusan el "
+"lesznek fogadva."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr "Ez az eszköz"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr "Másik eszköz"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Eszköz"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
-msgstr ""
+msgstr "Elfogadva"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
-msgstr ""
+msgstr "Elutasítva"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
+msgstr "Ellenőrizve"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr "Új eszköz"
+
+#: plugins/omemo/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
 msgstr ""
+"Minden eszköznek saját OMEMO-kulcsa van. Egy eszköz csak akkor tudja "
+"visszafejteni az üzeneteket, ha azok a saját kulcsával lettek titkosítva. Az "
+"üzenetek csak az elfogadott eszközökre vannak titkosítva."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:336
-msgid "Unused"
-msgstr ""
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO kulcskezelés"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "Saját ujjlenyomat"
+#~ msgid "Encryption"
+#~ msgstr "Titkosítás"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "Az első csatlakozáskor lesz létrehozva"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Titkosítás"
-
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d OMEMO eszköz"
-msgstr[1] "%d OMEMO eszköz"
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO-eszköz"
+#~ msgstr[1] "%d OMEMO eszköz"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Új kulcsok automatikus elfogadása"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Az ettől a partnertől származó új titkosítási kulcsok automatikusan el "
+#~ "lesznek fogadva."
+
+#~ msgid "Own key"
+#~ msgstr "Saját kulcs"
+
+#~ msgid "Associated keys"
+#~ msgstr "Hozzárendelt kulcsok"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Inaktív kulcsok"
+
+#~ msgid "Unused"
+#~ msgstr "Nem használt"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Saját ujjlenyomat"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Az első kapcsolódáskor lesz előállítva"
 
 #~ msgid "Unknown device (0x%.8x)"
 #~ msgstr "Ismeretlen eszköz (0x%.8x)"

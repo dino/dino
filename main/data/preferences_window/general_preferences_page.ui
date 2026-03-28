@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiGeneralPreferencesPage" parent="AdwPreferencesPage">
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwSwitchRow" id="typing_row">
+            <property name="title" translatable="yes">Send _Typing Notifications</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwSwitchRow" id="marker_row">
+            <property name="title" translatable="yes">Send _Read Receipts</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwSwitchRow" id="notification_row">
+            <property name="title" translatable="yes">_Notifications</property>
+            <property name="subtitle" translatable="yes">Notify when a new message arrives</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwSwitchRow" id="emoji_row">
+            <property name="title" translatable="yes">_Convert Smileys to Emoji</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

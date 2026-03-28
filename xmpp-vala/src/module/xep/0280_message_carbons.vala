@@ -40,7 +40,7 @@ public class Module : XmppStreamModule {
 
 public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
 
-    private const string[] after_actions_const = {"EXTRACT_MESSAGE_1"};
+    private string[] after_actions_const = {"EXTRACT_MESSAGE_1"};
 
     public override string action_group { get { return "EXTRACT_MESSAGE_2"; } }
     public override string[] after_actions { get { return after_actions_const; } }
@@ -56,6 +56,10 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 // Any forwarded copies received by a Carbons-enabled client MUST be from that user's bare JID; any copies that do not meet this requirement MUST be ignored.
                 if (!message.from.equals(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)) {
                     warning("Received alleged carbon message from %s, ignoring", message.from.to_string());
+                    return true;
+                }
+                if (message_node == null) {
+                    warning("Received a carbon message with no message subnode in jabber:client namespace from %s, ignoring", message.from.to_string());
                     return true;
                 }
                 if (received_node != null) {

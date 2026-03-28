@@ -7,238 +7,217 @@ using Dino.Entities;
 
 namespace Dino.Ui.ConversationSummary {
 
-public class ConversationItemSkeleton : EventBox {
+public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface, Object {
 
-    public bool show_skeleton { get; set; default=false; }
-    public bool last_group_item { get; set; default=true; }
+    public Grid main_grid { get; set; }
+    public Label name_label { get; set; }
+    public Label time_label { get; set; }
+    public AvatarPicture avatar_picture { get; set; }
+    public Image encryption_image { get; set; }
+    public Image received_image { get; set; }
+
+    private HashMap<int, Widget> content_widgets = new HashMap<int, Widget>();
+
+    private bool show_skeleton_ = false;
+    public bool show_skeleton {
+        get { return show_skeleton_; }
+        set {
+            show_skeleton_ = value && content_meta_item != null && content_meta_item.requires_header && content_meta_item.requires_avatar; }
+    }
 
     public StreamInteractor stream_interactor;
     public Conversation conversation { get; set; }
     public Plugins.MetaConversationItem item;
     public bool item_in_edit_mode { get; set; }
-    public ContentMetaItem? content_meta_item = null;
+    public Entities.Message.Marked item_mark { get; set; }
+    public ContentMetaItem content_meta_item = null;
     public Widget? widget = null;
+    private ReactionsController? reactions_controller = null;
 
-    private Box image_content_box = new Box(Orientation.HORIZONTAL, 8) { visible=true };
-    private Box header_content_box = new Box(Orientation.VERTICAL, 0) { visible=true };
-    private ItemMetaDataHeader? metadata_header = null;
-    private AvatarImage? image = null;
+    private uint time_update_timeout = 0;
+    private ulong updated_roster_handler_id = 0;
 
-    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item, bool initial_item) {
+    public ConversationItemSkeleton(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;
         this.item = item;
         this.content_meta_item = item as ContentMetaItem;
-        this.get_style_context().add_class("message-box");
 
         item.bind_property("in-edit-mode", this, "item-in-edit-mode");
-        this.notify["item-in-edit-mode"].connect(() => {
-            if (item.in_edit_mode) {
-                this.get_style_context().add_class("edit-mode");
-            } else {
-                this.get_style_context().remove_class("edit-mode");
-            }
-        });
+        this.notify["item-in-edit-mode"].connect(update_edit_mode);
 
-        widget = item.get_widget(Plugins.WidgetType.GTK) as Widget;
+        Builder builder = new Builder.from_resource("/im/dino/Dino/conversation_item_widget.ui");
+        main_grid = (Grid) builder.get_object("main_grid");
+        main_grid.add_css_class("message-box");
+        name_label = (Label) builder.get_object("name_label");
+        time_label = (Label) builder.get_object("time_label");
+        avatar_picture = (AvatarPicture) builder.get_object("avatar_picture");
+        encryption_image = (Image) builder.get_object("encrypted_image");
+        received_image = (Image) builder.get_object("marked_image");
+
+        widget = item.get_widget(this, Plugins.WidgetType.GTK4) as Widget;
         if (widget != null) {
             widget.valign = Align.END;
-            header_content_box.add(widget);
+            set_widget(widget, Plugins.WidgetType.GTK4, 2);
         }
 
-        image_content_box.add(header_content_box);
-
-        if (initial_item) {
-            this.add(image_content_box);
-        } else {
-            Revealer revealer = new Revealer() { transition_duration=200, transition_type=RevealerTransitionType.SLIDE_UP, reveal_child=false, visible=true };
-            revealer.add_with_properties(image_content_box);
-            this.add(revealer);
-            revealer.reveal_child = true;
+        if (item.requires_header) {
+            // TODO: For MUC messags, use real jid from message if known
+            avatar_picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).add_participant(conversation, item.jid);
         }
-
 
         this.notify["show-skeleton"].connect(update_margin);
-        this.notify["last-group-item"].connect(update_margin);
+        this.notify["show-skeleton"].connect(set_header);
+
+        ContentMetaItem? content_meta_item = item as ContentMetaItem;
+        if (content_meta_item != null) {
+            reactions_controller = new ReactionsController(conversation, content_meta_item.content_item, stream_interactor);
+            reactions_controller.box_activated.connect(on_reaction_box_activated);
+            reactions_controller.init();
+        }
 
         update_margin();
     }
 
-    public void set_edit_mode() {
-        if (content_meta_item == null) return;
-
-    }
-
-    private void update_margin() {
-        if (item.requires_header && show_skeleton && metadata_header == null) {
-            metadata_header = new ItemMetaDataHeader(stream_interactor, conversation, item) { visible=true };
-            header_content_box.add(metadata_header);
-            header_content_box.reorder_child(metadata_header, 0);
-        }
-        if (item.requires_avatar && show_skeleton && image == null) {
-            image = new AvatarImage() { margin_top=2, valign=Align.START, visible=true, allow_gray = false };
-            image.set_conversation_participant(stream_interactor, conversation, item.jid);
-            image_content_box.add(image);
-            image_content_box.reorder_child(image, 0);
-        }
-
-        if (image != null) {
-            image.visible = this.show_skeleton;
-        }
-        if (metadata_header != null) {
-            metadata_header.visible = this.show_skeleton;
-        }
-        image_content_box.margin_start = this.show_skeleton ? 15 : 58;
-        image_content_box.margin_end = 15;
-
-        if (this.show_skeleton && this.last_group_item) {
-            image_content_box.margin_top = 8;
-            image_content_box.margin_bottom = 8;
-        } else {
-            image_content_box.margin_top = 4;
-            image_content_box.margin_bottom = 4;
-        }
-    }
-}
-
-[GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/item_metadata_header.ui")]
-public class ItemMetaDataHeader : Box {
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label dot_label;
-    [GtkChild] public Label time_label;
-    public Image received_image = new Image() { opacity=0.4 };
-    public Image? unencrypted_image = null;
-
-    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON", 17, 12);
-
-    private StreamInteractor stream_interactor;
-    private Conversation conversation;
-    private Plugins.MetaConversationItem item;
-    public Entities.Message.Marked item_mark { get; set; }
-    private ArrayList<Plugins.MetaConversationItem> items = new ArrayList<Plugins.MetaConversationItem>();
-    private uint time_update_timeout = 0;
-
-    public ItemMetaDataHeader(StreamInteractor stream_interactor, Conversation conversation, Plugins.MetaConversationItem item) {
-        this.stream_interactor = stream_interactor;
-        this.conversation = conversation;
-        this.item = item;
-        items.add(item);
+    private void set_header() {
+        if (!show_skeleton) return;
 
         update_name_label();
-        name_label.style_updated.connect(update_name_label);
-
-        Application app = GLib.Application.get_default() as Application;
-
-        ContentMetaItem ci = item as ContentMetaItem;
-        if (ci != null) {
-            foreach(var e in app.plugin_registry.encryption_list_entries) {
-                if (e.encryption == item.encryption) {
-                    Object? w = e.get_encryption_icon(conversation, ci.content_item);
-                    if (w != null) {
-                        this.add(w as Widget);
-                    } else {
-                        Image image = new Image.from_icon_name("dino-changes-prevent-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
-                        this.add(image);
-                    }
-                    break;
-                }
+//            name_label.style_updated.connect(update_name_label);
+            updated_roster_handler_id = stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
+            if (this.conversation.account.equals(account) && this.conversation.counterpart.equals(jid)) {
+                update_name_label();
             }
-        }
-        if (item.encryption == Encryption.NONE) {
-            conversation.notify["encryption"].connect(update_unencrypted_icon);
-            update_unencrypted_icon();
-        }
+        });
 
-        this.add(received_image);
+        item.notify["encryption"].connect(update_encryption_icon);
+        update_encryption_icon();
 
-        if (item.display_time != null) {
+        if (item.time != null) {
             update_time();
         }
 
-        item.bind_property("mark", this, "item-mark");
+        item.bind_property("mark", this, "item-mark", BindingFlags.SYNC_CREATE);
         this.notify["item-mark"].connect_after(update_received_mark);
         update_received_mark();
     }
 
-    private void update_unencrypted_icon() {
-        if (conversation.encryption != Encryption.NONE && unencrypted_image == null) {
-            unencrypted_image = new Image() { opacity=0.4, visible = true };
-            unencrypted_image.set_from_icon_name("dino-changes-allowed-symbolic", ICON_SIZE_HEADER);
-            unencrypted_image.tooltip_text = _("Unencrypted");
-            this.add(unencrypted_image);
-            this.reorder_child(unencrypted_image, 3);
-            Util.force_error_color(unencrypted_image);
-        } else if (conversation.encryption == Encryption.NONE && unencrypted_image != null) {
-            unencrypted_image.destroy();
-            unencrypted_image = null;
+    public void set_widget(Object object, Plugins.WidgetType type, int priority) {
+        foreach (var content_widget in content_widgets.values) {
+            content_widget.unparent();
         }
+
+        content_widgets[priority] = (Widget) object;
+        int row_no = 1;
+        for (int i = 0; i < 5; i++) {
+            if (!content_widgets.has_key(i)) continue;
+            main_grid.attach(content_widgets[i], 1, row_no, 4, 1);
+            row_no++;
+        }
+    }
+
+    private void update_margin() {
+        avatar_picture.visible = show_skeleton;
+        name_label.visible = show_skeleton;
+        time_label.visible = show_skeleton;
+        encryption_image.visible = show_skeleton;
+        received_image.visible = show_skeleton;
+
+        if (show_skeleton || content_meta_item == null) {
+            main_grid.add_css_class("has-skeleton");
+        }
+    }
+
+    private void update_edit_mode() {
+        if (item.in_edit_mode) {
+            main_grid.add_css_class("edit-mode");
+        } else {
+            main_grid.remove_css_class("edit-mode");
+        }
+    }
+
+    private void update_error_mode() {
+        if (item_mark == Message.Marked.ERROR) {
+            main_grid.add_css_class("error");
+        } else {
+            main_grid.remove_css_class("error");
+        }
+    }
+
+    private void update_encryption_icon() {
+        Application app = GLib.Application.get_default() as Application;
+
+        ContentMetaItem ci = item as ContentMetaItem;
+        if (item.encryption != Encryption.NONE && item.encryption != Encryption.UNKNOWN && ci != null) {
+            string? icon_name = null;
+            var encryption_entry = app.plugin_registry.encryption_list_entries[item.encryption];
+            if (encryption_entry != null) icon_name = encryption_entry.get_encryption_icon_name(conversation, ci.content_item);
+            encryption_image.icon_name = icon_name ?? "dino-changes-prevent-symbolic";
+            encryption_image.visible = true;
+        }
+
+        if (item.encryption == Encryption.NONE) {
+            if (conversation.encryption != Encryption.NONE) {
+                encryption_image.icon_name = "dino-changes-allow-symbolic";
+                encryption_image.tooltip_text = Util.string_if_tooltips_active(_("Unencrypted"));
+                Util.force_error_color(encryption_image);
+                encryption_image.visible = true;
+            } else if (conversation.encryption == Encryption.NONE) {
+                encryption_image.icon_name = null;
+                encryption_image.visible = false;
+            }
+        }
+    }
+
+    private void on_reaction_box_activated(Widget widget) {
+        set_widget(widget, Plugins.WidgetType.GTK4, 3);
+    }
+
+    private void on_time_update_timeout() {
+        if (main_grid.parent != null) update_time();
     }
 
     private void update_time() {
-        time_label.label = get_relative_time(item.display_time.to_local()).to_string();
+        time_label.label = get_relative_time(item.time.to_local()).to_string();
 
-        time_update_timeout = Timeout.add_seconds((int) get_next_time_change(), () => {
-            if (this.parent == null) return false;
-            update_time();
-            return false;
-        });
+        time_update_timeout = Dino.WeakTimeout.add_seconds_once((int) get_next_time_change(item.time), this, on_time_update_timeout);
     }
 
     private void update_name_label() {
-        string display_name = Markup.escape_text(Util.get_participant_display_name(stream_interactor, conversation, item.jid));
-        string color = Util.get_name_hex_color(stream_interactor, conversation.account, item.jid, Util.is_dark_theme(name_label));
-        name_label.label = @"<span foreground=\"#$color\">$display_name</span>";
+        name_label.label = Util.get_participant_display_name(stream_interactor, conversation, item.jid, true);
     }
 
     private void update_received_mark() {
-        bool all_received = true;
-        bool all_read = true;
-        bool all_sent = true;
-        foreach (Plugins.MetaConversationItem item in items) {
-            if (item.mark == Message.Marked.WONTSEND) {
-                received_image.visible = true;
-                received_image.set_from_icon_name("dialog-warning-symbolic", ICON_SIZE_HEADER);
+        switch (content_meta_item.mark) {
+            case Message.Marked.RECEIVED: 
+                received_image.icon_name = "dino-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Delivered"));
+                break;
+            case Message.Marked.READ:
+                received_image.icon_name = "dino-double-tick-symbolic";
+                received_image.tooltip_text = Util.string_if_tooltips_active(_("Read"));
+                break;
+            case Message.Marked.WONTSEND:
+                received_image.icon_name = "dino-dialog-warning-symbolic";
                 Util.force_error_color(received_image);
                 Util.force_error_color(time_label);
-                string error_text = _("Unable to send message");
+                string error_text = Util.string_if_tooltips_active(_("Unable to send message"));
                 received_image.tooltip_text = error_text;
                 time_label.tooltip_text = error_text;
-                return;
-            } else if (item.mark != Message.Marked.READ) {
-                all_read = false;
-                if (item.mark != Message.Marked.RECEIVED) {
-                    all_received = false;
-                    if (item.mark == Message.Marked.UNSENT) {
-                        all_sent = false;
-                    }
-                }
-            }
-        }
-        if (all_read) {
-            received_image.visible = true;
-            received_image.set_from_icon_name("dino-double-tick-symbolic", ICON_SIZE_HEADER);
-        } else if (all_received) {
-            received_image.visible = true;
-            received_image.set_from_icon_name("dino-tick-symbolic", ICON_SIZE_HEADER);
-        } else if (!all_sent) {
-            received_image.visible = true;
-            received_image.set_from_icon_name("image-loading-symbolic", ICON_SIZE_HEADER);
-        } else if (received_image.visible) {
-            received_image.set_from_icon_name("image-loading-symbolic", ICON_SIZE_HEADER);
-
+                break;
+            default: received_image.icon_name = null; break;
         }
     }
 
-    private int get_next_time_change() {
+    public static int get_next_time_change(DateTime datetime) {
         DateTime now = new DateTime.now_local();
-        DateTime item_time = item.display_time;
-        TimeSpan timespan = now.difference(item_time);
+        TimeSpan timespan = now.difference(datetime);
 
         if (timespan < 10 * TimeSpan.MINUTE) {
-            if (now.get_second() < item_time.get_second()) {
-                return item_time.get_second() - now.get_second();
+            if (now.get_second() < datetime.get_second()) {
+                return datetime.get_second() - now.get_second();
             } else {
-                return 60 - (now.get_second() - item_time.get_second());
+                return 60 - (now.get_second() - datetime.get_second());
             }
         } else {
             return (23 - now.get_hour()) * 3600 + (59 - now.get_minute()) * 60 + (59 - now.get_second());
@@ -282,13 +261,48 @@ public class ItemMetaDataHeader : Box {
         }
     }
 
-    public override void dispose() {
-        base.dispose();
+    public Widget get_widget() {
+        return main_grid;
+    }
 
+    public override void dispose() {
         if (time_update_timeout != 0) {
             Source.remove(time_update_timeout);
             time_update_timeout = 0;
         }
+        if (updated_roster_handler_id != 0){
+            stream_interactor.get_module(RosterManager.IDENTITY).disconnect(updated_roster_handler_id);
+            updated_roster_handler_id = 0;
+        }
+        reactions_controller = null;
+
+        // Children won't be disposed automatically
+        if (name_label != null) {
+            name_label.unparent();
+            name_label.dispose();
+            name_label = null;
+        }
+        if (time_label != null) {
+            time_label.unparent();
+            time_label.dispose();
+            time_label = null;
+        }
+        if (avatar_picture != null) {
+            avatar_picture.unparent();
+            avatar_picture.dispose();
+            avatar_picture = null;
+        }
+        if (encryption_image != null) {
+            encryption_image.unparent();
+            encryption_image.dispose();
+            encryption_image = null;
+        }
+        if (received_image != null) {
+            received_image.unparent();
+            received_image.dispose();
+            received_image = null;
+        }
+        base.dispose();
     }
 }
 

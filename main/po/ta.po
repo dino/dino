@@ -7,751 +7,1222 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-04-16 20:11+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-04-27 18:47+0000\n"
 "Language-Team: none\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.1-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
-#: main/src/ui/main_window.vala:198
-msgid "Welcome to Dino!"
-msgstr ""
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:64
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:131
+#: main/src/ui/conversation_view_controller.vala:200
+#: main/src/ui/add_conversation/select_contact_dialog.vala:41
+#: main/src/ui/add_conversation/add_conference_dialog.vala:42
+#: main/src/ui/application.vala:290
+#: main/src/ui/conversation_content_view/file_default_widget.vala:88
+#: main/data/message_item_widget_edit_mode.ui:46
+#: main/data/preferences_window/change_password_dialog.ui:18
+#: main/data/add_conversation/add_groupchat_dialog.ui:12
+#: main/data/add_conversation/add_contact_dialog.ui:13
+msgid "Cancel"
+msgstr "ரத்துசெய்"
 
-#: main/src/ui/main_window.vala:199
-msgid "Sign in or create an account to get started."
-msgstr ""
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:65
+msgid "Connect"
+msgstr "இணை"
 
-#: main/src/ui/main_window.vala:200
-msgid "Set up account"
-msgstr ""
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:87
+#: main/data/preferences_window/account_preferences_subpage.ui:125
+msgid "Disable account"
+msgstr "கணக்கை முடக்கு"
 
-#: main/src/ui/main_window.vala:208
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:87
+msgid "Enable account"
+msgstr "கணக்கை இயக்கவும்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:131
+msgid "Select avatar"
+msgstr "அவதாரத்தைத் தேர்ந்தெடுக்கவும்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:131
+#: main/src/ui/conversation_view_controller.vala:200
+msgid "Select"
+msgstr "தேர்ந்தெடு"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:138
+msgid "Images"
+msgstr "படங்கள்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:142
+msgid "All files"
+msgstr "அனைத்து கோப்புகள்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:155
+#, c-format
+msgid "Remove account %s?"
+msgstr "கணக்கு %s ஐ அகற்றவா?"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:187
+#: main/src/ui/call_window/participant_widget.vala:128
+msgid "Connecting…"
+msgstr "இணைத்தல்…"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:189
+msgid "Connected"
+msgstr "இணைக்கப்பட்டுள்ளது"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:191
+msgid "Disconnected"
+msgstr "துண்டிக்கப்பட்டது"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:202
+#: main/src/ui/notifier_freedesktop.vala:192
+msgid "Wrong password"
+msgstr "தவறான கடவுச்சொல்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:204
+#: main/src/ui/notifier_freedesktop.vala:195
+msgid "Invalid TLS certificate"
+msgstr "தவறான TLS சான்றிதழ்"
+
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:207
+#: main/src/windows/preferences_window/account_preferences_subpage.vala:209
+msgid "Error"
+msgstr "பிழை"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:15
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:27
+#: main/data/preferences_window/preferences_dialog.ui:11
+msgid "Accounts"
+msgstr "கணக்குகள்"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:28
+msgid "Disabled accounts"
+msgstr "முடக்கப்பட்ட கணக்குகள்"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:31
+#: main/src/windows/preferences_window/add_account_dialog.vala:81
+msgid "Add Account"
+msgstr "கணக்கைச் சேர்க்கவும்"
+
+#: main/src/windows/preferences_window/accounts_preferences_page.vala:71
+#: main/src/windows/preferences_window/encryption_preferences_page.vala:49
+#: main/src/ui/main_window.vala:160
 msgid "No active accounts"
+msgstr "செயலில் கணக்குகள் இல்லை"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:126
+msgid "Sign in"
+msgstr "விடுபதிகை"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:143
+#, c-format
+msgid "The server could not prove that it is %s."
+msgstr "சேவையகம் இது %s என்பதை நிரூபிக்க முடியவில்லை."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:145
+msgid "Its security certificate is not trusted by your operating system."
+msgstr "அதன் பாதுகாப்பு சான்றிதழ் உங்கள் இயக்க முறைமையால் நம்பப்படவில்லை."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:147
+msgid "Its security certificate is issued to another domain."
+msgstr "அதன் பாதுகாப்பு சான்றிதழ் மற்றொரு களத்திற்கு வழங்கப்படுகிறது."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:149
+msgid "Its security certificate will only become valid in the future."
+msgstr "அதன் பாதுகாப்பு சான்றிதழ் எதிர்காலத்தில் மட்டுமே செல்லுபடியாகும்."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:151
+msgid "Its security certificate is expired."
+msgstr "அதன் பாதுகாப்பு சான்றிதழ் காலாவதியாகிறது."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:159
+#: main/data/preferences_window/add_account_dialog.ui:111
+msgid "Create account"
+msgstr "கணக்கை உருவாக்கவும்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:178
+#, c-format
+msgid "You can now use the account %s."
+msgstr "நீங்கள் இப்போது %s கணக்கைப் பயன்படுத்தலாம்."
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:224
+msgid "Wrong username or password"
+msgstr "தவறான பயனர்பெயர் அல்லது கடவுச்சொல்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:227
+msgid "Something went wrong"
+msgstr "ஏதோ தவறு நடந்தது"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:248
+#: main/src/ui/add_conversation/conference_details_fragment.vala:183
+#: main/src/ui/notifier_gnotifications.vala:104
+#: main/src/ui/notifier_freedesktop.vala:188
+#, c-format
+msgid "Could not connect to %s"
+msgstr "%s உடன் இணைக்க முடியவில்லை"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:255
+#: main/src/windows/preferences_window/add_account_dialog.vala:265
+#: main/src/windows/preferences_window/add_account_dialog.vala:275
+#: main/src/windows/preferences_window/add_account_dialog.vala:359
+#: main/src/ui/add_conversation/conference_details_fragment.vala:186
+msgid "Invalid address"
+msgstr "தவறான முகவரி"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:293
+msgid "No response from server"
+msgstr "சேவையகத்திலிருந்து எந்த பதிலும் இல்லை"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:304
+#, c-format
+msgid "Register on %s"
+msgstr "%s இல் பதிவு செய்யுங்கள்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:307
+msgid "The server requires to sign up through a website"
+msgstr "சேவையகம் ஒரு வலைத்தளத்தின் மூலம் பதிவுபெற வேண்டும்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:309
+msgid "Open website"
+msgstr "திறந்த வலைத்தளம்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:321
+#: main/data/preferences_window/add_account_dialog.ui:294
+msgid "Register"
+msgstr "பதிவு செய்யுங்கள்"
+
+#: main/src/windows/preferences_window/add_account_dialog.vala:323
+#, c-format
+msgid "Check %s for information on how to sign up"
+msgstr "பதிவுபெறுவது எப்படி என்பது குறித்த தகவலுக்கு %s ஐ சரிபார்க்கவும்"
+
+#: main/src/windows/conversation_details.vala:76
+msgid "Block user"
+msgstr "தொகுதி பயனர்"
+
+#: main/src/windows/conversation_details.vala:76
+msgid "Block entire domain"
+msgstr "முழு களத்தைத் தடு"
+
+#: main/src/windows/conversation_details.vala:76
+msgid "Unblock"
+msgstr "தடை"
+
+#: main/src/windows/conversation_details.vala:93
+msgid "Pinned"
+msgstr "பின்"
+
+#: main/src/windows/conversation_details.vala:93
+msgid "Pin"
+msgstr "முள்"
+
+#: main/src/windows/conversation_details.vala:104
+msgid "Blocked"
+msgstr "தடுக்கப்பட்டது"
+
+#: main/src/windows/conversation_details.vala:108
+msgid "Domain blocked"
+msgstr "டொமைன் தடுக்கப்பட்டது"
+
+#: main/src/windows/conversation_details.vala:112
+msgid "Block"
+msgstr "தொகுதி"
+
+#: main/src/windows/conversation_details.vala:131
+#: main/src/windows/conversation_details.vala:132
+msgid "Mute"
+msgstr "முடக்கு"
+
+#: main/src/windows/conversation_details.vala:133
+msgid "Notifications enabled"
+msgstr "அறிவிப்புகள் இயக்கப்பட்டன"
+
+#: main/src/windows/conversation_details.vala:136
+msgid "Notifications for mentions"
+msgstr "குறிப்புகளுக்கான அறிவிப்புகள்"
+
+#: main/src/windows/conversation_details.vala:139
+#: main/src/windows/conversation_details.vala:140
+msgid "Muted"
+msgstr "முடக்கிய"
+
+#: main/src/windows/conversation_details.vala:141
+msgid "Notifications disabled"
+msgstr "அறிவிப்புகள் முடக்கப்பட்டன"
+
+#: main/src/windows/conversation_details.vala:196
+#: main/data/conversation_details.ui:156
+msgid "About"
+msgstr "பற்றி"
+
+#: main/src/windows/conversation_details.vala:199
+msgid "Settings"
+msgstr "அமைப்புகள்"
+
+#: main/src/windows/conversation_details.vala:222
+msgid "Room Configuration"
+msgstr "அறை உள்ளமைவு"
+
+#: main/src/windows/conversation_details.vala:238
+#: main/data/preferences_window/preferences_dialog.ui:18
+msgid "Encryption"
+msgstr "குறியாக்கம்"
+
+#: main/src/windows/conversation_details.vala:248
+#: main/src/ui/conversation_titlebar/occupants_entry.vala:14
+msgid "Members"
+msgstr "உறுப்பினர்கள்"
+
+#: main/src/view_model/conversation_details.vala:131
+#: main/src/ui/occupant_menu/list.vala:110
+msgid "Owner"
+msgstr "உரிமையாளர்"
+
+#: main/src/view_model/conversation_details.vala:132
+#: main/src/ui/occupant_menu/list.vala:112
+msgid "Admin"
+msgstr "நிர்வாகி"
+
+#: main/src/view_model/conversation_details.vala:133
+#: main/src/ui/occupant_menu/list.vala:114
+msgid "Member"
+msgstr "உறுப்பினர்"
+
+#: main/src/ui/file_send_overlay.vala:58
+msgid "The file exceeds the server's maximum upload size."
+msgstr "கோப்பு சேவையகத்தின் அதிகபட்ச பதிவேற்ற அளவை மீறுகிறது."
+
+#: main/src/ui/conversation_content/message_item_widget.vala:124
+#: main/src/ui/conversation_content_view/message_widget.vala:96
+msgid "Message too long"
+msgstr "செய்தி மிக நீளமானது"
+
+#: main/src/ui/conversation_content/message_item_widget.vala:150
+#: main/src/ui/conversation_content_view/message_widget.vala:166
+msgid "edited"
+msgstr "திருத்தப்பட்டது"
+
+#: main/src/ui/conversation_content/message_item_widget.vala:159
+#: main/src/ui/conversation_content_view/message_widget.vala:175
+msgid "pending…"
+msgstr "நிலுவையில் உள்ளது…"
+
+#: main/src/ui/conversation_content/message_item_widget.vala:172
+#: main/src/ui/conversation_content_view/message_widget.vala:190
+msgid "delivery failed"
+msgstr "டெலிவரி தோல்வியடைந்தது"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:85
+#: main/src/ui/chat_input/encryption_button.vala:26
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
+#: main/data/menu_encryption.ui:14
+msgid "Unencrypted"
+msgstr "மறைகுறியாக்கப்படாதது"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:101
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
+msgid "Unable to send message"
+msgstr "செய்தியை அனுப்ப முடியவில்லை"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:122
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
+#, no-c-format
+msgid "%x, %H∶%M"
+msgstr "%x, %h∶ %m"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:123
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
+#, no-c-format
+msgid "%x, %l∶%M %p"
+msgstr "%x, %l∶ %m %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:126
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
+#, no-c-format
+msgid "%b %d, %H∶%M"
+msgstr "%b %d, %h∶ %m"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:127
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
+#, no-c-format
+msgid "%b %d, %l∶%M %p"
+msgstr "%b %d, %l∶ %m %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:130
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:249
+#, no-c-format
+msgid "%a, %H∶%M"
+msgstr "%a, %h∶ %m"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:131
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
+#, no-c-format
+msgid "%a, %l∶%M %p"
+msgstr "%a, %l∶ %m %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:134
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:253
+#, no-c-format
+msgid "%H∶%M"
+msgstr "%H∶%m"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:135
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:348
+#: main/src/ui/conversation_content_view/call_widget.vala:175
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:254
+#, no-c-format
+msgid "%l∶%M %p"
+msgstr "%l∶ %m %p"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:139
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:351
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:258
+#, c-format
+msgid "%i min ago"
+msgid_plural "%i mins ago"
+msgstr[0] "%i நான் மணித்துளி"
+msgstr[1] "%i நான் நிமிடங்களுக்கு முன்பு"
+
+#: main/src/ui/conversation_content/conversation_content_model.vala:141
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:353
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
+msgid "Just now"
+msgstr "இப்போது"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:156
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:186
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:201
+#: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
+#: main/src/ui/util/helper.vala:81
+msgid "Me"
+msgstr "நான்"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:171
+#: main/src/ui/conversation_content_view/message_widget.vala:162
+msgid "Message deleted"
 msgstr ""
 
-#: main/src/ui/main_window.vala:209
-msgid "Manage accounts"
-msgstr ""
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:71
+msgid "Image sent"
+msgstr "படம் அனுப்பப்பட்டது"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:83
-msgid "Today"
-msgstr "இன்று"
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:192
+#: main/src/ui/notifier_gnotifications.vala:36
+#: main/src/ui/notifier_freedesktop.vala:71
+msgid "File sent"
+msgstr "கோப்பு அனுப்பப்பட்டது"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:89
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:338
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:73
+msgid "Image received"
+msgstr "படம் பெறப்பட்டது"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:194
+#: main/src/ui/notifier_gnotifications.vala:38
+#: main/src/ui/notifier_freedesktop.vala:73
+msgid "File received"
+msgstr "கோப்பு பெறப்பட்டது"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/conversation_content_view/call_widget.vala:168
+msgid "Outgoing call"
+msgstr "வெளிச்செல்லும் அழைப்பு"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:203
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
+#: main/src/ui/conversation_content_view/call_widget.vala:168
+msgid "Incoming call"
+msgstr "உள்வரும் அழைப்பு"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:340
+#: main/src/ui/widgets/date_separator.vala:37
+#, no-c-format
+msgid "%b %d"
+msgstr "%b %d"
+
+#: main/src/ui/conversation_selector/conversation_selector_row.vala:344
+#: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
 msgstr "நேற்று"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:96
-msgid "%a, %b %d"
-msgstr ""
+#: main/src/ui/occupant_menu/list.vala:116
+msgid "User"
+msgstr "பயனர்"
 
-#: main/src/ui/conversation_content_view/date_separator_populator.vala:98
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:334
+#: main/src/ui/occupant_menu/view.vala:27
+#: main/src/ui/occupant_menu/view.vala:145
+#: main/src/ui/call_window/call_window_controller.vala:151
+msgid "Invite"
+msgstr "அழைக்கவும்"
+
+#: main/src/ui/occupant_menu/view.vala:82
+msgid "Start private conversation"
+msgstr "தனிப்பட்ட உரையாடலைத் தொடங்கவும்"
+
+#: main/src/ui/occupant_menu/view.vala:90
+msgid "Kick"
+msgstr "கிக்"
+
+#: main/src/ui/occupant_menu/view.vala:96
+msgid "Grant write permission"
+msgstr "எழுத இசைவு வழங்கவும்"
+
+#: main/src/ui/occupant_menu/view.vala:102
+msgid "Revoke write permission"
+msgstr "எழுதும் இசைவு ரத்து"
+
+#: main/src/ui/occupant_menu/view.vala:144
+msgid "Invite to Conference"
+msgstr "மாநாட்டிற்கு அழைக்கவும்"
+
+#: main/src/ui/conversation_view_controller.vala:200
+msgid "Select file"
+msgstr "கோப்பைத் தேர்ந்தெடு"
+
+#: main/src/ui/util/helper.vala:65
+#, c-format
+msgid "%s from %s"
+msgstr "%s இலிருந்து %s"
+
+#: main/src/ui/util/data_forms.vala:31
+msgid "Name of the room"
+msgstr "அறையின் பெயர்"
+
+#: main/src/ui/util/data_forms.vala:34
+msgid "Description of the room"
+msgstr "அறையின் விளக்கம்"
+
+#: main/src/ui/util/data_forms.vala:37
+msgid "Persistent"
+msgstr "விடாமுயற்சி"
+
+#: main/src/ui/util/data_forms.vala:38
+msgid "The room will persist after the last occupant leaves"
+msgstr "கடைசி குடியிருப்பாளர் வெளியேறிய பிறகு அறை நீடிக்கும்"
+
+#: main/src/ui/util/data_forms.vala:41
+msgid "Publicly searchable"
+msgstr "பகிரங்கமாக தேடக்கூடியது"
+
+#: main/src/ui/util/data_forms.vala:44
+msgid "Occupants may change the subject"
+msgstr "குடியிருப்பாளர்கள் இந்த விசயத்தை மாற்றலாம்"
+
+#: main/src/ui/util/data_forms.vala:47
+msgid "Permission to view JIDs"
+msgstr "குழந்தைகளைப் பார்க்க இசைவு"
+
+#: main/src/ui/util/data_forms.vala:48
+msgid "Who is allowed to view the occupants' JIDs?"
+msgstr "குடியிருப்பாளர்களின் குழந்தைகளைப் பார்க்க யார் அனுமதிக்கப்படுகிறார்கள்?"
+
+#: main/src/ui/util/data_forms.vala:51
+#: main/data/preferences_window/account_preferences_subpage.ui:82
+#: main/data/add_conversation/conference_details_fragment.ui:162
+#: main/data/add_conversation/add_groupchat_dialog.ui:122
+msgid "Password"
+msgstr "கடவுச்சொல்"
+
+#: main/src/ui/util/data_forms.vala:55
+msgid "Moderated"
+msgstr "மிதமான"
+
+#: main/src/ui/util/data_forms.vala:56
+msgid "Only occupants with voice may send messages"
+msgstr "குரல் கொண்ட குடியிருப்பாளர்கள் மட்டுமே செய்திகளை அனுப்பக்கூடும்"
+
+#: main/src/ui/util/data_forms.vala:59
+msgid "Members only"
+msgstr "உறுப்பினர்கள் மட்டுமே"
+
+#: main/src/ui/util/data_forms.vala:60
+msgid "Only members may enter the room"
+msgstr "உறுப்பினர்கள் மட்டுமே அறைக்குள் நுழையலாம்"
+
+#: main/src/ui/chat_input/chat_input_controller.vala:217
+msgid "This conference does not allow you to send messages."
+msgstr "இந்த மாநாடு செய்திகளை அனுப்ப உங்களை அனுமதிக்காது."
+
+#: main/src/ui/chat_input/chat_input_controller.vala:217
+msgid "Request permission"
+msgstr "இசைவு கோருங்கள்"
+
+#: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
+#: main/data/file_send_overlay.ui:5
+msgid "Send a file"
+msgstr "ஒரு கோப்பை அனுப்பவும்"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:13
+msgid "Start call"
+msgstr "அழைப்பைத் தொடங்குங்கள்"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:24
+msgid "Audio call"
+msgstr "ஆடியோ அழைப்பு"
+
+#: main/src/ui/conversation_titlebar/call_entry.vala:25
+msgid "Video call"
+msgstr "வீடியோ அழைப்பு"
+
+#: main/src/ui/conversation_titlebar/search_entry.vala:12
+#: main/data/gtk/help-overlay.ui:43
+msgid "Search messages"
+msgstr "தேடல் செய்திகளைத் தேடுகிறது"
+
+#: main/src/ui/conversation_titlebar/menu_entry.vala:20
+msgid "Conversation Details"
+msgstr "உரையாடல் விவரங்கள்"
+
+#: main/src/ui/conversation_titlebar/menu_entry.vala:21
+msgid "Close Conversation"
+msgstr "உரையாடலை மூடு"
+
+#: main/src/ui/call_window/participant_widget.vala:115
+msgid "Debug information"
+msgstr "பிழைத்திருத்த செய்தி"
+
+#: main/src/ui/call_window/participant_widget.vala:124
+#: main/src/ui/conversation_content_view/call_widget.vala:152
+msgid "Calling…"
+msgstr "அழைப்பு…"
+
+#: main/src/ui/call_window/participant_widget.vala:126
+msgid "Ringing…"
+msgstr "ரிங்கிங்…"
+
+#: main/src/ui/call_window/call_window.vala:207
+#, c-format
+msgid "%s ended the call"
+msgstr "%s அழைப்பை முடித்தன"
+
+#: main/src/ui/call_window/call_window.vala:209
+#, c-format
+msgid "%s declined the call"
+msgstr "%s அழைப்பை மறுத்துவிட்டது"
+
+#: main/src/ui/call_window/video_settings_popover.vala:25
+msgid "Cameras"
+msgstr "கேமராக்கள்"
+
+#: main/src/ui/call_window/video_settings_popover.vala:28
+msgid "No camera found."
+msgstr "கேமரா எதுவும் கிடைக்கவில்லை."
+
+#: main/src/ui/call_window/audio_settings_popover.vala:29
+msgid "Microphones"
+msgstr "மைக்ரோஃபோன்கள்"
+
+#: main/src/ui/call_window/audio_settings_popover.vala:32
+msgid "No microphone found."
+msgstr "மைக்ரோஃபோன் இல்லை."
+
+#: main/src/ui/call_window/audio_settings_popover.vala:85
+msgid "Speakers"
+msgstr "பேச்சாளர்கள்"
+
+#: main/src/ui/call_window/audio_settings_popover.vala:88
+msgid "No speaker found."
+msgstr "பேச்சாளர் எதுவும் கிடைக்கவில்லை."
+
+#: main/src/ui/call_window/call_window_controller.vala:150
+msgid "Invite to Call"
+msgstr "அழைக்க அழைக்கவும்"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:89
+#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/data/menu_add.ui:7
+msgid "Start Conversation"
+msgstr "உரையாடலைத் தொடங்குங்கள்"
+
+#: main/src/ui/add_conversation/select_contact_dialog.vala:90
+msgid "Start"
+msgstr "தொடங்கு"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:25
+#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/data/menu_add.ui:11
+msgid "Join Channel"
+msgstr "சேனலில் சேரவும்"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:45
+#: main/data/preferences_window/add_account_dialog.ui:246
+msgid "Next"
+msgstr "அடுத்தது"
+
+#: main/src/ui/add_conversation/add_conference_dialog.vala:60
+#: main/src/ui/add_conversation/conference_details_fragment.vala:151
+#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+msgid "Join"
+msgstr "சேர"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:143
+msgid "Joining…"
+msgstr "இணைத்தல்…"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:164
+msgid "Password required to enter room"
+msgstr "அறைக்குள் நுழைய கடவுச்சொல் தேவை"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:169
+msgid "Banned from joining or creating conference"
+msgstr "மாநாட்டில் சேர அல்லது உருவாக்க தடை விதிக்கப்பட்டது"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:171
+msgid "Room does not exist"
+msgstr "அறை இல்லை"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:173
+msgid "Not allowed to create room"
+msgstr "அறையை உருவாக்க அனுமதிக்கப்படவில்லை"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:175
+msgid "Members-only room"
+msgstr "உறுப்பினர்கள் மட்டுமே அறை"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:178
+msgid "Choose a different nick"
+msgstr "வேறு நிக் தேர்வு செய்யவும்"
+
+#: main/src/ui/add_conversation/conference_details_fragment.vala:180
+msgid "Too many occupants in room"
+msgstr "அறையில் அதிகமான குடியிருப்பாளர்கள்"
+
+#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
+#: main/data/add_conversation/add_contact_dialog.ui:18
+msgid "Add"
+msgstr "கூட்டு"
+
+#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+msgid "About Dino"
+msgstr "டினோ பற்றி"
+
+#: main/src/ui/widgets/date_separator.vala:22
+msgid "Today"
+msgstr "இன்று"
+
+#: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
-msgid "%b %d"
-msgstr ""
+msgid "%a, %b %d"
+msgstr "%a, %b %d"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:46
+#: main/src/ui/global_search.vala:181
 #, c-format
-msgid "Downloading %s…"
-msgstr "%s பதிவிறக்கப்படுகிறது…"
+msgid "%i search result"
+msgid_plural "%i search results"
+msgstr[0] "%i நான் முடிவைத் தேடுகிறேன்"
+msgstr[1] "%i நான் முடிவுகளைத் தேடுகிறேன்"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:52
+#: main/src/ui/global_search.vala:208
 #, c-format
-msgid "%s offered: %s"
-msgstr ""
+msgid "In %s"
+msgstr "%s இல்"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:54
+#: main/src/ui/global_search.vala:208
 #, c-format
-msgid "File offered: %s"
+msgid "With %s"
+msgstr "%s உடன்"
+
+#: main/src/ui/notifier_gnotifications.vala:70
+#: main/src/ui/notifier_freedesktop.vala:114
+#: main/src/ui/conversation_content_view/call_widget.vala:137
+msgid "Incoming video call"
+msgstr "உள்வரும் வீடியோ அழைப்பு"
+
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
+msgid "Incoming video group call"
+msgstr "உள்வரும் வீடியோ குழு அழைப்பு"
+
+#: main/src/ui/notifier_gnotifications.vala:72
+#: main/src/ui/notifier_freedesktop.vala:116
+#: main/src/ui/conversation_content_view/call_widget.vala:139
+msgid "Incoming group call"
+msgstr "உள்வரும் குழு அழைப்பு"
+
+#: main/src/ui/notifier_gnotifications.vala:80
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
+msgid "Reject"
+msgstr "நிராகரிக்கவும்"
+
+#: main/src/ui/notifier_gnotifications.vala:81
+#: main/src/ui/notifier_gnotifications.vala:97
+#: main/src/ui/notifier_gnotifications.vala:134
+#: main/src/ui/notifier_gnotifications.vala:150
+#: main/src/ui/notifier_freedesktop.vala:125
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:230
+#: main/src/ui/notifier_freedesktop.vala:264
+#: main/src/ui/conversation_content_view/subscription_notification.vala:67
+#: main/data/call_widget.ui:81
+msgid "Accept"
+msgstr "ஏற்றுக்கொள்"
+
+#: main/src/ui/notifier_gnotifications.vala:91
+#: main/src/ui/notifier_freedesktop.vala:157
+msgid "Subscription request"
+msgstr "சந்தா கோரிக்கை"
+
+#: main/src/ui/notifier_gnotifications.vala:98
+#: main/src/ui/notifier_gnotifications.vala:133
+#: main/src/ui/notifier_gnotifications.vala:149
+#: main/src/ui/notifier_freedesktop.vala:164
+#: main/src/ui/notifier_freedesktop.vala:264
+#: main/src/ui/conversation_content_view/subscription_notification.vala:68
+msgid "Deny"
+msgstr "மறுக்கவும்"
+
+#: main/src/ui/notifier_gnotifications.vala:123
+#: main/src/ui/notifier_freedesktop.vala:220
+#, c-format
+msgid "Invitation to %s"
+msgstr "%s க்கு அழைப்பு"
+
+#: main/src/ui/notifier_gnotifications.vala:124
+#: main/src/ui/notifier_freedesktop.vala:221
+#, c-format
+msgid "%s invited you to %s"
+msgstr "%s உங்களை %s அழைத்தன"
+
+#: main/src/ui/notifier_gnotifications.vala:141
+#: main/src/ui/notifier_freedesktop.vala:254
+msgid "Permission request"
+msgstr "இசைவு கோரிக்கை"
+
+#: main/src/ui/notifier_gnotifications.vala:142
+#: main/src/ui/notifier_freedesktop.vala:255
+#, c-format
+msgid "%s requests the permission to write in %s"
+msgstr "%s இல் எழுத இசைவு கோருகிறது %s"
+
+#: main/src/ui/contact_details/settings_provider.vala:21
+#: main/src/ui/contact_details/settings_provider.vala:24
+#: main/src/ui/contact_details/settings_provider.vala:31
+#: main/src/ui/contact_details/settings_provider.vala:34
+msgid "On"
+msgstr "ஆன்"
+
+#: main/src/ui/contact_details/settings_provider.vala:21
+#: main/src/ui/contact_details/settings_provider.vala:25
+#: main/src/ui/contact_details/settings_provider.vala:31
+#: main/src/ui/contact_details/settings_provider.vala:35
+msgid "Off"
+msgstr "அணை"
+
+#: main/src/ui/contact_details/settings_provider.vala:22
+msgid "Send typing notifications"
+msgstr "தட்டச்சு அறிவிப்புகளை அனுப்பவும்"
+
+#: main/src/ui/contact_details/settings_provider.vala:23
+#: main/src/ui/contact_details/settings_provider.vala:33
+#, c-format
+msgid "Default: %s"
+msgstr "இயல்புநிலை: %s"
+
+#: main/src/ui/contact_details/settings_provider.vala:32
+msgid "Send read receipts"
+msgstr "வாசிப்பு ரசீதுகளை அனுப்பவும்"
+
+#: main/src/ui/contact_details/permissions_provider.vala:23
+msgid "Request permission to send messages"
+msgstr "செய்திகளை அனுப்ப இசைவு கோருங்கள்"
+
+#: main/src/ui/contact_details/permissions_provider.vala:24
+msgid "Request"
+msgstr "கோரிக்கை"
+
+#: main/src/ui/main_window.vala:151
+msgid "Welcome to Dino!"
+msgstr "டினோவுக்கு வருக!"
+
+#: main/src/ui/main_window.vala:152
+msgid "Sign in or create an account to get started."
+msgstr "தொடங்குவதற்கு உள்நுழைக அல்லது ஒரு கணக்கை உருவாக்கவும்."
+
+#: main/src/ui/main_window.vala:153
+msgid "Set up account"
+msgstr "கணக்கை அமைக்கவும்"
+
+#: main/src/ui/main_window.vala:161
+msgid "Manage accounts"
+msgstr "கணக்குகளை நிர்வகிக்கவும்"
+
+#: main/src/ui/conversation_details.vala:143
+#: main/data/preferences_window/account_preferences_subpage.ui:68
+msgid "XMPP Address"
+msgstr "எக்ச்எம்பிபி முகவரி"
+
+#: main/src/ui/conversation_details.vala:148
+msgid "Display name"
+msgstr "காட்சி பெயர்"
+
+#: main/src/ui/conversation_details.vala:168
+#: main/src/ui/conversation_details.vala:182
+msgid "Topic"
+msgstr "தலைப்பு"
+
+#: main/src/ui/conversation_content_view/message_widget.vala:238
+msgid "Edit message"
+msgstr "செய்தியைத் திருத்தவும்"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:82
+msgid "More actions"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:56
-msgid "File offered"
-msgstr ""
+#: main/src/ui/conversation_content_view/reactions_widget.vala:102
+msgid "You"
+msgstr "நீங்கள்"
 
-#: main/src/ui/conversation_content_view/file_default_widget.vala:62
-msgid "File transfer failed"
-msgstr ""
+#: main/src/ui/conversation_content_view/reactions_widget.vala:128
+#: main/src/ui/conversation_content_view/item_actions.vala:9
+msgid "Add reaction"
+msgstr "எதிர்வினை சேர்க்கவும்"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:110
-#, fuzzy, c-format
+#: main/src/ui/conversation_content_view/file_image_widget.vala:42
+#: main/src/ui/conversation_content_view/file_default_widget.vala:65
+msgid "Open"
+msgstr "திற"
+
+#: main/src/ui/conversation_content_view/file_image_widget.vala:43
+#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_default_widget.vala:66
+msgid "Save as…"
+msgstr "சேமிக்கவும்…"
+
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:108
+#, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr ""
+msgstr "%s, %s மற்றும் %i மற்றவர்கள் தட்டச்சு செய்கிறார்கள்…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:112
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
 msgstr "%s, %s, %s தட்டச்சிடுகின்றனர்…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:114
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
 msgstr "%s, %s தட்டச்சிடுகின்றனர்…"
 
-#: main/src/ui/conversation_content_view/chat_state_populator.vala:116
+#: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
 msgstr "%s தட்டச்சிடுகின்றார்…"
 
-#: main/src/ui/conversation_content_view/message_widget.vala:158
-msgid "Message too long"
+#: main/src/ui/conversation_content_view/call_widget.vala:159
+msgid "Call started"
+msgstr "அழைப்பு தொடங்கியது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:161
+#, c-format
+msgid "Started %s ago"
+msgstr "%s முன்பு தொடங்கியது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:169
+msgid "You handled this call on another device"
+msgstr "இந்த அழைப்பை மற்றொரு சாதனத்தில் கையாண்டீர்கள்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:174
+msgid "Call ended"
+msgstr "அழைப்பு முடிந்தது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:177
+#, c-format
+msgid "Ended at %s"
+msgstr "%s இல் முடிந்தது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:179
+#, c-format
+msgid "Lasted %s"
+msgstr "நீடித்த %s"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:183
+msgid "Call missed"
+msgstr "அழைப்பு தவறவிட்டது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:185
+msgid "You missed this call"
+msgstr "இந்த அழைப்பை நீங்கள் தவறவிட்டீர்கள்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:188
+#, c-format
+msgid "%s missed this call"
+msgstr "%s இந்த அழைப்பை தவறவிட்டார்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:193
+msgid "Call declined"
+msgstr "அழைப்பு மறுக்கப்பட்டது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:195
+msgid "You declined this call"
+msgstr "இந்த அழைப்பை நீங்கள் மறுத்துவிட்டீர்கள்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:198
+#, c-format
+msgid "%s declined this call"
+msgstr "%s இந்த அழைப்பை மறுத்துவிட்டன"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:203
+msgid "Call failed"
+msgstr "அழைப்பு தோல்வியடைந்தது"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:227
+#, c-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i நான் மணி"
+msgstr[1] "%i நான் மணிநேரம்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:234
+#, c-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i நான் மணித்துளி"
+msgstr[1] "%i நான் நிமிடங்கள்"
+
+#: main/src/ui/conversation_content_view/call_widget.vala:241
+msgid "a few seconds"
+msgstr "சில வினாடிகள்"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
+msgid "Delivered"
+msgstr "வழங்கப்பட்டது"
+
+#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
+msgid "Read"
+msgstr "படிக்க"
+
+#: main/src/ui/conversation_content_view/subscription_notification.vala:49
+msgid "Send request"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/message_widget.vala:186
-msgid "edited"
+#: main/src/ui/conversation_content_view/subscription_notification.vala:60
+msgid "You do not receive status updates from this contact yet."
 msgstr ""
 
-#: main/src/ui/conversation_content_view/subscription_notification.vala:37
-#: main/src/ui/notifications.vala:106 main/src/ui/notifications.vala:141
-#: main/src/ui/notifications.vala:162
-msgid "Accept"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/subscription_notification.vala:38
-#: main/src/ui/notifications.vala:107 main/src/ui/notifications.vala:140
-#: main/src/ui/notifications.vala:161
-msgid "Deny"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/subscription_notification.vala:48
+#: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
+msgstr "இந்த தொடர்பு உங்களை அவர்களின் தொடர்பு பட்டியலில் சேர்க்க விரும்புகிறது"
+
+#: main/src/ui/conversation_content_view/item_actions.vala:21
+msgid "This conversation does not support reactions."
+msgstr "இந்த உரையாடல் எதிர்வினைகளை ஆதரிக்காது."
+
+#: main/src/ui/conversation_content_view/item_actions.vala:34
+msgid "Reply"
+msgstr "பதில்"
+
+#: main/src/ui/conversation_content_view/item_actions.vala:44
+msgid "This conversation does not support replies."
+msgstr "இந்த உரையாடல் பதில்களை ஆதரிக்கவில்லை."
+
+#: main/src/ui/conversation_content_view/item_actions.vala:61
+#: main/src/ui/conversation_content_view/item_actions.vala:64
+msgid "Delete message"
 msgstr ""
 
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:167
-#: main/data/menu_encryption.ui:14
-msgid "Unencrypted"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:203
-msgid "Unable to send message"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:262
-#, no-c-format
-msgid "%x, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:263
-#, no-c-format
-msgid "%x, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:266
-#, no-c-format
-msgid "%b %d, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:267
-#, no-c-format
-msgid "%b %d, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:270
-#, no-c-format
-msgid "%a, %H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:271
-#, no-c-format
-msgid "%a, %l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:274
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:341
-#, no-c-format
-msgid "%H∶%M"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:275
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:342
-#, no-c-format
-msgid "%l∶%M %p"
-msgstr ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:279
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:345
+#: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
-msgid "%i min ago"
-msgid_plural "%i mins ago"
-msgstr[0] ""
-msgstr[1] ""
-
-#: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:281
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:347
-msgid "Just now"
+msgid "Downloading %s… (%u%%)"
 msgstr ""
 
-#: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "Image sent"
-msgstr ""
-
-#: main/src/ui/notifications.vala:67
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:196
-msgid "File sent"
-msgstr ""
-
-#: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "Image received"
-msgstr ""
-
-#: main/src/ui/notifications.vala:69
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:198
-msgid "File received"
-msgstr ""
-
-#: main/src/ui/notifications.vala:99
-msgid "Subscription request"
-msgstr ""
-
-#: main/src/ui/notifications.vala:113
-#: main/src/ui/manage_accounts/add_account_dialog.vala:258
-#: main/src/ui/add_conversation/conference_details_fragment.vala:189
+#: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
-msgid "Could not connect to %s"
-msgstr ""
+msgid "Downloading %s…"
+msgstr "%s பதிவிறக்கப்படுகிறது…"
 
-#: main/src/ui/notifications.vala:129
+#: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
-msgid "Invitation to %s"
+msgid "Uploading %s… (%u%%)"
 msgstr ""
 
-#: main/src/ui/notifications.vala:130
+#: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
-msgid "%s invited you to %s"
-msgstr ""
+msgid "%s offered: %s"
+msgstr "%s வழங்கப்படுகின்றன: %s"
 
-#: main/src/ui/notifications.vala:151
-msgid "Permission request"
-msgstr ""
-
-#: main/src/ui/notifications.vala:152
+#: main/src/ui/conversation_content_view/file_default_widget.vala:97
 #, c-format
-msgid "%s requests the permission to write in %s"
-msgstr ""
+msgid "File offered: %s"
+msgstr "கோப்பு வழங்கப்படுகிறது: %s"
 
-#: main/src/ui/manage_accounts/dialog.vala:125
-#, c-format
-msgid "Remove account %s?"
-msgstr ""
+#: main/src/ui/conversation_content_view/file_default_widget.vala:99
+msgid "File offered"
+msgstr "கோப்பு வழங்கப்படுகிறது"
 
-#: main/src/ui/manage_accounts/dialog.vala:128
-msgid "Remove"
-msgstr ""
+#: main/src/ui/conversation_content_view/file_default_widget.vala:105
+msgid "File transfer failed"
+msgstr "கோப்பு பரிமாற்றம் தோல்வியடைந்தது"
 
-#: main/src/ui/manage_accounts/dialog.vala:152
-msgid "Select avatar"
-msgstr ""
+#: main/src/ui/conversation_content_view/quote_widget.vala:34
+msgid "File"
+msgstr "கோப்பு"
 
-#: main/src/ui/manage_accounts/dialog.vala:152
-#: main/src/ui/conversation_view_controller.vala:205
-msgid "Select"
-msgstr ""
+#: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
+msgid "New"
+msgstr "புதிய"
 
-#: main/src/ui/manage_accounts/dialog.vala:152 main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:15
-#: main/src/ui/add_conversation/add_conference_dialog.vala:122
-#: main/src/ui/add_conversation/select_contact_dialog.vala:38
-#: main/src/ui/conversation_view_controller.vala:205
-#: main/data/message_item_widget_edit_mode.ui:54
-#: main/data/add_conversation/add_groupchat_dialog.ui:11
-#: main/data/add_conversation/add_contact_dialog.ui:12
-msgid "Cancel"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:159
-msgid "Images"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:163
-msgid "All files"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:219
-msgid "Connecting…"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:221
-msgid "Connected"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:223
-msgid "Disconnected"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:232
-msgid "Wrong password"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:234
-msgid "Invalid TLS certificate"
-msgstr ""
-
-#: main/src/ui/manage_accounts/dialog.vala:237
-#: main/src/ui/manage_accounts/dialog.vala:239
-msgid "Error"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:82
-msgid "Add Account"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:166
-#, c-format
-msgid "Sign in to %s"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:210
-#, c-format
-msgid "You can now use the account %s."
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:263
-#: main/src/ui/manage_accounts/add_account_dialog.vala:296
-#: main/src/ui/manage_accounts/add_account_dialog.vala:306
-#: main/src/ui/manage_accounts/add_account_dialog.vala:382
-#: main/src/ui/add_conversation/conference_details_fragment.vala:192
-msgid "Invalid address"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:278
-msgid "Wrong username or password"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:281
-msgid "Something went wrong"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:321
-msgid "No response from server"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:327
-#, c-format
-msgid "Register on %s"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:330
-msgid "The server requires to sign up through a website"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:332
-msgid "Open website"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:344
-msgid "Register"
-msgstr ""
-
-#: main/src/ui/manage_accounts/add_account_dialog.vala:346
-#, c-format
-msgid "Check %s for information on how to sign up"
-msgstr ""
-
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:165
-#: main/src/ui/conversation_selector/conversation_selector_row.vala:190
-#: main/src/ui/util/helper.vala:137 main/src/ui/util/helper.vala:152
-msgid "Me"
-msgstr ""
-
-#: main/src/ui/chat_input/chat_input_controller.vala:177
-msgid "This conference does not allow you to send messages."
-msgstr ""
-
-#: main/src/ui/chat_input/chat_input_controller.vala:177
-msgid "Request permission"
-msgstr ""
-
-#: main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:26
-#: main/data/menu_add.ui:13 main/data/shortcuts.ui:24
-msgid "Join Channel"
-msgstr ""
-
-#: main/src/ui/application.vala:200
-#: main/src/ui/add_conversation/add_conference_dialog.vala:66
-#: main/src/ui/add_conversation/add_conference_dialog.vala:142
-#: main/src/ui/add_conversation/conference_details_fragment.vala:157
-msgid "Join"
-msgstr ""
-
-#: main/src/ui/util/helper.vala:127
-#, c-format
-msgid "%s from %s"
-msgstr ""
-
-#: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
-#: main/data/add_conversation/add_contact_dialog.ui:24
-msgid "Add"
-msgstr ""
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:47
-#: main/src/ui/add_conversation/add_conference_dialog.vala:118
-#: main/data/manage_accounts/add_account_dialog.ui:99
-#: main/data/manage_accounts/add_account_dialog.ui:410
-#: main/data/manage_accounts/add_account_dialog.ui:490
-msgid "Next"
-msgstr ""
-
-#: main/src/ui/add_conversation/add_conference_dialog.vala:147
-#: main/data/manage_accounts/add_account_dialog.ui:175
-#: main/data/manage_accounts/add_account_dialog.ui:267
-msgid "Back"
-msgstr ""
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:97
-#: main/data/conversation_list_titlebar_csd.ui:12
-#: main/data/conversation_list_titlebar.ui:16 main/data/menu_add.ui:7
-#: main/data/shortcuts.ui:17
-msgid "Start Conversation"
-msgstr ""
-
-#: main/src/ui/add_conversation/select_contact_dialog.vala:98
-msgid "Start"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:149
-msgid "Joining…"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:170
-msgid "Password required to enter room"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:175
-msgid "Banned from joining or creating conference"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:177
-msgid "Room does not exist"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:179
-msgid "Not allowed to create room"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:181
-msgid "Members-only room"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:184
-msgid "Choose a different nick"
-msgstr ""
-
-#: main/src/ui/add_conversation/conference_details_fragment.vala:186
-msgid "Too many occupants in room"
-msgstr ""
-
-#: main/src/ui/occupant_menu/list.vala:105
-msgid "Owner"
-msgstr ""
-
-#: main/src/ui/occupant_menu/list.vala:107
-msgid "Admin"
-msgstr ""
-
-#: main/src/ui/occupant_menu/list.vala:109
-msgid "Member"
-msgstr ""
-
-#: main/src/ui/occupant_menu/list.vala:111
-msgid "User"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:40
-#: main/src/ui/occupant_menu/view.vala:49
-msgid "Invite"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:48
-msgid "Invite to Conference"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:94
-msgid "Start private conversation"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:102
-msgid "Kick"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:108
-msgid "Grant write permission"
-msgstr ""
-
-#: main/src/ui/occupant_menu/view.vala:114
-msgid "Revoke write permission"
-msgstr ""
-
-#: main/src/ui/global_search.vala:140
-#, c-format
-msgid "%i search result"
-msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
-
-#: main/src/ui/global_search.vala:167
-#, c-format
-msgid "In %s"
-msgstr ""
-
-#: main/src/ui/global_search.vala:167
-#, c-format
-msgid "With %s"
-msgstr ""
-
-#: main/src/ui/conversation_view_controller.vala:205
-msgid "Select file"
-msgstr ""
-
-#: main/src/ui/contact_details/dialog.vala:37
-msgid "Conference Details"
-msgstr ""
-
-#: main/src/ui/contact_details/dialog.vala:37 main/data/menu_conversation.ui:7
+#: main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr ""
+msgstr "தொடர்பு விவரங்கள்"
 
-#: main/src/ui/contact_details/muc_config_form_provider.vala:50
-msgid "Name of the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:53
-msgid "Description of the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:56
-msgid "Persistent"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:57
-msgid "The room will persist after the last occupant leaves"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:60
-msgid "Publicly searchable"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:63
-msgid "Occupants may change the subject"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:66
-msgid "Permission to view JIDs"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:67
-msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:70
-#: main/data/manage_accounts/dialog.ui:170
-#: main/data/manage_accounts/add_account_dialog.ui:211
-#: main/data/add_conversation/conference_details_fragment.ui:175
-#: main/data/add_conversation/add_groupchat_dialog.ui:147
-msgid "Password"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:71
-msgid "A password to restrict access to the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:74
-msgid "Moderated"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:75
-msgid "Only occupants with voice may send messages"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:78
-msgid "Members only"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:79
-msgid "Only members may enter the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:82
-msgid "Message history"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:83
-msgid "Maximum amount of backlog issued by the room"
-msgstr ""
-
-#: main/src/ui/contact_details/muc_config_form_provider.vala:89
-msgid "Room Configuration"
-msgstr ""
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-#: main/src/ui/contact_details/settings_provider.vala:12
-#: main/data/settings_dialog.ui:7 main/data/menu_app.ui:11
-msgid "Settings"
-msgstr ""
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Block"
-msgstr ""
-
-#: main/src/ui/contact_details/blocking_provider.vala:31
-msgid "Communication and status updates in either direction are blocked"
-msgstr ""
-
-#: main/src/ui/contact_details/permissions_provider.vala:23
-msgid "Request"
-msgstr ""
-
-#: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Permissions"
-msgstr ""
-
-#: main/src/ui/contact_details/permissions_provider.vala:25
-msgid "Request permission to send messages"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:13
-msgid "Local Settings"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:28
-#: main/data/settings_dialog.ui:22
-msgid "Send typing notifications"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:33
-#: main/data/settings_dialog.ui:34
-msgid "Send read receipts"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:38
-#: main/src/ui/contact_details/settings_provider.vala:47
-msgid "Notifications"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:83
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:125
-msgid "On"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:85
-#: main/src/ui/contact_details/settings_provider.vala:123
-#: main/src/ui/contact_details/settings_provider.vala:126
-msgid "Off"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:87
-msgid "Only when mentioned"
-msgstr ""
-
-#: main/src/ui/contact_details/settings_provider.vala:89
-#: main/src/ui/contact_details/settings_provider.vala:124
-#, c-format
-msgid "Default: %s"
-msgstr ""
-
-#: main/src/ui/conversation_titlebar/search_entry.vala:11
-#: main/data/shortcuts.ui:37
-msgid "Search messages"
-msgstr ""
-
-#: main/src/ui/conversation_titlebar/occupants_entry.vala:37
-msgid "Members"
-msgstr ""
-
-#: main/data/chat_input.ui:22 main/data/file_send_overlay.ui:28
-#: main/data/shortcuts.ui:44
-msgid "Send a file"
-msgstr ""
-
-#: main/data/message_item_widget_edit_mode.ui:60
+#: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
+msgstr "செய்தியைப் புதுப்பிக்கவும்"
+
+#: main/data/preferences_window/add_account_dialog.ui:92
+msgid "Login"
 msgstr ""
 
-#: main/data/settings_dialog.ui:46
-msgid "Notify when a new message arrives"
-msgstr ""
-
-#: main/data/settings_dialog.ui:58
-msgid "Convert smileys to emojis"
-msgstr ""
-
-#: main/data/manage_accounts/dialog.ui:9 main/data/menu_app.ui:7
-msgid "Accounts"
-msgstr ""
-
-#: main/data/manage_accounts/dialog.ui:200
-msgid "Local alias"
-msgstr ""
-
-#: main/data/manage_accounts/dialog.ui:255
-msgid "No accounts configured"
-msgstr ""
-
-#: main/data/manage_accounts/dialog.ui:266
-msgid "Add an account"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:31
-msgid "Sign in"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:78
-#: main/data/manage_accounts/add_account_dialog.ui:328
-msgid "Create account"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:153
+#: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "பாதுகாப்பான இணைப்பை நிறுவ முடியவில்லை"
 
-#: main/data/manage_accounts/add_account_dialog.ui:288
-msgid "Connect"
-msgstr ""
+#: main/data/preferences_window/add_account_dialog.ui:165
+msgid "Back"
+msgstr "பின்"
 
-#: main/data/manage_accounts/add_account_dialog.ui:340
+#: main/data/preferences_window/add_account_dialog.ui:183
 msgid "Choose a public server"
-msgstr ""
+msgstr "பொது சேவையகத்தைத் தேர்வுசெய்க"
 
-#: main/data/manage_accounts/add_account_dialog.ui:369
+#: main/data/preferences_window/add_account_dialog.ui:207
 msgid "Or specify a server address"
-msgstr ""
+msgstr "அல்லது சேவையக முகவரியைக் குறிப்பிடவும்"
 
-#: main/data/manage_accounts/add_account_dialog.ui:389
+#: main/data/preferences_window/add_account_dialog.ui:225
 msgid "Sign in instead"
-msgstr ""
+msgstr "அதற்கு பதிலாக உள்நுழைக"
 
-#: main/data/manage_accounts/add_account_dialog.ui:470
-msgid "Pick another server"
-msgstr ""
-
-#: main/data/manage_accounts/add_account_dialog.ui:542
+#: main/data/preferences_window/add_account_dialog.ui:330
 msgid "All set up!"
-msgstr ""
+msgstr "அனைத்தும் அமைக்கப்பட்டன!"
 
-#: main/data/manage_accounts/add_account_dialog.ui:578
+#: main/data/preferences_window/add_account_dialog.ui:359
 msgid "Finish"
+msgstr "முடிக்க"
+
+#: main/data/preferences_window/general_preferences_page.ui:9
+msgid "Send _Typing Notifications"
+msgstr "தட்டச்சு அறிவிப்புகளை அனுப்பவும்"
+
+#: main/data/preferences_window/general_preferences_page.ui:15
+msgid "Send _Read Receipts"
+msgstr "வாசிப்பு ரசீதுகளை அனுப்பவும்"
+
+#: main/data/preferences_window/general_preferences_page.ui:25
+msgid "_Notifications"
+msgstr "_ குறிப்புகள்"
+
+#: main/data/preferences_window/general_preferences_page.ui:26
+msgid "Notify when a new message arrives"
+msgstr "ஒரு புதிய செய்தி வரும்போது அறிவிக்கவும்"
+
+#: main/data/preferences_window/general_preferences_page.ui:36
+msgid "_Convert Smileys to Emoji"
+msgstr "_ ச்மைல்களை ஈமோசிக்கு மாற்றவும்"
+
+#: main/data/preferences_window/account_preferences_subpage.ui:77
+msgid "Local alias"
+msgstr "உள்ளக மாற்றுப்பெயர்"
+
+#: main/data/preferences_window/account_preferences_subpage.ui:104
+msgid "Connection status"
+msgstr "இணைப்பு நிலை"
+
+#: main/data/preferences_window/account_preferences_subpage.ui:134
+msgid "Remove account"
+msgstr "கணக்கை அகற்று"
+
+#: main/data/preferences_window/change_password_dialog.ui:5
+msgid "Change password"
 msgstr ""
 
-#: main/data/menu_app.ui:17
-msgid "Keyboard Shortcuts"
+#: main/data/preferences_window/change_password_dialog.ui:34
+msgid "Change"
 msgstr ""
 
-#: main/data/menu_app.ui:21
-msgid "About Dino"
+#: main/data/preferences_window/change_password_dialog.ui:61
+msgid "Current password"
 msgstr ""
 
-#: main/data/im.dino.Dino.appdata.xml.in:8
-msgid "Modern XMPP Chat Client"
+#: main/data/preferences_window/change_password_dialog.ui:66
+msgid "New password"
 msgstr ""
+
+#: main/data/preferences_window/change_password_dialog.ui:71
+msgid "Confirm password"
+msgstr ""
+
+#: main/data/preferences_window/preferences_dialog.ui:25
+#: main/data/gtk/help-overlay.ui:10
+msgid "General"
+msgstr "பொது"
+
+#: main/data/gtk/help-overlay.ui:26
+msgid "Show preferences"
+msgstr ""
+
+#: main/data/gtk/help-overlay.ui:32
+msgid "Keyboard shortcuts"
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
+
+#: main/data/gtk/help-overlay.ui:39
+msgid "Conversation"
+msgstr "உரையாடல்"
+
+#: main/data/gtk/help-overlay.ui:55
+msgid "Close conversation"
+msgstr ""
+
+#: main/data/gtk/help-overlay.ui:62
+msgid "Navigation"
+msgstr "வானோடல்"
+
+#: main/data/gtk/help-overlay.ui:66
+msgid "Jump to next conversation"
+msgstr "அடுத்த உரையாடலுக்கு செல்லவும்"
+
+#: main/data/gtk/help-overlay.ui:72
+msgid "Jump to previous conversation"
+msgstr "முந்தைய உரையாடலுக்கு செல்லவும்"
+
+#: main/data/add_conversation/conference_details_fragment.ui:20
+#: main/data/add_conversation/add_groupchat_dialog.ui:40
+#: main/data/add_conversation/add_contact_dialog.ui:40
+msgid "Account"
+msgstr "கணக்கு"
+
+#: main/data/add_conversation/conference_details_fragment.ui:114
+#: main/data/add_conversation/add_groupchat_dialog.ui:101
+msgid "Nick"
+msgstr "நிக்"
+
+#: main/data/add_conversation/add_groupchat_dialog.ui:144
+#: main/data/add_conversation/add_contact_dialog.ui:81
+msgid "Alias"
+msgstr "மாற்றுப்பெயர்"
+
+#: main/data/add_conversation/add_contact_dialog.ui:5
+msgid "Add Contact"
+msgstr "தொடர்பைச் சேர்க்கவும்"
+
+#: main/data/im.dino.Dino.appdata.xml.in:6
+msgid "Modern XMPP chat client"
+msgstr "நவீன எக்ச்எம்பிபி அரட்டை வாங்கி"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -759,6 +1230,9 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"டினோ டெச்க்டாப்பிற்கான நவீன திறந்த மூல அரட்டை வாங்கி ஆகும். இது உங்கள் தனியுரிமையை "
+"மனதில் கொண்டிருக்கும்போது தூய்மையான மற்றும் நம்பகமான சாபர்/எக்ச்எம்பிபி அனுபவத்தை "
+"வழங்குவதில் கவனம் செலுத்துகிறது."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -766,77 +1240,66 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
+"இது OMEMO மற்றும் OpenPGP உடன் இறுதி முதல் இறுதி குறியாக்கத்தை ஆதரிக்கிறது மற்றும் "
+"தனியுரிமை தொடர்பான அம்சங்களான வாசிப்பு ரசீதுகள் மற்றும் தட்டச்சு அறிவிப்புகள் போன்றவற்றை "
+"உள்ளமைக்க அனுமதிக்கிறது."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
+"டினோ சேவையகத்திலிருந்து வரலாற்றைப் பெறுகிறது மற்றும் பிற சாதனங்களுடன் செய்திகளை "
+"ஒத்திசைக்கிறது."
 
-#: main/data/add_conversation/conference_details_fragment.ui:19
-#: main/data/add_conversation/add_groupchat_dialog.ui:49
-#: main/data/add_conversation/add_contact_dialog.ui:49
-msgid "Account"
-msgstr ""
-
-#: main/data/add_conversation/conference_details_fragment.ui:123
-#: main/data/add_conversation/add_groupchat_dialog.ui:120
-msgid "Nick"
-msgstr ""
-
-#: main/data/add_conversation/add_groupchat_dialog.ui:175
-#: main/data/add_conversation/add_contact_dialog.ui:102
-msgid "Alias"
-msgstr ""
-
-#: main/data/add_conversation/add_contact_dialog.ui:8
-msgid "Add Contact"
-msgstr ""
-
-#: main/data/file_send_overlay.ui:80
-msgid "Send"
-msgstr ""
-
-#: main/data/shortcuts.ui:12
-msgid "General"
-msgstr ""
-
-#: main/data/shortcuts.ui:32
-msgid "Conversation"
-msgstr ""
-
-#: main/data/shortcuts.ui:52
-msgid "Navigation"
-msgstr ""
-
-#: main/data/shortcuts.ui:57
-msgid "Jump to next conversation"
-msgstr ""
-
-#: main/data/shortcuts.ui:64
-msgid "Jump to previous conversation"
-msgstr ""
-
-#: main/data/global_search.ui:37
-msgid "No active search"
-msgstr ""
-
-#: main/data/global_search.ui:52
-msgid "Type to start a search"
-msgstr ""
-
-#: main/data/global_search.ui:85
-msgid "No matching messages"
-msgstr ""
-
-#: main/data/global_search.ui:100
-msgid "Check the spelling or try to remove filters"
-msgstr ""
-
-#: main/data/unified_main_content.ui:48
-msgid "Click here to start a conversation or join a channel."
-msgstr ""
-
-#: main/data/unified_main_content.ui:100
+#: main/data/main_window.ui:89
 msgid "You have no open chats"
-msgstr ""
+msgstr "உங்களிடம் திறந்த அரட்டைகள் இல்லை"
+
+#: main/data/main_window.ui:90
+msgid "Click + to start a chat or join a channel"
+msgstr "அரட்டையைத் தொடங்க + அல்லது சேனலில் சேர + சொடுக்கு செய்க"
+
+#: main/data/global_search.ui:27
+msgid "No active search"
+msgstr "செயலில் தேடல் இல்லை"
+
+#: main/data/global_search.ui:28
+msgid "Type to start a search"
+msgstr "தேடலைத் தொடங்க தட்டச்சு செய்க"
+
+#: main/data/global_search.ui:42
+msgid "No matching messages"
+msgstr "பொருந்தக்கூடிய செய்திகள் இல்லை"
+
+#: main/data/global_search.ui:43
+msgid "Check the spelling or try to remove filters"
+msgstr "எழுத்துப்பிழை சரிபார்க்கவும் அல்லது வடிப்பான்களை அகற்ற முயற்சிக்கவும்"
+
+#: main/data/file_send_overlay.ui:41
+msgid "Send"
+msgstr "அனுப்பு"
+
+#: main/data/menu_app.ui:7
+msgid "Preferences"
+msgstr "விருப்பத்தேர்வுகள்"
+
+#: main/data/menu_app.ui:11
+msgid "Keyboard Shortcuts"
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
+
+#~ msgid "Remove"
+#~ msgstr "அகற்று"
+
+#, c-format
+#~ msgid "Sign in to %s"
+#~ msgstr "%s இல் உள்நுழைக"
+
+#~ msgid "No accounts configured"
+#~ msgstr "கணக்குகள் எதுவும் கட்டமைக்கப்படவில்லை"
+
+#~ msgid "Add an account"
+#~ msgstr "ஒரு கணக்கைச் சேர்க்கவும்"
+
+#~ msgid "Pick another server"
+#~ msgstr "மற்றொரு சேவையகத்தைத் தேர்ந்தெடுங்கள்"

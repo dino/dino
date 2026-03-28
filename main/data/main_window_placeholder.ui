@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+    <requires lib="gtk" version="4.0"/>
+    <template class="DinoUiMainWindowPlaceholder">
+        <child>
+            <object class="GtkBox" id="box">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <child>
+                    <object class="GtkHeaderBar">
+                        <property name="show-title-buttons">true</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <child>
+                            <object class="AdwStatusPage" id="status_page">
+                                <property name="icon-name">im.dino.Dino-symbolic</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="primary_button">
+                                <property name="halign">center</property>
+                                <property name="visible">False</property>
+                                <style>
+                                    <class name="text-button"/>
+                                    <class name="suggested-action"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="secondary_button">
+                                <property name="visible">0</property>
+                                <property name="halign">center</property>
+                                <property name="visible">False</property>
+                                <style>
+                                    <class name="text-button"/>
+                                </style>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </template>
+</interface>

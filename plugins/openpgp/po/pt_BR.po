@@ -7,46 +7,54 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-01-16 00:21+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-04-12 07:32+0000\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.11-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "Publicação da chave desativada"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "Erro no GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "Nenhuma chave disponível. Gere uma!"
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "Selecionar chave"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "Carregando…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Consultando GnuPG"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr "Anunciar chave"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Erro no GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Nenhuma chave disponível. Gere uma!"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr "Desativado"
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "A chave não está no chaveiro"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Criptografia"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "Impressão digital"
+
+#~ msgid "Encryption"
+#~ msgstr "Criptografia"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Publicação da chave desativada"
+
+#~ msgid "Select key"
+#~ msgstr "Selecionar chave"
+
+#~ msgid "Loading…"
+#~ msgstr "Carregando…"

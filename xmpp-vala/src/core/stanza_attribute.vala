@@ -51,7 +51,7 @@ public class StanzaAttribute : StanzaEntry {
         }
     }
 
-    public string to_xml(NamespaceState? state_ = null) throws XmlError {
+    public string to_xml(NamespaceState? state_ = null) {
         NamespaceState state = state_ ?? new NamespaceState();
         if (ns_uri == state.current_ns_uri || (ns_uri == XMLNS_URI && name == "xmlns")) {
             return printf(ATTRIBUTE_XML_NO_NS_FORMAT, true);
@@ -60,7 +60,7 @@ public class StanzaAttribute : StanzaEntry {
         }
     }
 
-    public string to_ansi_xml(NamespaceState? state_ = null) throws XmlError {
+    public string to_ansi_xml(NamespaceState? state_ = null) {
         NamespaceState state = state_ ?? new NamespaceState();
         if (ns_uri == state.current_ns_uri || (ns_uri == XMLNS_URI && name == "xmlns")) {
             return printf(ATTRIBUTE_XML_ANSI_NO_NS_FORMAT, true);

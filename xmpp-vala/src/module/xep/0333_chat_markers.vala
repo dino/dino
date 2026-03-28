@@ -59,7 +59,7 @@ public class Module : XmppStreamModule {
 
 public class SendPipelineListener : StanzaListener<MessageStanza> {
 
-    private const string[] after_actions_const = {};
+    private string[] after_actions_const = {};
 
     public override string action_group { get { return "ADD_NODES"; } }
     public override string[] after_actions { get { return after_actions_const; } }

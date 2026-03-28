@@ -37,7 +37,7 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
     }
 
     private void init_state() {
-
+        if (current_conversation == null) return;
         if (current_conversation.type_ == Conversation.Type.GROUPCHAT_PM) return;
 
         var qry = db.identity_meta.select()
@@ -69,6 +69,8 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
                 selection.append(")");
                 qry.where(selection.str, selection_args);
                 break;
+            case Conversation.Type.GROUPCHAT_PM:
+                break;
         }
 
         foreach (Row row in qry) {
@@ -92,6 +94,7 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
         foreach (BadMessageItem bad_item in bad_items) {
             item_collection.remove_item(bad_item);
         }
+        bad_items.clear();
     }
 
     public void init(Conversation conversation, Plugins.ConversationItemCollection item_collection, Plugins.WidgetType type) {
@@ -101,7 +104,9 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
         init_state();
     }
 
-    public void close(Conversation conversation) { }
+    public void close(Conversation conversation) {
+        clear_state();
+    }
 
     public void populate_timespan(Conversation conversation, DateTime after, DateTime before) { }
 }
@@ -110,7 +115,6 @@ public class BadMessageItem : Plugins.MetaConversationItem {
 
     private Plugin plugin;
     private Conversation conversation;
-    private DateTime date;
     private Jid problem_jid;
     private BadnessType badness_type;
 
@@ -118,12 +122,11 @@ public class BadMessageItem : Plugins.MetaConversationItem {
         this.plugin = plugin;
         this.conversation = conversation;
         this.problem_jid = jid;
-        this.date = date;
-        this.sort_time = date;
+        this.time = date;
         this.badness_type = badness_type;
     }
 
-    public override Object? get_widget(Plugins.WidgetType widget_type) {
+    public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType widget_type) {
         return new BadMessagesWidget(plugin, conversation, problem_jid, badness_type);
     }
 
@@ -131,15 +134,26 @@ public class BadMessageItem : Plugins.MetaConversationItem {
 }
 
 public class BadMessagesWidget : Box {
+    private Plugin plugin;
+    private Conversation conversation;
+    private Jid jid;
+    private Label label;
+
     public BadMessagesWidget(Plugin plugin, Conversation conversation, Jid jid, BadnessType badness_type) {
         Object(orientation:Orientation.HORIZONTAL, spacing:5);
 
+        this.plugin = plugin;
+        this.conversation = conversation;
+        this.jid = jid;
         this.halign = Align.CENTER;
         this.visible = true;
 
-        var sb = new StringBuilder();
-        string who = "Your contact";
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+        string who = "";
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            who = Dino.get_participant_display_name(plugin.app.stream_interactor, conversation, jid);
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            who = jid.to_string();
+            // `jid` is a real JID. In MUCs, try to show nicks instead (given that the JID is currently online)
             var occupants = plugin.app.stream_interactor.get_module(MucManager.IDENTITY).get_occupants(conversation.counterpart, conversation.account);
             if (occupants == null) return;
             foreach (Jid occupant in occupants) {
@@ -148,25 +162,36 @@ public class BadMessagesWidget : Box {
                 }
             }
         }
+
+        string warning_text = "";
         if (badness_type == BadnessType.UNTRUSTED) {
-            sb.append("%s has been using an untrusted device. You won't see messages from devices that you do not trust.".printf(who));
-            sb.append(" <a href=\"\">%s</a>".printf("Manage devices"));
+            warning_text = _("%s has been using an untrusted device. You won't see messages from devices that you do not trust.").printf(who) +
+                    " <a href=\"\">%s</a>".printf(_("Manage devices"));
         } else {
-            sb.append("%s does not trust this device. That means, you might be missing messages.".printf(who));
+            warning_text += _("%s does not trust this device. That means, you might be missing messages.").printf(who);
         }
-        Label label = new Label(sb.str) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true, visible=true };
-        label.get_style_context().add_class("dim-label");
-        this.add(label);
+        label = new Label(warning_text) { margin_start=70, margin_end=70, justify=Justification.CENTER, use_markup=true, selectable=true, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
+        label.add_css_class("dim-label");
+        this.append(label);
 
-        label.activate_link.connect(() => {
-            if (badness_type == BadnessType.UNTRUSTED) {
-                ContactDetailsDialog dialog = new ContactDetailsDialog(plugin, conversation.account, jid);
-                dialog.set_transient_for((Window) get_toplevel());
-                dialog.present();
-            }
+        if (badness_type == BadnessType.UNTRUSTED) {
+            label.activate_link.connect(on_label_activate_link);
+        }
+    }
 
-            return false;
-        });
+    private bool on_label_activate_link() {
+        var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("encryption")});
+        GLib.Application.get_default().activate_action("open-conversation-details", variant);
+        return false;
+    }
+
+    public override void dispose() {
+        if (label != null) {
+            label.unparent();
+            label.dispose();
+            label = null;
+        }
+        base.dispose();
     }
 }
 

@@ -1,0 +1,11 @@
+Nice cheader_filename="nice.h"
+Address.to_string.dst type="char[]"
+Agent.new_reliable#constructor name="create_reliable"
+Agent.attach_recv skip=false
+Agent.send.buf type="uint8[]" array_length_idx=2
+AgentRecvFunc.buf type="uint8[]" array_length_idx=3
+PseudoTcpCallbacks#record skip
+PseudoTcpSocket#class skip
+
+# Not yet supported by vapigen
+# Candidate copy_function="nice_candidate_copy" free_function="nice_candidate_free" type_id=""

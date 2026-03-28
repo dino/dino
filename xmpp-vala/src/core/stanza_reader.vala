@@ -6,15 +6,6 @@ public const string XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 public const string XML_URI = "http://www.w3.org/XML/1998/namespace";
 public const string JABBER_URI = "jabber:client";
 
-public errordomain XmlError {
-    NS_DICT_ERROR,
-    UNSUPPORTED,
-    EOF,
-    BAD_XML,
-    IO,
-    TLS
-}
-
 public class StanzaReader {
     private static int BUFFER_MAX = 4096;
 
@@ -22,7 +13,7 @@ public class StanzaReader {
     private uint8[] buffer;
     private int buffer_fill = 0;
     private int buffer_pos = 0;
-    private Cancellable cancellable = new Cancellable();
+    private Cancellable? cancellable;
 
     private NamespaceState ns_state = new NamespaceState();
 
@@ -35,36 +26,33 @@ public class StanzaReader {
         this.for_buffer(s.data);
     }
 
-    public StanzaReader.for_stream(InputStream input) {
+    public StanzaReader.for_stream(InputStream input, Cancellable? cancellable = null) {
         this.input = input;
+        this.cancellable = cancellable;
         buffer = new uint8[BUFFER_MAX];
     }
 
-    public void cancel() {
-        cancellable.cancel();
-    }
-
-    private async void update_buffer() throws XmlError {
+    private async void update_buffer() throws IOError {
+        InputStream? input = this.input;
+        if (input == null) throw new IOError.CLOSED("No input stream specified and end of buffer reached.");
+        if (cancellable != null && cancellable.is_cancelled()) throw new IOError.CANCELLED("Input stream is canceled.");
         try {
-            InputStream? input = this.input;
-            if (input == null) throw new XmlError.EOF("No input stream specified and end of buffer reached.");
-            if (cancellable.is_cancelled()) throw new XmlError.EOF("Input stream is canceled.");
             buffer_fill = (int) yield ((!)input).read_async(buffer, GLib.Priority.DEFAULT, cancellable);
-            if (buffer_fill == 0) throw new XmlError.EOF("End of input stream reached.");
-            buffer_pos = 0;
-        } catch (GLib.IOError e) {
-            throw new XmlError.IO("GLib.IOError: %s".printf(e.message));
+        } catch (TlsError.EOF e) {
+            throw new IOError.CLOSED("End of TLS stream reached");
         }
+        if (buffer_fill == 0) throw new IOError.CLOSED("End of input stream reached.");
+        buffer_pos = 0;
     }
 
-    private async char read_single() throws XmlError {
+    private async char read_single() throws IOError {
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
         }
         return (char) buffer[buffer_pos++];
     }
 
-    private async char peek_single() throws XmlError {
+    private async char peek_single() throws IOError {
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
         }
@@ -79,7 +67,7 @@ public class StanzaReader {
         buffer_pos++;
     }
 
-    private async void skip_until_non_ws() throws XmlError {
+    private async void skip_until_non_ws() throws IOError {
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
         }
@@ -91,7 +79,7 @@ public class StanzaReader {
         }
     }
 
-    private async string read_until_ws() throws XmlError {
+    private async string read_until_ws() throws IOError {
         var res = new StringBuilder();
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
@@ -105,7 +93,7 @@ public class StanzaReader {
         return res.str;
     }
 
-    private async string read_until_char_or_ws(char x, char y = 0) throws XmlError {
+    private async string read_until_char_or_ws(char x, char y = 0) throws IOError {
         var res = new StringBuilder();
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
@@ -119,7 +107,7 @@ public class StanzaReader {
         return res.str;
     }
 
-    private async string read_until_char(char x) throws XmlError {
+    private async string read_until_char(char x) throws IOError {
         var res = new StringBuilder();
         if (buffer_pos >= buffer_fill) {
             yield update_buffer();
@@ -133,7 +121,7 @@ public class StanzaReader {
         return res.str;
     }
 
-    private async StanzaAttribute read_attribute() throws XmlError {
+    private async StanzaAttribute read_attribute() throws IOError {
         var res = new StanzaAttribute();
         res.name = yield read_until_char_or_ws('=');
         if ((yield read_single()) == '=') {
@@ -149,7 +137,7 @@ public class StanzaReader {
         return res;
     }
 
-    private void handle_entry_ns(StanzaEntry entry, string default_uri = ns_state.current_ns_uri) throws XmlError {
+    private void handle_entry_ns(StanzaEntry entry, string default_uri = ns_state.current_ns_uri) throws IOError {
         if (entry.ns_uri != null) return;
         if (entry.name.contains(":")) {
             var split = entry.name.split(":");
@@ -160,7 +148,7 @@ public class StanzaReader {
         }
     }
 
-    private void handle_stanza_ns(StanzaNode res) throws XmlError {
+    private void handle_stanza_ns(StanzaNode res) throws IOError {
         foreach (StanzaAttribute attr in res.attributes) {
             if (attr.name == "xmlns" && attr.val != null) {
                 attr.ns_uri = XMLNS_URI;
@@ -180,7 +168,7 @@ public class StanzaReader {
         }
     }
 
-    public async StanzaNode read_node_start() throws XmlError {
+    public async StanzaNode read_node_start() throws IOError {
         var res = new StanzaNode();
         res.attributes = new ArrayList<StanzaAttribute>();
         var eof = false;
@@ -217,7 +205,7 @@ public class StanzaReader {
         return res;
     }
 
-    public async StanzaNode read_text_node() throws XmlError {
+    public async StanzaNode read_text_node() throws IOError {
         var res = new StanzaNode();
         res.name = "#text";
         res.ns_uri = ns_state.current_ns_uri;
@@ -225,7 +213,7 @@ public class StanzaReader {
         return res;
     }
 
-    public async StanzaNode read_root_node() throws XmlError {
+    public async StanzaNode read_root_node() throws IOError {
         yield skip_until_non_ws();
         if ((yield peek_single()) == '<') {
             var res = yield read_node_start();
@@ -234,11 +222,11 @@ public class StanzaReader {
             }
             return res;
         } else {
-            throw new XmlError.BAD_XML("Content before root node");
+            throw new IOError.INVALID_DATA("XML: Content before root node");
         }
     }
 
-    public async StanzaNode read_stanza_node() throws XmlError {
+    public async StanzaNode read_stanza_node() throws IOError {
         try {
             ns_state = ns_state.push();
             var res = yield read_node_start();
@@ -255,11 +243,11 @@ public class StanzaReader {
                             skip_single();
                             if (desc.contains(":")) {
                                 var split = desc.split(":");
-                                if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new XmlError.BAD_XML("");
-                                if (split[1] != res.name) throw new XmlError.BAD_XML("");
+                                if (split[0] != ns_state.find_name((!)res.ns_uri)) throw new IOError.INVALID_DATA("XML: Closing namespace prefix mismatch");
+                                if (split[1] != res.name) throw new IOError.INVALID_DATA("XML: Closing element name mismatch");
                             } else {
-                                if (ns_state.current_ns_uri != res.ns_uri) throw new XmlError.BAD_XML("");
-                                if (desc != res.name) throw new XmlError.BAD_XML("");
+                                if (ns_state.current_ns_uri != res.ns_uri) throw new IOError.INVALID_DATA("XML: Closing element namespace mismatch");
+                                if (desc != res.name) throw new IOError.INVALID_DATA("XML: Closing element name mismatch");
                             }
                             finish_node_seen = true;
                         } else {
@@ -277,15 +265,15 @@ public class StanzaReader {
             }
             ns_state = ns_state.pop();
             return res;
-        } catch (XmlError e) {
+        } catch (IOError.INVALID_DATA e) {
             uint8[] buffer_cpy = new uint8[buffer.length + 1];
             Memory.copy(buffer_cpy, buffer, buffer.length);
-            warning("XmlError at: %s".printf((string)buffer_cpy) + "\n");
+            warning("invalid data at: %s".printf((string)buffer_cpy) + "\n");
             throw e;
         }
     }
 
-    public async StanzaNode read_node() throws XmlError {
+    public async StanzaNode read_node() throws IOError {
         yield skip_until_non_ws();
         if ((yield peek_single()) == '<') {
             return yield read_stanza_node();

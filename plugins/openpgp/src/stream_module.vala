@@ -136,7 +136,7 @@ namespace Dino.Plugins.OpenPgp {
 
 public class ReceivedPipelineDecryptListener : StanzaListener<MessageStanza> {
 
-    private const string[] after_actions_const = {"MODIFY_BODY"};
+    private string[] after_actions_const = {"MODIFY_BODY"};
 
     public override string action_group { get { return "ENCRYPT_BODY"; } }
     public override string[] after_actions { get { return after_actions_const; } }

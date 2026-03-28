@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-05-17 17:21+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-04-13 20:01+0000\n"
 "Language-Team: French <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/fr/>\n"
 "Language: fr\n"
@@ -16,38 +16,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.1-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "La publication des clefs est désactivée"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "Erreur dans GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "Aucune clef n’est disponible. Générez en une !"
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "Choix d’une clé"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "Chargement…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Interrogation de GnuPG"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr "Annoncer la clé"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Erreur dans GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Aucune clé n’est disponible. Générez-en une !"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr "Désactivé"
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "La clé n’est pas dans le trousseau"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Chiffrement"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "Empreinte"
+
+#~ msgid "Encryption"
+#~ msgstr "Chiffrement"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "La publication des clés est désactivée"
+
+#~ msgid "Select key"
+#~ msgstr "Choix d’une clé"
+
+#~ msgid "Loading…"
+#~ msgstr "Chargement…"

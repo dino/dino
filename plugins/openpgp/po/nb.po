@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
 "PO-Revision-Date: 2017-11-18 00:23+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-openpgp/nb/>\n"
@@ -18,39 +18,47 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.18-dev\n"
 
-#: plugins/openpgp/src/account_settings_widget.vala:60
-#: plugins/openpgp/src/account_settings_widget.vala:64
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Key publishing disabled"
-msgstr "Nøkkelpublisering avskrudd"
-
-#: plugins/openpgp/src/account_settings_widget.vala:60
-msgid "Error in GnuPG"
-msgstr "Feil i GnuPG"
-
-#: plugins/openpgp/src/account_settings_widget.vala:64
-msgid "No keys available. Generate one!"
-msgstr "Ingen nøkler tilgjengelige. Generer én."
-
-#: plugins/openpgp/src/account_settings_widget.vala:93
-msgid "Select key"
-msgstr "Velg nøkkel"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
-msgid "Loading…"
-msgstr "Laster…"
-
-#: plugins/openpgp/src/account_settings_widget.vala:106
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
 msgstr "Sender spørring til GnuPG"
 
-#: plugins/openpgp/src/contact_details_provider.vala:28
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Feil i GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Ingen nøkler tilgjengelige. Generer én."
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
 msgstr "Nøkkelen finnes ikke i nøkkelknippet"
 
-#: plugins/openpgp/src/contact_details_provider.vala:30
-msgid "Encryption"
-msgstr "Kryptering"
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Encryption"
+#~ msgstr "Kryptering"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Nøkkelpublisering avskrudd"
+
+#~ msgid "Select key"
+#~ msgstr "Velg nøkkel"
+
+#~ msgid "Loading…"
+#~ msgstr "Laster…"
 
 #~ msgid "OpenPGP"
 #~ msgstr "OpenPGP"

@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2022-02-04 09:55+0000\n"
+"Language-Team: none\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11-dev\n"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "Αναζήτηση στο GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Σφάλμα στο GnuPG"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Δεν υπάρχουν διαθέσιμα κλειδιά. Δημιουργήστε ένα!"
+
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: plugins/openpgp/src/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Το κλειδί δεν είναι στο keychain"
+
+#: plugins/openpgp/src/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Encryption"
+#~ msgstr "Κρυπτογράφηση"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Η δημοσίευση του κλειδιού είναι απενεργοποιημένη"
+
+#~ msgid "Select key"
+#~ msgstr "Επιλέξτε κλειδί"
+
+#~ msgid "Loading…"
+#~ msgstr "Φόρτωση…"

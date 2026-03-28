@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-01 22:50+0200\n"
-"PO-Revision-Date: 2020-04-15 00:11+0000\n"
+"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"PO-Revision-Date: 2025-04-10 11:50+0000\n"
 "Language-Team: Romanian <https://hosted.weblate.org/projects/dino/plugin-"
 "omemo/ro/>\n"
 "Language: ro\n"
@@ -17,13 +17,195 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Weblate 4.0-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s a utilizat un dispozitiv care nu este de încredere. Nu veți vedea mesaje "
+"de pe dispozitive în care nu aveți încredere."
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Gestionare dispozitive"
+
+#: plugins/omemo/src/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s nu are încredere în acest dispozitiv. Asta înseamnă că s-ar putea să-ți "
+"lipsească mesaje."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Gestionare cheie"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Comparați amprenta, caracter cu caracter, cu amprenta afișată pe "
+"dispozitivul contactului."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Amprentele diferă"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Amprentele se potrivesc"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:38
+#: plugins/omemo/src/ui/manage_key_dialog.vala:81
+#: plugins/omemo/src/ui/manage_key_dialog.vala:87
+msgid "Cancel"
+msgstr "Anulare"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "Confirmare"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Verificare cheie"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Mesajele viitoare trimise de %s de pe dispozitivul care utilizează această "
+"cheie vor fi evidențiate în mod corespunzător în fereastra de chat."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Amprentele nu se potrivesc"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Vă rugäm să verificați dacă se compară amprentele corecte. Dacă nu se "
+"potrivesc amprentele s-ar putea ca %s să aibä un cont compromis și ar trebui "
+"să luați în considerare respingerea acestei chei."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "Verificare amprentă cheie"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Comparați amprenta cheii cu amprenta afișată pe dispozitivul contactului."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+#: plugins/omemo/src/ui/manage_key_dialog.vala:151
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
+msgid "Reject key"
+msgstr "Respingere cheie"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Blocați comunicarea criptată cu dispozitivul persoanei de contact care "
+"utilizează această cheie."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+#: plugins/omemo/src/ui/manage_key_dialog.vala:159
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
+msgid "Accept key"
+msgstr "Acceptare cheie"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Permiteți comunicarea criptată cu dispozitivul persoanei de contact care "
+"utilizează această cheie."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "Cheia este în prezent %s."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "acceptată"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:131
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Aceasta înseamnă că poate fi utilizată de %s pentru a primi și a trimite "
+"mesaje criptate."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "verificată"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr ""
+"În plus, a fost verificată că se potrivește cu cheia de pe dispozitivul "
+"contactului."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "respinsă"
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Aceasta înseamnă că nu poate fi utilizată de %s pentru a vă descifra "
+"mesajele și nu veți vedea mesajele criptate cu aceasta."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Nu veți vedea mesaje criptate de la dispozitivul %s care utilizează această "
+"cheie. În schimb, dispozitivul respectiv nu va mai putea descifra mesajele "
+"dumneavoastră."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Veți putea schimba mesaje criptate cu dispozitivul %s care utilizează "
+"această cheie."
+
+#: plugins/omemo/src/ui/manage_key_dialog.vala:166
+msgid "Back"
+msgstr "Înapoi"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
 msgstr "Gestionare"
 
-#: plugins/omemo/src/ui/device_notification_populator.vala:83
+#: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
 msgstr "Acest contact are dispozitive noi"
 
@@ -36,240 +218,113 @@ msgstr "Este necesara luarea unei decizii în privința OMEMO"
 msgid "Did you add a new device for account %s?"
 msgstr "Ați adăugat un nou dispozitiv pentru contul %s?"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:35
-msgid "Manage Key"
-msgstr "Gestionare cheie"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr "OMEMO activat implicit"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:36
-msgid ""
-"Compare the fingerprint, character by character, with the one shown on your "
-"contact's device."
-msgstr ""
-"Comparați amprenta, caracter cu caracter, cu amprenta afișată pe "
-"dispozitivul contactului."
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Activează criptarea OMEMO pentru conversațiile noi"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:37
-msgid "Fingerprints differ"
-msgstr "Amprentele diferă"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Criptează pentru dispozitive noi"
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:38
-msgid "Fingerprints match"
-msgstr "Amprentele se potrivesc"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Criptează automat pentru dispozitivele noi ale acestui contact."
 
-#: plugins/omemo/src/ui/manage_key_dialog.vala:39
-#: plugins/omemo/src/ui/manage_key_dialog.vala:82
-#: plugins/omemo/src/ui/manage_key_dialog.vala:88
-msgid "Cancel"
-msgstr "Anulare"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:40
-msgid "Confirm"
-msgstr "Confirmare"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:60
-msgid "Verify key"
-msgstr "Verificare cheie"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:61
-#, c-format
-msgid ""
-"Future messages sent by %s from the device that uses this key will be "
-"highlighted accordingly in the chat window."
-msgstr ""
-"Mesajele viitoare trimise de %s de pe dispozitivul care utilizează această "
-"cheie vor fi evidențiate în mod corespunzător în fereastra de chat."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:71
-msgid "Fingerprints do not match"
-msgstr "Amprentele nu se potrivesc"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:72
-#, c-format
-msgid ""
-"Please verify that you are comparing the correct fingerprint. If "
-"fingerprints do not match, %s's account may be compromised and you should "
-"consider rejecting this key."
-msgstr ""
-"Vă rugäm să verificați dacă se compară amprentele corecte. Dacă nu se "
-"potrivesc amprentele s-ar putea ca %s să aibä un cont compromis și ar trebui "
-"să luați în considerare respingerea acestei chei."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
-msgid "Verify key fingerprint"
-msgstr "Verificare amprentă cheie"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:124
-msgid ""
-"Compare this key's fingerprint with the fingerprint displayed on the "
-"contact's device."
-msgstr ""
-"Comparați amprenta cheii cu amprenta afișată pe dispozitivul contactului."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
-#: plugins/omemo/src/ui/manage_key_dialog.vala:152
-#: plugins/omemo/src/ui/contact_details_dialog.vala:256
-msgid "Reject key"
-msgstr "Respingere cheie"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:126
-msgid ""
-"Block encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Blocați comunicarea criptată cu dispozitivul persoanei de contact care "
-"utilizează această cheie."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
-#: plugins/omemo/src/ui/manage_key_dialog.vala:160
-#: plugins/omemo/src/ui/contact_details_dialog.vala:251
-msgid "Accept key"
-msgstr "Acceptare cheie"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:128
-msgid ""
-"Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Permiteți comunicarea criptată cu dispozitivul persoanei de contact care "
-"utilizează această cheie."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
-#, c-format
-msgid "This key is currently %s."
-msgstr "Cheia este în prezent %s."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-msgid "accepted"
-msgstr "acceptată"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:132
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-#, c-format
-msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr ""
-"Aceasta înseamnă că poate fi utilizată de %s pentru a primi și a trimite "
-"mesaje criptate."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-msgid "verified"
-msgstr "verificată"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:137
-msgid ""
-"Additionally it has been verified to match the key on the contact's device."
-msgstr ""
-"În plus, a fost verificată că se potrivește cu cheia de pe dispozitivul "
-"contactului."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
-msgid "rejected"
-msgstr "respinsă"
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:141
-#, c-format
-msgid ""
-"This means it cannot be used by %s to decipher your messages, and you won't "
-"see messages encrypted with it."
-msgstr ""
-"Aceasta înseamnă că nu poate fi utilizată de %s pentru a vă descifra "
-"mesajele și nu veți vedea mesajele criptate cu aceasta."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:153
-#, c-format
-msgid ""
-"You won't see encrypted messages from the device of %s that uses this key. "
-"Conversely, that device won't be able to decipher your messages anymore."
-msgstr ""
-"Nu veți vedea mesaje criptate de la dispozitivul %s care utilizează această "
-"cheie. În schimb, dispozitivul respectiv nu va mai putea descifra mesajele "
-"dumneavoastră."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:161
-#, c-format
-msgid ""
-"You will be able to exchange encrypted messages with the device of %s that "
-"uses this key."
-msgstr ""
-"Veți putea schimba mesaje criptate cu dispozitivul %s care utilizează "
-"această cheie."
-
-#: plugins/omemo/src/ui/manage_key_dialog.vala:167
-msgid "Back"
-msgstr "Înapoi"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:46
-msgid "OMEMO Key Management"
-msgstr "Administrare chei OMEMO"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:47
-msgid "Automatically accept new keys"
-msgstr "Acceptă automat chei noi"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:48
-msgid "New encryption keys from this contact will be accepted automatically."
-msgstr ""
-"Noile chei de criptare de la această persoană de contact vor fi acceptate "
-"automat."
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:49
-msgid "Own key"
-msgstr "Cheie proprie"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:50
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
 msgstr "Chei noi"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:51
-msgid "Associated keys"
-msgstr "Chei asociate"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:52
-msgid "Inactive keys"
-msgstr "Chei inactive"
-
-#: plugins/omemo/src/ui/contact_details_dialog.vala:84
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Noile chei de criptare de pe celelalte dispozitive ale dumneavoastră vor fi "
 "acceptate automat."
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:319
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr "Acest dispozitiv"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr "Alt dispozitiv"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Dispozitiv"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:324
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Respinsă"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:329
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Verificată"
 
-#: plugins/omemo/src/ui/contact_details_dialog.vala:336
-msgid "Unused"
-msgstr "Neutilizatä"
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr "Dispozitiv nou"
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-#: plugins/omemo/src/ui/account_settings_widget.vala:45
-msgid "Own fingerprint"
-msgstr "Amprentă proprie"
+#: plugins/omemo/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
+"Fiecare dispozitiv are propria cheie OMEMO. Mesajele pot fi decriptate de un "
+"dispozitiv numai dacă sunt criptate pentru cheia sa. Mesajele sunt criptate "
+"numai pentru dispozitivele acceptate."
 
-#: plugins/omemo/src/ui/account_settings_widget.vala:42
-msgid "Will be generated on first connection"
-msgstr "Se va genera la prima conectare"
+#~ msgid "OMEMO Key Management"
+#~ msgstr "Administrare chei OMEMO"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
-msgid "Encryption"
-msgstr "Criptare"
+#~ msgid "Encryption"
+#~ msgstr "Criptare"
 
-#: plugins/omemo/src/ui/contact_details_provider.vala:42
 #, c-format
-msgid "%d OMEMO device"
-msgid_plural "%d OMEMO devices"
-msgstr[0] "%d dispozitiv OMEMO"
-msgstr[1] "%d dispozitive OMEMO"
-msgstr[2] "%d de dispozitive OMEMO"
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d dispozitiv OMEMO"
+#~ msgstr[1] "%d dispozitive OMEMO"
+#~ msgstr[2] "%d de dispozitive OMEMO"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Acceptă automat chei noi"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Noile chei de criptare de la această persoană de contact vor fi acceptate "
+#~ "automat."
+
+#~ msgid "Own key"
+#~ msgstr "Cheie proprie"
+
+#~ msgid "Associated keys"
+#~ msgstr "Chei asociate"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Chei inactive"
+
+#~ msgid "Unused"
+#~ msgstr "Neutilizatä"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Amprentă proprie"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Se va genera la prima conectare"
+
+#~ msgid "Your contact"
+#~ msgstr "Persoana de contact"
 
 #~ msgid "Not matching"
 #~ msgstr "Nu se potrivesc"
@@ -277,7 +332,6 @@ msgstr[2] "%d de dispozitive OMEMO"
 #~ msgid "Matching"
 #~ msgstr "Se potrivesc"
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "highlighted accordingly in the chat window."
@@ -296,7 +350,6 @@ msgstr[2] "%d de dispozitive OMEMO"
 #~ msgstr ""
 #~ "Se va accepta această cheie în timpul comunicării cu acest contact asociat"
 
-#, c-format
 #~ msgid ""
 #~ "This means it cannot be used by %s to receive messages, and any messages "
 #~ "sent by it will be ignored."
@@ -304,7 +357,6 @@ msgstr[2] "%d de dispozitive OMEMO"
 #~ "Aceasta înseamnă că nu poate fi folosită de %s ca să primească mesaje, "
 #~ "iar orice mesaj trimis cu ea v-a fi ignorat."
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed, any future messages sent by %s using this key will be "
 #~ "ignored and none of your messages will be readable using this key."
@@ -313,7 +365,6 @@ msgstr[2] "%d de dispozitive OMEMO"
 #~ "cheie vor fi ignorate și nici un mesaj trimis de dumneavoastră nu se va "
 #~ "putea citii folosid aceastä cheie."
 
-#, c-format
 #~ msgid ""
 #~ "Once confirmed this key will be usable by %s to receive and send messages."
 #~ msgstr ""

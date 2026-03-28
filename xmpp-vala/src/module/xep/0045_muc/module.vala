@@ -9,7 +9,6 @@ private const string NS_URI_USER = NS_URI + "#user";
 private const string NS_URI_REQUEST = NS_URI + "#request";
 
 public enum MucEnterError {
-    NONE,
     PASSWORD_REQUIRED,
     BANNED,
     ROOM_DOESNT_EXIST,
@@ -55,10 +54,16 @@ public enum Feature {
     UNSECURED
 }
 
+public static void add_muc_pm_message_stanza_x_node(MessageStanza message_stanza) {
+    StanzaNode x_node = new StanzaNode.build("x", "http://jabber.org/protocol/muc#user").add_self_xmlns();
+    message_stanza.stanza.put_node(x_node);        
+}
+
 public class JoinResult {
     public MucEnterError? muc_error;
     public string? stanza_error;
     public string? nick;
+    public bool newly_created = false;
 }
 
 public class Module : XmppStreamModule {
@@ -69,7 +74,7 @@ public class Module : XmppStreamModule {
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
-    public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string? nick, string? role, string? label); 
+    public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string nick);
     public signal void room_info_updated(XmppStream stream, Jid muc_jid);
 
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
@@ -81,7 +86,7 @@ public class Module : XmppStreamModule {
         received_pipeline_listener = new ReceivedPipelineListener(this);
     }
 
-    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since) {
+    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since, bool receive_history, StanzaNode? additional_node) {
         try {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid.with_resource(nick);
@@ -90,16 +95,24 @@ public class Module : XmppStreamModule {
             if (password != null) {
                 x_node.put_node(new StanzaNode.build("password", NS_URI).put_node(new StanzaNode.text(password)));
             }
-            if (history_since != null) {
+            if (history_since != null || !receive_history) {
                 StanzaNode history_node = new StanzaNode.build("history", NS_URI);
-                history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
                 x_node.put_node(history_node);
+
+                if (history_since != null) {
+                    history_node.set_attribute("since", DateTimeProfiles.to_datetime(history_since));
+                } else if (!receive_history) {
+                    history_node.set_attribute("maxchars", "0");
+                }
             }
             presence.stanza.put_node(x_node);
 
+            if (additional_node != null) {
+                presence.stanza.put_node(additional_node);
+            }
+
             stream.get_flag(Flag.IDENTITY).start_muc_enter(bare_jid, presence.id);
 
-            query_room_info.begin(stream, bare_jid);
             stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence);
 
             var promise = new Promise<JoinResult?>();
@@ -118,7 +131,8 @@ public class Module : XmppStreamModule {
 
     public void exit(XmppStream stream, Jid jid) {
         try {
-            string nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
+            string? nick = stream.get_flag(Flag.IDENTITY).get_muc_nick(jid);
+            if (nick == null) return;
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = jid.with_resource(nick);
             presence.type_ = Presence.Stanza.TYPE_UNAVAILABLE;
@@ -194,6 +208,10 @@ public class Module : XmppStreamModule {
                 case Affiliation.ADMIN:
                     if (other_affiliation == Affiliation.OWNER) return false;
                     break;
+                case Affiliation.OWNER:
+                    return true;
+                default:
+                    return false;
             }
             return true;
         } catch (InvalidJidError e) {
@@ -209,11 +227,18 @@ public class Module : XmppStreamModule {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
-    public void change_affiliation(XmppStream stream, Jid jid, string nick, string new_affiliation) {
-        StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns();
-        query.put_node(new StanzaNode.build("item", NS_URI_ADMIN).put_attribute("nick", nick, NS_URI_ADMIN).put_attribute("affiliation", new_affiliation, NS_URI_ADMIN));
-        Iq.Stanza iq = new Iq.Stanza.set(query) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
+    public async void change_affiliation(XmppStream stream, Jid muc_jid, Jid? user_jid, string? nick, string new_affiliation) {
+        StanzaNode item_node = new StanzaNode.build("item", NS_URI_ADMIN)
+                .put_attribute("affiliation", new_affiliation, NS_URI_ADMIN);
+        if (user_jid != null) {
+            // Some servers don't allow full JIDs and reply error:modify - jid-malformed - "Bare JID expected, got full JID". Make them bare JIDs.
+            item_node.put_attribute("jid", user_jid.bare_jid.to_string(), NS_URI_ADMIN);
+        }
+        if (nick != null) item_node.put_attribute("nick", nick, NS_URI_ADMIN);
+
+        StanzaNode query = new StanzaNode.build("query", NS_URI_ADMIN).add_self_xmlns().put_node(item_node);
+        Iq.Stanza iq = new Iq.Stanza.set(query) { to=muc_jid };
+        yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
     }
 
     public async DataForms.DataForm? get_config_form(XmppStream stream, Jid jid) {
@@ -228,19 +253,19 @@ public class Module : XmppStreamModule {
         return null;
     }
 
-    public void set_config_form(XmppStream stream, Jid jid, DataForms.DataForm data_form) {
+    public async void set_config_form(XmppStream stream, Jid jid, DataForms.DataForm data_form) {
         StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
         stanza_node.add_self_xmlns().put_node(data_form.get_submit_node());
         Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node) { to=jid };
-        stream.get_module(Iq.Module.IDENTITY).send_iq(stream, set_iq);
+        yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, set_iq);
     }
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
         stream.get_module(MessageModule.IDENTITY).received_message.connect(on_received_message);
         stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_listener);
-        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.connect(on_received_available);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.connect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.connect(on_received_unavailable);
         stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);
     }
@@ -248,8 +273,8 @@ public class Module : XmppStreamModule {
     public override void detach(XmppStream stream) {
         stream.get_module(MessageModule.IDENTITY).received_message.disconnect(on_received_message);
         stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_listener);
-        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_available.disconnect(on_received_available);
+        stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(check_for_enter_error);
         stream.get_module(Presence.Module.IDENTITY).received_unavailable.disconnect(on_received_unavailable);
         stream.get_module(ServiceDiscovery.Module.IDENTITY).remove_feature(stream, NS_URI);
     }
@@ -260,7 +285,7 @@ public class Module : XmppStreamModule {
     private void on_received_message(XmppStream stream, MessageStanza message) {
         if (message.type_ == MessageStanza.TYPE_GROUPCHAT) {
             StanzaNode? subject_node = message.stanza.get_subnode("subject");
-            if (subject_node != null) {
+            if (subject_node != null && message.body == null){ 
                 string subject = subject_node.get_string_content();
                 stream.get_flag(Flag.IDENTITY).set_muc_subject(message.from, subject);
                 subject_set(stream, subject, message.from);
@@ -286,7 +311,7 @@ public class Module : XmppStreamModule {
             Jid bare_jid = presence.from.bare_jid;
             ErrorStanza? error_stanza = presence.get_error();
             if (flag.get_enter_id(bare_jid) == presence.id) {
-                MucEnterError error = MucEnterError.NONE;
+                MucEnterError? error = null;
                 switch (error_stanza.condition) {
                     case ErrorStanza.CONDITION_NOT_AUTHORIZED:
                         if (ErrorStanza.TYPE_AUTH == error_stanza.type_) error = MucEnterError.PASSWORD_REQUIRED;
@@ -313,7 +338,7 @@ public class Module : XmppStreamModule {
                         if (ErrorStanza.TYPE_CANCEL == error_stanza.type_) error = MucEnterError.USE_RESERVED_ROOMNICK;
                         break;
                 }
-                if (error != MucEnterError.NONE) {
+                if (error != null) {
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {muc_error=error});
                 } else {
                     flag.enter_futures[bare_jid].set_value(new JoinResult() {stanza_error=error_stanza.condition});
@@ -333,12 +358,16 @@ public class Module : XmppStreamModule {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
 
+                        query_room_info.begin(stream, bare_jid);
+
+                        // TODO only query that if we actually have the rights to
                         query_affiliation.begin(stream, bare_jid, "member");
                         query_affiliation.begin(stream, bare_jid, "admin");
                         query_affiliation.begin(stream, bare_jid, "owner");
 
                         flag.finish_muc_enter(bare_jid);
-                        flag.enter_futures[bare_jid].set_value(new JoinResult() {nick=presence.from.resourcepart});
+                        var join_result = new JoinResult() { nick=presence.from.resourcepart, newly_created=status_codes.contains(StatusCode.NEW_ROOM_CREATED) };
+                        flag.enter_futures[bare_jid].set_value(join_result);
                     }
 
                     flag.set_muc_nick(presence.from);
@@ -407,7 +436,7 @@ public class Module : XmppStreamModule {
         Gee.List<Feature> features = new ArrayList<Feature>();
 
         foreach (ServiceDiscovery.Identity identity in info_result.identities) {
-            if (identity.category == "conference") {
+            if (identity.category == "conference" && identity.name != null) {
                 stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
             }
         }
@@ -446,7 +475,6 @@ public class Module : XmppStreamModule {
                 .put_node(new StanzaNode.build("item", NS_URI_ADMIN)
                     .put_attribute("affiliation", affiliation))
         ) { to=jid };
-
 
         Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         if (iq_result.is_error()) return null;
@@ -516,7 +544,7 @@ public class Module : XmppStreamModule {
 
 public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
 
-    private const string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
+    private string[] after_actions_const = {"EXTRACT_MESSAGE_2"};
 
     public override string action_group { get { return ""; } }
     public override string[] after_actions { get { return after_actions_const; } }
@@ -547,7 +575,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         StanzaNode? reason_node = invite_node.get_subnode("reason", NS_URI_USER);
                         string? reason = null;
                         if (reason_node != null) reason = reason_node.get_string_content();
-                        bool is_mam_message = Xep.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
+                        bool is_mam_message = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message) != null; // TODO
                         if (!is_mam_message) outer.invite_received(stream, message.from, from_jid, password, reason);
                         return true;
                     }
@@ -559,8 +587,6 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 Gee.List<StanzaNode>? fields = x_field_node.get_subnodes("field", DataForms.NS_URI);
                 Jid? from_jid = null;
                 string? nick = null;
-                string? role = null;
-                string? label = null;
                 
                 if (fields.size!=0){ 
                     foreach (var field_node in fields){
@@ -579,13 +605,19 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         }
                         else if (var_ == "muc#role"){
                             StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
-                            if (value_node != null) role = value_node.get_string_content();                            
-                        }
-                        else if (var_ == "muc#request_allow"){
-                            label = field_node.get_attribute("label");                            
+                            if (value_node != null) {
+                                if (value_node.get_string_content() != "participant") {
+                                    warning("Voice request with role other than participant");
+                                }
+                            }
                         }
                     }
-                    outer.voice_request_received(stream, message.from, from_jid, nick, role, label);
+                    if (from_jid == null || nick == null) {
+                        warning("Voice request without from_jid or nick");
+                        return false;
+                    }
+
+                    outer.voice_request_received(stream, message.from, from_jid, nick);
                     return true;
                 }
             }

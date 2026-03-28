@@ -7,7 +7,6 @@ public class Module : BookmarksProvider, XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0048_bookmarks_module");
 
     public async Set<Conference>? get_conferences(XmppStream stream) {
-
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
         StanzaNode? result_node = yield stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node);
         if (result_node == null) return null;
@@ -38,7 +37,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
                     conference_node.put_node(new StanzaNode.build("nick", NS_URI)
                         .put_node(new StanzaNode.text(conference.nick)));
                 }
-                // TODO (?) Bookmarks 2 currently don't define a password
+                // TODO (?) Bookmarks 2 currently doesn't define a password
                 storage_node.put_node(conference_node);
             }
         }

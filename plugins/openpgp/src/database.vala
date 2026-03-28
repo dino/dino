@@ -36,6 +36,14 @@ public class Database : Qlite.Database {
         this.account_setting_table = new AccountSetting(this);
         this.contact_key_table = new ContactKey(this);
         init({account_setting_table, contact_key_table});
+
+        try {
+            exec("PRAGMA journal_mode = WAL");
+            exec("PRAGMA synchronous = NORMAL");
+            exec("PRAGMA secure_delete = ON");
+        } catch (Error e) {
+            error("Failed to set OpenPGP database properties: %s", e.message);
+        }
     }
 
     public void set_contact_key(Jid jid, string key) {

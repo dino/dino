@@ -3,17 +3,11 @@
     <menu id="menu_app">
         <section>
             <item>
-                <attribute name="action">app.accounts</attribute>
-                <attribute name="label" translatable="yes">Accounts</attribute>
+                <attribute name="action">app.preferences</attribute>
+                <attribute name="label" translatable="yes">Preferences</attribute>
             </item>
             <item>
-                <attribute name="action">app.settings</attribute>
-                <attribute name="label" translatable="yes">Settings</attribute>
-            </item>
-        </section>
-        <section>
-            <item>
-                <attribute name="action">app.open_shortcuts</attribute>
+                <attribute name="action">win.show-help-overlay</attribute>
                 <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
             </item>
             <item>

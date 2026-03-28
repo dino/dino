@@ -3,6 +3,7 @@ using Gtk;
 
 using Dino.Entities;
 using Xmpp;
+using Xmpp.Xep;
 
 namespace Dino.Ui.Util {
 
@@ -18,20 +19,22 @@ private const string[] material_colors_500 = {"F44336", "E91E63", "9C27B0", "673
 private const string[] material_colors_300 = {"E57373", "F06292", "BA68C8", "9575CD", "7986CB", "64B5F6", "4FC3F7", "4DD0E1", "4DB6AC", "81C784", "AED581", "DCE775", "FFD54F", "FFB74D", "FF8A65", "A1887F"};
 private const string[] material_colors_200 = {"EF9A9A", "F48FB1", "CE93D8", "B39DDB", "9FA8DA", "90CAF9", "81D4FA", "80DEEA", "80CBC4", "A5D6A7", "C5E1A5", "E6EE9C", "FFE082", "FFCC80", "FFAB91", "BCAAA4"};
 
+public static string get_consistent_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false) {
+    uint8[] rgb;
+    if (stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(jid.bare_jid, account) && jid.resourcepart != null) {
+        rgb = ConsistentColor.string_to_rgb(jid.resourcepart);
+    } else {
+        rgb = ConsistentColor.string_to_rgb(jid.bare_jid.to_string());
+    }
+    return "%.2x%.2x%.2x".printf(rgb[0], rgb[1], rgb[2]);
+}
+
 public static string get_avatar_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
-    return material_colors_300[hash % material_colors_300.length];
-//    return tango_colors_light[name.hash() % tango_colors_light.length];
+    return get_consistent_hex_color(stream_interactor, account, get_relevant_jid(stream_interactor, account, jid, conversation));
 }
 
 public static string get_name_hex_color(StreamInteractor stream_interactor, Account account, Jid jid, bool dark_theme = false, Conversation? conversation = null) {
-    uint hash = get_relevant_jid(stream_interactor, account, jid, conversation).to_string().hash();
-    if (dark_theme) {
-        return material_colors_300[hash % material_colors_300.length];
-    } else {
-        return material_colors_500[hash % material_colors_500.length];
-    }
-//    return tango_colors_medium[name.hash() % tango_colors_medium.length];
+    return get_consistent_hex_color(stream_interactor, account, get_relevant_jid(stream_interactor, account, jid, conversation), dark_theme);
 }
 
 private static Jid get_relevant_jid(StreamInteractor stream_interactor, Account account, Jid jid, Conversation? conversation = null) {
@@ -58,187 +61,68 @@ public static string color_for_show(string show) {
     }
 }
 
-public static async AvatarDrawer get_conversation_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation) {
-    return yield get_conversation_participants_avatar_drawer(stream_interactor, conversation, new Jid[0]);
-}
-
-public static async AvatarDrawer get_conversation_participants_avatar_drawer(StreamInteractor stream_interactor, Conversation conversation, owned Jid[] jids) {
-    AvatarManager avatar_manager = stream_interactor.get_module(AvatarManager.IDENTITY);
-    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-    if (conversation.type_ != Conversation.Type.GROUPCHAT) {
-        Jid jid = jids.length == 1 ? jids[0] : conversation.counterpart;
-        Jid avatar_jid = jid;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-        return new AvatarDrawer().tile(yield avatar_manager.get_avatar(conversation.account, avatar_jid), jids.length == 1 ?
-                get_participant_display_name(stream_interactor, conversation, jid) :
-                get_conversation_display_name(stream_interactor, conversation),
-                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
-    }
-    if (jids.length > 0) {
-        AvatarDrawer drawer = new AvatarDrawer();
-        for (int i = 0; i < (jids.length <= 4 ? jids.length : 3); i++) {
-            Jid avatar_jid = jids[i];
-            Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-            if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-                avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-                part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-            }
-            drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jids[i]),
-                        Util.get_avatar_hex_color(stream_interactor, conversation.account, jids[i], conversation));
-        }
-        if (jids.length > 4) {
-            drawer.plus();
-        }
-        return drawer;
-    }
-    Gdk.Pixbuf? room_avatar = yield avatar_manager.get_avatar(conversation.account, conversation.counterpart);
-    Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, conversation.account);
-    if (room_avatar != null || !muc_manager.is_private_room(conversation.account, conversation.counterpart) || occupants == null || occupants.size == 0) {
-        return new AvatarDrawer().tile(room_avatar, "#", Util.get_avatar_hex_color(stream_interactor, conversation.account, conversation.counterpart, conversation));
-    }
-    AvatarDrawer drawer = new AvatarDrawer();
-    for (int i = 0; i < (occupants.size <= 4 ? occupants.size : 3); i++) {
-        Jid jid = occupants[i];
-        Jid avatar_jid = jid;
-        Gdk.Pixbuf? part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-        if (part_avatar == null && avatar_jid.equals_bare(conversation.counterpart) && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-            avatar_jid = muc_manager.get_real_jid(avatar_jid, conversation.account) ?? avatar_jid;
-            part_avatar = yield avatar_manager.get_avatar(conversation.account, avatar_jid);
-        }
-        drawer.tile(part_avatar, get_participant_display_name(stream_interactor, conversation, jid),
-                    Util.get_avatar_hex_color(stream_interactor, conversation.account, jid, conversation));
-    }
-    if (occupants.size > 4) {
-        drawer.plus();
-    }
-    return drawer;
-}
-
 public static string get_conversation_display_name(StreamInteractor stream_interactor, Conversation conversation) {
-    if (conversation.type_ == Conversation.Type.CHAT) {
-        string? display_name = get_real_display_name(stream_interactor, conversation.account, conversation.counterpart);
-        if (display_name != null) return display_name;
-        return conversation.counterpart.to_string();
-    }
-    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-        return get_groupchat_display_name(stream_interactor, conversation.account, conversation.counterpart);
-    }
-    if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-        return _("%s from %s").printf(get_occupant_display_name(stream_interactor, conversation.account, conversation.counterpart), get_groupchat_display_name(stream_interactor, conversation.account, conversation.counterpart.bare_jid));
-    }
-    return conversation.counterpart.to_string();
+    return Dino.get_conversation_display_name(stream_interactor, conversation, _("%s from %s"));
 }
 
 public static string get_participant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid participant, bool me_is_me = false) {
-    if (me_is_me) {
-        if (conversation.account.bare_jid.equals_bare(participant) ||
-                (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) &&
-                        conversation.nickname != null && participant.equals_bare(conversation.counterpart) && conversation.nickname == participant.resourcepart) {
-            return _("Me");
-        }
-    }
-    if (conversation.type_ == Conversation.Type.CHAT) {
-        return get_real_display_name(stream_interactor, conversation.account, participant, me_is_me) ?? participant.bare_jid.to_string();
-    }
-    if ((conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) && conversation.counterpart.equals_bare(participant)) {
-        return get_occupant_display_name(stream_interactor, conversation.account, participant);
-    }
-    return participant.bare_jid.to_string();
+    return Dino.get_participant_display_name(stream_interactor, conversation, participant, me_is_me ? _("Me") : null);
 }
 
-private static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
-    if (jid.equals_bare(account.bare_jid)) {
-        if (me_is_me || account.alias == null || account.alias.length == 0) {
-            return _("Me");
-        }
-        return account.alias;
-    }
-    Roster.Item roster_item = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, jid);
-    if (roster_item != null && roster_item.name != null && roster_item.name != "") {
-        return roster_item.name;
-    }
-    string? nick = stream_interactor.get_module(UserNickManager.IDENTITY).get_nick(account, jid);
-    if (nick != null) {
-        return nick;
-    }
-    return null;
+public static string? get_real_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false) {
+    return Dino.get_real_display_name(stream_interactor, account, jid, me_is_me ? _("Me") : null);
 }
 
-private static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
-    MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-    string room_name = muc_manager.get_room_name(account, jid);
-    if (room_name != null && room_name != jid.localpart) {
-        return room_name;
-    }
-    if (muc_manager.is_private_room(account, jid)) {
-        Gee.List<Jid>? other_occupants = muc_manager.get_other_offline_members(jid, account);
-        if (other_occupants != null && other_occupants.size > 0) {
-            var builder = new StringBuilder ();
-            foreach(Jid occupant in other_occupants) {
-                if (builder.len != 0) {
-                    builder.append(", ");
-                }
-                builder.append((get_real_display_name(stream_interactor, account, occupant) ?? occupant.localpart ?? occupant.domainpart).split(" ")[0]);
-            }
-            return builder.str;
-        }
-    }
-    return jid.to_string();
+public static string get_groupchat_display_name(StreamInteractor stream_interactor, Account account, Jid jid) {
+    return Dino.get_groupchat_display_name(stream_interactor, account, jid);
 }
 
-private static string get_occupant_display_name(StreamInteractor stream_interactor, Account account, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
-    if (muc_real_name) {
-        MucManager muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
-        if (muc_manager.is_private_room(account, jid.bare_jid)) {
-            Jid? real_jid = muc_manager.get_real_jid(jid, account);
-            if (real_jid != null) {
-                string? display_name = get_real_display_name(stream_interactor, account, real_jid, me_is_me);
-                if (display_name != null) return display_name;
-            }
-        }
-    }
-    return jid.resourcepart ?? jid.to_string();
+public static string get_occupant_display_name(StreamInteractor stream_interactor, Conversation conversation, Jid jid, bool me_is_me = false, bool muc_real_name = false) {
+    return Dino.get_occupant_display_name(stream_interactor, conversation, jid, me_is_me ? _("Me") : null);
 }
 
-public static void image_set_from_scaled_pixbuf(Image image, Gdk.Pixbuf pixbuf, int scale = 0, int width = 0, int height = 0) {
-    if (scale == 0) scale = image.scale_factor;
-    Cairo.Surface surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, image.get_window());
-    if (height == 0 && width != 0) {
-        height = (int) ((double) width / pixbuf.width * pixbuf.height);
-    } else if (height != 0 && width == 0) {
-        width = (int) ((double) height / pixbuf.height * pixbuf.width);
-    }
-    if (width != 0) {
-        Cairo.Surface surface_new = new Cairo.Surface.similar_image(surface, Cairo.Format.ARGB32, width, height);
-        Cairo.Context context = new Cairo.Context(surface_new);
-        context.scale((double) width * scale / pixbuf.width, (double) height * scale / pixbuf.height);
-        context.set_source_surface(surface, 0, 0);
-        context.get_source().set_filter(Cairo.Filter.BEST);
-        context.paint();
-        surface = surface_new;
-    }
-    image.set_from_surface(surface);
+public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
+    Gtk.CssProvider provider = force_color(label, css_color);
+    Gdk.RGBA color_rgba = label.get_style_context().get_color();
+    label.get_style_context().remove_provider(provider);
+    return color_rgba;
+}
+
+public static string rgba_to_hex(Gdk.RGBA rgba) {
+    return "#%02x%02x%02x%02x".printf(
+            (uint8)(Math.round(rgba.red.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.green.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.blue.clamp(0,1)*255)),
+            (uint8)(Math.round(rgba.alpha.clamp(0,1)*255)))
+            .up();
 }
 
 private const string force_background_css = "%s { background-color: %s; }";
 private const string force_color_css = "%s { color: %s; }";
 
-public static void force_css(Gtk.Widget widget, string css) {
+public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
     var p = new Gtk.CssProvider();
     try {
-        p.load_from_data(css);
+#if GTK_4_12 && (VALA_0_56_GREATER_11 || VALA_0_58)
+        p.load_from_string(css);
+#elif (VALA_0_56_11 || VALA_0_56_12)
+        p.load_from_data(css, css.length);
+#else
+        p.load_from_data(css.data);
+#endif
         widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     } catch (GLib.Error err) {
         // handle err
     }
+    return p;
 }
 
 public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
     force_css(widget, force_background_css.printf(selector, color));
 }
 
-public static void force_color(Gtk.Widget widget, string color, string selector = "*") {
-    force_css(widget, force_color_css.printf(selector, color));
+public static Gtk.CssProvider force_color(Gtk.Widget widget, string color, string selector = "*") {
+    return force_css(widget, force_color_css.printf(selector, color));
 }
 
 public static void force_error_color(Gtk.Widget widget, string selector = "*") {
@@ -246,32 +130,38 @@ public static void force_error_color(Gtk.Widget widget, string selector = "*") {
 }
 
 public static bool is_dark_theme(Gtk.Widget widget) {
-    Gdk.RGBA bg = widget.get_style_context().get_color(StateFlags.NORMAL);
+    Gdk.RGBA bg = widget.get_style_context().get_color();
     return (bg.red > 0.5 && bg.green > 0.5 && bg.blue > 0.5);
 }
 
-private static uint8 is24h = 0;
+private static int8 is24h = 0;
 public static bool is_24h_format() {
     if (is24h == 0) {
-        string p_format = "               "; // Leaving room to be filled by strftime
-        Time.local(0).strftime((char[]) p_format.data, "%p");
-        is24h = p_format.strip() == "" ? 1 : -1;
+        Regex has_ampm = /(^|[^%])%[pP]/;
+        Regex has_t_fmt_ampm = /(^|[^%])%r/;
+        unowned string t_fmt = Posix.nl_langinfo(Posix.NLItem.T_FMT);
+        unowned string t_fmt_ampm = Posix.nl_langinfo(Posix.NLItem.T_FMT_AMPM);
+        bool has_am_str = Posix.nl_langinfo(Posix.NLItem.AM_STR).strip() != "";
+        bool has_pm_str = Posix.nl_langinfo(Posix.NLItem.PM_STR).strip() != "";
+        is24h = ((has_ampm.match(t_fmt) || has_t_fmt_ampm.match(t_fmt) && has_ampm.match(t_fmt_ampm)) && (has_am_str || has_pm_str)) ? -1 : 1;
     }
     return is24h == 1;
 }
 
-public static Regex get_url_regex() {
-    if (URL_REGEX == null) {
-        URL_REGEX = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)\S+)/;
+public static string format_time(DateTime datetime, string format_24h, string format_12h) {
+    string format = Util.is_24h_format() ? format_24h : format_12h;
+    if (!get_charset(null)) {
+        // No UTF-8 support, use simple colon for time instead
+        format = format.replace("∶", ":");
     }
-    return URL_REGEX;
+    return datetime.format(format);
 }
 
-public static Regex get_code_block_regex() {
-    if (CODE_BLOCK_REGEX == null) {
-        CODE_BLOCK_REGEX = /(?:^|\n)(```([^\n]*)\n(?:[^\n]|\n[^`]|\n`[^`]|\n``[^`]|\n```[^\n])+\n```)(?:\n|$)/s;
+public static Regex get_url_regex() {
+    if (URL_REGEX == null) {
+        URL_REGEX = /\b(((http|ftp)s?:\/\/|(ircs?|xmpp|mailto|sms|smsto|mms|tel|geo|openpgp4fpr|im|news|nntp|sip|ssh|bitcoin|sftp|magnet|vnc|urn):)\S+)/i;
     }
-    return CODE_BLOCK_REGEX;
+    return URL_REGEX;
 }
 
 public static Map<unichar, unichar> get_matching_chars() {
@@ -284,18 +174,76 @@ public static Map<unichar, unichar> get_matching_chars() {
     return MATCHING_CHARS;
 }
 
-public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool already_escaped_ = false) {
+/**
+ * This replaces spaces with non-breaking spaces when they are adjacent to a non-spacing mark.
+ *
+ * We do this to work-around a bug in Pango. See https://gitlab.gnome.org/GNOME/pango/-/issues/798 and
+ * https://gitlab.gnome.org/GNOME/pango/-/issues/832
+ *
+ * This is zero-copy iff no space is adjacent to a non-spacing mark, otherwise the provided string will be destroyed
+ * and the returned string should be used instead.
+ */
+public static string unbreak_space_around_non_spacing_mark(owned string s) {
+    int current_index = 0;
+    unichar current_char = 0;
+    int prev_index = 0;
+    unichar prev_char = 0;
+    bool is_non_spacing_mark = false;
+    while (s.get_next_char(ref current_index, out current_char)) {
+        int replace_index = -1;
+        if (is_non_spacing_mark && current_char == ' ') {
+            replace_index = prev_index;
+            current_char = ' ';
+        }
+        is_non_spacing_mark = ICU.get_int_property_value(current_char, ICU.Property.BIDI_CLASS) == ICU.CharDirection.DIR_NON_SPACING_MARK;
+        if (prev_char == ' ' && is_non_spacing_mark) {
+            replace_index = prev_index - 1;
+        }
+        if (replace_index != -1) {
+            s = s[0:replace_index] + " " + s[(replace_index + 1):s.length];
+            current_index += 1;
+        }
+        prev_index = current_index;
+        prev_char = current_char;
+    }
+    return (owned) s;
+}
+
+public static string parse_add_markup(string s_, string? highlight_word, bool parse_links, bool parse_text_markup) {
+    bool ignore_out_var = false;
+    return parse_add_markup_theme(s_, highlight_word, parse_links, parse_text_markup, parse_text_markup, false, ref ignore_out_var);
+}
+
+public static string parse_add_markup_theme(string s_, string? highlight_word, bool parse_links, bool parse_text_markup, bool parse_quotes, bool dark_theme, ref bool theme_dependent, bool already_escaped_ = false) {
     string s = s_;
     bool already_escaped = already_escaped_;
 
+    if (parse_quotes) {
+        string gt = already_escaped ? "&gt;" : ">";
+        Regex quote_regex = new Regex("((?<=\n)" + gt + ".*(\n|$))|(^" + gt + ".*(\n|$))", RegexCompileFlags.CASELESS);
+        MatchInfo quote_match_info;
+        quote_regex.match(s, 0, out quote_match_info);
+        if (quote_match_info.matches()) {
+            int start, end;
+
+            string dim_color = dark_theme ? "#BDBDBD": "#707070";
+
+            theme_dependent = true;
+            quote_match_info.fetch_pos(0, out start, out end);
+            return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped) +
+                    @"<span color='$dim_color'>$gt" + parse_add_markup_theme(s[start + gt.length:end], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) + "</span>" +
+                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped);
+        }
+    }
+
     if (parse_links && !already_escaped) {
         MatchInfo match_info;
-        get_url_regex().match(s.down(), 0, out match_info);
+        get_url_regex().match(s, 0, out match_info);
         while (match_info.matches()) {
             int start, end;
             match_info.fetch_pos(0, out start, out end);
             string link = s[start:end];
-            if (GLib.Uri.parse_scheme(link) in ALLOWED_SCHEMAS) {
+            if (GLib.Uri.parse_scheme(link).down() in ALLOWED_SCHEMAS) {
                 Map<unichar, unichar> matching_chars = get_matching_chars();
                 unichar close_char;
                 int last_char_index = link.length;
@@ -328,9 +276,11 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
                     }
                 }
 
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        "<a href=\"" + Markup.escape_text(link) + "\">" + parse_add_markup(link, highlight_word, false, false, already_escaped) + "</a>" +
-                        parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "<a href=\"" + Markup.escape_text(link) + "\">" +
+                        parse_add_markup_theme(link, highlight_word, false, false, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "</a>" +
+                        parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
             }
             match_info.next();
         }
@@ -343,15 +293,15 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
 
     if (highlight_word != null) {
         try {
-            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b");
+            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b", RegexCompileFlags.CASELESS);
             MatchInfo match_info;
-            highlight_regex.match(s.down(), 0, out match_info);
+            highlight_regex.match(s, 0, out match_info);
             if (match_info.matches()) {
                 int start, end;
                 match_info.fetch_pos(0, out start, out end);
-                return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
+                return parse_add_markup_theme(s[0:start], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
                     "<b>" + s[start:end] + "</b>" +
-                    parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                    parse_add_markup_theme(s[end:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
             }
         } catch (RegexError e) {
             assert_not_reached();
@@ -359,34 +309,23 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
     }
 
     if (parse_text_markup) {
-        // Try to match preformatted code blocks first
-        MatchInfo code_block_match_info;
-        get_code_block_regex().match(s.down().strip(), 0, out code_block_match_info);
-        if (code_block_match_info.matches()) {
-            int start, end;
-            code_block_match_info.fetch_pos(1, out start, out end);
-            return parse_add_markup(s[0:start], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                "<tt>" +
-                s[start:end] +
-                "</tt>" +
-                parse_add_markup(s[end:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
-        }
-
         string[] markup_string = new string[]{"`", "_", "*", "~"};
         string[] convenience_tag = new string[]{"tt", "i", "b", "s"};
 
         for (int i = 0; i < markup_string.length; i++) {
             string markup_esc = Regex.escape_string(markup_string[i]);
             try {
-                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc);
+                Regex regex = new Regex("(^|\\s)" + markup_esc + "(\\S|\\S.*?\\S)" + markup_esc, RegexCompileFlags.CASELESS);
                 MatchInfo match_info;
-                regex.match(s.down(), 0, out match_info);
+                regex.match(s, 0, out match_info);
                 if (match_info.matches()) {
                     int start, end;
                     match_info.fetch_pos(2, out start, out end);
-                    return parse_add_markup(s[0:start-1], highlight_word, parse_links, parse_text_markup, already_escaped) +
-                        s[start-1:start] + @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" + s[end:end+1] +
-                        parse_add_markup(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, already_escaped);
+                    return parse_add_markup_theme(s[0:start-1], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped) +
+                        "<span color='#9E9E9E'>" +  s[start-1:start] + "</span>" +
+                        @"<$(convenience_tag[i])>" + s[start:end] + @"</$(convenience_tag[i])>" +
+                        "<span color='#9E9E9E'>" + s[end:end+1] + "</span>" +
+                        parse_add_markup_theme(s[end+1:s.length], highlight_word, parse_links, parse_text_markup, false, dark_theme, ref theme_dependent, already_escaped);
                 }
             } catch (RegexError e) {
                 assert_not_reached();
@@ -396,6 +335,31 @@ public static string parse_add_markup(string s_, string? highlight_word, bool pa
 
     return s;
 }
+
+    // Modifies `markups`.
+    public string remove_fallbacks_adjust_markups(string text, bool contains_quote, Gee.List<Xep.FallbackIndication.Fallback> fallbacks, Gee.List<Xep.MessageMarkup.Span> markups) {
+        string processed_text = text;
+
+        foreach (var fallback in fallbacks) {
+            if (fallback.ns_uri == Xep.Replies.NS_URI && contains_quote) {
+                foreach (var fallback_location in fallback.locations) {
+                    processed_text = processed_text[0:processed_text.index_of_nth_char(fallback_location.from_char)] +
+                            processed_text[processed_text.index_of_nth_char(fallback_location.to_char):processed_text.length];
+
+                    int length = fallback_location.to_char - fallback_location.from_char;
+                    foreach (Xep.MessageMarkup.Span span in markups) {
+                        if (span.start_char > fallback_location.to_char) {
+                            span.start_char -= length;
+                        }
+                        if (span.end_char > fallback_location.to_char) {
+                            span.end_char -= length;
+                        }
+                    }
+                }
+            }
+        }
+        return processed_text;
+    }
 
 /**
  * This is a heuristic to count emojis in a string {@link http://example.com/}
@@ -451,12 +415,49 @@ public string summarize_whitespaces_to_space(string s) {
     try {
         return (/\s+/).replace_literal(s, -1, 0, " ");
     } catch (RegexError e) {
-        assert_not_reached();
+        critical("RegexError when summarizing whitespaces in '%s': %s", s, e.message);
+        return s;
     }
 }
 
-public bool use_csd() {
-    return (GLib.Application.get_default() as Application).use_csd();
+public void present_window(Window window) {
+#if GDK3_WITH_X11
+        Gdk.X11.Window x11window = window.get_window() as Gdk.X11.Window;
+    if (x11window != null) {
+        window.present_with_time(Gdk.X11.get_server_time(x11window));
+    } else {
+        window.present();
+    }
+#else
+    window.present();
+#endif
+}
+
+public Widget? widget_if_tooltips_active(Widget w) {
+    return use_tooltips() ? w : null;
+}
+
+public string? string_if_tooltips_active(string? s) {
+    return use_tooltips() ? s : null;
+}
+
+public bool use_tooltips() {
+    return Gtk.MINOR_VERSION != 6 || (Gtk.MICRO_VERSION < 4 || Gtk.MICRO_VERSION > 6);
+}
+
+public static void menu_button_set_icon_with_size(MenuButton menu_button, string icon_name, int pixel_size) {
+#if GTK_4_6 && VALA_0_52
+    menu_button.set_child(new Image.from_icon_name(icon_name) { pixel_size=pixel_size });
+#else
+    menu_button.set_icon_name(icon_name);
+    var button = menu_button.get_first_child() as Button;
+    if (button == null) return;
+    var box = button.child as Box;
+    if (box == null) return;
+    var image = box.get_first_child() as Image;
+    if (image == null) return;
+    image.pixel_size = pixel_size;
+#endif
 }
 
 }

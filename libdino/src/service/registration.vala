@@ -23,23 +23,27 @@ public class Register : StreamInteractionModule, Object{
     }
 
     public async ConnectionManager.ConnectionError.Source? add_check_account(Account account) {
-        XmppStream stream = new XmppStream();
-        stream.log = new XmppLog(account.bare_jid.to_string(), Application.print_xmpp);
-        stream.add_module(new Tls.Module());
-        stream.add_module(new Iq.Module());
-        stream.add_module(new Xep.SrvRecordsTls.Module());
-        stream.add_module(new Sasl.Module(account.bare_jid.to_string(), account.password));
-
         ConnectionManager.ConnectionError.Source? ret = null;
+
+        Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
+        list.add(new Iq.Module());
+        list.add(new Sasl.Module(account.bare_jid.to_string(), account.password));
+
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(account.bare_jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(account.domainpart, peer_cert, errors); }
+        );
+
+        if (stream_result.stream == null) {
+            if (stream_result.tls_errors != null) {
+                ret = ConnectionManager.ConnectionError.Source.TLS;
+            }
+            return ret;
+        }
+        XmppStream stream = stream_result.stream;
 
         SourceFunc callback = add_check_account.callback;
         stream.stream_negotiated.connect(() => {
             if (callback == null) return;
-            Idle.add((owned)callback);
-        });
-        stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect((peer_cert, errors) => {
-            if (callback == null) return;
-            ret = ConnectionManager.ConnectionError.Source.TLS;
             Idle.add((owned)callback);
         });
         stream.get_module(Sasl.Module.IDENTITY).received_auth_failure.connect((stream, node) => {
@@ -47,9 +51,9 @@ public class Register : StreamInteractionModule, Object{
             ret = ConnectionManager.ConnectionError.Source.SASL;
             Idle.add((owned)callback);
         });
-        stream.connect.begin(account.domainpart, (_, res) => {
+        stream.loop.begin((_, res) => {
             try {
-                stream.connect.end(res);
+                stream.loop.end(res);
             } catch (Error e) {
                 debug("Error connecting to stream: %s", e.message);
             }
@@ -62,9 +66,15 @@ public class Register : StreamInteractionModule, Object{
         yield;
 
         try {
-            yield stream.disconnect();
+            yield stream_result.stream.disconnect();
         } catch (Error e) {}
         return ret;
+    }
+
+    public async string? change_password(Account account, string new_pw){
+        XmppStream stream = stream_interactor.get_stream(account);
+        if (stream == null) return null;
+        return (yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).change_password(stream, account.full_jid, new_pw)).condition;
     }
 
     public class ServerAvailabilityReturn {
@@ -73,13 +83,26 @@ public class Register : StreamInteractionModule, Object{
     }
 
     public static async ServerAvailabilityReturn check_server_availability(Jid jid) {
-        XmppStream stream = new XmppStream();
-        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
-        stream.add_module(new Tls.Module());
-        stream.add_module(new Iq.Module());
-        stream.add_module(new Xep.SrvRecordsTls.Module());
-
         ServerAvailabilityReturn ret = new ServerAvailabilityReturn() { available=false };
+
+        Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
+        list.add(new Iq.Module());
+
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
+
+        if (stream_result.stream == null) {
+            if (stream_result.io_error != null) {
+                debug("Error connecting to stream: %s", stream_result.io_error.message);
+            }
+            if (stream_result.tls_errors != null) {
+                ret.error_flags = stream_result.tls_errors;
+            }
+            return ret;
+        }
+        XmppStream stream = stream_result.stream;
+
         SourceFunc callback = check_server_availability.callback;
         stream.stream_negotiated.connect(() => {
             if (callback != null) {
@@ -87,16 +110,10 @@ public class Register : StreamInteractionModule, Object{
                 Idle.add((owned)callback);
             }
         });
-        stream.get_module(Tls.Module.IDENTITY).invalid_certificate.connect((peer_cert, errors) => {
-            if (callback != null) {
-                ret.error_flags = errors;
-                Idle.add((owned)callback);
-            }
-        });
 
-        stream.connect.begin(jid.domainpart, (_, res) => {
+        stream.loop.begin((_, res) => {
             try {
-                stream.connect.end(res);
+                stream.loop.end(res);
             } catch (Error e) {
                 debug("Error connecting to stream: %s", e.message);
             }
@@ -113,13 +130,33 @@ public class Register : StreamInteractionModule, Object{
         return ret;
     }
 
-    public static async Xep.InBandRegistration.Form? get_registration_form(Jid jid) {
-        XmppStream stream = new XmppStream();
-        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
-        stream.add_module(new Tls.Module());
-        stream.add_module(new Iq.Module());
-        stream.add_module(new Xep.SrvRecordsTls.Module());
-        stream.add_module(new Xep.InBandRegistration.Module());
+    public class RegistrationFormReturn {
+        public Xep.InBandRegistration.Form? form { get; set; }
+        public TlsCertificateFlags? error_flags { get; set; }
+    }
+
+    public static async RegistrationFormReturn get_registration_form(Jid jid) {
+        RegistrationFormReturn ret = new RegistrationFormReturn();
+
+        Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
+        list.add(new Iq.Module());
+        list.add(new Xep.InBandRegistration.Module());
+        list.add(new Xep.BitsOfBinary.Module());
+
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
+
+        if (stream_result.stream == null) {
+            if (stream_result.io_error != null) {
+                debug("Error connecting to stream: %s", stream_result.io_error.message);
+            }
+            if (stream_result.tls_errors != null) {
+                ret.error_flags = stream_result.tls_errors;
+            }
+            return ret;
+        }
+        XmppStream stream = stream_result.stream;
 
         SourceFunc callback = get_registration_form.callback;
 
@@ -129,9 +166,9 @@ public class Register : StreamInteractionModule, Object{
             }
         });
 
-        stream.connect.begin(jid.domainpart, (_, res) => {
+        stream.loop.begin((_, res) => {
             try {
-                stream.connect.end(res);
+                stream.loop.end(res);
             } catch (Error e) {
                 debug("Error connecting to stream: %s", e.message);
             }
@@ -142,24 +179,29 @@ public class Register : StreamInteractionModule, Object{
 
         yield;
 
-        Xep.InBandRegistration.Form? form = null;
         if (stream.negotiation_complete) {
-            form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
+            ret.form = yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).get_from_server(stream, jid);
         }
         try {
             yield stream.disconnect();
         } catch (Error e) {}
 
-        return form;
+        return ret;
     }
 
     public static async string? submit_form(Jid jid, Xep.InBandRegistration.Form form) {
-        XmppStream stream = new XmppStream();
-        stream.log = new XmppLog(jid.to_string(), Application.print_xmpp);
-        stream.add_module(new Tls.Module());
-        stream.add_module(new Iq.Module());
-        stream.add_module(new Xep.SrvRecordsTls.Module());
-        stream.add_module(new Xep.InBandRegistration.Module());
+        Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
+        list.add(new Iq.Module());
+        list.add(new Xep.InBandRegistration.Module());
+
+        XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
+                (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }
+        );
+
+        if (stream_result.stream == null) {
+            return null;
+        }
+        XmppStream stream = stream_result.stream;
 
         SourceFunc callback = submit_form.callback;
 
@@ -169,9 +211,9 @@ public class Register : StreamInteractionModule, Object{
             }
         });
 
-        stream.connect.begin(jid.domainpart, (_, res) => {
+        stream.loop.begin((_, res) => {
             try {
-                stream.connect.end(res);
+                stream.loop.end(res);
             } catch (Error e) {
                 debug("Error connecting to stream: %s", e.message);
             }

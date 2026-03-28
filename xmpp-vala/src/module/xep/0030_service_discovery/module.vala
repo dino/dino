@@ -2,7 +2,7 @@ using Gee;
 
 namespace Xmpp.Xep.ServiceDiscovery {
 
-private const string NS_URI = "http://jabber.org/protocol/disco";
+public const string NS_URI = "http://jabber.org/protocol/disco";
 public const string NS_URI_INFO = NS_URI + "#info";
 public const string NS_URI_ITEMS = NS_URI + "#items";
 
@@ -23,7 +23,10 @@ public class Module : XmppStreamModule, Iq.Handler {
     }
 
     public void remove_feature(XmppStream stream, string feature) {
-        stream.get_flag(Flag.IDENTITY).remove_own_feature(feature);
+        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        if (flag != null) {
+                flag.remove_own_feature(feature);
+        }
     }
 
     public void add_feature_notify(XmppStream stream, string feature) {
@@ -32,14 +35,6 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public void remove_feature_notify(XmppStream stream, string feature) {
         remove_feature(stream, feature + "+notify");
-    }
-
-    public void add_identity(XmppStream stream, Identity identity) {
-        stream.get_flag(Flag.IDENTITY).add_own_identity(identity);
-    }
-
-    public void remove_identity(XmppStream stream, Identity identity) {
-        stream.get_flag(Flag.IDENTITY).remove_own_identity(identity);
     }
 
     public async bool has_entity_feature(XmppStream stream, Jid jid, string feature) {
@@ -80,7 +75,6 @@ public class Module : XmppStreamModule, Iq.Handler {
 
         Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         ItemsResult? result = ItemsResult.create_from_iq(iq_result);
-        stream.get_flag(Flag.IDENTITY).set_entity_items(iq_result.from, result != null ? result.items : null);
 
         return result;
     }
@@ -94,14 +88,17 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
-        add_identity(stream, own_identity);
+        stream.get_flag(Flag.IDENTITY).add_own_identity(own_identity);
 
         stream.get_module(Iq.Module.IDENTITY).register_for_namespace(NS_URI_INFO, this);
         add_feature(stream, NS_URI_INFO);
     }
 
     public override void detach(XmppStream stream) {
-        remove_identity(stream, own_identity);
+        active_info_requests.clear();
+
+        Flag? flag = stream.get_flag(Flag.IDENTITY);
+        if (flag != null) flag.remove_own_identity(own_identity);
 
         stream.get_module(Iq.Module.IDENTITY).unregister_from_namespace(NS_URI_INFO, this);
         remove_feature(stream, NS_URI_INFO);

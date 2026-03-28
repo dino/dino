@@ -154,7 +154,6 @@ namespace Xmpp.Sasl {
         public void received_features_node(XmppStream stream) {
             if (stream.has_flag(Flag.IDENTITY)) return;
             if (stream.is_setup_needed()) return;
-            if (!stream.has_flag(Tls.Flag.IDENTITY) || !stream.get_flag(Tls.Flag.IDENTITY).finished) return;
 
             var mechanisms = stream.features.get_subnode("mechanisms", NS_URI);
             string[] supported_mechanisms = {};

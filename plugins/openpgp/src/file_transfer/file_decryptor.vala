@@ -4,6 +4,10 @@ namespace Dino.Plugins.OpenPgp {
 
 public class PgpFileDecryptor : FileDecryptor, Object {
 
+    public Encryption get_encryption() {
+        return Encryption.PGP;
+    }
+
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
         return receive_data;
     }
@@ -13,7 +17,8 @@ public class PgpFileDecryptor : FileDecryptor, Object {
     }
 
     public bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
-        return file_transfer.file_name.has_suffix("pgp") || file_transfer.mime_type == "application/pgp-encrypted";
+        return file_transfer.file_name.has_suffix("pgp") ||
+                (file_transfer.content_type != null && file_transfer.content_type.get_mime_type() == "application/pgp-encrypted");
     }
 
     public async InputStream decrypt_file(InputStream encrypted_stream, Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) throws FileReceiveError {

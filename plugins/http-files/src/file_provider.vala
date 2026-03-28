@@ -1,5 +1,4 @@
 using Gee;
-using Gtk;
 
 using Dino.Entities;
 using Xmpp;
@@ -10,20 +9,23 @@ public class FileProvider : Dino.FileProvider, Object {
 
     private StreamInteractor stream_interactor;
     private Dino.Database dino_db;
+    private Soup.Session session;
     private static Regex http_url_regex = /^https?:\/\/([^\s#]*)$/; // Spaces are invalid in URLs and we can't use fragments for downloads
     private static Regex omemo_url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
     public FileProvider(StreamInteractor stream_interactor, Dino.Database dino_db) {
         this.stream_interactor = stream_interactor;
         this.dino_db = dino_db;
+        this.session = new Soup.Session();
 
+        session.user_agent = @"Dino/$(Dino.get_short_version()) ";
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(new ReceivedMessageListener(this));
     }
 
     private class ReceivedMessageListener : MessageListener {
 
         public string[] after_actions_const = new string[]{ "STORE" };
-        public override string action_group { get { return ""; } }
+        public override string action_group { get { return "MESSAGE_REINTERPRETING"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
         private FileProvider outer;
@@ -35,23 +37,22 @@ public class FileProvider : Dino.FileProvider, Object {
         }
 
         public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            if (Xep.StatelessFileSharing.get_file_shares(stanza) != null || Xep.StatelessFileSharing.get_source_attachments(stanza) != null) {
+                return false;
+            }
+
             string? oob_url = Xmpp.Xep.OutOfBandData.get_url_from_message(stanza);
             bool normal_file = oob_url != null && oob_url == message.body && FileProvider.http_url_regex.match(message.body);
             bool omemo_file = FileProvider.omemo_url_regex.match(message.body);
             if (normal_file || omemo_file) {
-                yield outer.on_file_message(message, conversation);
+                outer.on_file_message(message, conversation);
+                return true;
             }
             return false;
         }
     }
 
-    private async void on_file_message(Entities.Message message, Conversation conversation) {
-        // Hide message
-        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item(conversation, 1, message.id);
-        if (content_item != null) {
-            stream_interactor.get_module(ContentItemStore.IDENTITY).set_item_hide(content_item, true);
-        }
-
+    private void on_file_message(Entities.Message message, Conversation conversation) {
         var additional_info = message.id.to_string();
 
         var receive_data = new HttpFileReceiveData();
@@ -68,54 +69,83 @@ public class FileProvider : Dino.FileProvider, Object {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) return file_meta;
 
-        var session = new Soup.Session();
         var head_message = new Soup.Message("HEAD", http_receive_data.url);
+        head_message.request_headers.append("Accept-Encoding", "identity");
 
-        if (head_message != null) {
-            try {
-                yield session.send_async(head_message, null);
-            } catch (Error e) {
-                throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
-            }
+#if SOUP_3_0
+        string transfer_host = Uri.parse(http_receive_data.url, UriFlags.NONE).get_host();
+        head_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
+#endif
 
-            string? content_type = null, content_length = null;
-            head_message.response_headers.foreach((name, val) => {
-                if (name == "Content-Type") content_type = val;
-                if (name == "Content-Length") content_length = val;
-            });
-            file_meta.mime_type = content_type;
-            if (content_length != null) {
-                file_meta.size = int.parse(content_length);
-            }
+        try {
+#if SOUP_3_0
+            yield session.send_async(head_message, GLib.Priority.LOW, null);
+#else
+            yield session.send_async(head_message, null);
+#endif
+        } catch (Error e) {
+            throw new FileReceiveError.GET_METADATA_FAILED("HEAD request failed");
+        }
+
+        string? content_type = null, content_length = null;
+        head_message.response_headers.foreach((name, val) => {
+            if (name.down() == "content-type") content_type = val;
+            if (name.down() == "content-length") content_length = val;
+        });
+        file_meta.content_type = new FileContentType.from_mime_type(content_type);
+        if (content_length != null) {
+            file_meta.size = int64.parse(content_length);
         }
 
         return file_meta;
     }
 
-    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws FileReceiveError {
+    public Encryption get_encryption(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) {
+        return Encryption.NONE;
+    }
+
+    public async InputStream download(FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta) throws IOError {
         HttpFileReceiveData? http_receive_data = receive_data as HttpFileReceiveData;
         if (http_receive_data == null) assert(false);
 
-        try {
-            var session = new Soup.Session();
-            Soup.Request request = session.request(http_receive_data.url);
+        var get_message = new Soup.Message("GET", http_receive_data.url);
 
-            return yield request.send_async(null);
-        } catch (Error e) {
-            throw new FileReceiveError.DOWNLOAD_FAILED("Downloading file error: %s".printf(e.message));
+#if SOUP_3_0
+        string transfer_host = Uri.parse(http_receive_data.url, UriFlags.NONE).get_host();
+        get_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
+#endif
+
+#if SOUP_3_0
+        InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
+#else
+        InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
+#endif
+        if (file_meta.size != -1) {
+            return new LimitInputStream(stream, file_meta.size);
+        } else {
+            return stream;
         }
     }
 
     public FileMeta get_file_meta(FileTransfer file_transfer) throws FileReceiveError {
+        if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
+            var file_meta = new HttpFileMeta();
+            file_meta.size = file_transfer.size;
+            file_meta.content_type = file_transfer.content_type;
+            file_meta.file_name = file_transfer.file_name;
+            file_meta.message = null;
+            return file_meta;
+        }
+
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) throw new FileReceiveError.GET_METADATA_FAILED("No conversation");
 
-        Message? message = dino_db.get_message_by_id(int.parse(file_transfer.info));
+        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
         if (message == null) throw new FileReceiveError.GET_METADATA_FAILED("No message");
 
         var file_meta = new HttpFileMeta();
         file_meta.size = file_transfer.size;
-        file_meta.mime_type = file_transfer.mime_type;
+        file_meta.content_type = file_transfer.content_type;
 
         file_meta.file_name = extract_file_name_from_url(message.body);
 
@@ -125,10 +155,22 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     public FileReceiveData? get_file_receive_data(FileTransfer file_transfer) {
+        if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
+            if (!file_transfer.sfs_sources.is_empty) {
+                var http_source = file_transfer.sfs_sources.get(0) as Xep.StatelessFileSharing.HttpSource;
+                if (http_source != null) {
+                    var receive_data = new HttpFileReceiveData();
+                    receive_data.url = http_source.url;
+                    return receive_data;
+                }
+            }
+            return null;
+        }
+
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
         if (conversation == null) return null;
 
-        Message? message = dino_db.get_message_by_id(int.parse(file_transfer.info));
+        Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
         if (message == null) return null;
 
         var receive_data = new HttpFileReceiveData();
@@ -138,10 +180,11 @@ public class FileProvider : Dino.FileProvider, Object {
     }
 
     private string extract_file_name_from_url(string url) {
-        string ret = Uri.unescape_string(url.substring(url.last_index_of("/") + 1));
+        string ret = url;
         if (ret.contains("#")) {
             ret = ret.substring(0, ret.last_index_of("#"));
         }
+        ret = Uri.unescape_string(ret.substring(ret.last_index_of("/") + 1));
         return ret;
     }
 

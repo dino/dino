@@ -12,7 +12,8 @@ public enum Priority {
 }
 
 public enum WidgetType {
-    GTK
+    GTK3,
+    GTK4
 }
 
 public interface RootInterface : Object {
@@ -27,6 +28,18 @@ public interface EncryptionListEntry : Object {
 
     public abstract void encryption_activated(Entities.Conversation conversation, Plugins.SetInputFieldStatus callback);
     public abstract Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item);
+    public abstract string? get_encryption_icon_name(Entities.Conversation conversation, ContentItem content_item);
+
+}
+
+public interface CallEncryptionEntry : Object {
+    public abstract CallEncryptionWidget? get_widget(Account account, Xmpp.Xep.Jingle.ContentEncryption encryption);
+}
+
+public interface CallEncryptionWidget : Object {
+    public abstract string? get_title();
+    public abstract bool show_keys();
+    public abstract string? get_icon_name();
 }
 
 public abstract class AccountSettingsEntry : Object {
@@ -35,26 +48,31 @@ public abstract class AccountSettingsEntry : Object {
     public abstract string name { get; }
     public virtual int16 label_top_padding { get { return -1; } }
 
-    public abstract AccountSettingsWidget? get_widget(WidgetType type);
+    public signal void activated();
+    public abstract void deactivate();
+
+    public abstract void set_account(Account account);
+    public abstract Object? get_widget(WidgetType type);
 }
 
-public interface AccountSettingsWidget : Object {
-    public abstract void set_account(Account account);
+public abstract class EncryptionPreferencesEntry : Object {
+    public abstract string id { get; }
+    public virtual Priority priority { get { return Priority.DEFAULT; } }
 
-    public abstract signal void activated();
-
-    public abstract void deactivate();
+    public abstract Object? get_widget(Account account, WidgetType type);
 }
 
 public interface ContactDetailsProvider : Object {
     public abstract string id { get; }
+    public abstract string tab { get; }
 
     public abstract void populate(Conversation conversation, ContactDetails contact_details, WidgetType type);
+    public abstract Object? get_widget(Conversation conversation);
 }
 
 public class ContactDetails : Object {
     public signal void save();
-    public signal void add(string category, string label, string? desc, Object widget);
+    public signal void add_settings_action_row(Object action_row_model);
 }
 
 public interface TextCommand : Object {
@@ -66,25 +84,56 @@ public interface TextCommand : Object {
 public interface ConversationTitlebarEntry : Object {
     public abstract string id { get; }
     public abstract double order { get; }
-    public abstract ConversationTitlebarWidget? get_widget(WidgetType type);
-}
+    public abstract Object? get_widget(WidgetType type);
 
-public interface ConversationTitlebarWidget : Object {
     public abstract void set_conversation(Conversation conversation);
     public abstract void unset_conversation();
 }
 
-public abstract interface ConversationItemPopulator : Object {
+public interface ConversationItemPopulator : Object {
     public abstract string id { get; }
     public abstract void init(Conversation conversation, ConversationItemCollection summary, WidgetType type);
     public abstract void close(Conversation conversation);
 }
 
-public abstract interface ConversationAdditionPopulator : ConversationItemPopulator {
+public interface ConversationAdditionPopulator : ConversationItemPopulator {
     public virtual void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 }
 
-public abstract interface NotificationPopulator : Object {
+public interface VideoCallPlugin : Object {
+
+    public abstract bool supported();
+    // Video widget
+    public abstract VideoCallWidget? create_widget(WidgetType type);
+
+    // Devices
+    public signal void devices_changed(string media, bool incoming);
+    public abstract Gee.List<MediaDevice> get_devices(string media, bool incoming);
+    public abstract MediaDevice? get_preferred_device(string media, bool incoming);
+    public abstract MediaDevice? get_device(Xmpp.Xep.JingleRtp.Stream? stream, bool incoming);
+    public abstract void set_pause(Xmpp.Xep.JingleRtp.Stream? stream, bool pause);
+    public abstract void set_device(Xmpp.Xep.JingleRtp.Stream? stream, MediaDevice? device);
+
+    public abstract void dump_dot();
+}
+
+public interface VideoCallWidget : Object {
+    public signal void resolution_changed(uint width, uint height);
+    public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Jid jid);
+    public abstract void display_device(MediaDevice device);
+    public abstract void detach();
+}
+
+public interface MediaDevice : Object {
+    public abstract string id { owned get; }
+    public abstract string display_name { owned get; }
+    public abstract string? detail_name { owned get; }
+
+    public abstract string? media { owned get; }
+    public abstract bool incoming { get; }
+}
+
+public interface NotificationPopulator : Object {
     public abstract string id { get; }
     public abstract void init(Conversation conversation, NotificationCollection summary, WidgetType type);
     public abstract void close(Conversation conversation);
@@ -93,10 +142,8 @@ public abstract interface NotificationPopulator : Object {
 public abstract class MetaConversationItem : Object {
     public virtual string populator_id { get; set; }
     public virtual Jid? jid { get; set; default=null; }
-    public virtual DateTime sort_time { get; set; default = new DateTime.now_utc(); }
-    public virtual long seccondary_sort_indicator { get; set; }
-    public virtual long tertiary_sort_indicator { get; set; }
-    public virtual DateTime? display_time { get; set; default = null; }
+    public virtual DateTime time { get; set; default = new DateTime.now_utc(); }
+    public virtual int secondary_sort_indicator { get; set; }
     public virtual Encryption encryption { get; set; default = Encryption.NONE; }
     public virtual Entities.Message.Marked mark { get; set; default = Entities.Message.Marked.NONE; }
 
@@ -105,14 +152,24 @@ public abstract class MetaConversationItem : Object {
     public bool requires_header { get; set; default=false; }
     public bool in_edit_mode { get; set; default=false; }
 
-    public abstract Object? get_widget(WidgetType type);
+    public abstract Object? get_widget(ConversationItemWidgetInterface outer, WidgetType type);
     public abstract Gee.List<MessageAction>? get_item_actions(WidgetType type);
 }
 
-public delegate void MessageActionEvoked(Object button, Plugins.MetaConversationItem evoked_on, Object widget);
+public interface ConversationItemWidgetInterface: Object {
+    public abstract void set_widget(Object object, WidgetType type, int priority);
+}
+
+public delegate void MessageActionEvoked(Variant? variant);
 public class MessageAction : Object {
+    public string name;
+    public bool sensitive = true;
+    public bool shortcut_action = true;
     public string icon_name;
-    public MessageActionEvoked callback;
+    public string? tooltip;
+    public Object? popover;
+    public MessageActionEvoked? callback;
+    public Variant? extras;
 }
 
 public abstract class MetaConversationNotification : Object {

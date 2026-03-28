@@ -22,9 +22,11 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         return "OMEMO";
     }}
 
-    public static IconSize ICON_SIZE_HEADER = Gtk.icon_size_register("im.dino.Dino.HEADER_ICON2", 17, 12);
-
     public Object? get_encryption_icon(Entities.Conversation conversation, ContentItem content_item) {
+        return null;
+    }
+
+    public string? get_encryption_icon_name(Entities.Conversation conversation, ContentItem content_item) {
         if (content_item.encryption != encryption) return null;
 
         RowOption row = db.content_item_meta.select( { db.identity_meta.trust_level } ).with(db.content_item_meta.content_item_id, "=", content_item.id)
@@ -33,7 +35,7 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
 
 
         if (row.is_present() && (TrustLevel) row[db.identity_meta.trust_level] == TrustLevel.VERIFIED) {
-            return new Image.from_icon_name("dino-security-high-symbolic", ICON_SIZE_HEADER) { opacity=0.4, visible = true };
+            return "dino-security-high-symbolic";
         }
         return null;
     }
@@ -51,7 +53,12 @@ public class EncryptionListEntry : Plugins.EncryptionListEntry, Object {
         Manager omemo_manager = plugin.app.stream_interactor.get_module(Manager.IDENTITY);
 
         if (muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
-            foreach (Jid offline_member in muc_manager.get_offline_members(conversation.counterpart, conversation.account)) {
+            var offline_members = muc_manager.get_offline_members(conversation.counterpart, conversation.account);
+            if (offline_members == null) {
+                // We don't store offline members yet, and it'll be null if we're offline
+                return;
+            }
+            foreach (Jid offline_member in offline_members) {
                 bool ok = yield omemo_manager.ensure_get_keys_for_jid(conversation.account, offline_member);
                 if (!ok) {
                     input_status_callback(new Plugins.InputFieldStatus("A member does not support OMEMO: %s".printf(offline_member.to_string()), Plugins.InputFieldStatus.MessageType.ERROR, Plugins.InputFieldStatus.InputState.NO_SEND));

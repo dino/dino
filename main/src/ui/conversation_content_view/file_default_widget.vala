@@ -7,45 +7,88 @@ using Dino.Entities;
 namespace Dino.Ui {
 
 [GtkTemplate (ui = "/im/dino/Dino/file_default_widget.ui")]
-public class FileDefaultWidget : EventBox {
+public class FileDefaultWidget : Box {
 
-    [GtkChild] public Stack image_stack;
-    [GtkChild] public Label name_label;
-    [GtkChild] public Label mime_label;
-    [GtkChild] public Image content_type_image;
-    [GtkChild] public Spinner spinner;
-    [GtkChild] public EventBox stack_event_box;
+    public signal void clicked();
+
+    [GtkChild] public unowned Stack image_stack;
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label mime_label;
+    [GtkChild] public unowned Image content_type_image;
+    [GtkChild] public unowned Spinner spinner;
+    [GtkChild] public unowned MenuButton file_menu;
 
     private FileTransfer.State state;
-    private bool pointer_inside = false;
 
-    public FileDefaultWidget() {
-        this.enter_notify_event.connect(on_pointer_entered);
-        this.leave_notify_event.connect(on_pointer_left);
+    public void init_updating_file_info() {
+        EventControllerMotion this_motion_events = new EventControllerMotion();
+        this.add_controller(this_motion_events);
+        this_motion_events.enter.connect(on_pointer_entered_event);
+        this_motion_events.leave.connect(on_pointer_left_event);
 
-        stack_event_box.enter_notify_event.connect((event) => { pointer_inside = true; return false; });
-        mime_label.enter_notify_event.connect((event) => { pointer_inside = true; return false; });
-        stack_event_box.leave_notify_event.connect((event) => { pointer_inside = true; return false; });
-        mime_label.leave_notify_event.connect((event) => { pointer_inside = true; return false; });
+        GestureClick gesture_click_controller = new GestureClick();
+        gesture_click_controller.set_button(1); // listen for left clicks
+        this.add_controller(gesture_click_controller);
+        gesture_click_controller.pressed.connect((n_press, x, y) => {
+            // Check whether the click was inside the file menu. Otherwise, open the file.
+            double x_button, y_button;
+            this.translate_coordinates(file_menu, x, y, out x_button, out y_button);
+            if (file_menu.contains(x_button, y_button)) return;
+
+            this.clicked();
+        });
     }
 
-    public void update_file_info(string? mime_type, FileTransfer.State state, long size) {
+    public void set_static_file_info(Xmpp.FileContentType? content_type) {
+        spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
+
+        image_stack.set_visible_child_name("content_type_image");
+        content_type_image.icon_name = get_file_icon_name(content_type);
+        mime_label.label = content_type != null ? content_type.get_description() : null;
+    }
+
+    public void update_file_info(Xmpp.FileContentType? content_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
         this.state = state;
 
-        spinner.active = false; // A hidden spinning spinner still uses CPU. Deactivate asap
+        spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
 
-        content_type_image.icon_name = get_file_icon_name(mime_type);
-        string? mime_description = mime_type != null ? ContentType.get_description(mime_type) : null;
+        content_type_image.icon_name = get_file_icon_name(content_type);
+        string? mime_description = content_type != null ? content_type.get_description() : null;
 
         switch (state) {
             case FileTransfer.State.COMPLETE:
                 mime_label.label = mime_description;
                 image_stack.set_visible_child_name("content_type_image");
+
+                // Create a menu
+                Menu menu_model = new Menu();
+                menu_model.append(_("Open"), "file.open");
+                menu_model.append(_("Save as…"), "file.save_as");
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+                file_menu.popover = popover_menu;
+                popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.IN_PROGRESS:
-                mime_label.label = _("Downloading %s…").printf(get_size_string(size));
-                spinner.active = true;
+                if (direction == FileTransfer.DIRECTION_RECEIVED) {
+                    if (size > 0) {
+                        int64 progress = transferred_bytes * 100 / size;
+                        mime_label.label = _("Downloading %s… (%u%%)").printf(get_size_string(size), progress);
+                    } else {
+                        mime_label.label = _("Downloading %s…").printf(get_size_string(size));
+                    }
+                } else {
+                    int64 progress = transferred_bytes * 100 / size;
+                    mime_label.label = _("Uploading %s… (%u%%)").printf(get_size_string(size), progress);
+                }
+                spinner.start();
                 image_stack.set_visible_child_name("spinner");
+
+                // Create a menu
+                Menu menu_model = new Menu();
+                menu_model.append(_("Cancel"), "file.cancel_download");
+                Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+                file_menu.popover = popover_menu;
+                popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.NOT_STARTED:
                 if (mime_description != null) {
@@ -65,40 +108,36 @@ public class FileDefaultWidget : EventBox {
         }
     }
 
-    private bool on_pointer_entered(Gdk.EventCrossing event) {
-        pointer_inside = true;
-        Timeout.add(20, () => {
-            if (pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.HAND2));
-                content_type_image.opacity = 0.7;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("download_image");
-                }
-            }
-            return false;
-        });
-        return false;
+    private void on_pointer_entered_event() {
+        this.set_cursor_from_name("pointer");
+        content_type_image.opacity = 0.7;
+        if (state == FileTransfer.State.NOT_STARTED) {
+            image_stack.set_visible_child_name("download_image");
+        }
+        if (state == FileTransfer.State.COMPLETE || state == FileTransfer.State.IN_PROGRESS) {
+            file_menu.opacity = 1;
+        }
     }
 
-    private bool on_pointer_left(Gdk.EventCrossing event) {
-        pointer_inside = false;
-        Timeout.add(20, () => {
-            if (!pointer_inside) {
-                event.get_window().set_cursor(new Cursor.for_display(Gdk.Display.get_default(), CursorType.XTERM));
-                content_type_image.opacity = 0.5;
-                if (state == FileTransfer.State.NOT_STARTED) {
-                    image_stack.set_visible_child_name("content_type_image");
-                }
-            }
-            return false;
-        });
-        return false;
+    private void on_pointer_left_event() {
+        if (file_menu.popover != null && file_menu.popover.visible) return;
+
+        this.set_cursor(null);
+        on_pointer_left();
     }
 
-    private static string get_file_icon_name(string? mime_type) {
-        if (mime_type == null) return "dino-file-symbolic";
+    private void on_pointer_left() {
+        content_type_image.opacity = 0.5;
+        if (state == FileTransfer.State.NOT_STARTED) {
+            image_stack.set_visible_child_name("content_type_image");
+        }
+        file_menu.opacity = 0;
+    }
 
-        string generic_icon_name = ContentType.get_generic_icon_name(mime_type) ?? "";
+    private static string get_file_icon_name(Xmpp.FileContentType? content_type) {
+        if (content_type == null) return "dino-file-symbolic";
+
+        string generic_icon_name = content_type.get_generic_icon_name() ?? "";
         switch (generic_icon_name) {
             case "audio-x-generic": return "dino-file-music-symbolic";
             case "image-x-generic": return "dino-file-image-symbolic";
@@ -111,7 +150,7 @@ public class FileDefaultWidget : EventBox {
         }
     }
 
-    private static string get_size_string(long size) {
+    public static string get_size_string(int64 size) {
         if (size < 1024) {
             return @"$(size) B";
         } else if (size < 1000 * 1000) {

@@ -24,7 +24,7 @@ public class ModuleManager {
         return null;
     }
 
-    public ArrayList<XmppStreamModule> get_modules(Account account, string? resource = null) {
+    public ArrayList<XmppStreamModule> get_modules(Account account) {
         ArrayList<XmppStreamModule> modules = new ArrayList<XmppStreamModule>();
 
         lock (module_map) {
@@ -34,9 +34,9 @@ public class ModuleManager {
 
         foreach (XmppStreamModule module in module_map[account]) {
             if (module.get_id() == Bind.Module.IDENTITY.id) {
-                (module as Bind.Module).requested_resource = resource ?? account.resourcepart;
+                ((Bind.Module) module).requested_resource = account.resourcepart;
             } else if (module.get_id() == Sasl.Module.IDENTITY.id) {
-                (module as Sasl.Module).password = account.password;
+                ((Sasl.Module) module).password = account.password;
             }
         }
         return modules;
@@ -46,8 +46,6 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<XmppStreamModule>();
             module_map[account].add(new Iq.Module());
-            module_map[account].add(new Tls.Module());
-            module_map[account].add(new Xep.SrvRecordsTls.Module());
             module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
             module_map[account].add(new Xep.StreamManagement.Module());
             module_map[account].add(new Bind.Module(account.resourcepart));
@@ -59,8 +57,9 @@ public class ModuleManager {
             module_map[account].add(new Xep.Bookmarks2.Module());
             module_map[account].add(new Presence.Module());
             module_map[account].add(new Xmpp.MessageModule());
-            module_map[account].add(new Xep.MessageArchiveManagement.Module());
+            module_map[account].add(new Xmpp.MessageArchiveManagement.Module());
             module_map[account].add(new Xep.MessageCarbons.Module());
+            module_map[account].add(new Xep.BitsOfBinary.Module());
             module_map[account].add(new Xep.Muc.Module());
             module_map[account].add(new Xep.Pubsub.Module());
             module_map[account].add(new Xep.MessageDeliveryReceipts.Module());
@@ -72,6 +71,7 @@ public class ModuleManager {
             module_map[account].add(new StreamError.Module());
             module_map[account].add(new Xep.InBandRegistration.Module());
             module_map[account].add(new Xep.HttpFileUpload.Module());
+            module_map[account].add(new Xep.Reactions.Module());
             module_map[account].add(new Xep.Socks5Bytestreams.Module());
             module_map[account].add(new Xep.InBandBytestreams.Module());
             module_map[account].add(new Xep.Jingle.Module());
@@ -80,6 +80,14 @@ public class ModuleManager {
             module_map[account].add(new Xep.JingleFileTransfer.Module());
             module_map[account].add(new Xep.Jet.Module());
             module_map[account].add(new Xep.LastMessageCorrection.Module());
+            module_map[account].add(new Xep.DirectMucInvitations.Module());
+            module_map[account].add(new Xep.JingleMessageInitiation.Module());
+            module_map[account].add(new Xep.OccupantIds.Module());
+            module_map[account].add(new Xep.MessageRetraction.Module());
+            module_map[account].add(new Xep.JingleRawUdp.Module());
+            module_map[account].add(new Xep.Muji.Module());
+            module_map[account].add(new Xep.CallInvites.Module());
+            module_map[account].add(new Xep.Coin.Module());
             initialize_account_modules(account, module_map[account]);
         }
     }

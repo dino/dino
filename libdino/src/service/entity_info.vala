@@ -32,82 +32,120 @@ public class EntityInfo : StreamInteractionModule, Object {
         this.entity_capabilities_storage = new EntityCapabilitiesStorage(db);
 
         stream_interactor.account_added.connect(on_account_added);
-        stream_interactor.stream_negotiated.connect((account, stream) => {
-            var cache = new CapsCacheImpl(account, this);
-            stream.get_module(ServiceDiscovery.Module.IDENTITY).cache = cache;
-
-            string? hash = EntityCapabilities.get_server_caps_hash(stream);
-            entity_caps_hashes[new Jid(account.domainpart)] = hash;
+        stream_interactor.connection_manager.stream_opened.connect((account, stream) => {
+            stream.received_features_node.connect(() => {
+                string? hash = EntityCapabilities.get_server_caps_hash(stream);
+                if (hash != null) {
+                    entity_caps_hashes[account.bare_jid.domain_jid] = hash;
+                }
+            });
         });
         stream_interactor.module_manager.initialize_account_modules.connect(initialize_modules);
+
+        remove_old_entities();
+        Timeout.add_seconds(60 * 60, () => { remove_old_entities(); return true; });
     }
 
-    public async Identity? get_identity(Account account, Jid jid) {
-        Gee.Set<ServiceDiscovery.Identity>? identities = null;
-
+    public async Gee.Set<Identity>? get_identities(Account account, Jid jid) {
         if (jid_identity.has_key(jid)) {
-            identities = jid_identity[jid];
-        }
-
-        if (identities == null) {
-            string? hash = entity_caps_hashes[jid];
-            if (hash != null) {
-                identities = get_identities(hash);
-            }
-
-            if (identities == null) {
-                ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
-                identities = info_result.identities;
-            }
-        }
-
-        if (identities != null) {
-            foreach (var identity in identities) {
-                if (identity.category == Identity.CATEGORY_CLIENT) {
-                    return identity;
-                }
-            }
-        }
-        return null;
-    }
-
-    public async bool has_feature(Account account, Jid jid, string feature) {
-        if (jid_features.has_key(jid)) {
-            return jid_features[jid].contains(feature);
+            return jid_identity[jid];
         }
 
         string? hash = entity_caps_hashes[jid];
         if (hash != null) {
-            Gee.List<string>? features = get_features(hash);
-            if (features != null) {
-                return features.contains(feature);
-            }
+            Gee.Set<Identity>? identities = get_stored_identities(hash);
+            if (identities != null) return identities;
         }
 
         ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
+        if (info_result != null) {
+            return info_result.identities;
+        }
+
+        return null;
+    }
+
+    public async Identity? get_identity(Account account, Jid jid) {
+        Gee.Set<ServiceDiscovery.Identity>? identities = yield get_identities(account, jid);
+        if (identities == null) return null;
+
+        foreach (var identity in identities) {
+            if (identity.category == Identity.CATEGORY_CLIENT) {
+                return identity;
+            }
+        }
+
+        return null;
+    }
+
+    public async bool has_feature(Account account, Jid jid, string feature) {
+        int has_feature_cached = has_feature_cached_int(account, jid, feature);
+        if (has_feature_cached != -1) {
+            return has_feature_cached == 1;
+        }
+
+        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, entity_caps_hashes[jid]);
         if (info_result == null) return false;
 
         return info_result.features.contains(feature);
     }
 
+    public bool has_feature_offline(Account account, Jid jid, string feature) {
+        int ret = has_feature_cached_int(account, jid, feature);
+        if (ret == -1) {
+            return db.entity.select()
+                    .with(db.entity.account_id, "=", account.id)
+                    .with(db.entity.jid_id, "=", db.get_jid_id(jid))
+                    .with(db.entity.resource, "=", jid.resourcepart ?? "")
+                    .join_with(db.entity_feature, db.entity.caps_hash, db.entity_feature.entity)
+                    .with(db.entity_feature.feature, "=", feature)
+                    .count() > 0;
+        }
+        return ret == 1;
+    }
+
+    public bool has_feature_cached(Account account, Jid jid, string feature) {
+        return has_feature_cached_int(account, jid, feature) == 1;
+    }
+
+    private int has_feature_cached_int(Account account, Jid jid, string feature) {
+        if (jid_features.has_key(jid)) {
+            return jid_features[jid].contains(feature) ? 1 : 0;
+        }
+
+        string? hash = entity_caps_hashes[jid];
+        if (hash != null) {
+            Gee.List<string>? features = get_stored_features(hash);
+            if (features != null) {
+                return features.contains(feature) ? 1 : 0;
+            }
+        }
+        return -1;
+    }
+
     private void on_received_available_presence(Account account, Presence.Stanza presence) {
-        bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).is_groupchat(presence.from.bare_jid, account);
+        bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(presence.from.bare_jid, account);
         if (is_gc) return;
 
         string? caps_hash = EntityCapabilities.get_caps_hash(presence);
         if (caps_hash == null) return;
 
-        /*db.entity.upsert()
-                .value(db.entity.account_id, account.id, true)
-                .value(db.entity.jid_id, db.get_jid_id(presence.from), true)
-                .value(db.entity.resource, presence.from.resourcepart, true)
-                .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
-                .value(db.entity.caps_hash, caps_hash)
-                .perform();*/
+        db.entity.upsert()
+            .value(db.entity.account_id, account.id, true)
+            .value(db.entity.jid_id, db.get_jid_id(presence.from), true)
+            .value(db.entity.resource, presence.from.resourcepart, true)
+            .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
+            .value(db.entity.caps_hash, caps_hash)
+            .perform();
 
         if (caps_hash != null) {
             entity_caps_hashes[presence.from] = caps_hash;
         }
+    }
+
+    private void remove_old_entities() {
+        long timestamp = (long)(new DateTime.now_local().add_days(-14)).to_unix();
+        db.entity.delete().with(db.entity.last_seen, "<", timestamp).perform();
     }
 
     private void store_features(string entity, Gee.List<string> features) {
@@ -131,9 +169,10 @@ public class EntityInfo : StreamInteractionModule, Object {
                     .value(db.entity_identity.entity_name, identity.name)
                     .perform();
         }
+        entity_identity[entity] = identities;
     }
 
-    private Gee.List<string>? get_features(string entity) {
+    private Gee.List<string>? get_stored_features(string entity) {
         Gee.List<string>? features = entity_features[entity];
         if (features != null) {
             return features;
@@ -151,18 +190,23 @@ public class EntityInfo : StreamInteractionModule, Object {
         return features;
     }
 
-    private Gee.Set<Identity> get_identities(string entity) {
+    private Gee.Set<Identity>? get_stored_identities(string entity) {
         Gee.Set<Identity>? identities = entity_identity[entity];
         if (identities != null) {
             return identities;
         }
 
+        identities = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
         var qry = db.entity_identity.select().with(db.entity_identity.entity, "=", entity);
         foreach (Row row in qry) {
-            if (identities == null) identities = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
             var identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.entity_name]);
             identities.add(identity);
         }
+
+        if (identities.size == 0) {
+            return null;
+        }
+        entity_identity[entity] = identities;
         return identities;
     }
 
@@ -173,18 +217,32 @@ public class EntityInfo : StreamInteractionModule, Object {
         ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid);
         if (info_result == null) return null;
 
-        if (hash != null && EntityCapabilities.Module.compute_hash_for_info_result(info_result) == hash) {
-            store_features(hash, info_result.features);
-            store_identities(hash, info_result.identities);
+        var computed_hash = EntityCapabilities.Module.compute_hash_for_info_result(info_result);
+
+        if (hash == null || computed_hash == hash) {
+            db.entity.upsert()
+                .value(db.entity.account_id, account.id, true)
+                .value(db.entity.jid_id, db.get_jid_id(jid), true)
+                .value(db.entity.resource, jid.resourcepart ?? "", true)
+                .value(db.entity.last_seen, (long)(new DateTime.now_local()).to_unix())
+                .value(db.entity.caps_hash, computed_hash)
+                .perform();
+
+            store_features(computed_hash, info_result.features);
+            store_identities(computed_hash, info_result.identities);
         } else {
-            jid_features[jid] = info_result.features;
-            jid_identity[jid] = info_result.identities;
+            warning("Claimed entity caps hash from %s doesn't match computed one", jid.to_string());
         }
+        jid_features[jid] = info_result.features;
+        jid_identity[jid] = info_result.identities;
 
         return info_result;
     }
 
     private void on_account_added(Account account) {
+        var cache = new CapsCacheImpl(account, this);
+        stream_interactor.module_manager.get_module(account, ServiceDiscovery.Module.IDENTITY).cache = cache;
+
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available.connect((stream, presence) => on_received_available_presence(account, presence));
     }
 
@@ -208,9 +266,7 @@ public class CapsCacheImpl : CapsCache, Object {
     }
 
     public async Gee.Set<Identity> get_entity_identities(Jid jid) {
-        var ret = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
-        ret.add(yield entity_info.get_identity(account, jid));
-        return ret;
+        return yield entity_info.get_identities(account, jid);
     }
 }
 }

@@ -26,9 +26,13 @@ public class UpsertBuilder : StatementBuilder {
         return this;
     }
 
-    public UpsertBuilder value_null<T>(Column<T> column) {
+    public UpsertBuilder value_null<T>(Column<T> column, bool key = false) {
         if (column.not_null) error("Can't set non-null column %s to null", column.name);
-        fields += new NullField<T>(column);
+        if (key) {
+            keys += new NullField<T>(column);
+        } else {
+            fields += new NullField<T>(column);
+        }
         return this;
     }
 

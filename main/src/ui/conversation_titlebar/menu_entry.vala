@@ -6,54 +6,49 @@ namespace Dino.Ui {
 
 class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
     public string id { get { return "menu"; } }
+    public double order { get { return 0; } }
 
     StreamInteractor stream_interactor;
-    MenuWidget widget;
+    private Conversation? conversation;
+
+    MenuButton button = new MenuButton() { icon_name="dino-view-more-symbolic" };
 
     public MenuEntry(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-    }
 
-    public double order { get { return 0; } }
-    public Plugins.ConversationTitlebarWidget? get_widget(Plugins.WidgetType type) {
-        if (type == Plugins.WidgetType.GTK) {
-            if (widget == null) {
-                widget = new MenuWidget(stream_interactor) { visible=true, sensitive=false };
-            }
-            return widget;
-        }
-        return null;
-    }
-}
+        Menu menu_model = new Menu();
+        menu_model.append(_("Conversation Details"), "conversation.details");
+        menu_model.append(_("Close Conversation"), "app.close-current-conversation");
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+        button.popover = popover_menu;
 
-class MenuWidget : Button, Plugins.ConversationTitlebarWidget {
-
-    private Conversation? conversation;
-
-    public MenuWidget(StreamInteractor stream_interactor) {
-        image = new Image.from_icon_name("open-menu-symbolic", IconSize.MENU);
-
-        clicked.connect(() => {
-            ContactDetails.Dialog contact_details_dialog = new ContactDetails.Dialog(stream_interactor, conversation);
-            contact_details_dialog.set_transient_for((Window) get_toplevel());
-            contact_details_dialog.present();
+        SimpleActionGroup action_group = new SimpleActionGroup();
+        SimpleAction details_action = new SimpleAction("details", null);
+        details_action.activate.connect((parameter) => {
+            var variant = new Variant.tuple(new Variant[] {new Variant.int32(conversation.id), new Variant.string("about")});
+            GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
+        action_group.insert(details_action);
+        button.insert_action_group("conversation", action_group);
     }
 
     public new void set_conversation(Conversation conversation) {
-        this.sensitive = true;
+        button.sensitive = true;
         this.conversation = conversation;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            tooltip_text = "Channel details";
-        } else {
-            tooltip_text = "Conversation details";
-        }
     }
 
     public new void unset_conversation() {
-        this.sensitive = false;
+        button.sensitive = false;
     }
 
-}
+    private void open_conversation_details() {
+        var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor);
+        conversation_details.present((Window)button.get_root());
+    }
 
+    public Object? get_widget(Plugins.WidgetType type) {
+        if (type != Plugins.WidgetType.GTK4) return null;
+        return button;
+    }
+}
 }
