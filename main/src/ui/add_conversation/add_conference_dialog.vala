@@ -86,6 +86,24 @@ public class AddConferenceDialog : Gtk.Dialog {
         conference_list_box.row_activated.connect(() => { ok_button.clicked(); });
 
         select_fragment = new SelectJidFragment(stream_interactor, conference_list_box, stream_interactor.get_accounts());
+        select_fragment.suggest_jids = (str, account) => {
+            var suggestions = new ArrayList<Jid>();
+            // If the user typed a full JID, suggest it directly
+            try {
+                Jid parsed_jid = new Jid(str);
+                if (parsed_jid.localpart != null) suggestions.add(parsed_jid);
+            } catch (InvalidJidError ignored) {}
+            // If the user typed a bare name, suggest it on the default MUC server
+            if (str != "" && !str.contains("@")) {
+                MucManager? muc_manager = stream_interactor.get_module(MucManager.IDENTITY);
+                if (muc_manager != null && muc_manager.default_muc_server.has_key(account)) {
+                    try {
+                        suggestions.add(new Jid(str + "@" + muc_manager.default_muc_server[account].to_string()));
+                    } catch (InvalidJidError ignored) {}
+                }
+            }
+            return suggestions;
+        };
         select_fragment.add_jid.connect((row) => {
             AddGroupchatDialog dialog = new AddGroupchatDialog(stream_interactor);
             dialog.set_transient_for(this);
