@@ -131,7 +131,43 @@
                                                                             <object class="GtkStackPage">
                                                                                 <property name="name">content</property>
                                                                                 <property name="child">
-                                                                                    <object class="DinoUiConversationView" id="conversation_view">
+                                                                                    <object class="GtkBox" id="content_box">
+                                                                                        <property name="orientation">vertical</property>
+                                                                                        <child>
+                                                                                            <object class="GtkBox" id="selection_toolbar">
+                                                                                                <property name="orientation">horizontal</property>
+                                                                                                <property name="visible">false</property>
+                                                                                                <property name="spacing">6</property>
+                                                                                                <child>
+                                                                                                    <object class="GtkButton" id="selection_cancel">
+                                                                                                        <property name="halign">start</property>
+                                                                                                        <property name="label" translatable="yes">Cancel</property>
+                                                                                                    </object>
+                                                                                                </child>
+                                                                                                <child>
+                                                                                                    <object class="GtkLabel" id="selection_counter">
+                                                                                                        <property name="ellipsize">end</property>
+                                                                                                        <property name="halign">start</property>
+                                                                                                        <property name="valign">baseline</property>
+                                                                                                        <property name="hexpand">true</property>
+                                                                                                        <attributes>
+                                                                                                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                                                                                                        </attributes>
+                                                                                                    </object>
+                                                                                                </child>
+                                                                                                <child>
+                                                                                                    <object class="GtkButton" id="selection_copy">
+                                                                                                        <property name="halign">end</property>
+                                                                                                        <property name="label" translatable="yes">Copy</property>
+                                                                                                    </object>
+                                                                                                </child>
+                                                                                            </object>
+                                                                                        </child>
+                                                                                        <child>
+                                                                                            <object class="DinoUiConversationView" id="conversation_view">
+                                                                                                <property name="vexpand">true</property>
+                                                                                            </object>
+                                                                                        </child>
                                                                                     </object>
                                                                                 </property>
                                                                             </object>
