@@ -26,7 +26,7 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
-        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pubsub_event, null);
+        stream.get_module(Pubsub.Module.IDENTITY).add_filtered_notification(stream, NS_URI, on_pubsub_event, null, null);
     }
 
     public override void detach(XmppStream stream) {}
