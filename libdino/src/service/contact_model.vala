@@ -36,6 +36,11 @@ namespace Dino {
             stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
                 check_update_models(account, jid, Conversation.Type.CHAT);
             });
+            stream_interactor.account_added.connect((account) => {
+                account.notify["alias"].connect(() => {
+                    check_update_models(account, account.bare_jid, Conversation.Type.CHAT);
+                });
+            });
         }
 
         private void check_update_models(Account account, Jid jid, Conversation.Type conversation_ty) {
