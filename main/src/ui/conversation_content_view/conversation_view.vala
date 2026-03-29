@@ -32,6 +32,10 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
 
+    // MAM
+    private LoadingMetaItem? loading_meta_item = null;
+    private LoadHistoryButtonMetaItem? load_history_button_item = null;
+
     private double? was_value;
     private double? was_upper;
     private double? was_page_size;
@@ -95,6 +99,23 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
         add_meta_notification.connect(on_add_meta_notification);
         remove_meta_notification.connect(on_remove_meta_notification);
+
+        stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync.syncing.connect(on_mam_sync);
+        stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync.syncing_done.connect(on_mam_sync_done);
+
+        // "Load History" button; always before everything, but usually invisible
+        load_history_button_item = new LoadHistoryButtonMetaItem();
+        load_history_button_item.time = new DateTime.from_unix_utc(0);
+        load_history_button_item.clicked.connect(() => {
+            if (this.conversation != null) {
+                    this.conversation.mam_scroll_enabled = true;
+                    remove_item(load_history_button_item);
+
+                    //
+                    fetch_mam.begin(true);
+                }
+            });
+        // do_insert_item(load_history_button_item); // DON'T insert yet, we only insert to make visible
 
         stream_interactor.get_module(MessageDeletion.IDENTITY).conversation_history_cleared.connect((conv) => {
             if (conv == this.conversation) {
@@ -392,12 +413,78 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         clear_notifications();
         this.conversation = conversation;
 
+        // Reset MAM state for new conversation
+        loading_meta_item = null;
+        remove_item(load_history_button_item);
+
         // Init for new conversation
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK4);
         }
         content_populator.init(this, conversation, Plugins.WidgetType.GTK4);
         subscription_notification.init(conversation, this);
+
+        initialize_mam.begin(conversation);
+    }
+
+    private async void initialize_mam(Conversation conversation) {
+        var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
+        if (!yield history_sync.can_do_mam(conversation)) return;
+        if (this.conversation != conversation) {
+            // avoid fetching if the conversation we were
+            // looking at switched quickly during the yield
+            return;
+        }
+        // if necessary, this will initialize the history
+        // but it's a no-op if already initialized
+        yield fetch_mam(false);
+    }
+
+    async void fetch_mam(bool before) {
+        var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
+        yield history_sync.fetch_mam(conversation, before);
+
+        var history_complete = history_sync.have_beginning(conversation);
+        debug("scroll = %s, history_complete = %s", conversation.mam_scroll_enabled.to_string(), history_complete.to_string());
+        if(!conversation.mam_scroll_enabled && !(history_complete)) {
+        // scroll enabled should always hide the button
+        // hide = (scroll_enabled || history_complete)
+        // show = !scrollenabled && !history_complete, by De Morgan's law
+            debug("showing Load History button");
+            do_insert_item(load_history_button_item);
+        } else {
+            debug("hiding Load History button");
+        }
+
+        // display_latest();
+    }
+
+    private async void on_mam_sync(bool before) {
+        debug("on_mam_sync");
+        if(loading_meta_item == null) {
+            // this is re-entrant, in the sense that multiple syncs at once are allowed
+            // but we will only ever show one "Loading..."
+            // This risks having the item jump from top to bottom but that would
+            // difficult for the user to trigger.
+            loading_meta_item = new LoadingMetaItem();
+            do_insert_item(loading_meta_item);
+        }
+
+        if(before) {
+            // we're loading _backwards_, so keep the item *early*
+            loading_meta_item.time = new DateTime.from_unix_utc(0);
+        } else {
+            // we're loading _forwards_ so keep the item *late*
+            loading_meta_item.time = new DateTime.now_local();
+        }
+    }
+
+    private async void on_mam_sync_done() {
+        debug("on_mam_sync_done");
+        if(loading_meta_item != null) {
+            remove_item(loading_meta_item);
+            loading_meta_item = null;
+        }
     }
 
     private void display_latest() {
@@ -414,9 +501,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     public void insert_item(Plugins.MetaConversationItem item) {
-        if (meta_items.size > 0) {
-            bool after_last = meta_items.last().time.compare(item.time) <= 0;
-            bool within_range = meta_items.last().time.compare(item.time) > 0 && meta_items.first().time.compare(item.time) < 0;
+        if (content_items.size > 0) {
+            bool after_last = content_items.last().time.compare(item.time) <= 0;
+            bool within_range = content_items.last().time.compare(item.time) > 0 && content_items.first().time.compare(item.time) < 0;
             bool accept = within_range || (at_current_content && after_last);
             if (!accept) {
                 return;
@@ -652,19 +739,24 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     private void on_value_notify() {
         if (scrolled.vadjustment.value < 400) {
-            load_earlier_messages();
+            load_earlier_messages.begin();
         } else if (scrolled.vadjustment.upper - (scrolled.vadjustment.value + scrolled.vadjustment.page_size) < 400) {
             load_later_messages();
         }
     }
 
-    private void load_earlier_messages() {
+    private async void load_earlier_messages() {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
         if (content_items.size > 0) {
             Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, 20);
             foreach (ContentMetaItem item in items) {
                 do_insert_item(item);
+            }
+
+            if (items.size == 0 && conversation != null && conversation.mam_scroll_enabled) {
+                debug("load_earlier_messages: now fetching MAM");
+                yield fetch_mam(true);
             }
         } else {
             reloading_mutex.unlock();
@@ -728,6 +820,39 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         notification_revealer.transition_duration = 0;
         notification_revealer.set_reveal_child(false);
     }
+}
+
+private class LoadingMetaItem : Plugins.MetaConversationItem {
+    public LoadingMetaItem() {
+        this.secondary_sort_indicator = int.MIN;
+    }
+
+    public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
+        var label = new Label(_("Loading…")) { halign=Align.CENTER, hexpand=true };
+        label.add_css_class("dim-label");
+        var box = new Box(Orientation.HORIZONTAL, 0) { hexpand=true, margin_top=8, margin_bottom=8 };
+        box.append(label);
+        return box;
+    }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
+}
+
+private class LoadHistoryButtonMetaItem : Plugins.MetaConversationItem {
+    public signal void clicked();
+
+    public LoadHistoryButtonMetaItem() {
+        this.secondary_sort_indicator = int.MIN;
+    }
+
+    // TODO: shrink me, tastefully
+    public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
+        var button = new Button.with_label(_("Load History")) { halign=Align.CENTER, hexpand=true, margin_top=8, margin_bottom=8 };
+        button.clicked.connect(() => clicked());
+        return button;
+    }
+
+    public override Gee.List<Plugins.MessageAction>? get_item_actions(Plugins.WidgetType type) { return null; }
 }
 
 }

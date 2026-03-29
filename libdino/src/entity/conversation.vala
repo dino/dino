@@ -45,6 +45,7 @@ public class Conversation : Object {
     public Setting send_marker { get; set; default = Setting.DEFAULT; }
 
     public int pinned { get; set; default = 0; }
+    public bool mam_scroll_enabled { get; set; default = false; }
 
     private Database? db;
 
@@ -76,6 +77,7 @@ public class Conversation : Object {
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
         pinned = row[db.conversation.pinned];
+        mam_scroll_enabled = row[db.conversation.mam_scroll_enabled];
 
         notify.connect(on_update);
     }
@@ -203,6 +205,8 @@ public class Conversation : Object {
                 update.set(db.conversation.send_marker, send_marker); break;
             case "pinned":
                 update.set(db.conversation.pinned, pinned); break;
+            case "mam-scroll-enabled":
+                update.set(db.conversation.mam_scroll_enabled, mam_scroll_enabled); break;
         }
         update.perform();
     }

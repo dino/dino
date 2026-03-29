@@ -18,6 +18,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
         Menu menu_model = new Menu();
         menu_model.append(_("Conversation Details"), "conversation.details");
+        menu_model.append(_("Fetch History"), "conversation.fetch-history");
         menu_model.append(_("Clear History"), "conversation.clear-history");
         menu_model.append(_("Close Conversation"), "app.close-current-conversation");
         Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
@@ -30,6 +31,14 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
             GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
         action_group.insert(details_action);
+
+        SimpleAction fetch_history_action = new SimpleAction("fetch-history", null);
+        fetch_history_action.activate.connect((parameter) => {
+            debug("Fetching MAM history");
+            stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync.fetch_mam.begin(conversation, true);
+        });
+        action_group.insert(fetch_history_action);
+
         SimpleAction clear_history_action = new SimpleAction("clear-history", null);
         clear_history_action.activate.connect((parameter) => {
             Adw.AlertDialog dialog = new Adw.AlertDialog(_("Clear history"), null);
@@ -46,6 +55,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
             dialog.present((Gtk.Window)button.get_root());
         });
         action_group.insert(clear_history_action);
+
         button.insert_action_group("conversation", action_group);
     }
 

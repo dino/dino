@@ -7,6 +7,9 @@ using Qlite;
 
 public class Dino.HistorySync {
 
+    public signal void syncing(bool before);
+    public signal void syncing_done();
+
     private StreamInteractor stream_interactor;
     private Database db;
 
@@ -16,12 +19,18 @@ public class Dino.HistorySync {
     public HashMap<Account, HashMap<string, DateTime>> mam_times = new HashMap<Account, HashMap<string, DateTime>>();
     public HashMap<string, int> hitted_range = new HashMap<string, int>();
 
+    private HashMap<Conversation, HashMap<bool, PageRequestResult>> mam_cursors = new HashMap<Conversation, HashMap<bool, PageRequestResult?>>(Conversation.hash_func, Conversation.equals_func);
+
     // Server ID of the latest message of the previous segment
     public HashMap<Account, string> catchup_until_id = new HashMap<Account, string>(Account.hash_func, Account.equals_func);
     // Time of the latest message of the previous segment
     public HashMap<Account, DateTime> catchup_until_time = new HashMap<Account, DateTime>(Account.hash_func, Account.equals_func);
 
     private HashMap<string, Gee.List<Xmpp.MessageStanza>> stanzas = new HashMap<string, Gee.List<Xmpp.MessageStanza>>();
+
+    // Conversations for which we have successfully synced forwards this session.
+    // Cleared when the stream reconnects, since we may have missed messages while disconnected.
+    private HashSet<Conversation> forwards_synced = new HashSet<Conversation>(Conversation.hash_func, Conversation.equals_func);
 
     public HistorySync(Database db, StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
@@ -34,6 +43,12 @@ public class Dino.HistorySync {
                 debug("MAM: [%s] Reset catchup_id", account.bare_jid.to_string());
                 current_catchup_id[account].clear();
             }
+            // Any forwards sync state for this account is stale after a reconnect
+            var stale = new Gee.ArrayList<Conversation>();
+            foreach (var conv in forwards_synced) {
+                if (conv.account.equals(account)) stale.add(conv);
+            }
+            forwards_synced.remove_all(stale);
         });
     }
 
@@ -47,6 +62,15 @@ public class Dino.HistorySync {
             update_latest_db_range(account, message_stanza);
             return false;
         }
+    }
+
+    public async bool can_do_mam(Conversation conversation) {
+        Jid mam_server = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? conversation.counterpart.bare_jid
+            : conversation.account.bare_jid;
+        return yield stream_interactor.get_module(EntityInfo.IDENTITY)
+            .has_feature(conversation.account, mam_server,
+                         Xmpp.MessageArchiveManagement.NS_URI);
     }
 
     public void update_latest_db_range(Account account, Xmpp.MessageStanza message_stanza) {
@@ -120,254 +144,340 @@ public class Dino.HistorySync {
         }
     }
 
-    public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
-        debug("[%s | %s] Fetch everything %s", account.bare_jid.to_string(), mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
-        RowOption latest_row_opt = db.mam_catchup.select()
-                .with(db.mam_catchup.account_id, "=", account.id)
-                .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
-                .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
-                .order_by(db.mam_catchup.to_time, "DESC")
-                .single().row();
-        Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
+    // public async void fetch_everything(Account account, Jid mam_server, Cancellable? cancellable = null, DateTime until_earliest_time = new DateTime.from_unix_utc(0)) {
+    //     debug("[%s | %s] Fetch everything %s", account.bare_jid.to_string(), mam_server.to_string(), until_earliest_time != null ? @"(until $until_earliest_time)" : "");
+    //     RowOption latest_row_opt = db.mam_catchup.select()
+    //             .with(db.mam_catchup.account_id, "=", account.id)
+    //             .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
+    //             .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
+    //             .order_by(db.mam_catchup.to_time, "DESC")
+    //             .single().row();
+    //     Row? latest_row = latest_row_opt.is_present() ? latest_row_opt.inner : null;
 
-        Row? new_row = yield fetch_latest_page(account, mam_server, latest_row, until_earliest_time, cancellable);
+    //     Row? new_row = yield fetch_latest_page(account, mam_server, null, latest_row, until_earliest_time, cancellable);
 
-        if (new_row != null) {
-            current_catchup_id[account][mam_server] = new_row[db.mam_catchup.id];
-        } else if (latest_row != null) {
-            current_catchup_id[account][mam_server] = latest_row[db.mam_catchup.id];
-        }
+    //     if (new_row != null) {
+    //         current_catchup_id[account][mam_server] = new_row[db.mam_catchup.id];
+    //     } else if (latest_row != null) {
+    //         current_catchup_id[account][mam_server] = latest_row[db.mam_catchup.id];
+    //     }
 
-        // Set the previous and current row
-        Row? previous_row = null;
-        Row? current_row = null;
-        if (new_row != null) {
-            current_row = new_row;
-            previous_row = latest_row;
-        } else if (latest_row != null) {
-            current_row = latest_row;
-            RowOption previous_row_opt = db.mam_catchup.select()
-                    .with(db.mam_catchup.account_id, "=", account.id)
-                    .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
-                    .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
-                    .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
-                    .order_by(db.mam_catchup.to_time, "DESC")
-                    .single().row();
-            previous_row = previous_row_opt.is_present() ? previous_row_opt.inner : null;
-        }
+    //     // Set the previous and current row
+    //     Row? previous_row = null;
+    //     Row? current_row = null;
+    //     if (new_row != null) {
+    //         current_row = new_row;
+    //         previous_row = latest_row;
+    //     } else if (latest_row != null) {
+    //         current_row = latest_row;
+    //         RowOption previous_row_opt = db.mam_catchup.select()
+    //                 .with(db.mam_catchup.account_id, "=", account.id)
+    //                 .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
+    //                 .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
+    //                 .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
+    //                 .order_by(db.mam_catchup.to_time, "DESC")
+    //                 .single().row();
+    //         previous_row = previous_row_opt.is_present() ? previous_row_opt.inner : null;
+    //     }
 
-        // Fetch messages between two db ranges and merge them
-        while (current_row != null && previous_row != null) {
-            if (current_row[db.mam_catchup.from_end]) {
-                debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
-                return;
-            }
+    //     // Fetch messages between two db ranges and merge them
+    //     while (current_row != null && previous_row != null) {
+    //         if (current_row[db.mam_catchup.from_end]) {
+    //             debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
+    //             return;
+    //         }
 
-            debug("[%s | %s] Fetching between ranges %s - %s", account.bare_jid.to_string(), mam_server.to_string(), previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
-            current_row = yield fetch_between_ranges(account, mam_server, previous_row, current_row, cancellable);
-            if (current_row == null) return;
+    //         debug("[%s | %s] Fetching between ranges %s - %s", account.bare_jid.to_string(), mam_server.to_string(), previous_row[db.mam_catchup.to_time].to_string(), current_row[db.mam_catchup.from_time].to_string());
+    //         current_row = yield fetch_between_ranges(account, mam_server, null, previous_row, current_row, cancellable);
+    //         if (current_row == null) return;
 
-            RowOption previous_row_opt = db.mam_catchup.select()
-                    .with(db.mam_catchup.account_id, "=", account.id)
-                    .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
-                    .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
-                    .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
-                    .order_by(db.mam_catchup.to_time, "DESC")
-                    .single().row();
-            previous_row = previous_row_opt.is_present() ? previous_row_opt.inner : null;
-        }
+    //         RowOption previous_row_opt = db.mam_catchup.select()
+    //                 .with(db.mam_catchup.account_id, "=", account.id)
+    //                 .with(db.mam_catchup.server_jid, "=", mam_server.to_string())
+    //                 .with(db.mam_catchup.to_time, "<", current_row[db.mam_catchup.from_time])
+    //                 .with(db.mam_catchup.to_time, ">=", (long) until_earliest_time.to_unix())
+    //                 .order_by(db.mam_catchup.to_time, "DESC")
+    //                 .single().row();
+    //         previous_row = previous_row_opt.is_present() ? previous_row_opt.inner : null;
+    //     }
 
-        // We're at the earliest range. Try to expand it even further back.
-        if (current_row == null) {
-            debug("[%s | %s] No current range, aborting sync.", account.bare_jid.to_string(), mam_server.to_string());
-            return;
-        } else if (current_row[db.mam_catchup.from_end]) {
-            debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
-            return;
-        }
-        // We don't want to fetch before the earliest range over and over again in MUCs if it's after until_earliest_time.
-        // For now, don't query if we are within a week of until_earliest_time
-        if (until_earliest_time != null && current_row[db.mam_catchup.from_time] <= until_earliest_time.to_unix()) {
-            debug("[%s | %s] Current range starting %s is before limit %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string(), until_earliest_time.to_unix().to_string());
-            return;
-        }
-        yield fetch_before_range(account, mam_server, current_row, until_earliest_time);
-    }
+    //     // We're at the earliest range. Try to expand it even further back.
+    //     if (current_row == null) {
+    //         debug("[%s | %s] No current range, aborting sync.", account.bare_jid.to_string(), mam_server.to_string());
+    //         return;
+    //     } else if (current_row[db.mam_catchup.from_end]) {
+    //         debug("[%s | %s] No logs on server before %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string());
+    //         return;
+    //     }
+    //     // We don't want to fetch before the earliest range over and over again in MUCs if it's after until_earliest_time.
+    //     // For now, don't query if we are within a week of until_earliest_time
+    //     if (until_earliest_time != null && current_row[db.mam_catchup.from_time] <= until_earliest_time.to_unix()) {
+    //         debug("[%s | %s] Current range starting %s is before limit %s, aborting sync.", account.bare_jid.to_string(), mam_server.to_string(), current_row[db.mam_catchup.from_time].to_string(), until_earliest_time.to_unix().to_string());
+    //         return;
+    //     }
+    //     yield fetch_before_range(account, mam_server, null, current_row, until_earliest_time);
+    // }
 
     // Fetches the latest page (up to previous db row). Extends the previous db row if it was reached, creates a new row otherwise.
-    public async Row? fetch_latest_page(Account account, Jid mam_server, Row? latest_row, DateTime? until_earliest_time, Cancellable? cancellable = null) {
-        debug("[%s | %s] Fetching latest page", account.bare_jid.to_string(), mam_server.to_string());
+    // public async Row? fetch_latest_page(Account account, Jid mam_server, Jid? counterpart, Row? latest_row, DateTime? until_earliest_time, Cancellable? cancellable = null) {
+    //     debug("[%s | %s] Fetching latest page", account.bare_jid.to_string(), mam_server.to_string());
 
-        int latest_row_id = -1;
-        DateTime latest_message_time = until_earliest_time;
-        string? latest_message_id = null;
+    //     int latest_row_id = -1;
+    //     DateTime latest_message_time = until_earliest_time;
+    //     string? latest_message_id = null;
 
-        if (latest_row != null) {
-            latest_row_id = latest_row[db.mam_catchup.id];
-            latest_message_time = (new DateTime.from_unix_utc(latest_row[db.mam_catchup.to_time])).add_minutes(-5);
-            latest_message_id = latest_row[db.mam_catchup.to_id];
+    //     if (latest_row != null) {
+    //         latest_row_id = latest_row[db.mam_catchup.id];
+    //         latest_message_time = (new DateTime.from_unix_utc(latest_row[db.mam_catchup.to_time])).add_minutes(-5);
+    //         latest_message_id = latest_row[db.mam_catchup.to_id];
 
-            // Make sure we only fetch to until_earliest_time if latest_message_time is further back
-            if (until_earliest_time != null && latest_message_time.compare(until_earliest_time) < 0) {
-                latest_message_time = until_earliest_time.add_minutes(-5);
-                latest_message_id = null;
-            }
-        }
+    //         // Make sure we only fetch to until_earliest_time if latest_message_time is further back
+    //         if (until_earliest_time != null && latest_message_time.compare(until_earliest_time) < 0) {
+    //             latest_message_time = until_earliest_time.add_minutes(-5);
+    //             latest_message_id = null;
+    //         }
+    //     }
 
-        var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, latest_message_time, latest_message_id);
+    //     var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, latest_message_time, latest_message_id);
+    //     if (counterpart != null) query_params.with = counterpart;
 
-        PageRequestResult page_result = yield get_mam_page(account, query_params, null, cancellable);
-        debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
+    //     PageRequestResult page_result = yield get_mam_page(account, query_params, null, cancellable);
+    //     debug("[%s | %s] Latest page result: %s", account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
 
-        if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) {
-            return null;
-        }
+    //     if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) {
+    //         return null;
+    //     }
 
-        // Catchup finished within first page. Update latest db entry.
-        if (latest_row_id != -1 &&
-                page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages }) {
+    //     // Catchup finished within first page. Update latest db entry.
+    //     if (latest_row_id != -1 &&
+    //             page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages }) {
 
-            if (page_result.stanzas == null) return null;
+    //         if (page_result.stanzas == null) return null;
 
-            string latest_mam_id = page_result.query_result.last;
-            long latest_mam_time = (long) mam_times[account][latest_mam_id].to_unix();
+    //         string latest_mam_id = page_result.query_result.last;
+    //         long latest_mam_time = (long) mam_times[account][latest_mam_id].to_unix();
 
-            var query = db.mam_catchup.update()
-                    .with(db.mam_catchup.id, "=", latest_row_id)
-                    .set(db.mam_catchup.to_time, latest_mam_time)
-                    .set(db.mam_catchup.to_id, latest_mam_id);
+    //         var query = db.mam_catchup.update()
+    //                 .with(db.mam_catchup.id, "=", latest_row_id)
+    //                 .set(db.mam_catchup.to_time, latest_mam_time)
+    //                 .set(db.mam_catchup.to_id, latest_mam_id);
 
-            if (page_result.page_result == PageResult.NoMoreMessages) {
-                // If the server doesn't have more messages, store that this range is at its end.
-                query.set(db.mam_catchup.from_end, true);
-            }
-            query.perform();
-            return null;
-        }
+    //         if (page_result.page_result == PageResult.NoMoreMessages) {
+    //             // If the server doesn't have more messages, store that this range is at its end.
+    //             query.set(db.mam_catchup.from_end, true);
+    //         }
+    //         query.perform();
+    //         return null;
+    //     }
 
-        if (page_result.query_result.first == null || page_result.query_result.last == null) {
-            return null;
-        }
+        // if (page_result.query_result.first == null || page_result.query_result.last == null) {
+        //     return null;
+        // }
 
         // Either we need to fetch more pages or this is the first db entry ever
-        debug("[%s | %s] Creating new db range for latest page", account.bare_jid.to_string(), mam_server.to_string());
+    //     debug("[%s | %s] Creating new db range for latest page", account.bare_jid.to_string(), mam_server.to_string());
 
-        string from_id = page_result.query_result.first;
-        string to_id = page_result.query_result.last;
+    //     string from_id = page_result.query_result.first != null ? page_result.query_result.first : "";
+    //     string to_id = page_result.query_result.last != null ? page_result.query_result.last : "";
 
-        if (!mam_times[account].has_key(from_id) || !mam_times[account].has_key(to_id)) {
-            debug("Missing from/to id %s %s", from_id, to_id);
-            return null;
-        }
+    //     long from_time = (long) ( mam_times[account].has_key(from_id) ? mam_times[account][from_id].to_unix() : 0 );
+    //     long to_time = (long) ( mam_times[account].has_key(to_id) ? mam_times[account][to_id].to_unix() : 0 );
 
-        long from_time = (long) mam_times[account][from_id].to_unix();
-        long to_time = (long) mam_times[account][to_id].to_unix();
-
-        int new_row_id = (int) db.mam_catchup.insert()
-                .value(db.mam_catchup.account_id, account.id)
-                .value(db.mam_catchup.server_jid, mam_server.to_string())
-                .value(db.mam_catchup.from_id, from_id)
-                .value(db.mam_catchup.from_time, from_time)
-                .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages)
-                .value(db.mam_catchup.to_id, to_id)
-                .value(db.mam_catchup.to_time, to_time)
-                .perform();
-        return db.mam_catchup.select().with(db.mam_catchup.id, "=", new_row_id).single().row().inner;
-    }
+    //     int new_row_id = (int) db.mam_catchup.insert()
+    //             .value(db.mam_catchup.account_id, account.id)
+    //             .value(db.mam_catchup.server_jid, mam_server.to_string())
+    //             .value(db.mam_catchup.counterpart_jid, counterpart != null ? counterpart.to_string() : null)
+    //             .value(db.mam_catchup.from_id, from_id)
+    //             .value(db.mam_catchup.from_time, from_time)
+    //             .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages)
+    //             .value(db.mam_catchup.to_id, to_id)
+    //             .value(db.mam_catchup.to_time, to_time)
+    //             .perform();
+    //     return db.mam_catchup.select().with(db.mam_catchup.id, "=", new_row_id).single().row().inner;
+    // }
 
     /** Fetches messages between the end of `earlier_range` and start of `later_range`
      ** Merges the `earlier_range` db row into the `later_range` db row.
      ** @return The resulting range comprising `earlier_range`, `later_rage`, and everything in between. null if fetching/merge failed.
      **/
-    private async Row? fetch_between_ranges(Account account, Jid mam_server, Row earlier_range, Row later_range, Cancellable? cancellable = null) {
-        int later_range_id = (int) later_range[db.mam_catchup.id];
-        DateTime earliest_time = new DateTime.from_unix_utc(earlier_range[db.mam_catchup.to_time]);
-        DateTime latest_time = new DateTime.from_unix_utc(later_range[db.mam_catchup.from_time]);
-        debug("[%s | %s] Fetching between %s (%s) and %s (%s)", account.bare_jid.to_string(), mam_server.to_string(), earliest_time.to_string(), earlier_range[db.mam_catchup.to_id], latest_time.to_string(), later_range[db.mam_catchup.from_id]);
+    // private async Row? fetch_between_ranges(Account account, Jid mam_server, Jid? counterpart, Row earlier_range, Row later_range, Cancellable? cancellable = null) {
+    //     int later_range_id = (int) later_range[db.mam_catchup.id];
+    //     DateTime earliest_time = new DateTime.from_unix_utc(earlier_range[db.mam_catchup.to_time]);
+    //     DateTime latest_time = new DateTime.from_unix_utc(later_range[db.mam_catchup.from_time]);
+    //     debug("[%s | %s] Fetching between %s (%s) and %s (%s)", account.bare_jid.to_string(), mam_server.to_string(), earliest_time.to_string(), earlier_range[db.mam_catchup.to_id], latest_time.to_string(), later_range[db.mam_catchup.from_id]);
 
-        var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_between(mam_server,
-            earliest_time, earlier_range[db.mam_catchup.to_id],
-            latest_time, later_range[db.mam_catchup.from_id]);
+    //     var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_between(mam_server,
+    //         earliest_time, earlier_range[db.mam_catchup.to_id],
+    //         latest_time, later_range[db.mam_catchup.from_id]);
+    //     if (counterpart != null) query_params.with = counterpart;
 
-        PageRequestResult page_result = yield fetch_query(account, query_params, later_range_id, cancellable);
+    //     PageRequestResult page_result = yield fetch_query(account, query_params, later_range_id, cancellable);
 
-        if (page_result.page_result == PageResult.TargetReached || page_result.page_result == PageResult.NoMoreMessages) {
-            debug("[%s | %s] Merging range %i into %i", account.bare_jid.to_string(), mam_server.to_string(), earlier_range[db.mam_catchup.id], later_range_id);
-            // Merge earlier range into later one.
-            db.mam_catchup.update()
-                .with(db.mam_catchup.id, "=", later_range_id)
-                .set(db.mam_catchup.from_time, earlier_range[db.mam_catchup.from_time])
-                .set(db.mam_catchup.from_id, earlier_range[db.mam_catchup.from_id])
-                .set(db.mam_catchup.from_end, earlier_range[db.mam_catchup.from_end])
-                .perform();
+    //     if (page_result.page_result == PageResult.TargetReached || page_result.page_result == PageResult.NoMoreMessages) {
+    //         debug("[%s | %s] Merging range %i into %i", account.bare_jid.to_string(), mam_server.to_string(), earlier_range[db.mam_catchup.id], later_range_id);
+    //         // Merge earlier range into later one.
+    //         db.mam_catchup.update()
+    //             .with(db.mam_catchup.id, "=", later_range_id)
+    //             .set(db.mam_catchup.from_time, earlier_range[db.mam_catchup.from_time])
+    //             .set(db.mam_catchup.from_id, earlier_range[db.mam_catchup.from_id])
+    //             .set(db.mam_catchup.from_end, earlier_range[db.mam_catchup.from_end])
+    //             .perform();
 
-            db.mam_catchup.delete().with(db.mam_catchup.id, "=", earlier_range[db.mam_catchup.id]).perform();
+    //         db.mam_catchup.delete().with(db.mam_catchup.id, "=", earlier_range[db.mam_catchup.id]).perform();
 
-            // Return the updated version of the later range
-            return db.mam_catchup.select().with(db.mam_catchup.id, "=", later_range_id).single().row().inner;
-        }
+    //         // Return the updated version of the later range
+    //         return db.mam_catchup.select().with(db.mam_catchup.id, "=", later_range_id).single().row().inner;
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
-    private async void fetch_before_range(Account account, Jid mam_server, Row range, DateTime? until_earliest_time, Cancellable? cancellable = null) {
-        DateTime latest_time = new DateTime.from_unix_utc(range[db.mam_catchup.from_time]);
-        string latest_id = range[db.mam_catchup.from_id];
-        debug("[%s | %s] Fetching before range < %s, %s", account.bare_jid.to_string(), mam_server.to_string(), latest_time.to_string(), latest_id);
+    // extend MAM by .. one page?
+    // returns 'true' if you should continue calling this; false if the archive is exhausted not
+    public async bool fetch_mam(Conversation conversation, bool before = false) {
+        debug("fetching %s history for %s:%s", before? "<<<=" : "=>>>", conversation.account.bare_jid.to_string(), conversation.counterpart.to_string());
+        Jid mam_server = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? conversation.counterpart.bare_jid
+            : conversation.account.bare_jid;
+        Jid counterpart = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? null
+            : conversation.counterpart.bare_jid;
+
+        var catchup_select = db.mam_catchup.select()
+                    .with(db.mam_catchup.account_id, "=", conversation.account.id)
+                    .with(db.mam_catchup.server_jid, "=", mam_server.to_string());
+        if (counterpart != null) catchup_select.with(db.mam_catchup.counterpart_jid, "=", counterpart.to_string());
+
+        Row? mam_catchup = mam_catchup_row(conversation);
 
         Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params;
-        if (until_earliest_time == null) {
-            query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(mam_server, latest_time, latest_id);
+        if (mam_catchup == null) {
+            // Do "empty <before/>": https://xmpp.org/extensions/xep-0313.html#sect-idm45587610223104
+            query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, null, null);
         } else {
-            query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_between(
-                    mam_server,
-                    until_earliest_time, null,
-                    latest_time, latest_id
-            );
+            if (before) {
+                if (mam_catchup[db.mam_catchup.from_end]) {
+                    debug("fetch_mam: already at beginning of history for %s", conversation.counterpart.to_string());
+                    return false;
+                } else {
+                    // time = mam_catchup[db.mam_catchup.from_time]; // todo ?
+                    var stanzaid = mam_catchup[db.mam_catchup.from_id];
+                    query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(mam_server, null, stanzaid);
+                }
+            } else {
+                // For forwards fetch: skip if we already synced forwards this session.
+                if (forwards_synced.contains(conversation)) {
+                    debug("fetch_mam: have end of history for %s", conversation.counterpart.to_string());
+                    return false;
+                } else {
+                    // time = mam_catchup[db.mam_catchup.to_time];
+                    var stanzaid = mam_catchup[db.mam_catchup.from_id];
+                    query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, null, stanzaid);
+                }
+            }
         }
-        yield fetch_query(account, query_params, range[db.mam_catchup.id], cancellable);
+
+
+        syncing(before);
+        try {
+            if(!mam_cursors.contains(conversation)) {
+                mam_cursors[conversation] = new HashMap<bool, PageRequestResult?>();
+            }
+            if(!mam_cursors[conversation].contains(before)) {
+                debug("making new cursor for %s (mode %s)", conversation.counterpart.to_string(), before.to_string());
+                mam_cursors[conversation][before] = null;
+            }
+
+            mam_cursors[conversation][before] = yield get_mam_page(conversation, query_params, mam_cursors[conversation][before]/*, TODO: cancellable*/);
+            if ( mam_cursors[conversation][before].page_result == PageResult.Error
+              || mam_cursors[conversation][before].page_result == PageResult.Cancelled) {
+                warning("get_mam_page returned %s", mam_cursors[conversation][before].page_result.to_string());
+            }
+            if (mam_cursors[conversation][before].page_result != PageResult.MorePagesAvailable) {
+                // done. clean up:
+                mam_cursors[conversation].unset(before);
+                if(mam_cursors[conversation].size == 0) {
+                    mam_cursors.unset(conversation);
+                }
+
+                return false;
+            } else {
+                // continue signal to caller to keep going
+                return true;
+            }
+        } finally {
+            syncing_done();
+        }
     }
 
+    private Row? mam_catchup_row(Conversation conversation) {
+        // helper
+        Jid mam_server = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? conversation.counterpart.bare_jid
+            : conversation.account.bare_jid;
+        Jid? counterpart = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? null
+            : conversation.counterpart.bare_jid;
+
+        var select = db.mam_catchup.select()
+            .with(db.mam_catchup.account_id, "=", conversation.account.id)
+            .with(db.mam_catchup.server_jid, "=", mam_server.to_string());
+        if (counterpart != null) select.with(db.mam_catchup.counterpart_jid, "=", counterpart.to_string());
+        var row_opt = select.order_by(db.mam_catchup.from_time, "ASC").single().row();
+
+        return row_opt.is_present() ? row_opt.inner : null;
+    }
+
+    public bool have_beginning(Conversation conversation) {
+        // did we sync back to the "from_end" flag indicating the very start of the chatlog?
+        var mam_catchup = mam_catchup_row(conversation);
+        return (mam_catchup != null) && mam_catchup[db.mam_catchup.from_end];
+    }
+
+    public bool have_ending(Conversation conversation) {
+        // did we sync up to the present moment? (we assume we maintain the sync as long as we are connected because we get live updates)
+        return forwards_synced.contains(conversation);
+    }
+
+    // private async void fetch_after(Account account, Jid mam_server, Jid? counterpart, string stanzaid, Cancellable? cancellable = null) {
+    //     debug("[%s | %s | %s] Fetching after > %s", account.bare_jid.to_string(), mam_server.to_string(), counterpart != null ? counterpart : "", stanzaid);
+
+    //     var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_latest(mam_server, null, stanzaid);
+    //     if (counterpart != null) query_params.with = counterpart;
+
+    //     yield fetch_query(account, query_params, cancellable);
+    // }
+
+    // private async void fetch_before(Account account, Jid mam_server, Jid? counterpart, string stanzaid, Cancellable? cancellable = null) {
+    //     debug("[%s | %s | %s] Fetching before < %s", account.bare_jid.to_string(), mam_server.to_string(), counterpart != null ? counterpart : "", stanzaid);
+
+    //     var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(mam_server, time, null, stanzaid);
+    //     if (counterpart != null) query_params.with = counterpart;
+
+    //     yield fetch_query(account, query_params, cancellable);
+    // }
     /**
      * Iteratively fetches all pages returned for a query (until a PageResult other than MorePagesAvailable is returned)
+
+     * Precondition: the database row exists
      * @return The last PageRequestResult result
      **/
-    private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, int db_id, Cancellable? cancellable = null) {
-        debug("[%s | %s] Fetch query %s - %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start != null ? query_params.start.to_string() : "", query_params.end != null ? query_params.end.to_string() : "");
-        PageRequestResult? page_result = null;
-        do {
-            page_result = yield get_mam_page(account, query_params, page_result, cancellable);
-            debug("[%s | %s] Page result %s (got stanzas: %s)", account.bare_jid.to_string(), query_params.mam_server.to_string(), page_result.page_result.to_string(), (page_result.stanzas != null).to_string());
+    // private async PageRequestResult fetch_query(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Cancellable? cancellable = null) {
+    //     debug("[%s | %s] Fetch query %s - %s - %s",
+    //         account.bare_jid.to_string(),
+    //         query_params.mam_server.to_string(),
+    //         query_params.with != null ? query_params.with.to_string() : "",
+    //         query_params.start != null ? query_params.start.to_string() : "",
+    //         query_params.end != null ? query_params.end.to_string() : "");
 
-            if (page_result.page_result == PageResult.Error || page_result.page_result == PageResult.Cancelled) return page_result;
+    //     PageRequestResult? page_result = null;
+    //     do {
+    //         page_result = yield get_mam_page(conversation, query_params, page_result, cancellable);
+    //         debug("[%s | %s] Page result %s (got stanzas: %s)", account.bare_jid.to_string(), query_params.mam_server.to_string(), page_result.page_result.to_string(), (page_result.stanzas != null).to_string());
+    //     } while (page_result.page_result == PageResult.MorePagesAvailable);
 
-            string earliest_mam_id = page_result.query_result.first;
-            long earliest_mam_time = earliest_mam_id != null ? (long)mam_times[account][earliest_mam_id].to_unix() : 0;
-
-            var query = db.mam_catchup.update()
-                    .with(db.mam_catchup.id, "=", db_id);
-            if (earliest_mam_id != null) {
-                debug("[%s | %s] Updating to %s, %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
-                query.set(db.mam_catchup.from_id, earliest_mam_id);
-                if (page_result.page_result != PageResult.NoMoreMessages || query_params.start != null || earliest_mam_time < query_params.start.to_unix()) {
-                    query.set(db.mam_catchup.from_time, earliest_mam_time);
-                }
-            }
-
-            if (page_result.page_result == PageResult.NoMoreMessages) {
-                // If the server doesn't have more messages, store that this range is at its end or update the from timestamp
-                if (query_params.start != null) {
-                    debug("[%s | %s] Updating to %s based on query", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start.to_string());
-                    query.set(db.mam_catchup.from_time, (long) query_params.start.to_unix());
-                } else {
-                    query.set(db.mam_catchup.from_end, true);
-                }
-            }
-            query.perform();
-        } while (page_result.page_result == PageResult.MorePagesAvailable);
-
-        return page_result;
-    }
+    //     return page_result;
+    // }
 
     enum PageResult {
         MorePagesAvailable,
@@ -380,15 +490,138 @@ public class Dino.HistorySync {
     /**
      * prev_page_result: null if this is the first page request
      **/
-    private async PageRequestResult get_mam_page(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result, Cancellable? cancellable = null) {
-        XmppStream stream = stream_interactor.get_stream(account);
+    private async PageRequestResult get_mam_page(Conversation conversation, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result, Cancellable? cancellable = null) {
+        XmppStream stream = stream_interactor.get_stream(conversation.account);
         Xmpp.MessageArchiveManagement.QueryResult query_result = null;
+
         if (prev_page_result == null) {
             query_result = yield Xmpp.MessageArchiveManagement.V2.query_archive(stream, query_params, cancellable);
         } else {
             query_result = yield Xmpp.MessageArchiveManagement.V2.page_through_results(stream, query_params, prev_page_result.query_result, cancellable);
         }
-        return yield process_query_result(account, query_params, query_result, cancellable);
+
+        var page_result = yield process_query_result(conversation.account, query_params, query_result, cancellable);
+
+        if ( page_result.page_result == PageResult.Error
+          || page_result.page_result == PageResult.Cancelled) {
+            return page_result;
+        }
+
+        // string earliest_mam_id = page_result.query_result.first;
+        // long earliest_mam_time = earliest_mam_id != null ? (long)mam_times[account][earliest_mam_id].to_unix() : 0;
+
+        // if (earliest_mam_id != null) {
+        //     debug("[%s | %s] Updating to %s, %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
+        //     query.set(db.mam_catchup.from_id, earliest_mam_id);
+        //     if (page_result.page_result != PageResult.NoMoreMessages || query_params.start != null || earliest_mam_time < query_params.start.to_unix()) {
+        //         query.set(db.mam_catchup.from_time, earliest_mam_time);
+        //     }
+        // }
+        // // TODO: times
+
+        Jid mam_server = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? conversation.counterpart.bare_jid
+            : conversation.account.bare_jid;
+        Jid? counterpart = conversation.type_ == Conversation.Type.GROUPCHAT
+            ? null
+            : conversation.counterpart.bare_jid;
+
+
+        // upsert
+        Row? mam_catchup = mam_catchup_row(conversation);
+        if(mam_catchup == null) {
+            if(page_result.query_result.first == null || page_result.query_result.last == null) {
+                // the SQLite schema has a NOT NULL on both of these
+                // so there's no point trying to record them if they're not defined!
+                debug("Don't know about this mam_catchup yet, but also we have a null archive? giving up");
+                return page_result;
+            }
+
+            debug("Have to make a new mam_catchup");
+            var query = db.mam_catchup.insert()
+                .value(db.mam_catchup.account_id, conversation.account.id)
+                .value(db.mam_catchup.server_jid, mam_server.to_string())
+                .value(db.mam_catchup.from_end, false)
+                .value(db.mam_catchup.from_id, page_result.query_result.first)
+                .value(db.mam_catchup.to_id, page_result.query_result.last)
+                .value(db.mam_catchup.from_time, 0)
+                .value(db.mam_catchup.to_time, 0);
+            if(counterpart != null) {
+                query.value(db.mam_catchup.counterpart_jid, counterpart.to_string());
+            }
+            debug("about to do sql");
+            var c = query.perform();
+            debug("got back: %l", c);
+
+            // inefficient but whatever
+            mam_catchup = mam_catchup_row(conversation);
+            debug("we created: %l", mam_catchup[db.mam_catchup.id]);
+        }
+
+        // TODO: move this into process_query_result
+        debug("Updating mam_catchup.id = %d", mam_catchup[db.mam_catchup.id]);
+        var query = db.mam_catchup.update()
+                .with(db.mam_catchup.id, "=", mam_catchup[db.mam_catchup.id]);
+
+        if (query_params.start_id == null && query_params.end_id == null) {
+            debug("A");
+            // this was the <before> case
+            if(page_result.query_result.first != null) {
+                debug("AA");
+                query.set(db.mam_catchup.from_id, page_result.query_result.first);
+            }
+            if(page_result.query_result.last != null) {
+                debug("AB");
+                query.set(db.mam_catchup.to_id, page_result.query_result.last);
+            }
+            // note that if both are null then we're in the degenerate
+            // empty archive case; there's no good way to store that fact
+            // because we have no stanzas to anchor future queries: they
+            // all need to redo the empty-<before/> query. We just eat the
+            // cost of this.
+        } else if (query_params.start_id != null && query_params.end_id == null) {
+            debug("B");
+            // this was a forward query, so the end is 'the present'
+            query.set(db.mam_catchup.to_id, page_result.query_result.last); // the *last* stanza-id we were given is the outer *forward* ("to") edge of our region
+            // query.set(db.mam_catchup.to_time, ...); // TODO
+
+            if (page_result.page_result == PageResult.NoMoreMessages) {
+                debug("BA");
+                // mark this fully synced with the present
+                forwards_synced.add(conversation);
+            }
+
+            // debug("[%s | %s] Updating to %s based on query", account.bare_jid.to_string(), query_params.mam_server.to_string(), query_params.start.to_string());
+        } else if(query_params.start_id == null && query_params.end_id != null) {
+            debug("C");
+            // this was a backwards query
+            query.set(db.mam_catchup.from_id, page_result.query_result.first);
+            // query.set(db.mam_catchup.from_time, ...); // TODO
+            if (page_result.page_result == PageResult.NoMoreMessages) {
+                debug("CA");
+                // mark this fully synced with the past
+                forwards_synced.add(conversation);
+                query.set(db.mam_catchup.from_end, true);
+            }
+        } else {
+            debug("D");
+            warning("MAM between-or-other query exhausted; but we do not handle these cases.");
+            warning("QueryParams { query_id=%s, mam_server=%s, with=%s, start=%s, end=%s, start_id=%s, end_id = %s }",
+                query_params.query_id,
+                query_params.mam_server.to_string(),
+                query_params.with != null ? query_params.with.to_string() : "",
+                query_params.start != null ? query_params.start.to_string() : "",
+                query_params.end != null ? query_params.end.to_string() : "",
+                query_params.start_id != null ? query_params.start_id.to_string() : "",
+                query_params.end_id != null ? query_params.end_id.to_string() : ""
+            );
+        }
+
+        debug("Doing last query");
+        query.perform();
+        debug("it's done");
+
+        return page_result;
     }
 
     private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result, Cancellable? cancellable = null) {
@@ -474,7 +707,7 @@ public class Dino.HistorySync {
         });
 
         stream_interactor.module_manager.get_module(account, Xmpp.MessageArchiveManagement.Module.IDENTITY).feature_available.connect((stream) => {
-            consider_fetch_everything(account, stream);
+            // consider_fetch_everything(account, stream);
         });
 
         stream_interactor.module_manager.get_module(account, Xmpp.MessageModule.IDENTITY).received_message_unprocessed.connect((stream, message) => {
@@ -482,23 +715,23 @@ public class Dino.HistorySync {
         });
     }
 
-    private void consider_fetch_everything(Account account, XmppStream stream) {
-        if (sync_streams.has(account, stream)) return;
+    // private void consider_fetch_everything(Account account, XmppStream stream) {
+    //     if (sync_streams.has(account, stream)) return;
 
-        debug("[%s] MAM available", account.bare_jid.to_string());
-        sync_streams[account] = stream;
-        if (!cancellables.has_key(account)) {
-            cancellables[account] = new HashMap<Jid, Cancellable>();
-        }
-        if (cancellables[account].has_key(account.bare_jid)) {
-            cancellables[account][account.bare_jid].cancel();
-        }
-        cancellables[account][account.bare_jid] = new Cancellable();
-        fetch_everything.begin(account, account.bare_jid, cancellables[account][account.bare_jid], new DateTime.from_unix_utc(0), (_, res) => {
-            fetch_everything.end(res);
-            cancellables[account].unset(account.bare_jid);
-        });
-    }
+    //     debug("[%s] MAM available", account.bare_jid.to_string());
+    //     sync_streams[account] = stream;
+    //     if (!cancellables.has_key(account)) {
+    //         cancellables[account] = new HashMap<Jid, Cancellable>();
+    //     }
+    //     if (cancellables[account].has_key(account.bare_jid)) {
+    //         cancellables[account][account.bare_jid].cancel();
+    //     }
+    //     cancellables[account][account.bare_jid] = new Cancellable();
+    //     fetch_everything.begin(account, account.bare_jid, cancellables[account][account.bare_jid], new DateTime.from_unix_utc(0), (_, res) => {
+    //         fetch_everything.end(res);
+    //         cancellables[account].unset(account.bare_jid);
+    //     });
+    // }
 
     public static void cleanup_db_ranges(Database db, Account account) {
         var ranges = new HashMap<Jid, ArrayList<MamRange>>(Jid.hash_func, Jid.equals_func);

@@ -31,7 +31,9 @@ namespace Dino {
 
         public void delete_conversation_history(Conversation conversation) {
             db.delete_conversation_messages(conversation);
+            db.delete_conversation_mam_catchup(conversation);
             stream_interactor.get_module(MessageStorage.IDENTITY).clear_conversation_cache(conversation);
+            conversation.mam_scroll_enabled = false;
             conversation_history_cleared(conversation);
         }
 

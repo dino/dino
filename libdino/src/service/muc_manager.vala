@@ -23,7 +23,6 @@ public class MucManager : StreamInteractionModule, Object {
     private StreamInteractor stream_interactor;
     private HashMap<Account, HashSet<Jid>> mucs_joined = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashSet<Jid>> mucs_joining = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
-    private HashMap<Account, HashMap<Jid, Cancellable>> mucs_sync_cancellables = new HashMap<Account, HashMap<Jid, Cancellable>>(Account.hash_func, Account.equals_func);
     private HashMap<Jid, Xep.Muc.MucEnterError> enter_errors = new HashMap<Jid, Xep.Muc.MucEnterError>(Jid.hash_func, Jid.equals_func);
     private ReceivedMessageListener received_message_listener;
     private HashMap<Account, BookmarksProvider> bookmarks_provider = new HashMap<Account, BookmarksProvider>(Account.hash_func, Account.equals_func);
@@ -73,19 +72,12 @@ public class MucManager : StreamInteractionModule, Object {
             if (last_message != null) history_since = last_message.time;
         }
 
-        bool receive_history = true;
-        EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-        bool can_do_mam = yield entity_info.has_feature(account, jid, Xmpp.MessageArchiveManagement.NS_URI);
-        if (can_do_mam) {
-            receive_history = false;
-            history_since = null;
-        }
-
         if (!mucs_joining.has_key(account)) {
             mucs_joining[account] = new HashSet<Jid>(Jid.hash_bare_func, Jid.equals_bare_func);
         }
         mucs_joining[account].add(jid);
 
+        bool receive_history = true;
         Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null);
 
         mucs_joining[account].remove(jid);
@@ -99,28 +91,6 @@ public class MucManager : StreamInteractionModule, Object {
             Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
             joined_conversation.nickname = nick;
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(joined_conversation);
-
-            if (can_do_mam) {
-                var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
-                if (conversation == null) {
-                    // We never joined the conversation before, just fetch the latest MAM page
-                    yield history_sync.fetch_latest_page(account, jid.bare_jid, null, new DateTime.from_unix_utc(0), cancellable);
-                } else {
-                    // Fetch everything up to the last time the user actively joined
-                    if (!mucs_sync_cancellables.has_key(account)) {
-                        mucs_sync_cancellables[account] = new HashMap<Jid, Cancellable>();
-                    }
-                    if (!mucs_sync_cancellables[account].has_key(jid.bare_jid)) {
-                        mucs_sync_cancellables[account][jid.bare_jid] = new Cancellable();
-                        // If the conversation was newly opened, fetch a bit before
-                        DateTime fetch_from_time = conversation.active_last_changed.add(-TimeSpan.DAY * 5);
-                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], fetch_from_time, (_, res) => {
-                            history_sync.fetch_everything.end(res);
-                            mucs_sync_cancellables[account].unset(jid.bare_jid);
-                        });
-                    }
-                }
-            }
         } else if (res.muc_error != null) {
             // Join failed
             enter_errors[jid] = res.muc_error;
@@ -148,13 +118,6 @@ public class MucManager : StreamInteractionModule, Object {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(jid, account, Conversation.Type.GROUPCHAT);
         if (conversation != null) stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
 
-        cancel_sync(account, jid);
-    }
-
-    private void cancel_sync(Account account, Jid jid) {
-        if (mucs_sync_cancellables.has_key(account) && mucs_sync_cancellables[account].has_key(jid.bare_jid) && !mucs_sync_cancellables[account][jid.bare_jid].is_cancelled()) {
-            mucs_sync_cancellables[account][jid.bare_jid].cancel();
-        }
     }
 
     public async DataForms.DataForm? get_config_form(Account account, Jid jid) {
@@ -426,7 +389,6 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).self_removed_from_room.connect( (stream, jid, code) => {
-            cancel_sync(account, jid);
             left(account, jid);
         });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).subject_set.connect( (stream, subject, jid) => {
@@ -491,14 +453,6 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     private async void on_stream_negotiated(Account account, XmppStream stream) {
-        if (mucs_sync_cancellables.has_key(account)) {
-            foreach (Cancellable cancellable in mucs_sync_cancellables[account].values) {
-                if (!cancellable.is_cancelled()) {
-                    cancellable.cancel();
-                }
-            }
-        }
-
         yield initialize_bookmarks_provider(account);
 
         Set<Conference>? conferences = yield bookmarks_provider[account].get_conferences(stream);
@@ -658,7 +612,7 @@ public class MucManager : StreamInteractionModule, Object {
 
     private void on_build_message_stanza(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
         if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-            Xmpp.Xep.Muc.add_muc_pm_message_stanza_x_node(message_stanza);            
+            Xmpp.Xep.Muc.add_muc_pm_message_stanza_x_node(message_stanza);
         }
     }
 

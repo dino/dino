@@ -243,7 +243,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
             // If the message is a duplicate
             if (builder.count() > 0) {
-                history_sync.on_server_id_duplicate(account, stanza, message);
                 return true;
             }
         }
