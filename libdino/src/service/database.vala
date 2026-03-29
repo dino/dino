@@ -823,6 +823,51 @@ public class Database : Qlite.Database {
         jid_table_reverse[bare_jid] = id;
         return id;
     }
+
+    public void delete_conversation_messages(Conversation conversation) {
+        int account_id = conversation.account.id;
+        int counterpart_jid_id = get_jid_id(conversation.counterpart);
+
+        string msg_subquery = "message_id IN (SELECT id FROM message WHERE account_id = ? AND counterpart_id = ?)";
+        string ft_subquery = "id IN (SELECT id FROM file_transfer WHERE account_id = ? AND counterpart_id = ?)";
+        string[] args = { account_id.to_string(), counterpart_jid_id.to_string() };
+
+        // cache the associated files
+        // we will clean them up if the transaction succee
+        var files = new ArrayList<string>();
+        foreach (Row row in file_transfer.select({file_transfer.path})
+                .with(file_transfer.account_id, "=", account_id)
+            .with(file_transfer.counterpart_id, "=", counterpart_jid_id)) {
+            string? path = row[file_transfer.path];
+            if (path != null) files.add(path);
+        }
+
+        try {
+            exec("BEGIN TRANSACTION");
+            body_meta.delete().where(msg_subquery, args).perform();
+            message_correction.delete().where(msg_subquery, args).perform();
+            reply.delete().where(msg_subquery, args).perform();
+            real_jid.delete().where(msg_subquery, args).perform();
+            message_occupant_id.delete().where(msg_subquery, args).perform();
+            file_hashes.delete().where(ft_subquery, args).perform();
+            file_thumbnails.delete().where(ft_subquery, args).perform();
+            sfs_sources.delete().where("file_transfer_id IN (SELECT id FROM file_transfer WHERE account_id = ? AND counterpart_id = ?)", args).perform();
+            message.delete().where("account_id = ? AND counterpart_id = ?", args).perform();
+            file_transfer.delete().where("account_id = ? AND counterpart_id = ?", args).perform();
+            content_item.delete()
+                .with(content_item.conversation_id, "=", conversation.id)
+                .perform();
+            exec("END TRANSACTION");
+        } catch (Error e) {
+            warning("Failed to delete conversation messages: %s", e.message);
+            exec("ROLLBACK");
+            throw e;
+        }
+
+        foreach (var file in files) {
+            FileUtils.remove(file);
+        }
+    }
 }
 
 }

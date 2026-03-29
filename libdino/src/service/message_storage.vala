@@ -204,6 +204,11 @@ public class MessageStorage : StreamInteractionModule, Object {
         }
     }
 
+    public void clear_conversation_cache(Conversation conversation) {
+        messages_by_stanza_id.unset(conversation);
+        messages_by_server_id.unset(conversation);
+    }
+
     public string? get_reference_id(Message message, Conversation conversation) {
         if (message.edit_to != null) {
             // This is a message edit, so the reference id should be the one of the original message

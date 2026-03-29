@@ -18,6 +18,7 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
 
         Menu menu_model = new Menu();
         menu_model.append(_("Conversation Details"), "conversation.details");
+        menu_model.append(_("Clear History"), "conversation.clear-history");
         menu_model.append(_("Close Conversation"), "app.close-current-conversation");
         Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
         button.popover = popover_menu;
@@ -29,6 +30,22 @@ class MenuEntry : Plugins.ConversationTitlebarEntry, Object {
             GLib.Application.get_default().activate_action("open-conversation-details", variant);
         });
         action_group.insert(details_action);
+        SimpleAction clear_history_action = new SimpleAction("clear-history", null);
+        clear_history_action.activate.connect((parameter) => {
+            Adw.AlertDialog dialog = new Adw.AlertDialog(_("Clear history"), null);
+            dialog.extra_child = new Gtk.Label(_("All messages in this conversation will be permanently deleted from this device.")) { xalign=0, wrap=true };
+            dialog.add_response("clear", _("Clear History"));
+            dialog.set_response_appearance("clear", Adw.ResponseAppearance.DESTRUCTIVE);
+            dialog.add_response("cancel", _("Cancel"));
+            dialog.close_response = "cancel";
+            dialog.response.connect((response) => {
+                if (response == "clear") {
+                    stream_interactor.get_module(MessageDeletion.IDENTITY).delete_conversation_history(conversation);
+                }
+            });
+            dialog.present((Gtk.Window)button.get_root());
+        });
+        action_group.insert(clear_history_action);
         button.insert_action_group("conversation", action_group);
     }
 

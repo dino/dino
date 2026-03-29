@@ -96,6 +96,14 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         add_meta_notification.connect(on_add_meta_notification);
         remove_meta_notification.connect(on_remove_meta_notification);
 
+        stream_interactor.get_module(MessageDeletion.IDENTITY).conversation_history_cleared.connect((conv) => {
+            if (conv == this.conversation) {
+                clear();
+                initialize_for_conversation_(conv);
+                display_latest();
+            }
+        });
+
         Application app = GLib.Application.get_default() as Application;
         app.plugin_registry.register_conversation_addition_populator(new ChatStatePopulator(stream_interactor));
         app.plugin_registry.register_conversation_addition_populator(new DateSeparatorPopulator(stream_interactor));

@@ -12,6 +12,7 @@ namespace Dino {
         public string id { get { return IDENTITY.id; } }
 
         public signal void item_deleted(ContentItem content_item);
+        public signal void conversation_history_cleared(Conversation conversation);
 
         private StreamInteractor stream_interactor;
         private Database db;
@@ -26,6 +27,12 @@ namespace Dino {
             this.db = db;
 
             stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(this);
+        }
+
+        public void delete_conversation_history(Conversation conversation) {
+            db.delete_conversation_messages(conversation);
+            stream_interactor.get_module(MessageStorage.IDENTITY).clear_conversation_cache(conversation);
+            conversation_history_cleared(conversation);
         }
 
         public bool is_deletable(Conversation conversation, ContentItem content_item) {
