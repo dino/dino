@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2024-12-21 08:00+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-02-28 11:09+0000\n"
 "Language-Team: none\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -25,15 +25,15 @@ msgstr "Gnupg ஐ வினவுகிறது"
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 #: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "அறிவிப்பு திறவுகோல்"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
-msgstr ""
+msgstr "குனுபிசீ இல் பிழை"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 msgid "No keys available. Generate one!"
-msgstr ""
+msgstr "திறவுகோல்கள் எதுவும் கிடைக்கவில்லை. ஒன்றை உருவாக்கு!"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
@@ -45,7 +45,7 @@ msgstr "விசை கீச்சினில் இல்லை"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "கைரேகை"
 
 #~ msgid "Encryption"
 #~ msgstr "குறியாக்கம்"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2024-09-18 10:09+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-24 17:10+0000\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/dino/"
 "translations/eo/>\n"
 "Language: eo\n"
@@ -16,14 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -108,11 +111,11 @@ msgstr "Malaktivigitaj kontoj"
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
 msgid "Add Account"
-msgstr "Aldoni Konton"
+msgstr "Aldoni konton"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "Neniuj aktivaj kontoj"
 
@@ -240,12 +243,10 @@ msgid "Mute"
 msgstr "Mutigi"
 
 #: main/src/windows/conversation_details.vala:133
-#, fuzzy
 msgid "Notifications enabled"
-msgstr "Aktivigitaj sciigoj"
+msgstr "Sciigoj aktivigitaj"
 
 #: main/src/windows/conversation_details.vala:136
-#, fuzzy
 msgid "Notifications for mentions"
 msgstr "Sciigoj por mencioj"
 
@@ -255,9 +256,8 @@ msgid "Muted"
 msgstr "Mutigita"
 
 #: main/src/windows/conversation_details.vala:141
-#, fuzzy
 msgid "Notifications disabled"
-msgstr "Malaktivigitaj sciigoj"
+msgstr "Sciigoj malaktivigitaj"
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
@@ -270,13 +270,12 @@ msgstr "Agordoj"
 
 #: main/src/windows/conversation_details.vala:222
 msgid "Room Configuration"
-msgstr "Babilejaj Agordoj"
+msgstr "Babilejaj agordoj"
 
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
-#, fuzzy
 msgid "Encryption"
-msgstr "Kodo"
+msgstr "Ĉifrado"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -412,7 +411,7 @@ msgstr "Mi"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr ""
+msgstr "Mesaĝo forigita"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -490,7 +489,7 @@ msgstr "Eksvalidigi skriban permeson"
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
-msgstr "Inviti en la Konferencon"
+msgstr "Inviti en la konferencon"
 
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
@@ -592,7 +591,7 @@ msgstr "Detaloj de conversacio"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr "Fermi Conversacion"
+msgstr "Fermi konversacion"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -601,11 +600,11 @@ msgstr "Informoj por sencimigo"
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr "Alvokante…"
+msgstr "Alvokado…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr "Voksonante…"
+msgstr "Voksonado…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
@@ -646,20 +645,20 @@ msgid "Invite to Call"
 msgstr "Inviti al alvoko"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
-msgstr "Komenci Konversacion"
+msgstr "Komenci konversacion"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:90
 msgid "Start"
 msgstr "Komenci"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr "Aliĝi al Kanalo"
+msgstr "Aliĝi al kanalo"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:45
 #: main/data/preferences_window/add_account_dialog.ui:246
@@ -668,7 +667,7 @@ msgstr "Sekva"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Aliĝi"
 
@@ -709,7 +708,7 @@ msgstr "Tro da ĉeestantoj en babilejo"
 msgid "Add"
 msgstr "Aldoni"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Pri Dino"
 
@@ -718,7 +717,7 @@ msgid "Today"
 msgstr "Hodiaŭ"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %d-a %b"
 
@@ -818,14 +817,14 @@ msgstr "%s petas la permeson skribi en %s"
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:34
 msgid "On"
-msgstr "Ek"
+msgstr "Jes"
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:35
 msgid "Off"
-msgstr "For"
+msgstr "Ne"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
@@ -849,19 +848,19 @@ msgstr "Peti permeson por sendi mesaĝojn"
 msgid "Request"
 msgstr "Peto"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Bonvenon al Dino!"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "Ensalutu aŭ kreu konton por komenci."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "Agordi konton"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "Administri kontojn"
 
@@ -872,7 +871,7 @@ msgstr "Adreso XMPP"
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr ""
+msgstr "Montronomo"
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
@@ -883,9 +882,14 @@ msgstr "Temo"
 msgid "Edit message"
 msgstr "Redakti mesaĝon"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr ""
+msgstr "Pli da agoj"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
+msgstr "Forigi mesaĝon"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -902,7 +906,7 @@ msgid "Open"
 msgstr "Malfermi"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Konservi kiel…"
@@ -1004,45 +1008,40 @@ msgstr "kelke da sekundoj"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr "Liverite"
+msgstr "Liverita"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr "Legi"
+msgstr "Legita"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Sendi peton"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Vi ankoraŭ ne ricevas stato-ĝisdatigojn de tiu ĉi kontakto."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
 msgstr "Ĉi tiu kontakto ŝatus aligi vin al sia kontaktlisto"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr "Ĉi konversaciejo ne subtenas reagojn."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "Respondi"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
 msgstr "Ĉi konversaciejo ne subtenas respondojn."
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Elŝutado de %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
@@ -1052,7 +1051,7 @@ msgstr "Elŝutado de %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Alŝutado de %s... (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
@@ -1072,7 +1071,7 @@ msgstr "Dosiero ofertita"
 msgid "File transfer failed"
 msgstr "Dosiertransigo malsukcesis"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "Dosiero"
 
@@ -1090,7 +1089,7 @@ msgstr "Ĝisdatigi mesaĝon"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Ensaluti"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1121,16 +1120,14 @@ msgid "Finish"
 msgstr "Fini"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
-#, fuzzy
 msgid "Send _Typing Notifications"
-msgstr "Sendi Sciigojn pri _Tajpojn"
+msgstr "Sendi sciigojn pri _tajpado"
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Sendi _legokonfirmojn"
 
 #: main/data/preferences_window/general_preferences_page.ui:25
-#, fuzzy
 msgid "_Notifications"
 msgstr "_Sciigoj"
 
@@ -1139,18 +1136,16 @@ msgid "Notify when a new message arrives"
 msgstr "Sciigi pri envenaj mesaĝoj"
 
 #: main/data/preferences_window/general_preferences_page.ui:36
-#, fuzzy
 msgid "_Convert Smileys to Emoji"
-msgstr "_Konverti Mienetojn al Emoĝioj"
+msgstr "_Konverti mienetojn al emoĝioj"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
 msgid "Local alias"
 msgstr "Loka kaŝnomo"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
-#, fuzzy
 msgid "Connection status"
-msgstr "Konektostatuso"
+msgstr "Konektostato"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
@@ -1158,36 +1153,56 @@ msgstr "Forigi konton"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Ŝanĝi pasvorton"
 
 #: main/data/preferences_window/change_password_dialog.ui:34
 msgid "Change"
-msgstr ""
+msgstr "Ŝanĝi"
 
 #: main/data/preferences_window/change_password_dialog.ui:61
 msgid "Current password"
-msgstr ""
+msgstr "Nuntempa pasvorto"
 
 #: main/data/preferences_window/change_password_dialog.ui:66
 msgid "New password"
-msgstr ""
+msgstr "Nova pasvorto"
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr ""
+msgstr "Konfirmado de pasvorto"
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
-msgstr "Ĝenerala"
+msgstr "Ĝeneralaj"
+
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Montri agordojn"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Fulmoklavoj"
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
@@ -1195,7 +1210,7 @@ msgstr "Konversacio"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr ""
+msgstr "Fermi konversacion"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
@@ -1218,12 +1233,12 @@ msgstr "Konto"
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr "Kaŝnomo"
+msgstr "Kromnomo"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr "Kaŝnomo"
+msgstr "Kromnomo"
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"

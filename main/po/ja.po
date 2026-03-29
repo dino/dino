@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
 "PO-Revision-Date: 2025-03-12 18:09+0000\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/dino/"
 "translations/ja/>\n"
@@ -23,7 +23,10 @@ msgstr ""
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -112,7 +115,7 @@ msgstr "アカウントを追加"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "アクティブなアカウントがありません"
 
@@ -643,7 +646,7 @@ msgid "Invite to Call"
 msgstr "通話に招待"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "会話を開始"
@@ -653,7 +656,7 @@ msgid "Start"
 msgstr "開始"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "チャンネルに参加"
@@ -665,7 +668,7 @@ msgstr "次へ"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "参加"
 
@@ -706,7 +709,7 @@ msgstr "ルームの参加者が多すぎます"
 msgid "Add"
 msgstr "追加"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Dino について"
 
@@ -845,19 +848,19 @@ msgstr "メッセージの送信権限を要求"
 msgid "Request"
 msgstr "要求"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Dino へようこそ！"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "サインインまたはアカウント登録をしてください。"
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "アカウントをセットアップ"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "アカウントを管理"
 
@@ -879,8 +882,13 @@ msgstr "トピック"
 msgid "Edit message"
 msgstr "メッセージを編集"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
@@ -898,7 +906,7 @@ msgid "Open"
 msgstr "開く"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "名前を付けて保存"
@@ -1016,22 +1024,17 @@ msgstr ""
 msgid "This contact would like to add you to their contact list"
 msgstr "この相手があなたを連絡先に追加しようとしています"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr "この会話はリアクションをサポートしていません。"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "返信"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
 msgstr "この会話は返信をサポートしていません。"
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1066,7 +1069,7 @@ msgstr "ファイルが提供されています"
 msgid "File transfer failed"
 msgstr "ファイルの転送に失敗しました"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "ファイル"
 
@@ -1170,6 +1173,26 @@ msgstr ""
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
 msgstr "一般"
+
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-03-12 18:09+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-01-26 10:01+0000\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/dino/"
 "translations/fi/>\n"
 "Language: fi\n"
@@ -16,14 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.3-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -112,7 +115,7 @@ msgstr "Lisää tili"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "Ei aktiivisia tilejä"
 
@@ -408,7 +411,7 @@ msgstr "Minä"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr ""
+msgstr "Viesti poistettu"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -642,7 +645,7 @@ msgid "Invite to Call"
 msgstr "Kutsu puheluun"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Aloita keskustelu"
@@ -652,7 +655,7 @@ msgid "Start"
 msgstr "Aloita"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Liity kanavalle"
@@ -664,7 +667,7 @@ msgstr "Seuraava"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Liity"
 
@@ -705,7 +708,7 @@ msgstr "Liikaa käyttäjiä huoneessa"
 msgid "Add"
 msgstr "Lisää"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Tietoja Dinosta"
 
@@ -845,19 +848,19 @@ msgstr "Pyydä lupaa lähettää viestejä"
 msgid "Request"
 msgstr "Pyyntö"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Tervetuloa, tämä on Dino!"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "Kirjaudu sisään tai luo tili päästäksesi alkuun."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "Määritä tili"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "Hallitse tilejä"
 
@@ -879,9 +882,14 @@ msgstr "Aihe"
 msgid "Edit message"
 msgstr "Muokkaa viestiä"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr ""
+msgstr "Lisää toimintoja"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
+msgstr "Poista viesti"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -898,7 +906,7 @@ msgid "Open"
 msgstr "Avaa"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Tallenna nimellä…"
@@ -1018,22 +1026,17 @@ msgstr "Et vastaanota tilapäivityksiä tältä henkilöltä vielä."
 msgid "This contact would like to add you to their contact list"
 msgstr "Tämä käyttäjä haluaisi lisätä sinut yhteystietoihinsa"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr "Tämä keskustelu ei tue reaktioita."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "Vastaa"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
 msgstr "Tämä keskustelu ei tue vastauksia."
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1068,7 +1071,7 @@ msgstr "Tarjottu tiedosto"
 msgid "File transfer failed"
 msgstr "Tiedostonsiirto epäonnistui"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "Tiedosto"
 
@@ -1173,6 +1176,26 @@ msgstr "Vahvista salasana"
 msgid "General"
 msgstr "Yleinen"
 
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
+
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
 msgstr "Näytä asetukset"
@@ -1187,7 +1210,7 @@ msgstr "Keskustelu"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr ""
+msgstr "Sulje keskustelu"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"

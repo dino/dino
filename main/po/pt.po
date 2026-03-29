@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
 "PO-Revision-Date: 2025-04-06 11:12+0000\n"
 "Language-Team: none\n"
 "Language: pt\n"
@@ -22,7 +22,10 @@ msgstr ""
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -111,7 +114,7 @@ msgstr "Adicionar conta"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "Nenhuma conta ativa"
 
@@ -642,7 +645,7 @@ msgid "Invite to Call"
 msgstr "Convidar para chamada"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Iniciar conversa"
@@ -652,7 +655,7 @@ msgid "Start"
 msgstr "Iniciar"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Juntar-se a um canal"
@@ -664,7 +667,7 @@ msgstr "Próximo"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Juntar-se"
 
@@ -705,7 +708,7 @@ msgstr "Quantidade máxima da sala"
 msgid "Add"
 msgstr "Adicionar"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Sobre Dino"
 
@@ -845,19 +848,19 @@ msgstr "Pedir permissão para enviar mensagens"
 msgid "Request"
 msgstr "Pedir"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Seja bem vindo ao Dino!"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "Entre ou crie uma conta para começar."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "Configurar a conta"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "Gerir contas"
 
@@ -879,8 +882,13 @@ msgstr "Tópico"
 msgid "Edit message"
 msgstr "Editar mensagem"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
+msgstr ""
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
 msgstr ""
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
@@ -898,7 +906,7 @@ msgid "Open"
 msgstr "Abrir"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Guardar como…"
@@ -1018,22 +1026,17 @@ msgstr "Ainda não tem atualizações de estado deste contacto."
 msgid "This contact would like to add you to their contact list"
 msgstr "Este contato gostaria de adicioná-lo à sua lista de contatos"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr "Esta conversa não suporta reações."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "Responder"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
 msgstr "Esta conversa não suporta respostas."
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1068,7 +1071,7 @@ msgstr "Ficheiro oferecido"
 msgid "File transfer failed"
 msgstr "Transferência de ficheiro falhou"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "Ficheiro"
 
@@ -1172,6 +1175,26 @@ msgstr "Confirmar palavra-passe"
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
 msgstr "Geral"
+
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

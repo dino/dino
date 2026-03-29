@@ -8,15 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-29 11:32+0200\n"
-"PO-Revision-Date: 2025-11-25 10:51+0000\n"
-"Language-Team: French <https://hosted.weblate.org/projects/dino/translations/"
-"fr/>\n"
-"Language: fr\n"
+"PO-Revision-Date: 2026-03-03 01:09+0000\n"
+"Language-Team: none\n"
+"Language: ka\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
@@ -33,135 +32,134 @@ msgstr ""
 #: main/data/add_conversation/add_groupchat_dialog.ui:12
 #: main/data/add_conversation/add_contact_dialog.ui:13
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "გაუქმება"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:65
 msgid "Connect"
-msgstr "Se connecter"
+msgstr "დაკავშირება"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr "Désactiver ce compte"
+msgstr "ანგარიშის გამორთვა"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr "Activer ce compte"
+msgstr "ანგარიშის ჩართვა"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
-msgstr "Sélectionner une image de profil"
+msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select"
-msgstr "Sélectionner"
+msgstr "აირჩიეთ"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:138
 msgid "Images"
-msgstr "Images"
+msgstr "გამოსახულებები"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:142
 msgid "All files"
-msgstr "Tous les fichiers"
+msgstr "ყველა ფაილი"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:155
 #, c-format
 msgid "Remove account %s?"
-msgstr "Supprimer le compte %s ?"
+msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:187
 #: main/src/ui/call_window/participant_widget.vala:128
 msgid "Connecting…"
-msgstr "Connexion…"
+msgstr "დაკავშირება…"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:189
 msgid "Connected"
-msgstr "Connecté"
+msgstr "დაკავშირებულია"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:191
 msgid "Disconnected"
-msgstr "Déconnecté"
+msgstr "გათიშულია"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:202
 #: main/src/ui/notifier_freedesktop.vala:192
 msgid "Wrong password"
-msgstr "Mauvais mot de passe"
+msgstr "არასწორი პაროლი"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:204
 #: main/src/ui/notifier_freedesktop.vala:195
 msgid "Invalid TLS certificate"
-msgstr "Certificat TLS invalide"
+msgstr ""
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:207
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:209
 msgid "Error"
-msgstr "Erreur"
+msgstr "შეცდომა"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:15
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:27
 #: main/data/preferences_window/preferences_dialog.ui:11
 msgid "Accounts"
-msgstr "Comptes"
+msgstr "ანგარიშები"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr "Comptes désactivés"
+msgstr ""
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
 msgid "Add Account"
-msgstr "Ajouter un compte"
+msgstr "ანგარიშის დამატება"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
 #: main/src/ui/main_window.vala:161
 msgid "No active accounts"
-msgstr "Aucun compte actif"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
-msgstr "Connexion"
+msgstr "შესვლა"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr "Le serveur n’a pas su prouver qu’il est %s."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:145
 msgid "Its security certificate is not trusted by your operating system."
 msgstr ""
-"Votre système d’exploitation ne fait pas confiance au certificat proposé."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:147
 msgid "Its security certificate is issued to another domain."
-msgstr "Son certificat a été généré pour un autre domaine."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:149
 msgid "Its security certificate will only become valid in the future."
-msgstr "Son certificat ne deviendra valide que dans le futur."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:151
 msgid "Its security certificate is expired."
-msgstr "Son certificat a expiré."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:159
 #: main/data/preferences_window/add_account_dialog.ui:111
 msgid "Create account"
-msgstr "Créer un compte"
+msgstr "ანგარიშის შექმნა"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:178
 #, c-format
 msgid "You can now use the account %s."
-msgstr "Vous pouvez maintenant utiliser le compte %s."
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:224
 msgid "Wrong username or password"
-msgstr "Mauvais nom d’utilisateur·ice ou mot de passe"
+msgstr "მომხმარებლის სახელი ან პაროლი არასწორია"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:227
 msgid "Something went wrong"
-msgstr "Quelque chose s’est mal passé"
+msgstr "რაღაც ცუდადაა"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:248
 #: main/src/ui/add_conversation/conference_details_fragment.vala:183
@@ -169,7 +167,7 @@ msgstr "Quelque chose s’est mal passé"
 #: main/src/ui/notifier_freedesktop.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr "Impossible de se connecter à %s"
+msgstr "%s-სთან მიერთების შეცდომა"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:255
 #: main/src/windows/preferences_window/add_account_dialog.vala:265
@@ -177,198 +175,198 @@ msgstr "Impossible de se connecter à %s"
 #: main/src/windows/preferences_window/add_account_dialog.vala:359
 #: main/src/ui/add_conversation/conference_details_fragment.vala:186
 msgid "Invalid address"
-msgstr "Adresse invalide"
+msgstr "არასწორი მისამართი"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:293
 msgid "No response from server"
-msgstr "Pas de réponse du serveur"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:304
 #, c-format
 msgid "Register on %s"
-msgstr "S’inscrire sur %s"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:307
 msgid "The server requires to sign up through a website"
-msgstr "Ce serveur nécessite de s’inscrire depuis un site Web"
+msgstr ""
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:309
 msgid "Open website"
-msgstr "Ouvrir le site web"
+msgstr "ვებგვერდის გახსნა"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:321
 #: main/data/preferences_window/add_account_dialog.ui:294
 msgid "Register"
-msgstr "S’inscrire"
+msgstr "რეგისტრაცია"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:323
 #, c-format
 msgid "Check %s for information on how to sign up"
-msgstr "Consultez %s pour plus d’informations sur comment s’inscrire"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
-msgstr "Bloquer cet utilisateur·ice"
+msgstr "მომხმარებლის დაბლოკვა"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block entire domain"
-msgstr "Bloquer le domaine entier"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr "Débloquer"
+msgstr "განბლოკვა"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr "Épinglé"
+msgstr "მიმაგრებულია"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr "Épingler"
+msgstr "მიმაგრება"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr "Bloqué·e"
+msgstr "დაბლოკილია"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr "Domaine bloqué"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
-msgstr "Bloquer"
+msgstr "ბლოკი"
 
 #: main/src/windows/conversation_details.vala:131
 #: main/src/windows/conversation_details.vala:132
 msgid "Mute"
-msgstr "Rendre muet"
+msgstr "დადუმება"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
-msgstr "Notifications activées"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:136
 msgid "Notifications for mentions"
-msgstr "Notifications pour les mentions"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr "Muet"
+msgstr "ხმა გამორთული"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
-msgstr "Notifications désactivées"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr "À propos"
+msgstr "შესახებ"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
-msgstr "Paramètres"
+msgstr "მორგება"
 
 #: main/src/windows/conversation_details.vala:222
 msgid "Room Configuration"
-msgstr "Configuration du salon"
+msgstr ""
 
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr "Chiffrement"
+msgstr "დაშიფვრა"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
 msgid "Members"
-msgstr "Membres"
+msgstr "წევრები"
 
 #: main/src/view_model/conversation_details.vala:131
 #: main/src/ui/occupant_menu/list.vala:110
 msgid "Owner"
-msgstr "Propriétaire"
+msgstr "მფლობელი"
 
 #: main/src/view_model/conversation_details.vala:132
 #: main/src/ui/occupant_menu/list.vala:112
 msgid "Admin"
-msgstr "Administrateur·ice"
+msgstr "ადმინი"
 
 #: main/src/view_model/conversation_details.vala:133
 #: main/src/ui/occupant_menu/list.vala:114
 msgid "Member"
-msgstr "Membre"
+msgstr "წევრი"
 
 #: main/src/ui/file_send_overlay.vala:58
 msgid "The file exceeds the server's maximum upload size."
-msgstr "Le fichier dépasse la taille maximale autorisée par le serveur."
+msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:124
 #: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
-msgstr "Message trop long"
+msgstr "შეტყობინება ძალიან გრძელია"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
 #: main/src/ui/conversation_content_view/message_widget.vala:166
 msgid "edited"
-msgstr "modifié"
+msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:159
 #: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
-msgstr "en cours d’envoi…"
+msgstr ""
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
 #: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
-msgstr "échec de l’envoi"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:162
 #: main/data/menu_encryption.ui:14
 msgid "Unencrypted"
-msgstr "Non chiffré"
+msgstr "დაუშიფრავი"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
-msgstr "Impossible d’envoyer le message"
+msgstr "შეტყობინების გაგზავნა შეუძლებელია"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
 #, no-c-format
 msgid "%x, %H∶%M"
-msgstr "le %x à %Hh %M"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:123
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:242
 #, no-c-format
 msgid "%x, %l∶%M %p"
-msgstr "le %x à %lh %M %p"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:126
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:245
 #, no-c-format
 msgid "%b %d, %H∶%M"
-msgstr "le %d %b à %Hh %M"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:127
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:246
 #, no-c-format
 msgid "%b %d, %l∶%M %p"
-msgstr "le %d %b à %lh %M %p"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:130
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:249
 #, no-c-format
 msgid "%a, %H∶%M"
-msgstr "%a à %Hh %M"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:131
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:250
 #, no-c-format
 msgid "%a, %l∶%M %p"
-msgstr "%a à %lh %M %p"
+msgstr ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:134
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:347
@@ -392,14 +390,14 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] "Il y a %i minute"
-msgstr[1] "Il y a %i minutes"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:353
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:260
 msgid "Just now"
-msgstr "À l’instant"
+msgstr "ახლა"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:156
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:186
@@ -407,41 +405,41 @@ msgstr "À l’instant"
 #: main/src/ui/util/helper.vala:69 main/src/ui/util/helper.vala:73
 #: main/src/ui/util/helper.vala:81
 msgid "Me"
-msgstr "Moi"
+msgstr "მე"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr "Message supprimé"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr "Image envoyée"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
-msgstr "Fichier envoyé"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr "Image reçue"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr "Fichier reçu"
+msgstr "ფაილი მიღებულია"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr "Appel sortant"
+msgstr ""
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -449,321 +447,319 @@ msgstr "Appel sortant"
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr "Appel entrant"
+msgstr "შემომავალი ზარი"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
 #, no-c-format
 msgid "%b %d"
-msgstr "%d %b"
+msgstr "%b %d"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:344
 #: main/src/ui/widgets/date_separator.vala:28
 msgid "Yesterday"
-msgstr "Hier"
+msgstr "გუშინ"
 
 #: main/src/ui/occupant_menu/list.vala:116
 msgid "User"
-msgstr "Utilisateur·ice"
+msgstr "მომხმარებელი"
 
 #: main/src/ui/occupant_menu/view.vala:27
 #: main/src/ui/occupant_menu/view.vala:145
 #: main/src/ui/call_window/call_window_controller.vala:151
 msgid "Invite"
-msgstr "Inviter"
+msgstr "მოწვევა"
 
 #: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
-msgstr "Commencer une discussion privée"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
-msgstr "Éjecter du salon"
+msgstr "გაგდება"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
-msgstr "Accorder la permission d’écrire"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
-msgstr "Révoquer la permission d’écrire"
+msgstr ""
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
-msgstr "Inviter dans ce salon"
+msgstr "დაპატიჟება კონფერენციაზე"
 
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
-msgstr "Sélectionner un fichier"
+msgstr "აირჩიეთ ფაილი"
 
 #: main/src/ui/util/helper.vala:65
 #, c-format
 msgid "%s from %s"
-msgstr "%s de %s"
+msgstr "%s -ი %s-სგან"
 
 #: main/src/ui/util/data_forms.vala:31
 msgid "Name of the room"
-msgstr "Nom du salon"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:34
 msgid "Description of the room"
-msgstr "Description du salon"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:37
 msgid "Persistent"
-msgstr "Persistant"
+msgstr "მუდმივი"
 
 #: main/src/ui/util/data_forms.vala:38
 msgid "The room will persist after the last occupant leaves"
-msgstr "Ce salon persistera après le départ du dernier participant"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:41
 msgid "Publicly searchable"
-msgstr "Visible publiquement"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr "Les participant·es peuvent changer le sujet"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
-msgstr "Autorisation de voir les adresses XMPP"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr "Qui peut voir les adresses XMPP des participant·es ?"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:51
 #: main/data/preferences_window/account_preferences_subpage.ui:82
 #: main/data/add_conversation/conference_details_fragment.ui:162
 #: main/data/add_conversation/add_groupchat_dialog.ui:122
 msgid "Password"
-msgstr "Mot de passe"
+msgstr "პაროლი"
 
 #: main/src/ui/util/data_forms.vala:55
 msgid "Moderated"
-msgstr "Modéré"
+msgstr ""
 
 #: main/src/ui/util/data_forms.vala:56
 msgid "Only occupants with voice may send messages"
 msgstr ""
-"Seuls les participant·es avec la permission d’écrire peuvent envoyer des "
-"messages"
 
 #: main/src/ui/util/data_forms.vala:59
 msgid "Members only"
-msgstr "Membres uniquement"
+msgstr "მხოლოდ წევრები"
 
 #: main/src/ui/util/data_forms.vala:60
 msgid "Only members may enter the room"
-msgstr "Seuls les membres peuvent accéder au salon"
+msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
-msgstr "Vous n’êtes pas autorisé·e à envoyer de messages sur ce salon."
+msgstr ""
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
-msgstr "Demander la permission"
+msgstr ""
 
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
 #: main/data/file_send_overlay.ui:5
 msgid "Send a file"
-msgstr "Envoyer un fichier"
+msgstr "ფაილის გაგზავნა"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr "Démarrer un appel"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
-msgstr "Appel audio"
+msgstr "ხმოვანი ზარი"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr "Appel vidéo"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
 #: main/data/gtk/help-overlay.ui:43
 msgid "Search messages"
-msgstr "Rechercher dans les messages"
+msgstr "შეტყობინებებში ძებნა"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr "Détails de cette conversation"
+msgstr ""
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr "Fermer cette conversation"
+msgstr ""
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr "Informations de débogage"
+msgstr ""
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr "Appel en cours…"
+msgstr "დარეკვა…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr "Ça sonne…"
+msgstr ""
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr "%s a arrêté l’appel"
+msgstr ""
 
 #: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr "%s a rejeté l’appel"
+msgstr ""
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr "Caméras"
+msgstr "კამერები"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr "Aucune caméra trouvée."
+msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr "Microphones"
+msgstr "მიკროფონები"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr "Aucun microphone trouvé."
+msgstr ""
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr "Haut-parleurs"
+msgstr "დინამიკები"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr "Aucun haut-parleur trouvé."
+msgstr ""
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr "Inviter à un appel"
+msgstr ""
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
 #: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
-msgstr "Commencer une discussion"
+msgstr "საუბრის დაწყება"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:90
 msgid "Start"
-msgstr "Démarrer"
+msgstr "დაწყება"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
 #: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr "Rejoindre un salon"
+msgstr "არხზე შესვლა"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:45
 #: main/data/preferences_window/add_account_dialog.ui:246
 msgid "Next"
-msgstr "Suivant"
+msgstr "შემდეგი"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
 #: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
-msgstr "Rejoindre"
+msgstr "შესვლა"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Joining…"
-msgstr "Connexion au salon…"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:164
 msgid "Password required to enter room"
-msgstr "Un mot de passe est nécessaire pour rejoindre ce salon"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Banned from joining or creating conference"
-msgstr "Vous n’avez pas le droit de rejoindre ou de créer ce salon"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Room does not exist"
-msgstr "Ce salon n’existe pas"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Not allowed to create room"
-msgstr "Création de salon interdite"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr "Salon réservé aux membres"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr "Choisissez un autre pseudo"
+msgstr ""
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
-msgstr "Trop de participant·es dans ce salon"
+msgstr ""
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
-msgstr "Ajouter"
+msgstr "დამატება"
 
 #: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
-msgstr "À propos de Dino"
+msgstr ""
 
 #: main/src/ui/widgets/date_separator.vala:22
 msgid "Today"
-msgstr "Aujourd’hui"
+msgstr "დღეს"
 
 #: main/src/ui/widgets/date_separator.vala:35
 #, no-c-format
 msgid "%a, %b %d"
-msgstr "%a %d %b"
+msgstr ""
 
 #: main/src/ui/global_search.vala:181
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] "%i résultat"
-msgstr[1] "%i résultats"
+msgstr[0] ""
+msgstr[1] ""
 
 #: main/src/ui/global_search.vala:208
 #, c-format
 msgid "In %s"
-msgstr "Sur %s"
+msgstr ""
 
 #: main/src/ui/global_search.vala:208
 #, c-format
 msgid "With %s"
-msgstr "Avec %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:70
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr "Appel vidéo entrant"
+msgstr "შემომავალი ვიდეოზარი"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr "Appel vidéo de groupe entrant"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr "Appel de groupe entrant"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
 #: main/src/ui/notifier_freedesktop.vala:230 main/data/call_widget.ui:73
 msgid "Reject"
-msgstr "Rejeter"
+msgstr "უარყოფა"
 
 #: main/src/ui/notifier_gnotifications.vala:81
 #: main/src/ui/notifier_gnotifications.vala:97
@@ -776,12 +772,12 @@ msgstr "Rejeter"
 #: main/src/ui/conversation_content_view/subscription_notification.vala:67
 #: main/data/call_widget.ui:81
 msgid "Accept"
-msgstr "Accepter"
+msgstr "დასტური"
 
 #: main/src/ui/notifier_gnotifications.vala:91
 #: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
-msgstr "Demande d’ajout de contact"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:98
 #: main/src/ui/notifier_gnotifications.vala:133
@@ -790,394 +786,394 @@ msgstr "Demande d’ajout de contact"
 #: main/src/ui/notifier_freedesktop.vala:264
 #: main/src/ui/conversation_content_view/subscription_notification.vala:68
 msgid "Deny"
-msgstr "Refuser"
+msgstr "უარყოფა"
 
 #: main/src/ui/notifier_gnotifications.vala:123
 #: main/src/ui/notifier_freedesktop.vala:220
 #, c-format
 msgid "Invitation to %s"
-msgstr "Invitation à %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:124
 #: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
-msgstr "%s vous a invité·e à rejoindre le salon %s"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:141
 #: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
-msgstr "Demande de permission"
+msgstr ""
 
 #: main/src/ui/notifier_gnotifications.vala:142
 #: main/src/ui/notifier_freedesktop.vala:255
 #, c-format
 msgid "%s requests the permission to write in %s"
-msgstr "%s demande la permission d’écrire dans %s"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:24
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:34
 msgid "On"
-msgstr "Activé"
+msgstr ""
 
 #: main/src/ui/contact_details/settings_provider.vala:21
 #: main/src/ui/contact_details/settings_provider.vala:25
 #: main/src/ui/contact_details/settings_provider.vala:31
 #: main/src/ui/contact_details/settings_provider.vala:35
 msgid "Off"
-msgstr "Désactivé"
+msgstr "გამორთ"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
-msgstr "Envoyer les notifications d’écriture"
+msgstr "კრეფის შეტყობინების გაგზავნა"
 
 #: main/src/ui/contact_details/settings_provider.vala:23
 #: main/src/ui/contact_details/settings_provider.vala:33
 #, c-format
 msgid "Default: %s"
-msgstr "Par défaut : %s"
+msgstr "ნაგულისხმები: %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:32
 msgid "Send read receipts"
-msgstr "Envoyer les accusés de réception"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr "Demander la permission d’envoyer des messages"
+msgstr ""
 
 #: main/src/ui/contact_details/permissions_provider.vala:24
 msgid "Request"
-msgstr "Demander"
+msgstr "მოთხოვნა"
 
 #: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
-msgstr "Bienvenue dans Dino !"
+msgstr ""
 
 #: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
-msgstr "Connectez-vous ou créez un compte pour commencer."
+msgstr ""
 
 #: main/src/ui/main_window.vala:154
 msgid "Set up account"
-msgstr "Configurer un compte"
+msgstr ""
 
 #: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
-msgstr "Gérer les comptes"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
 msgid "XMPP Address"
-msgstr "Adresse XMPP"
+msgstr ""
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr "Nom d’affichage"
+msgstr "საჩვენებელი სახელი"
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
 msgid "Topic"
-msgstr "Sujet"
+msgstr "თემა"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
-msgstr "Éditer le message"
+msgstr "შეტყობინების შეცვლა"
 
 #: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr "Plus d'actions"
+msgstr "მეტი ქმედება"
 
 #: main/src/ui/conversation_content_view/conversation_view.vala:572
 #: main/src/ui/conversation_content_view/item_actions.vala:65
 msgid "Delete message"
-msgstr "Supprimer le message"
+msgstr "შეტყობინების წაშლა"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr "Vous"
+msgstr "თქვენ"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr "Ajouter une réaction"
+msgstr "რეაქციის დამატება"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:42
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "გახსნა"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
 #: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
-msgstr "Enregistrer sous…"
+msgstr "შენახვა, როგორც…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr "%s, %s et %i autres sont en train d’écrire…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr "%s, %s et %s sont en train d’écrire…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
-msgstr "%s et %s sont en train d’écrire…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
-msgstr "%s est en train d’écrire…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr "Appel démarré"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr "A commencé il y a %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr "Vous avez réagi à cet appel depuis un autre client"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr "Appel terminé"
+msgstr "ზარი დასრულდა"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr "S’est terminé à %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr "A duré %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr "Appel manqué"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr "Vous avez manqué cet appel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr "%s a manqué cet appel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr "Appel rejeté"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr "Vous avez rejeté cet appel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr "%s a rejeté cet appel"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr "Appel échoué"
+msgstr "ზარის შეცდომა"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] "%i heure"
-msgstr[1] "%i heures"
+msgstr[0] "%i საათი"
+msgstr[1] "%i საათი"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] "%i minute"
-msgstr[1] "%i minutes"
+msgstr[0] "%i წუთი"
+msgstr[1] "%i წუთი"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr "quelques secondes"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr "Reçu"
+msgstr "მიწოდებულია"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr "Lu"
+msgstr "წაკითხვა"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr "Envoyer une requête"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr "Vous ne recevez pas encore les changements de statuts de ce contact."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr "Cette personne souhaiterait vous ajouter à sa liste de contacts"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
-msgstr "Cette conversation ne gère pas les réactions."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
-msgstr "Répondre"
+msgstr "პასუხი"
 
 #: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
-msgstr "Cette conversation ne gère pas les réponses."
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr "Téléchargement de %s… (%u%%)"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
 msgid "Downloading %s…"
-msgstr "Téléchargement de %s…"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr "%s envoyés… (%u%%)"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
 msgid "%s offered: %s"
-msgstr "%s proposé au téléchargement : %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:97
 #, c-format
 msgid "File offered: %s"
-msgstr "Fichier proposé au téléchargement : %s"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:99
 msgid "File offered"
-msgstr "Fichier proposé au téléchargement"
+msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:105
 msgid "File transfer failed"
-msgstr "Échec du transfert de fichier"
+msgstr "ფაილის მიმოცვლის შეცდომა"
 
 #: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
-msgstr "Fichier"
+msgstr "ფაილი"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr "Nouveau"
+msgstr "ახალი"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
-msgstr "Informations du contact"
+msgstr "კონტაქტის დეტალები"
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
-msgstr "Modifier ce message"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr "Se connecter"
+msgstr "შესვლა"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
-msgstr "Impossible d’établir une connexion sécurisée"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
-msgstr "Retour"
+msgstr "უკან"
 
 #: main/data/preferences_window/add_account_dialog.ui:183
 msgid "Choose a public server"
-msgstr "Choisissez un serveur public"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:207
 msgid "Or specify a server address"
-msgstr "Ou indiquez l’adresse d’un serveur"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:225
 msgid "Sign in instead"
-msgstr "Annuler et se connecter"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:330
 msgid "All set up!"
-msgstr "Tout est prêt !"
+msgstr ""
 
 #: main/data/preferences_window/add_account_dialog.ui:359
 msgid "Finish"
-msgstr "Terminer"
+msgstr "დასრულება"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr "_Envoyer les notifications d’écriture"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
-msgstr "Envoyer les _accusés de réception"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:25
 msgid "_Notifications"
-msgstr "_Notifications"
+msgstr "შეტყობი_ნებები"
 
 #: main/data/preferences_window/general_preferences_page.ui:26
 msgid "Notify when a new message arrives"
-msgstr "Notifier de l’arrivée de nouveaux messages"
+msgstr ""
 
 #: main/data/preferences_window/general_preferences_page.ui:36
 msgid "_Convert Smileys to Emoji"
-msgstr "_Convertir les smileys en emoji"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
 msgid "Local alias"
-msgstr "Alias local"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
-msgstr "Statut de connexion"
+msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
-msgstr "Supprimer ce compte"
+msgstr "ანგარიშის წაშლა"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr "Changement de mot de passe"
+msgstr "პაროლის შეცვლა"
 
 #: main/data/preferences_window/change_password_dialog.ui:34
 msgid "Change"
-msgstr "Changer"
+msgstr "ცვლილება"
 
 #: main/data/preferences_window/change_password_dialog.ui:61
 msgid "Current password"
-msgstr "Mot de passe actuel"
+msgstr "Მიმდინარე პაროლი"
 
 #: main/data/preferences_window/change_password_dialog.ui:66
 msgid "New password"
-msgstr "Nouveau mot de passe"
+msgstr "ახალი პაროლი"
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr "Confirmation du mot de passe"
+msgstr "დაადასტურეთ პაროლი"
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
-msgstr "Général"
+msgstr "ზოგადი"
 
 #: main/data/conversation_details.ui:190
 msgid "Enable notifications"
@@ -1201,55 +1197,55 @@ msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr "Afficher les préférences"
+msgstr "პარამეტრების _ჩვენება"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr "Raccourcis clavier"
+msgstr "კლავიატურის მალსახმობები"
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
-msgstr "Discussion"
+msgstr "საუბარი"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr "Mettre fin à la discussion"
+msgstr "საუბრის დახურვა"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"
-msgstr "Navigation"
+msgstr "ნავიგაცია"
 
 #: main/data/gtk/help-overlay.ui:66
 msgid "Jump to next conversation"
-msgstr "Aller à la discussion suivante"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:72
 msgid "Jump to previous conversation"
-msgstr "Revenir à la discussion précédente"
+msgstr ""
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
 #: main/data/add_conversation/add_contact_dialog.ui:40
 msgid "Account"
-msgstr "Compte"
+msgstr "ანგარიში"
 
 #: main/data/add_conversation/conference_details_fragment.ui:114
 #: main/data/add_conversation/add_groupchat_dialog.ui:101
 msgid "Nick"
-msgstr "Pseudo"
+msgstr "მეტსახელი"
 
 #: main/data/add_conversation/add_groupchat_dialog.ui:144
 #: main/data/add_conversation/add_contact_dialog.ui:81
 msgid "Alias"
-msgstr "Alias"
+msgstr "ფსევდონიმი"
 
 #: main/data/add_conversation/add_contact_dialog.ui:5
 msgid "Add Contact"
-msgstr "Ajouter un contact"
+msgstr "კონტაქტის დამატება"
 
 #: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
-msgstr "Client de discussion XMPP moderne"
+msgstr ""
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1257,9 +1253,6 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
-"Dino est un client de discussion libre et moderne pour ordinateur. Il se "
-"concentre sur le fait d’offrir une expérience XMPP simple et fiable tout en "
-"ayant toujours à l’esprit votre vie privée."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1267,194 +1260,45 @@ msgid ""
 "configuring privacy-related features such as read receipts and typing "
 "notifications."
 msgstr ""
-"Il prend en charge le chiffrement de bout en bout avec OMEMO et OpenPGP et "
-"permet de configurer les fonctions liées à la confidentialité telles que les "
-"accusés de réception et les notifications d’écriture."
 
 #: main/data/im.dino.Dino.appdata.xml.in:12
 msgid ""
 "Dino fetches history from the server and synchronizes messages with other "
 "devices."
 msgstr ""
-"Dino récupère l’historique du serveur et synchronise les messages avec les "
-"autres clients."
 
 #: main/data/main_window.ui:89
 msgid "You have no open chats"
-msgstr "Vous n’avez aucune discussion ouverte"
+msgstr ""
 
 #: main/data/main_window.ui:90
 msgid "Click + to start a chat or join a channel"
-msgstr "Cliquez sur + pour commencer une conversation ou rejoindre un salon"
+msgstr ""
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr "Pas de recherche en cours"
+msgstr "აქტიური ძებნის გრეშე"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr "Écrivez pour lancer une recherche"
+msgstr ""
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr "Aucun message correspondant à la recherche"
+msgstr ""
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr "Vérifiez l’orthographe ou essayez de supprimer des filtres"
+msgstr ""
 
 #: main/data/file_send_overlay.ui:41
 msgid "Send"
-msgstr "Envoyer"
+msgstr "გაგზავნა"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr "Préférences"
+msgstr "მორგება"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"
-msgstr "Raccourcis clavier"
-
-#~ msgid "Remove"
-#~ msgstr "Supprimer"
-
-#, c-format
-#~ msgid "Sign in to %s"
-#~ msgstr "Se connecter en tant que %s"
-
-#~ msgid "No accounts configured"
-#~ msgstr "Aucun compte configuré"
-
-#~ msgid "Add an account"
-#~ msgstr "Ajouter un compte"
-
-#~ msgid "Pick another server"
-#~ msgstr "Choisir un autre serveur"
-
-#~ msgid "Local Settings"
-#~ msgstr "Paramètres locaux"
-
-#~ msgid "Notifications"
-#~ msgstr "Notifications"
-
-#~ msgid "Pin conversation"
-#~ msgstr "Épingler la conversation"
-
-#~ msgid "Pins the conversation to the top of the conversation list"
-#~ msgstr "Épingle la conversation en haut de la liste des conversations"
-
-#~ msgid "Only when mentioned"
-#~ msgstr "Seulement quand mentionné"
-
-#~ msgid "Permissions"
-#~ msgstr "Permissions"
-
-#~ msgid "Conference Details"
-#~ msgstr "Informations du salon"
-
-#~ msgid "Communication and status updates in either direction are blocked"
-#~ msgstr "Tous les échanges de messages et de statuts sont bloqués"
-
-#~ msgid "A password to restrict access to the room"
-#~ msgstr "Un mot de passe pour restreindre l’accès au salon"
-
-#~ msgid "Message history"
-#~ msgstr "Historique des messages"
-
-#~ msgid "Maximum amount of backlog issued by the room"
-#~ msgstr "Nombre maximum de messages d’historique renvoyé par le salon"
-
-#~ msgid "Convert smileys to emojis"
-#~ msgstr "Convertir les émoticônes typographiques en emojis"
-
-#~ msgid "Check spelling"
-#~ msgstr "Vérifier l'orthographe"
-
-#~ msgid "Click here to start a conversation or join a channel."
-#~ msgstr "Cliquez ici pour commencer une discussion ou rejoindre un salon."
-
-#~ msgid "No active conversations"
-#~ msgstr "Aucune discussion en cours"
-
-#~ msgid "Main window with conversations"
-#~ msgstr "Fenêtre principale avec des conversations"
-
-#~ msgid "%s, %s and %i others"
-#~ msgstr "%s, %s et %i autres"
-
-#~ msgid "You can now start using %s"
-#~ msgstr "Vous pouvez maintenant utiliser %s"
-
-#~ msgid "Open Registration"
-#~ msgstr "Inscription ouverte"
-
-#~ msgid "Save"
-#~ msgstr "Sauver"
-
-#~ msgid "%s, %s and %s"
-#~ msgstr "%s, %s et %s"
-
-#~ msgid "%s and %s"
-#~ msgstr "%s et %s"
-
-#~ msgid "is typing…"
-#~ msgid_plural "are typing…"
-#~ msgstr[0] "est en train d’écrire…"
-#~ msgstr[1] "sont en train d’écrire…"
-
-#~ msgid "has stopped typing"
-#~ msgstr "a arrêté d’écrire"
-
-#~ msgid "%i search results"
-#~ msgstr "%i résultats de recherche"
-
-#~ msgid "Discover real JIDs"
-#~ msgstr "Découverte des vrais JID"
-
-#~ msgid "Who may discover real JIDs?"
-#~ msgstr "Qui peut découvrir les vrais JID ?"
-
-#~ msgid "Password required for room entry, if any"
-#~ msgstr "Mot de passe pour rejoindre le salon, vide pour aucun"
-
-#~ msgid "Failed connecting to %s"
-#~ msgstr "Échec de la connexion à %s"
-
-#~ msgid "Join Conference"
-#~ msgstr "Rejoindre une conférence"
-
-#~ msgid "Communicate happiness."
-#~ msgstr "Communiquer avec bonheur."
-
-#~ msgid "Quit"
-#~ msgstr "Quitter"
-
-#~ msgid "JID should be of the form “user@example.com”"
-#~ msgstr "Le JID doit être de la forme « utilisateur@example.com »"
-
-#~ msgid "Copy Link Address"
-#~ msgstr "Copier l’adresse du lien"
-
-#~ msgid "Copy"
-#~ msgstr "Copier"
-
-#~ msgid "Select All"
-#~ msgstr "Tout sélectionner"
-
-#~ msgid "Search"
-#~ msgstr "Rechercher"
-
-#~ msgid "Send message marker"
-#~ msgstr "Envoyer les marqueurs de message"
-
-#~ msgid "Start Chat"
-#~ msgstr "Commencer une discussion"
-
-#~ msgid "Request presence updates"
-#~ msgstr "Demander les mises à jour de la présence"
-
-#~ msgid "Join on startup"
-#~ msgstr "Rejoindre au démarrage"
-
-#~ msgid "Add Chat"
-#~ msgstr "Ajouter discussion"
+msgstr "კლავიატურის მალსახმობები"

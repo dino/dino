@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2024-01-24 00:10+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-14 10:09+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "translations/nb_NO/>\n"
 "Language: nb\n"
@@ -16,14 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -39,11 +42,11 @@ msgstr "Koble til"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr ""
+msgstr "Deaktiver konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr ""
+msgstr "Aktiver konto"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
@@ -103,7 +106,7 @@ msgstr "Kontoer"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Deaktiverte kontoer"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -112,7 +115,7 @@ msgstr "Legg til konto"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "Ingen kontoer aktive"
 
@@ -204,31 +207,31 @@ msgstr "Se %s for å lære hvordan du registrerer deg"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
-msgstr ""
+msgstr "Blokker bruker"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block entire domain"
-msgstr ""
+msgstr "Blokker hele domenet"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr ""
+msgstr "Fjern blokkering"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr ""
+msgstr "Festet"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr ""
+msgstr "Fest"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr ""
+msgstr "Blokkert"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr ""
+msgstr "Domene blokkert"
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
@@ -237,29 +240,29 @@ msgstr "Blokker"
 #: main/src/windows/conversation_details.vala:131
 #: main/src/windows/conversation_details.vala:132
 msgid "Mute"
-msgstr ""
+msgstr "Demp"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
-msgstr ""
+msgstr "Varslinger aktivert"
 
 #: main/src/windows/conversation_details.vala:136
 msgid "Notifications for mentions"
-msgstr ""
+msgstr "Varslinger for omtaler"
 
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr ""
+msgstr "Dempet"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
-msgstr ""
+msgstr "Varslinger deaktivert"
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr ""
+msgstr "Om"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
@@ -272,7 +275,7 @@ msgstr "Rom-oppsett"
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr ""
+msgstr "Kryptering"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -408,7 +411,7 @@ msgstr "Meg"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr ""
+msgstr "Melding slettet"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -584,11 +587,11 @@ msgstr "Søk i meldinger"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Samtaledetaljer"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Lukk samtale"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
@@ -642,7 +645,7 @@ msgid "Invite to Call"
 msgstr "Inviter til samtale"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Start samtale"
@@ -652,7 +655,7 @@ msgid "Start"
 msgstr "Start"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "Ta del i kanal"
@@ -664,7 +667,7 @@ msgstr "Neste"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Ta del"
 
@@ -705,7 +708,7 @@ msgstr "Rommet har for mange deltagere"
 msgid "Add"
 msgstr "Legg til"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Om Dino"
 
@@ -714,7 +717,7 @@ msgid "Today"
 msgstr "I dag"
 
 #: main/src/ui/widgets/date_separator.vala:35
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%a, %b %d"
 msgstr "%a, %d %b"
 
@@ -845,43 +848,48 @@ msgstr "Forespør tilgang til meldingsforsendelse"
 msgid "Request"
 msgstr "Forespør"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Velkommen til Dino."
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "Logg inn eller opprett en konto for å starte."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "Sett opp konto"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "Behandle kontoer"
 
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
 msgid "XMPP Address"
-msgstr ""
+msgstr "XMPP-adresse"
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr ""
+msgstr "Visningsnavn"
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
 msgid "Topic"
-msgstr ""
+msgstr "Emne"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
 msgstr "Rediger melding"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr ""
+msgstr "Flere handlinger"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
+msgstr "Slett melding"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -898,7 +906,7 @@ msgid "Open"
 msgstr "Åpne"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Lagre som …"
@@ -1008,37 +1016,32 @@ msgstr "Lest"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Send forespørsel"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Du mottar ikke statusoppdateringer fra denne kontakten ennå."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
 msgstr "Denne kontakten ønsker å legge deg til på kontaktlisten sin"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr "Denne samtalen støtter ikke reaksjoner."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "Svar"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
 msgstr "Denne samtalen støtter ikke svar."
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "Laster ned %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
@@ -1048,7 +1051,7 @@ msgstr "Laster ned %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Laster opp %s… (%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
@@ -1068,13 +1071,13 @@ msgstr "Fil tilbudt"
 msgid "File transfer failed"
 msgstr "Filoverføring mislyktes"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "Fil"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1086,7 +1089,7 @@ msgstr "Oppdater melding"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "Logg på"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1142,44 +1145,64 @@ msgstr "Lokalt alias"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
-msgstr ""
+msgstr "Tilkoblingsstatus"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
-msgstr ""
+msgstr "Fjern konto"
 
 #: main/data/preferences_window/change_password_dialog.ui:5
 msgid "Change password"
-msgstr ""
+msgstr "Endre passord"
 
 #: main/data/preferences_window/change_password_dialog.ui:34
 msgid "Change"
-msgstr ""
+msgstr "Endre"
 
 #: main/data/preferences_window/change_password_dialog.ui:61
 msgid "Current password"
-msgstr ""
+msgstr "Nåværende passord"
 
 #: main/data/preferences_window/change_password_dialog.ui:66
 msgid "New password"
-msgstr ""
+msgstr "Nytt passord"
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr ""
+msgstr "Bekreft passord"
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
 msgstr "Generelt"
 
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
+
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
-msgstr ""
+msgstr "Vis innstillinger"
 
 #: main/data/gtk/help-overlay.ui:32
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Tastatursnarveier"
 
 #: main/data/gtk/help-overlay.ui:39
 msgid "Conversation"
@@ -1187,7 +1210,7 @@ msgstr "Samtale"
 
 #: main/data/gtk/help-overlay.ui:55
 msgid "Close conversation"
-msgstr ""
+msgstr "Lukk samtale"
 
 #: main/data/gtk/help-overlay.ui:62
 msgid "Navigation"

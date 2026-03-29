@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-omemo-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-02-25 04:41+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-23 16:27+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-omemo/"
 "nl/>\n"
 "Language: nl\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -238,15 +238,15 @@ msgstr ""
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Dit apparaat"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Ander apparaat"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
-msgstr ""
+msgstr "Apparaat"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
@@ -270,6 +270,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Ieder apparaat beschikt over een eigen OMEMO-sleutel. Berichten kunnen "
+"alleen worden ontsleuteld als beide versleuteld zijn met dezelfde sleutel, "
+"en alleen op goedgekeurde apparaten."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "OMEMO-sleutelbeheer"

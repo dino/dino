@@ -8,15 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-29 11:32+0200\n"
-"PO-Revision-Date: 2025-12-27 20:00+0000\n"
+"PO-Revision-Date: 2026-03-24 17:09+0000\n"
 "Language-Team: none\n"
-"Language: lt\n"
+"Language: fur\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.15.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -24,53 +23,52 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
-"%s naudoja nepatikimą įrenginį. Jūs nematysite žinučių iš įrenginių, kuriais "
-"nepasitikite."
+"Chel pandolo di %s al doprave un tramai che no si fidin. No tu iodarâs "
+"mesagjos di tramais che no si po fidasi."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
-msgstr "Tvarkyti įrenginius"
+msgstr "Gjestis i tramais"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
 msgid ""
 "%s does not trust this device. That means, you might be missing messages."
 msgstr ""
-"%s nepasitiki šiuo įrenginiu. Tai reiškia, kad galite nematyti žinučių."
+"Chel pandolo di %s no si fide di te. Cuindi tu podaresis pierditi mesagjos."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:34
 msgid "Manage Key"
-msgstr "Tvarkyti raktą"
+msgstr "Dai po gjestis las clâs"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:35
 msgid ""
 "Compare the fingerprint, character by character, with the one shown on your "
 "contact's device."
 msgstr ""
-"Palyginkite kontrolinį kodą, simbolis po simbolio, su tuo, kuris yra rodomas "
-"jūsų adresato įrenginyje."
+"Controle las improntes digitâl, ogni latare, cun chês dal contat sul tramai."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:36
 msgid "Fingerprints differ"
-msgstr "Kodas skiriasi"
+msgstr "Improntes difarent gnogno"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:37
 msgid "Fingerprints match"
-msgstr "Kodas atitinka"
+msgstr "Brao, las improntes son compagnes"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:38
 #: plugins/omemo/src/ui/manage_key_dialog.vala:81
 #: plugins/omemo/src/ui/manage_key_dialog.vala:87
 msgid "Cancel"
-msgstr "Atsisakyti"
+msgstr "Lasce sta"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:39
 msgid "Confirm"
-msgstr "Patvirtinti"
+msgstr "Va ben"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:59
 msgid "Verify key"
-msgstr "Patikrinkite raktą"
+msgstr "Controlant la clâf"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:60
 #, c-format
@@ -78,12 +76,12 @@ msgid ""
 "Future messages sent by %s from the device that uses this key will be "
 "highlighted accordingly in the chat window."
 msgstr ""
-"Nuo šiol žinutės nuo %s išsiųstos iš įrenginio naudojančio šį kontrolinį "
-"kodą bus atitinkamai paryškintos."
+"I mesagjos di chel taconele di %s sal dopre il stes tramai cun chist clâf a "
+"saran evidensiâs."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:70
 msgid "Fingerprints do not match"
-msgstr "Kontroliniai kodai nesutampa"
+msgstr "Las improntes no son compagnes totoloto"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:71
 #, c-format
@@ -92,77 +90,70 @@ msgid ""
 "fingerprints do not match, %s's account may be compromised and you should "
 "consider rejecting this key."
 msgstr ""
-"Įsitikinkite, kad lyginate teisingą kontrolinį kodą. Jei kontroliniai kodai "
-"nesutampa, gali būti, kad %s paskyra yra sukompromituota ir turėtumėte "
-"apsvarstyti galimybę atmesti šį raktą."
+"Controle ben taconele. Las improntes no coincidin, chel borson di %s al "
+"podares no sei lui e tu varesis di mandalu affnacûl lui e la so clâf."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid "Verify key fingerprint"
-msgstr "Patikrinti rakto kontrolinį kodą"
+msgstr "Controle la clâf dalas improntes digitâl"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:123
 msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
-msgstr ""
-"Palyginti šio rakto kontrolinį kodą su adresato įrenginyje rodomu "
-"kontroliniu kodu."
+msgstr "Controle las improntes di chiste clâf cun chês tai contas dal tramai."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
-msgstr "Atmesti raktą"
+msgstr "Mande affnacûl lui e la clâf"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 msgid ""
 "Block encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Blokuoti šifruotą bendravimą su kontakto įrenginiu, kuris naudoja šį raktą."
+msgstr "Smet di cifrà la comunicasion cul pandolo cal dopre chiste clâf."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
-msgstr "Priimti raktą"
+msgstr "Va ben, dami la clâf"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 msgid ""
 "Allow encrypted communication with the contact's device that uses this key."
-msgstr ""
-"Leisti šifruotą bendravimą su kontakto įrenginiu, kuris naudoja šį raktą."
+msgstr "Permet la comunicasion cifrade cul pandolo cal dopre chiste clâf."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
 msgid "This key is currently %s."
-msgstr "Šiuo metu šis raktas yra %s."
+msgstr "La clâf a è %s."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 msgid "accepted"
-msgstr "priimtas"
+msgstr "acetade"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:131
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 #, c-format
 msgid "This means it can be used by %s to receive and send encrypted messages."
-msgstr ""
-"Tai reiškia, kad %s gali jį naudoti šifruotų žinučių siuntimui ir gavimui."
+msgstr "A voul dì ca si po doprà %s par ricevi e mandà mesagjos cifrâs."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid "verified"
-msgstr "patikrintas"
+msgstr "controlade"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:136
 msgid ""
 "Additionally it has been verified to match the key on the contact's device."
-msgstr ""
-"Be to, jis buvo patikrintas ir sutampa su adresato įrenginyje rodomu raktu."
+msgstr "In pui si è controlâtche la clâf a sevi che dal contat sul tramai."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 msgid "rejected"
-msgstr "atmestas"
+msgstr "mandade indavour"
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:140
 #, c-format
@@ -170,8 +161,8 @@ msgid ""
 "This means it cannot be used by %s to decipher your messages, and you won't "
 "see messages encrypted with it."
 msgstr ""
-"Tai reiškia, kad %s negali jo naudoti jūsų žinučių iššifravimui ir jūs "
-"nematysite žinučiu užšifruotų šiuo raktu."
+"Al voul dì che %s nola po doprà par decifrà i toi mesagjos, e no tu iodarâs "
+"i mesagjos cifrâs cun che lì."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:152
 #, c-format
@@ -179,8 +170,8 @@ msgid ""
 "You won't see encrypted messages from the device of %s that uses this key. "
 "Conversely, that device won't be able to decipher your messages anymore."
 msgstr ""
-"Jūs nematysite šifruotų žinučių išsiustų iš %s įrenginio, kuris naudoją šį "
-"raktą. Tuo pačiu tas įrenginys nebegalės iššifruoti jūsų žinučių."
+"No tu iodarâs i mesagjos cifrâs di %s cal dopre chiste clâf. E lui nol "
+"capirà un cai di ce che tu i mandis."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:160
 #, c-format
@@ -188,83 +179,83 @@ msgid ""
 "You will be able to exchange encrypted messages with the device of %s that "
 "uses this key."
 msgstr ""
-"Jūs galite keistis šifruotomis žinutėmis su %s įrenginiu, kuris naudoja šį "
-"raktą."
+"Tu podarâs mandà mesagjos cifrâs cul tramai di %s cal dopre chiste clâf."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:166
 msgid "Back"
-msgstr "Atgal"
+msgstr "Indavour"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:73
 msgid "Manage"
-msgstr "Tvarkyti"
+msgstr "Gjestis"
 
 #: plugins/omemo/src/ui/device_notification_populator.vala:80
 msgid "This contact has new devices"
-msgstr "Šis adresatas turi naujų įrenginių"
+msgstr "Chist gnogno al à un gnouf tramai"
 
 #: plugins/omemo/src/ui/own_notifications.vala:29
 msgid "OMEMO trust decision required"
-msgstr "OMEMO reikia pasitikėjimo sprendimo"
+msgstr "Bisugne acetà o no OMEMO"
 
 #: plugins/omemo/src/ui/own_notifications.vala:31
 #, c-format
 msgid "Did you add a new device for account %s?"
-msgstr "Ar savo %s paskyrai pridėjote naują įrenginį?"
+msgstr "Atu giontât un gnof tramai par il profîl %s?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr "OMEMO pagal numatymą"
+msgstr "OMEMO tal met io"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
-msgstr "Įjungti naujiems pokalbiams OMEMO šifravimą"
+msgstr "Permet cifradure OMEMO par las gnoves conversasions"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
-msgstr "Šifruoti į naujus įrenginius"
+msgstr "Cifre par i gnoufs tramais"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
-msgstr "Automatiškai šifruoti į naujus įrenginius iš šio adresato."
+msgstr "Cifres su dut par chistu taconele."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
-msgstr "Nauji raktai"
+msgstr "Gnoves clâs"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
-"Nauji šifravimo raktai iš jūsų kitų įrenginių bus priimti automatiškai."
+"Las gnoves clâs par la cifradure di atris tramais a saran acetades cence "
+"diti un caj."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr "Šis įrenginys"
+msgstr "Chist tramai"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr "Kitas įrenginys"
+msgstr "Atri tramai"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
-msgstr "Įrenginys"
+msgstr "Tramai"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
-msgstr "Priimtas"
+msgstr "acetade"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
-msgstr "Atmestas"
+msgstr "Mandât affancûl"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
-msgstr "Patikrintas"
+msgstr "controlade"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr "Naujas įrenginys"
+msgstr "Gnouf tramai"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -272,103 +263,5 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
-"Kiekvienas įrenginys turi savo nuosavą OMEMO raktą. Įrenginys gali "
-"iššifruoti žinutes tik tuo atveju, jeigu jos yra šifruotos naudojant jo "
-"raktą. Žinutės yra šifruojamos tik priimtiems įrenginiams."
-
-#~ msgid "OMEMO Key Management"
-#~ msgstr "OMEMO raktų tvarkymas"
-
-#~ msgid "Encryption"
-#~ msgstr "Šifravimas"
-
-#, c-format
-#~ msgid "%d OMEMO device"
-#~ msgid_plural "%d OMEMO devices"
-#~ msgstr[0] "%d OMEMO įrenginys"
-#~ msgstr[1] "%d OMEMO įrenginiai"
-#~ msgstr[2] "%d OMEMO įrenginių"
-
-#~ msgid "Automatically accept new keys"
-#~ msgstr "Automatiškai priimti naujus raktus"
-
-#~ msgid ""
-#~ "New encryption keys from this contact will be accepted automatically."
-#~ msgstr "Nauji šifravimo raktai iš šio kontakto bus priimti automatiškai."
-
-#~ msgid "Own key"
-#~ msgstr "Nuosavas raktas"
-
-#~ msgid "Associated keys"
-#~ msgstr "Susieti raktai"
-
-#~ msgid "Inactive keys"
-#~ msgstr "Neaktyvūs raktai"
-
-#~ msgid "Unused"
-#~ msgstr "Nenaudojamas"
-
-#~ msgid "Own fingerprint"
-#~ msgstr "Nuosavas kontrolinis kodas"
-
-#~ msgid "Will be generated on first connection"
-#~ msgstr "Bus sugeneruotas pirmojo prisijungimo metu"
-
-#~ msgid "Your contact"
-#~ msgstr "Jūsų adresatas"
-
-#~ msgid "Not matching"
-#~ msgstr "Nesutampa"
-
-#~ msgid "Matching"
-#~ msgstr "Sutampa"
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "highlighted accordingly in the chat window."
-#~ msgstr ""
-#~ "Patikrinus, bet kokios būsimos žinutės, kurias %s išsiųs naudodamas šį "
-#~ "raktą, bus atitinkamai paryškintos pokalbių kambaryje."
-
-#~ msgid ""
-#~ "Stop accepting this key during communication with its associated contact."
-#~ msgstr "Nustoti priiminėti šį raktą bendravimo su susietu adresatu metu."
-
-#~ msgid ""
-#~ "Start accepting this key during communication with its associated contact"
-#~ msgstr "Pradėti priiminėti šį raktą bendravimo su susietu adresatu metu"
-
-#~ msgid ""
-#~ "This means it cannot be used by %s to receive messages, and any messages "
-#~ "sent by it will be ignored."
-#~ msgstr ""
-#~ "Tai reiškia, kad %s negali jo naudoti, kad gautų žinutes, o bet kurių "
-#~ "adresato siunčiamų žinučių bus nepaisoma."
-
-#~ msgid ""
-#~ "Once confirmed, any future messages sent by %s using this key will be "
-#~ "ignored and none of your messages will be readable using this key."
-#~ msgstr ""
-#~ "Patvirtinus, bet kurių būsimų žinučių, kurias %s išsiųs naudodamas šį "
-#~ "raktą, bus nepaisoma ir jokių jūsų žinučių nebus įmanoma perskaityti "
-#~ "naudojant šį raktą."
-
-#~ msgid ""
-#~ "Once confirmed this key will be usable by %s to receive and send messages."
-#~ msgstr ""
-#~ "Patvirtinus, šis raktas taps tinkamu naudoti %s, kad gautų ir siųstų "
-#~ "žinutes."
-
-#~ msgid ""
-#~ "When this contact adds new encryption keys to their account, "
-#~ "automatically accept them."
-#~ msgstr ""
-#~ "Kai šis adresatas prie savo paskyros pridės naujus šifravimo raktus, "
-#~ "automatiškai juos priimti."
-
-#~ msgid ""
-#~ "When you add new encryption keys to your account, automatically accept "
-#~ "them."
-#~ msgstr ""
-#~ "Kai pridedate naujus šifravimo raktus prie savo paskyros, automatiškai "
-#~ "juos priimti."
+"Ogni tramai al'à la so clâf OMEMO. I mesagjos a podin sei decifrâs nome dal "
+"tramai cun che clâf. E nome su tramais acetâs."

@@ -7,22 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-10-15 00:07+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-02-23 06:09+0000\n"
 "Language-Team: none\n"
 "Language: kab\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -38,7 +41,7 @@ msgstr "Tuqqna"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr ""
+msgstr "Sens amiḍan"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
@@ -46,7 +49,7 @@ msgstr "Rmed amiḍan-a"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
-msgstr ""
+msgstr "Fren avaṭar"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -102,7 +105,7 @@ msgstr "Imiḍanen"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "Sens Imiḍanen"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -111,9 +114,9 @@ msgstr "Rnu amiḍan"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
-msgstr ""
+msgstr "Ulac imiḍanen iremden"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
@@ -122,23 +125,23 @@ msgstr "Qqen"
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
 msgid "The server could not prove that it is %s."
-msgstr ""
+msgstr "Aqeddac ur yezmir ara ad d-ibeyyen belli d %s."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:145
 msgid "Its security certificate is not trusted by your operating system."
-msgstr ""
+msgstr "Aselkin n tɣellist ur yettwattkal ara deg unagraw n wammud-ik·im."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:147
 msgid "Its security certificate is issued to another domain."
-msgstr ""
+msgstr "Aselkin n tɣellist tettwamudd i taɣult-nniḍen."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:149
 msgid "Its security certificate will only become valid in the future."
-msgstr ""
+msgstr "Aselkin n tɣellist ad yuɣal d ameɣtu deg yimal."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:151
 msgid "Its security certificate is expired."
-msgstr ""
+msgstr "Aselkin n tɣellist iɛedda-t wakud."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:159
 #: main/data/preferences_window/add_account_dialog.ui:111
@@ -148,7 +151,7 @@ msgstr "Snulfu-d amiḍan"
 #: main/src/windows/preferences_window/add_account_dialog.vala:178
 #, c-format
 msgid "You can now use the account %s."
-msgstr ""
+msgstr "Tzemreḍ tura ad tesqedceḍ amiḍan %s."
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:224
 msgid "Wrong username or password"
@@ -164,7 +167,7 @@ msgstr "Yella wayen ur neddi ara"
 #: main/src/ui/notifier_freedesktop.vala:188
 #, c-format
 msgid "Could not connect to %s"
-msgstr ""
+msgstr "Ulamek tuqqna ɣer %s"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:255
 #: main/src/windows/preferences_window/add_account_dialog.vala:265
@@ -176,7 +179,7 @@ msgstr "Yir tansa"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:293
 msgid "No response from server"
-msgstr ""
+msgstr "Ulac tiririt seg uqeddac"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:304
 #, c-format
@@ -185,7 +188,7 @@ msgstr "Jerred deg %s"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:307
 msgid "The server requires to sign up through a website"
-msgstr ""
+msgstr "Aqeddac yesra ajerred seg usmel web"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:309
 msgid "Open website"
@@ -227,7 +230,7 @@ msgstr "Yettusewḥel"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr ""
+msgstr "Taɣult tettusewḥel"
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
@@ -266,7 +269,7 @@ msgstr "Iɣewwaren"
 
 #: main/src/windows/conversation_details.vala:222
 msgid "Room Configuration"
-msgstr ""
+msgstr "Tawila n texxamt"
 
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
@@ -300,7 +303,7 @@ msgstr ""
 #: main/src/ui/conversation_content/message_item_widget.vala:124
 #: main/src/ui/conversation_content_view/message_widget.vala:96
 msgid "Message too long"
-msgstr ""
+msgstr "Izen ɣezzif aṭas"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:150
 #: main/src/ui/conversation_content_view/message_widget.vala:166
@@ -315,7 +318,7 @@ msgstr ""
 #: main/src/ui/conversation_content/message_item_widget.vala:172
 #: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
-msgstr ""
+msgstr "asiweḍ ur yeddi ara"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
@@ -327,7 +330,7 @@ msgstr "Ur yettwawgelhen ara"
 #: main/src/ui/conversation_content/conversation_content_model.vala:101
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:204
 msgid "Unable to send message"
-msgstr ""
+msgstr "Ur izmir ara ad yazen izen"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:122
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:241
@@ -387,8 +390,8 @@ msgstr "%l∶%M %p"
 #, c-format
 msgid "%i min ago"
 msgid_plural "%i mins ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i n tesdat aya"
+msgstr[1] "%i n tesdatin aya"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:141
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:353
@@ -407,36 +410,36 @@ msgstr "Nekki"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr ""
+msgstr "Izen yettwakkes"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "Image sent"
-msgstr ""
+msgstr "Tugna tettwazen"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
 #: main/src/ui/notifier_freedesktop.vala:71
 msgid "File sent"
-msgstr ""
+msgstr "Afaylu yettwazen"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "Image received"
-msgstr ""
+msgstr "Tugna tettwarmes"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:194
 #: main/src/ui/notifier_gnotifications.vala:38
 #: main/src/ui/notifier_freedesktop.vala:73
 msgid "File received"
-msgstr ""
+msgstr "Afaylu yettwarmes"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr ""
+msgstr "Asiwel uffiɣ"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -444,7 +447,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr ""
+msgstr "Asiwel ukcim"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
@@ -469,23 +472,23 @@ msgstr "Snubeg"
 
 #: main/src/ui/occupant_menu/view.vala:82
 msgid "Start private conversation"
-msgstr ""
+msgstr "Senker adiwenni uslig"
 
 #: main/src/ui/occupant_menu/view.vala:90
 msgid "Kick"
-msgstr ""
+msgstr "Wwet ɣer beṛṛa"
 
 #: main/src/ui/occupant_menu/view.vala:96
 msgid "Grant write permission"
-msgstr ""
+msgstr "Mudd tasiregt n tira"
 
 #: main/src/ui/occupant_menu/view.vala:102
 msgid "Revoke write permission"
-msgstr ""
+msgstr "Ḥwi tasiregt n tira"
 
 #: main/src/ui/occupant_menu/view.vala:144
 msgid "Invite to Conference"
-msgstr ""
+msgstr "Annubeg ɣer usarag"
 
 #: main/src/ui/conversation_view_controller.vala:200
 msgid "Select file"
@@ -498,35 +501,35 @@ msgstr "%s sɣur %s"
 
 #: main/src/ui/util/data_forms.vala:31
 msgid "Name of the room"
-msgstr ""
+msgstr "Isem n texxamt"
 
 #: main/src/ui/util/data_forms.vala:34
 msgid "Description of the room"
-msgstr ""
+msgstr "Aglam n texxamt"
 
 #: main/src/ui/util/data_forms.vala:37
 msgid "Persistent"
-msgstr ""
+msgstr "Imezgi"
 
 #: main/src/ui/util/data_forms.vala:38
 msgid "The room will persist after the last occupant leaves"
-msgstr ""
+msgstr "Taxxamt ad teqqim tmezgit deffir n tuffɣa n uɛeggal-is aneggaru"
 
 #: main/src/ui/util/data_forms.vala:41
 msgid "Publicly searchable"
-msgstr ""
+msgstr "Amnadi-ines s wudem azayez"
 
 #: main/src/ui/util/data_forms.vala:44
 msgid "Occupants may change the subject"
-msgstr ""
+msgstr "Iɛeggalen zemren ad beddlen asentel"
 
 #: main/src/ui/util/data_forms.vala:47
 msgid "Permission to view JIDs"
-msgstr ""
+msgstr "Tasiregt ad twaliḍ JIDs"
 
 #: main/src/ui/util/data_forms.vala:48
 msgid "Who is allowed to view the occupants' JIDs?"
-msgstr ""
+msgstr "Anwa i zemren ad iwali iɛeggalen n JIDs?"
 
 #: main/src/ui/util/data_forms.vala:51
 #: main/data/preferences_window/account_preferences_subpage.ui:82
@@ -541,19 +544,19 @@ msgstr ""
 
 #: main/src/ui/util/data_forms.vala:56
 msgid "Only occupants with voice may send messages"
-msgstr ""
+msgstr "Ala iɛeggalen s taɣect i zemren ad aznen iznan"
 
 #: main/src/ui/util/data_forms.vala:59
 msgid "Members only"
-msgstr ""
+msgstr "Ala i yiɛeggalen"
 
 #: main/src/ui/util/data_forms.vala:60
 msgid "Only members may enter the room"
-msgstr ""
+msgstr "Ala i yiɛeggalen kan i yezemren ad kecmen ɣer texxamt"
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "This conference does not allow you to send messages."
-msgstr ""
+msgstr "Asarag-a ur k-yettaǧǧa ara ad tazneḍ iznan."
 
 #: main/src/ui/chat_input/chat_input_controller.vala:217
 msgid "Request permission"
@@ -562,7 +565,7 @@ msgstr "Suter tasiregt"
 #: main/src/ui/chat_input/view.vala:45 main/data/gtk/help-overlay.ui:49
 #: main/data/file_send_overlay.ui:5
 msgid "Send a file"
-msgstr ""
+msgstr "Azen afaylu"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
@@ -583,15 +586,15 @@ msgstr "Nadi deg iznan"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "Ifatusen n tdiwennit"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "Mdel Tadiwennit"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr ""
+msgstr "Talɣut n useɣti"
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
@@ -600,17 +603,17 @@ msgstr "Asiwel…"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr ""
+msgstr "Aṭenṭen…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s yekfa asiwel"
 
 #: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s yugi asiwel"
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
@@ -618,7 +621,7 @@ msgstr "Tikamiṛatin"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr ""
+msgstr "Ulac takamiṛat i yettwafen."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
@@ -626,7 +629,7 @@ msgstr "Iṣawaḍen"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr ""
+msgstr "Ulac amikṛu yettwafen."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
@@ -634,14 +637,14 @@ msgstr "Imesmeɣren n yimesli"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr ""
+msgstr "Ulac amsemɣeṛ taɣuct i yettwafen."
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr ""
+msgstr "Annubeg ɣer usiwel"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "Bdu adiwenni"
@@ -651,10 +654,10 @@ msgid "Start"
 msgstr "Bdu"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
-msgstr ""
+msgstr "Ddu ɣer ubadu"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:45
 #: main/data/preferences_window/add_account_dialog.ui:246
@@ -663,48 +666,48 @@ msgstr "Uḍfir"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "Zeddi"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:143
 msgid "Joining…"
-msgstr ""
+msgstr "Yetteddu…"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:164
 msgid "Password required to enter room"
-msgstr ""
+msgstr "Awal n uɛeddi yettwasra i unekcum ɣer texxamt"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:169
 msgid "Banned from joining or creating conference"
-msgstr ""
+msgstr "Yettwagdel seg tmerna neɣ deg usnulfu n usarag"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:171
 msgid "Room does not exist"
-msgstr ""
+msgstr "Taxxamt ulac-itt"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:173
 msgid "Not allowed to create room"
-msgstr ""
+msgstr "Ur turigeḍ ara iwakken ad d-tesnulfuḍ taxxamt"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:175
 msgid "Members-only room"
-msgstr ""
+msgstr "Taxxamt n iɛeggalen kan"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:178
 msgid "Choose a different nick"
-msgstr ""
+msgstr "Fren tazaẓlut nniḍen"
 
 #: main/src/ui/add_conversation/conference_details_fragment.vala:180
 msgid "Too many occupants in room"
-msgstr ""
+msgstr "Aṭas n imttekkiyen deg texxamt"
 
 #: main/src/ui/add_conversation/add_groupchat_dialog.vala:26
 #: main/data/add_conversation/add_contact_dialog.ui:18
 msgid "Add"
 msgstr "Rnu"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "Ɣef Dino"
 
@@ -721,8 +724,8 @@ msgstr "%a %d %b"
 #, c-format
 msgid "%i search result"
 msgid_plural "%i search results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i n ugmuḍ n unadi"
+msgstr[1] "%i n igmaḍ n unadi"
 
 #: main/src/ui/global_search.vala:208
 #, c-format
@@ -738,19 +741,19 @@ msgstr "D %s"
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr ""
+msgstr "Asiwel ukcim uvidyu"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr ""
+msgstr "Asiwel ukcim uvidyu n ugraw"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr ""
+msgstr "Asiwel ukcim n ugraw"
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
@@ -774,7 +777,7 @@ msgstr "Qbel"
 #: main/src/ui/notifier_gnotifications.vala:91
 #: main/src/ui/notifier_freedesktop.vala:157
 msgid "Subscription request"
-msgstr ""
+msgstr "Asuter n ujerred"
 
 #: main/src/ui/notifier_gnotifications.vala:98
 #: main/src/ui/notifier_gnotifications.vala:133
@@ -795,12 +798,12 @@ msgstr "Asnubeg ɣer %s"
 #: main/src/ui/notifier_freedesktop.vala:221
 #, c-format
 msgid "%s invited you to %s"
-msgstr ""
+msgstr "%s yeɛreḍ-ik·im ɣer %s"
 
 #: main/src/ui/notifier_gnotifications.vala:141
 #: main/src/ui/notifier_freedesktop.vala:254
 msgid "Permission request"
-msgstr ""
+msgstr "Asuter n usireg"
 
 #: main/src/ui/notifier_gnotifications.vala:142
 #: main/src/ui/notifier_freedesktop.vala:255
@@ -824,7 +827,7 @@ msgstr "Yexsi"
 
 #: main/src/ui/contact_details/settings_provider.vala:22
 msgid "Send typing notifications"
-msgstr ""
+msgstr "Azen ilɣa n tira"
 
 #: main/src/ui/contact_details/settings_provider.vala:23
 #: main/src/ui/contact_details/settings_provider.vala:33
@@ -834,29 +837,29 @@ msgstr "Amezwer: %s"
 
 #: main/src/ui/contact_details/settings_provider.vala:32
 msgid "Send read receipts"
-msgstr ""
+msgstr "Azen inagan n tɣuri"
 
 #: main/src/ui/contact_details/permissions_provider.vala:23
 msgid "Request permission to send messages"
-msgstr ""
+msgstr "Suter tasiregt akken ad tazneḍ iznan"
 
 #: main/src/ui/contact_details/permissions_provider.vala:24
 msgid "Request"
 msgstr "Suter"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "Ansuf ɣer Dino !"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "Qqen neɣ snulfu-d amiḍan akken ad tebduḍ."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "Swel amiḍan"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "Asefrek n yimiḍanen"
 
@@ -878,9 +881,14 @@ msgstr "Asentel"
 msgid "Edit message"
 msgstr "Ẓreg izen"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr ""
+msgstr "Ugar n tigawin"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
+msgstr "Kkes izen"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
@@ -889,7 +897,7 @@ msgstr "Kečč·Kemm"
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr ""
+msgstr "Rnu tamyigawt"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:42
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
@@ -897,7 +905,7 @@ msgid "Open"
 msgstr "Ldi"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
 msgstr "Sekles am…"
@@ -905,134 +913,129 @@ msgstr "Sekles am…"
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
 msgid "%s, %s and %i others are typing…"
-msgstr ""
+msgstr "%s, %s akked %i n wiyaḍ la ttarun…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:115
 #, c-format
 msgid "%s, %s and %s are typing…"
-msgstr ""
+msgstr "%s, %s akked %s la ttarun…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:121
 #, c-format
 msgid "%s and %s are typing…"
-msgstr ""
+msgstr "%s akked %s la ttarun…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:126
 #, c-format
 msgid "%s is typing…"
-msgstr ""
+msgstr "%s la yettaru…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr ""
+msgstr "Asiwel yebda"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "Yebda %s aya"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "Tessefrekeḍ asawal-agi deg yibenk nniḍen"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr ""
+msgstr "Ifukk usiwel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "Yekfa ɣef %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "Tanzagt %s"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr ""
+msgstr "Asiwel yettwazeggel"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr ""
+msgstr "Tzegleḍ asiwel-a"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s yezgel asiwel-a"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr ""
+msgstr "Asiwel yettwagi"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr ""
+msgstr "Tugiḍ asiwel-a"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s yugi asiwel-agi"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr ""
+msgstr "Asiwel ur yeddi ara"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i n usrag"
+msgstr[1] "%i n yisragen"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i n tesdat"
+msgstr[1] "%i n tesdatin"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr ""
+msgstr "kra n tasinin"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr ""
+msgstr "Yettusiweḍ"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr ""
+msgstr "Ɣeṛ"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "Azen asuter"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "Ur d-remseḍ ara ileqman n waddad seg unermis-agi yakan."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr ""
+msgstr "Anermis-agi yebɣa ad k-yernu ɣer tebdart-is n yinermisen"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
 msgstr ""
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
 msgstr "Tiririt"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
-msgstr ""
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
+msgstr "Adiwenni-a ur yessefrak ara tiririyin."
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
@@ -1047,27 +1050,27 @@ msgstr "Asider n %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "Asali n %s…(%u%%)"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
 msgid "%s offered: %s"
-msgstr ""
+msgstr "%s yettak-d: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:97
 #, c-format
 msgid "File offered: %s"
-msgstr ""
+msgstr "Afaylu yettak-d: %s"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:99
 msgid "File offered"
-msgstr ""
+msgstr "Afaylu yettak-d"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:105
 msgid "File transfer failed"
-msgstr ""
+msgstr "Asiweḍ n ufaylu ur yeddi ara"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
 msgstr "Afaylu"
 
@@ -1081,7 +1084,7 @@ msgstr "Talqayt unermis"
 
 #: main/data/message_item_widget_edit_mode.ui:51
 msgid "Update message"
-msgstr ""
+msgstr "Leqqem izen"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
@@ -1089,7 +1092,7 @@ msgstr "Qqen"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
-msgstr ""
+msgstr "Ur izmir ara ad egg tuqqna taɣelsant"
 
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
@@ -1109,7 +1112,7 @@ msgstr "Qqen deg nnuba-s"
 
 #: main/data/preferences_window/add_account_dialog.ui:330
 msgid "All set up!"
-msgstr ""
+msgstr "Ttusbadun akk!"
 
 #: main/data/preferences_window/add_account_dialog.ui:359
 msgid "Finish"
@@ -1117,11 +1120,11 @@ msgstr "Fakk"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "Azen ilɣa n _Tira"
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
-msgstr ""
+msgstr "Azen inagan n tɣuri (_R)"
 
 #: main/data/preferences_window/general_preferences_page.ui:25
 msgid "_Notifications"
@@ -1129,7 +1132,7 @@ msgstr "Ilɣa (_N)"
 
 #: main/data/preferences_window/general_preferences_page.ui:26
 msgid "Notify when a new message arrives"
-msgstr ""
+msgstr "Lɣu ma yella izen amaynut ara d-yawḍen"
 
 #: main/data/preferences_window/general_preferences_page.ui:36
 msgid "_Convert Smileys to Emoji"
@@ -1137,11 +1140,11 @@ msgstr ""
 
 #: main/data/preferences_window/account_preferences_subpage.ui:77
 msgid "Local alias"
-msgstr ""
+msgstr "Tazaẓlut tadigant"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:104
 msgid "Connection status"
-msgstr ""
+msgstr "Addad n tuqqna"
 
 #: main/data/preferences_window/account_preferences_subpage.ui:134
 msgid "Remove account"
@@ -1165,12 +1168,32 @@ msgstr "Awal n uɛeddi amaynut"
 
 #: main/data/preferences_window/change_password_dialog.ui:71
 msgid "Confirm password"
-msgstr ""
+msgstr "Sentem awal n uɛeddi"
 
 #: main/data/preferences_window/preferences_dialog.ui:25
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
 msgstr "Amatu"
+
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"
@@ -1194,11 +1217,11 @@ msgstr "Tunigin"
 
 #: main/data/gtk/help-overlay.ui:66
 msgid "Jump to next conversation"
-msgstr ""
+msgstr "Neggez ɣer udiwenni uḍfir"
 
 #: main/data/gtk/help-overlay.ui:72
 msgid "Jump to previous conversation"
-msgstr ""
+msgstr "Neggez ɣer udiwenni uzwir"
 
 #: main/data/add_conversation/conference_details_fragment.ui:20
 #: main/data/add_conversation/add_groupchat_dialog.ui:40
@@ -1222,7 +1245,7 @@ msgstr "Rnu anermis"
 
 #: main/data/im.dino.Dino.appdata.xml.in:6
 msgid "Modern XMPP chat client"
-msgstr ""
+msgstr "Amsaɣ atrar n udiwenni XMPP"
 
 #: main/data/im.dino.Dino.appdata.xml.in:10
 msgid ""
@@ -1230,6 +1253,8 @@ msgid ""
 "providing a clean and reliable Jabber/XMPP experience while having your "
 "privacy in mind."
 msgstr ""
+"Dino d amsaɣ atrar n uɣbalu yeldin i tnarit. isaḍas ɣef umuddu n termit "
+"zeddigen iggarzen n Jabber/XMPP deg wakud anda tabaḍnit-ik·im tettwaḥrez."
 
 #: main/data/im.dino.Dino.appdata.xml.in:11
 msgid ""
@@ -1246,27 +1271,27 @@ msgstr ""
 
 #: main/data/main_window.ui:89
 msgid "You have no open chats"
-msgstr ""
+msgstr "Ulac idiwenniyen yeldin"
 
 #: main/data/main_window.ui:90
 msgid "Click + to start a chat or join a channel"
-msgstr ""
+msgstr "Sit + akken ad tebduḍ adiwenni neɣ ad tedduḍ ɣer ubadu"
 
 #: main/data/global_search.ui:27
 msgid "No active search"
-msgstr ""
+msgstr "Ulac anadi urmid"
 
 #: main/data/global_search.ui:28
 msgid "Type to start a search"
-msgstr ""
+msgstr "Aru iwakken ad tebduḍ anadi"
 
 #: main/data/global_search.ui:42
 msgid "No matching messages"
-msgstr ""
+msgstr "Ulac iznan i yemṣadan"
 
 #: main/data/global_search.ui:43
 msgid "Check the spelling or try to remove filters"
-msgstr ""
+msgstr "Senqed taɣdira neɣ eɛreḍ ad tekkseḍ tistayin"
 
 #: main/data/file_send_overlay.ui:41
 msgid "Send"
@@ -1274,7 +1299,7 @@ msgstr "Azen"
 
 #: main/data/menu_app.ui:7
 msgid "Preferences"
-msgstr ""
+msgstr "Ismenyafen"
 
 #: main/data/menu_app.ui:11
 msgid "Keyboard Shortcuts"

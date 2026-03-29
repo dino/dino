@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dino-openpgp-0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-02-25 04:41+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-14 10:09+0000\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/dino/plugin-"
 "openpgp/nl/>\n"
 "Language: nl\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.2-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -21,7 +21,7 @@ msgstr "Bezig met aanroepen van GnuPG"
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 #: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "Aankondigingssleutel"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -41,7 +41,7 @@ msgstr "Sleutel niet in sleutelbos"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "Vingerafdruk"
 
 #~ msgid "Encryption"
 #~ msgstr "Encryptie"

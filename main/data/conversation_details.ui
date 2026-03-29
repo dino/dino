@@ -187,17 +187,17 @@
   <menu id="notification_split_button_menu_model">
     <section>
       <item>
-        <attribute name="label">Enable notifications</attribute>
+        <attribute name="label" translatable="yes">Enable notifications</attribute>
         <attribute name="action">notification.on</attribute>
       </item>
       <item>
-        <attribute name="label">Disable notifications</attribute>
+        <attribute name="label" translatable="yes">Disable notifications</attribute>
         <attribute name="action">notification.off</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label">Reset to default</attribute>
+        <attribute name="label" translatable="yes">Reset to default</attribute>
         <attribute name="action">notification.default</attribute>
       </item>
     </section>
@@ -205,21 +205,21 @@
   <menu id="notification_menu_button_menu_model">
     <section>
       <item>
-        <attribute name="label">Notify for all messages</attribute>
+        <attribute name="label" translatable="yes">Notify for all messages</attribute>
         <attribute name="action">notification.on</attribute>
       </item>
       <item>
-        <attribute name="label">Notify only for mentions</attribute>
+        <attribute name="label" translatable="yes">Notify only for mentions</attribute>
         <attribute name="action">notification.highlight</attribute>
       </item>
       <item>
-        <attribute name="label">Disable notifications</attribute>
+        <attribute name="label" translatable="yes">Disable notifications</attribute>
         <attribute name="action">notification.off</attribute>
       </item>
     </section>
     <section>
       <item>
-        <attribute name="label">Reset to default</attribute>
+        <attribute name="label" translatable="yes">Reset to default</attribute>
         <attribute name="action">notification.default</attribute>
       </item>
     </section>

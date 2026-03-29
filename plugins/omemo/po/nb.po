@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2020-10-10 10:49+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-14 10:09+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-omemo/nb_NO/>\n"
 "Language: nb\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -218,19 +218,19 @@ msgstr "La du til en ny enhet for kontoen %s?"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO som standard"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "Aktiver OMEMO-kryptering for nye samtaler"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "Krypter til nye enheter"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "Krypter automatisk til nye enheter fra denne kontakten."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
@@ -243,15 +243,15 @@ msgstr "Nye krypteringsnøkler fra dine andre enheter vil godtas automatisk."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Denne enheten"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Annen enhet"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
-msgstr ""
+msgstr "Enhet"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
@@ -267,7 +267,7 @@ msgstr "Bekreftet"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr ""
+msgstr "Ny enhet"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -275,6 +275,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Hver enhet har sin egen OMEMO-nøkkel. Meldinger kan bare dekrypteres av en "
+"enhet hvis de er kryptert til dens nøkkel. Meldinger blir bare kryptert til "
+"godkjente enheter."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "OMEMO-nøkkelhåndtering"

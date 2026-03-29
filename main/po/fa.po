@@ -7,22 +7,25 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-07-29 03:02+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2025-12-14 09:00+0000\n"
 "Language-Team: none\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
 #: main/src/ui/add_conversation/select_contact_dialog.vala:41
 #: main/src/ui/add_conversation/add_conference_dialog.vala:42
-#: main/src/ui/application.vala:290
+#: main/src/ui/application.vala:286
+#: main/src/ui/conversation_content_view/conversation_view.vala:591
+#: main/src/ui/conversation_content_view/conversation_view.vala:600
+#: main/src/ui/conversation_content_view/conversation_view.vala:605
 #: main/src/ui/conversation_content_view/file_default_widget.vala:88
 #: main/data/message_item_widget_edit_mode.ui:46
 #: main/data/preferences_window/change_password_dialog.ui:18
@@ -38,11 +41,11 @@ msgstr "اتصال"
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 #: main/data/preferences_window/account_preferences_subpage.ui:125
 msgid "Disable account"
-msgstr ""
+msgstr "غیرفعال کردن حساب کاربری"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:87
 msgid "Enable account"
-msgstr ""
+msgstr "فعال کردن حساب کاربری"
 
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 msgid "Select avatar"
@@ -102,7 +105,7 @@ msgstr "حساب‌ها"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:28
 msgid "Disabled accounts"
-msgstr ""
+msgstr "حساب های غیرفعال شده"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:31
 #: main/src/windows/preferences_window/add_account_dialog.vala:81
@@ -111,13 +114,13 @@ msgstr "اضافه کردن حساب"
 
 #: main/src/windows/preferences_window/accounts_preferences_page.vala:71
 #: main/src/windows/preferences_window/encryption_preferences_page.vala:49
-#: main/src/ui/main_window.vala:160
+#: main/src/ui/main_window.vala:161
 msgid "No active accounts"
 msgstr "حساب فعالی وجود ندارد"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:126
 msgid "Sign in"
-msgstr "ورود"
+msgstr "وارد شوید"
 
 #: main/src/windows/preferences_window/add_account_dialog.vala:143
 #, c-format
@@ -203,31 +206,31 @@ msgstr "بررسی %s برای کسب اطلاعات در مورد نحوه ثب
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block user"
-msgstr ""
+msgstr "مسدود کردن کاربر"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Block entire domain"
-msgstr ""
+msgstr "مسدود کردن کل دامنه"
 
 #: main/src/windows/conversation_details.vala:76
 msgid "Unblock"
-msgstr ""
+msgstr "رفع مسدود بودن"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pinned"
-msgstr ""
+msgstr "سنجاق شده"
 
 #: main/src/windows/conversation_details.vala:93
 msgid "Pin"
-msgstr ""
+msgstr "سنجاق کردن"
 
 #: main/src/windows/conversation_details.vala:104
 msgid "Blocked"
-msgstr ""
+msgstr "مسدود شده"
 
 #: main/src/windows/conversation_details.vala:108
 msgid "Domain blocked"
-msgstr ""
+msgstr "دامنه مسدود شده"
 
 #: main/src/windows/conversation_details.vala:112
 msgid "Block"
@@ -240,7 +243,7 @@ msgstr "بی‌صدا"
 
 #: main/src/windows/conversation_details.vala:133
 msgid "Notifications enabled"
-msgstr ""
+msgstr "نوتیف فعال شده"
 
 #: main/src/windows/conversation_details.vala:136
 msgid "Notifications for mentions"
@@ -249,16 +252,16 @@ msgstr ""
 #: main/src/windows/conversation_details.vala:139
 #: main/src/windows/conversation_details.vala:140
 msgid "Muted"
-msgstr ""
+msgstr "ساکت شده"
 
 #: main/src/windows/conversation_details.vala:141
 msgid "Notifications disabled"
-msgstr ""
+msgstr "نوتیف غیرفعال شده"
 
 #: main/src/windows/conversation_details.vala:196
 #: main/data/conversation_details.ui:156
 msgid "About"
-msgstr ""
+msgstr "درباره"
 
 #: main/src/windows/conversation_details.vala:199
 msgid "Settings"
@@ -271,7 +274,7 @@ msgstr "پیکربندی اتاق"
 #: main/src/windows/conversation_details.vala:238
 #: main/data/preferences_window/preferences_dialog.ui:18
 msgid "Encryption"
-msgstr ""
+msgstr "رمزنگاری"
 
 #: main/src/windows/conversation_details.vala:248
 #: main/src/ui/conversation_titlebar/occupants_entry.vala:14
@@ -310,12 +313,12 @@ msgstr "ویرایش شده"
 #: main/src/ui/conversation_content/message_item_widget.vala:159
 #: main/src/ui/conversation_content_view/message_widget.vala:175
 msgid "pending…"
-msgstr ""
+msgstr "درحال انجام"
 
 #: main/src/ui/conversation_content/message_item_widget.vala:172
 #: main/src/ui/conversation_content_view/message_widget.vala:190
 msgid "delivery failed"
-msgstr ""
+msgstr "دریافت ناموفق"
 
 #: main/src/ui/conversation_content/conversation_content_model.vala:85
 #: main/src/ui/chat_input/encryption_button.vala:26
@@ -407,7 +410,7 @@ msgstr "من"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:171
 #: main/src/ui/conversation_content_view/message_widget.vala:162
 msgid "Message deleted"
-msgstr ""
+msgstr "پیام حذف شده"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:192
 #: main/src/ui/notifier_gnotifications.vala:36
@@ -436,7 +439,7 @@ msgstr "فایل دریافت شد"
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Outgoing call"
-msgstr ""
+msgstr "تماس خروجی"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:203
 #: main/src/ui/notifier_gnotifications.vala:70
@@ -444,7 +447,7 @@ msgstr ""
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 #: main/src/ui/conversation_content_view/call_widget.vala:168
 msgid "Incoming call"
-msgstr ""
+msgstr "تماس ورودی"
 
 #: main/src/ui/conversation_selector/conversation_selector_row.vala:340
 #: main/src/ui/widgets/date_separator.vala:37
@@ -566,15 +569,15 @@ msgstr "ارسال فایل"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:13
 msgid "Start call"
-msgstr ""
+msgstr "شروع تماس"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:24
 msgid "Audio call"
-msgstr ""
+msgstr "تماس صوتی"
 
 #: main/src/ui/conversation_titlebar/call_entry.vala:25
 msgid "Video call"
-msgstr ""
+msgstr "تماس تصویری"
 
 #: main/src/ui/conversation_titlebar/search_entry.vala:12
 #: main/data/gtk/help-overlay.ui:43
@@ -583,65 +586,65 @@ msgstr "جست‌جوی پیام‌ها"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:20
 msgid "Conversation Details"
-msgstr ""
+msgstr "اطلاعات گفتگو"
 
 #: main/src/ui/conversation_titlebar/menu_entry.vala:21
 msgid "Close Conversation"
-msgstr ""
+msgstr "بستن گفتگو"
 
 #: main/src/ui/call_window/participant_widget.vala:115
 msgid "Debug information"
-msgstr ""
+msgstr "اطلاعات عیب یابی"
 
 #: main/src/ui/call_window/participant_widget.vala:124
 #: main/src/ui/conversation_content_view/call_widget.vala:152
 msgid "Calling…"
-msgstr ""
+msgstr "در حال تماس …"
 
 #: main/src/ui/call_window/participant_widget.vala:126
 msgid "Ringing…"
-msgstr ""
+msgstr "در حال زنگ خوردن…"
 
 #: main/src/ui/call_window/call_window.vala:207
 #, c-format
 msgid "%s ended the call"
-msgstr ""
+msgstr "%s تماس را پایان داد"
 
 #: main/src/ui/call_window/call_window.vala:209
 #, c-format
 msgid "%s declined the call"
-msgstr ""
+msgstr "%s تماس را لغو کرد"
 
 #: main/src/ui/call_window/video_settings_popover.vala:25
 msgid "Cameras"
-msgstr ""
+msgstr "دوربین"
 
 #: main/src/ui/call_window/video_settings_popover.vala:28
 msgid "No camera found."
-msgstr ""
+msgstr "دوربین یافت نشد."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:29
 msgid "Microphones"
-msgstr ""
+msgstr "میکروفون"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:32
 msgid "No microphone found."
-msgstr ""
+msgstr "میکروفون یافت نشد."
 
 #: main/src/ui/call_window/audio_settings_popover.vala:85
 msgid "Speakers"
-msgstr ""
+msgstr "بلندگو"
 
 #: main/src/ui/call_window/audio_settings_popover.vala:88
 msgid "No speaker found."
-msgstr ""
+msgstr "بلندگو یافت نشد."
 
 #: main/src/ui/call_window/call_window_controller.vala:150
 msgid "Invite to Call"
-msgstr ""
+msgstr "دعوت به تماس"
 
 #: main/src/ui/add_conversation/select_contact_dialog.vala:89
-#: main/src/ui/main_window.vala:137 main/data/gtk/help-overlay.ui:14
+#: main/src/ui/main_window.vala:138 main/data/gtk/help-overlay.ui:14
 #: main/data/menu_add.ui:7
 msgid "Start Conversation"
 msgstr "آغاز گفتگو"
@@ -651,7 +654,7 @@ msgid "Start"
 msgstr "آغاز"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:25
-#: main/src/ui/application.vala:290 main/data/gtk/help-overlay.ui:20
+#: main/src/ui/application.vala:286 main/data/gtk/help-overlay.ui:20
 #: main/data/menu_add.ui:11
 msgid "Join Channel"
 msgstr "پیوستن به کانال"
@@ -663,7 +666,7 @@ msgstr "بعدی"
 
 #: main/src/ui/add_conversation/add_conference_dialog.vala:60
 #: main/src/ui/add_conversation/conference_details_fragment.vala:151
-#: main/src/ui/application.vala:290 main/data/join_room_dialog2.ui:190
+#: main/src/ui/application.vala:286 main/data/join_room_dialog2.ui:190
 msgid "Join"
 msgstr "پیوستن"
 
@@ -704,7 +707,7 @@ msgstr "تعداد زیادی از افراد در اتاق هستند"
 msgid "Add"
 msgstr "اضافه کردن"
 
-#: main/src/ui/application.vala:281 main/data/menu_app.ui:15
+#: main/src/ui/application.vala:277 main/data/menu_app.ui:15
 msgid "About Dino"
 msgstr "دربارهٔ Dino"
 
@@ -738,19 +741,19 @@ msgstr "با %s"
 #: main/src/ui/notifier_freedesktop.vala:114
 #: main/src/ui/conversation_content_view/call_widget.vala:137
 msgid "Incoming video call"
-msgstr ""
+msgstr "تماس تصویری ورودی"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming video group call"
-msgstr ""
+msgstr "تماس تصویری ورودی - گروهی"
 
 #: main/src/ui/notifier_gnotifications.vala:72
 #: main/src/ui/notifier_freedesktop.vala:116
 #: main/src/ui/conversation_content_view/call_widget.vala:139
 msgid "Incoming group call"
-msgstr ""
+msgstr "تماس ورودی - گروهی"
 
 #: main/src/ui/notifier_gnotifications.vala:80
 #: main/src/ui/notifier_freedesktop.vala:125
@@ -844,63 +847,68 @@ msgstr "درخواست مجوز برای ارسال پیام"
 msgid "Request"
 msgstr "درخواست"
 
-#: main/src/ui/main_window.vala:151
+#: main/src/ui/main_window.vala:152
 msgid "Welcome to Dino!"
 msgstr "به دینو خوش آمدید!"
 
-#: main/src/ui/main_window.vala:152
+#: main/src/ui/main_window.vala:153
 msgid "Sign in or create an account to get started."
 msgstr "برای شروع یک حساب بسازید یا وارد شوید."
 
-#: main/src/ui/main_window.vala:153
+#: main/src/ui/main_window.vala:154
 msgid "Set up account"
 msgstr "حساب تنظیم کنید"
 
-#: main/src/ui/main_window.vala:161
+#: main/src/ui/main_window.vala:162
 msgid "Manage accounts"
 msgstr "مدیریت حساب‌ها"
 
 #: main/src/ui/conversation_details.vala:143
 #: main/data/preferences_window/account_preferences_subpage.ui:68
 msgid "XMPP Address"
-msgstr ""
+msgstr "آدرس XMPP"
 
 #: main/src/ui/conversation_details.vala:148
 msgid "Display name"
-msgstr ""
+msgstr "نام نمایشی"
 
 #: main/src/ui/conversation_details.vala:168
 #: main/src/ui/conversation_details.vala:182
 msgid "Topic"
-msgstr ""
+msgstr "موضوع"
 
 #: main/src/ui/conversation_content_view/message_widget.vala:238
 msgid "Edit message"
-msgstr ""
+msgstr "ویرایش پیام"
 
-#: main/src/ui/conversation_content_view/conversation_view.vala:82
+#: main/src/ui/conversation_content_view/conversation_view.vala:74
 msgid "More actions"
-msgstr ""
+msgstr "اقدامات بیشتر"
+
+#: main/src/ui/conversation_content_view/conversation_view.vala:572
+#: main/src/ui/conversation_content_view/item_actions.vala:65
+msgid "Delete message"
+msgstr "حذف پیام"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:102
 msgid "You"
-msgstr ""
+msgstr "شما"
 
 #: main/src/ui/conversation_content_view/reactions_widget.vala:128
 #: main/src/ui/conversation_content_view/item_actions.vala:9
 msgid "Add reaction"
-msgstr ""
+msgstr "اضافه کردن عکس العمل"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:42
 #: main/src/ui/conversation_content_view/file_default_widget.vala:65
 msgid "Open"
-msgstr ""
+msgstr "بازکردن"
 
 #: main/src/ui/conversation_content_view/file_image_widget.vala:43
-#: main/src/ui/conversation_content_view/file_widget.vala:169
+#: main/src/ui/conversation_content_view/file_widget.vala:170
 #: main/src/ui/conversation_content_view/file_default_widget.vala:66
 msgid "Save as…"
-msgstr ""
+msgstr "ذخیره به عنوان…"
 
 #: main/src/ui/conversation_content_view/chat_state_populator.vala:108
 #, c-format
@@ -924,120 +932,115 @@ msgstr "%s در حال نوشتن است…"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:159
 msgid "Call started"
-msgstr ""
+msgstr "تماس شروع شد"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:161
 #, c-format
 msgid "Started %s ago"
-msgstr ""
+msgstr "%s قیل شروع شد"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:169
 msgid "You handled this call on another device"
-msgstr ""
+msgstr "شما این تماس را در دستگاه دیگر دارید"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:174
 msgid "Call ended"
-msgstr ""
+msgstr "تماس پایان یافت"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:177
 #, c-format
 msgid "Ended at %s"
-msgstr ""
+msgstr "در %s پایان یافت"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:179
 #, c-format
 msgid "Lasted %s"
-msgstr ""
+msgstr "%s گذشت"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:183
 msgid "Call missed"
-msgstr ""
+msgstr "تماس از دست رفت"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:185
 msgid "You missed this call"
-msgstr ""
+msgstr "شما این تماس را از دست دادید"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:188
 #, c-format
 msgid "%s missed this call"
-msgstr ""
+msgstr "%s این تماس را از دست داد"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:193
 msgid "Call declined"
-msgstr ""
+msgstr "تماس رد شد"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:195
 msgid "You declined this call"
-msgstr ""
+msgstr "شما این تماس را رد کردید"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:198
 #, c-format
 msgid "%s declined this call"
-msgstr ""
+msgstr "%s این تماس را رد کرد"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:203
 msgid "Call failed"
-msgstr ""
+msgstr "تماس ناموفق"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:227
 #, c-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i ساعت"
+msgstr[1] "%i ساعت"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:234
 #, c-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%i دقیقه"
+msgstr[1] "%i دقیقه"
 
 #: main/src/ui/conversation_content_view/call_widget.vala:241
 msgid "a few seconds"
-msgstr ""
+msgstr "چند ثانیه"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:194
 msgid "Delivered"
-msgstr ""
+msgstr "دریافت شد"
 
 #: main/src/ui/conversation_content_view/conversation_item_skeleton.vala:198
 msgid "Read"
-msgstr ""
+msgstr "خواند"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:49
 msgid "Send request"
-msgstr ""
+msgstr "درخواست ارسال"
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:60
 msgid "You do not receive status updates from this contact yet."
-msgstr ""
+msgstr "شما هنوز به‌روزرسانی‌های وضعیت را از این مخاطب دریافت نکرده‌اید."
 
 #: main/src/ui/conversation_content_view/subscription_notification.vala:80
 msgid "This contact would like to add you to their contact list"
-msgstr "این مخاطب می‌خواهد شما را به لیست مخاطبین خود اضافه کند"
+msgstr "این مخاطب مایل است شما را به لیست مخاطبین خود اضافه کند"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:21
+#: main/src/ui/conversation_content_view/item_actions.vala:25
 msgid "This conversation does not support reactions."
-msgstr ""
+msgstr "این گفتگو از واکنش ها پشتیبانی نمی کند."
 
-#: main/src/ui/conversation_content_view/item_actions.vala:34
+#: main/src/ui/conversation_content_view/item_actions.vala:38
 msgid "Reply"
-msgstr ""
+msgstr "پاسخ"
 
-#: main/src/ui/conversation_content_view/item_actions.vala:44
+#: main/src/ui/conversation_content_view/item_actions.vala:48
 msgid "This conversation does not support replies."
-msgstr ""
-
-#: main/src/ui/conversation_content_view/item_actions.vala:61
-#: main/src/ui/conversation_content_view/item_actions.vala:64
-msgid "Delete message"
-msgstr ""
+msgstr "این گفتگو از پاسخ ها پشتیبانی نمی کند."
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:75
 #, c-format
 msgid "Downloading %s… (%u%%)"
-msgstr ""
+msgstr "در حال دانلود %s...-%u%%-"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:77
 #, c-format
@@ -1047,7 +1050,7 @@ msgstr "در حال دانلود %s…"
 #: main/src/ui/conversation_content_view/file_default_widget.vala:81
 #, c-format
 msgid "Uploading %s… (%u%%)"
-msgstr ""
+msgstr "در حال آپلود %s...-%u%%-"
 
 #: main/src/ui/conversation_content_view/file_default_widget.vala:95
 #, c-format
@@ -1067,13 +1070,13 @@ msgstr "فایل ارائه شده است"
 msgid "File transfer failed"
 msgstr "انتقال فایل انجام نشد"
 
-#: main/src/ui/conversation_content_view/quote_widget.vala:34
+#: main/src/ui/conversation_content_view/quote_widget.vala:38
 msgid "File"
-msgstr ""
+msgstr "فایل"
 
 #: main/src/ui/conversation_content_view/unread_indicator_populator.vala:76
 msgid "New"
-msgstr ""
+msgstr "جدید"
 
 #: main/data/menu_conversation.ui:7
 msgid "Contact Details"
@@ -1085,7 +1088,7 @@ msgstr "به‌روز کردن پیام"
 
 #: main/data/preferences_window/add_account_dialog.ui:92
 msgid "Login"
-msgstr ""
+msgstr "ورود"
 
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
@@ -1117,7 +1120,7 @@ msgstr "اتمام"
 
 #: main/data/preferences_window/general_preferences_page.ui:9
 msgid "Send _Typing Notifications"
-msgstr ""
+msgstr "ارسال پیغام - درحال تایپ کردن -"
 
 #: main/data/preferences_window/general_preferences_page.ui:15
 msgid "Send _Read Receipts"
@@ -1171,6 +1174,26 @@ msgstr ""
 #: main/data/gtk/help-overlay.ui:10
 msgid "General"
 msgstr "فراگیر"
+
+#: main/data/conversation_details.ui:190
+msgid "Enable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:194 main/data/conversation_details.ui:216
+msgid "Disable notifications"
+msgstr ""
+
+#: main/data/conversation_details.ui:200 main/data/conversation_details.ui:222
+msgid "Reset to default"
+msgstr ""
+
+#: main/data/conversation_details.ui:208
+msgid "Notify for all messages"
+msgstr ""
+
+#: main/data/conversation_details.ui:212
+msgid "Notify only for mentions"
+msgstr ""
 
 #: main/data/gtk/help-overlay.ui:26
 msgid "Show preferences"

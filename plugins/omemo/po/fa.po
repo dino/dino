@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-22 11:00-0600\n"
-"PO-Revision-Date: 2025-07-29 03:02+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2025-12-05 20:00+0000\n"
 "Language-Team: none\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -212,19 +212,19 @@ msgstr "آیا برای حساب %s یک دستگاه جدید اضافه کرد
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr ""
+msgstr "فعال بودن اُمیمو به صورت پیشفرض"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
 msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgstr "فعال کردن رمزگذاری اُمیمو برای مکالمات جدید"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
 msgid "Encrypt to new devices"
-msgstr ""
+msgstr "رمزگذاری با دستگاه های جدید"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
 msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
+msgstr "رمزگذاری خودکار با دستگاه های جدید این مخاطب."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
 msgid "New keys"
@@ -242,11 +242,11 @@ msgstr "این دستگاه"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "دستگاه دیگر"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Device"
-msgstr ""
+msgstr "دستگاه"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
 msgid "Accepted"
@@ -262,7 +262,7 @@ msgstr "تأیید صحت شده"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr ""
+msgstr "دستگاه جدید"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -270,6 +270,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"هر دستگاه کلید اُمیمو خود را دارد. پیام ها تنها زمانی می توانند توسط یک "
+"دستگاه رمزگشایی شوند که با کلید همان دستگاه رمزگذاری شده باشند. پیام ها فقط "
+"برای دستگاه های پذیرفته شده رمزگذاری می شوند."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "مدیریت کلید اُمیمو"
