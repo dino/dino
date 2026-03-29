@@ -14,6 +14,7 @@ public class ConversationSelectorRow : ListBoxRow {
 
     [GtkChild] protected unowned AvatarPicture picture;
     [GtkChild] protected unowned Label name_label;
+    [GtkChild] protected unowned Image status_dot;
     [GtkChild] protected unowned Label time_label;
     [GtkChild] protected unowned Label nick_label;
     [GtkChild] protected unowned Label message_label;
@@ -89,8 +90,23 @@ public class ConversationSelectorRow : ListBoxRow {
         conversation.notify["read-up-to-item"].connect(() => update_read());
         conversation.notify["pinned"].connect(() => { update_pinned_icon(); });
 
+        // Connect presence signals to update status dot
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            stream_interactor.get_module(PresenceManager.IDENTITY).show_received.connect((jid, account) => {
+                if (account.equals(conversation.account) && jid.equals_bare(conversation.counterpart)) {
+                    set_status_dot();
+                }
+            });
+            stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
+                if (account.equals(conversation.account) && jid.equals_bare(conversation.counterpart)) {
+                    set_status_dot();
+                }
+            });
+        }
+
         update_name_label();
         update_pinned_icon();
+        set_status_dot();
         content_item_received();
     }
 
@@ -124,6 +140,40 @@ public class ConversationSelectorRow : ListBoxRow {
 
     private void update_pinned_icon() {
         pinned_image.visible = conversation.pinned != 0;
+    }
+
+    private void set_status_dot() {
+        // Only show status dot for direct chats (not groupchats)
+        if (conversation.type_ != Conversation.Type.CHAT) {
+            status_dot.visible = false;
+            return;
+        }
+
+        // Always show the status dot for direct chats
+        status_dot.visible = true;
+
+        // If not connected, show offline status for all
+        if (stream_interactor.connection_manager.get_state(conversation.account) != ConnectionManager.ConnectionState.CONNECTED) {
+            status_dot.set_from_icon_name("dino-status-offline");
+            return;
+        }
+
+        Gee.List<Jid>? full_jids = stream_interactor.get_module(PresenceManager.IDENTITY).get_full_jids(conversation.counterpart, conversation.account);
+        if (full_jids != null) {
+            var statuses = new ArrayList<string>();
+            foreach (var full_jid in full_jids) {
+                statuses.add(stream_interactor.get_module(PresenceManager.IDENTITY).get_last_show(full_jid, conversation.account));
+            }
+
+            if (statuses.contains(Xmpp.Presence.Stanza.SHOW_DND)) status_dot.set_from_icon_name("dino-status-dnd");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_CHAT)) status_dot.set_from_icon_name("dino-status-chat");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_ONLINE)) status_dot.set_from_icon_name("dino-status-online");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_AWAY)) status_dot.set_from_icon_name("dino-status-away");
+            else if (statuses.contains(Xmpp.Presence.Stanza.SHOW_XA)) status_dot.set_from_icon_name("dino-status-away");
+            else status_dot.set_from_icon_name("dino-status-offline");
+        } else {
+            status_dot.set_from_icon_name("dino-status-offline");
+        }
     }
 
     protected void update_time_label(DateTime? new_time = null) {
