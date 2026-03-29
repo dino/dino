@@ -77,7 +77,7 @@ public class SelectJidFragment : Gtk.Box {
 
     private void check_buttons_active() {
         ListBoxRow? row = list.get_selected_row();
-        bool active = row != null && !row.get_type().is_a(typeof(AddListRow));
+        bool active = row != null && row.child != null && !row.child.get_type().is_a(typeof(AddListRow));
         remove_button.sensitive = active;
     }
 
