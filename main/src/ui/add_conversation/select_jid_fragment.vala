@@ -6,6 +6,8 @@ using Xmpp;
 
 namespace Dino.Ui {
 
+public delegate Gee.List<Jid> SuggestJids(string str, Account account);
+
 [GtkTemplate (ui = "/im/dino/Dino/add_conversation/select_jid_fragment.ui")]
 public class SelectJidFragment : Gtk.Box {
 
@@ -15,6 +17,8 @@ public class SelectJidFragment : Gtk.Box {
         get { return list.get_selected_row() != null; }
         private set {}
     }
+
+    public SuggestJids suggest_jids = null;
 
     [GtkChild] private unowned Entry entry;
     [GtkChild] private unowned Box box;
@@ -60,18 +64,37 @@ public class SelectJidFragment : Gtk.Box {
         filter_values = str == "" ? null : str.split(" ");
         list.invalidate_filter();
 
-        try {
-            Jid parsed_jid = new Jid(str);
-            if (parsed_jid != null && parsed_jid.localpart != null) {
-                foreach (Account account in accounts) {
-                    var list_row = new Gtk.ListBoxRow();
-                    list_row.set_child(new AddListRow(stream_interactor, parsed_jid, account));
-                    list.append(list_row);
-                    added_rows.add(list_row);
-                }
+        // Add suggested JIDs from our owner as synthetic ListBox rows.
+        //
+        // First build a set of existing JIDs to avoid dupes.
+        // XXX this is medium-expensive to do on each keystroke;
+        // can we make add/remove signals on the ListBox to hook?
+        var present = new Gee.HashMap<Account, Gee.HashSet<Jid>>(Account.hash_func, Account.equals_func);
+        for (var child = list.get_first_child(); child != null; child = child.get_next_sibling()) {
+            var row = child as Gtk.ListBoxRow;
+            if (row == null) continue;
+            var list_row = row.get_child() as ListRow;
+            if (list_row == null || list_row.jid == null || list_row.account == null) continue;
+            if (!present.has_key(list_row.account)) {
+                present[list_row.account] = new Gee.HashSet<Jid>(Jid.hash_func, Jid.equals_func);
             }
-        } catch (InvalidJidError ignored) {
-            // Ignore
+            present[list_row.account].add(list_row.jid);
+        }
+
+        // Then actually add them
+        foreach (Account account in accounts) {
+            Gee.List<Jid> suggestions = suggest_jids(str, account);
+            foreach (Jid jid in suggestions) {
+                if (present.has_key(account) && present[account].contains(jid)) continue;
+                if (!present.has_key(account)) {
+                    present[account] = new Gee.HashSet<Jid>(Jid.hash_func, Jid.equals_func);
+                }
+                present[account].add(jid);
+                var list_row = new Gtk.ListBoxRow();
+                list_row.set_child(new AddListRow(stream_interactor, jid, account));
+                list.append(list_row);
+                added_rows.add(list_row);
+            }
         }
     }
 
