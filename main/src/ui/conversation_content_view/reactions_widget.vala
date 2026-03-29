@@ -25,6 +25,14 @@ public class ReactionsController : Object {
         this.stream_interactor = stream_interactor;
     }
 
+    ~ReactionsController() {
+        if (widget != null ) {
+            widget.unparent();
+            widget.dispose();
+            widget = null;
+        }
+    }
+
     public void init() {
         Gee.List<ReactionUsers> reactions = stream_interactor.get_module(Reactions.IDENTITY).get_item_reactions(conversation, content_item);
         foreach (ReactionUsers reaction_users in reactions) {
@@ -119,6 +127,7 @@ public class ReactionsWidget : Grid {
     private HashMap<string, Label> reaction_counts = new HashMap<string, Label>();
     private HashMap<string, Button> reaction_buttons = new HashMap<string, Button>();
     private MenuButton add_button;
+    private EmojiChooser chooser;
 
     public ReactionsWidget() {
         this.row_spacing = this.column_spacing = 5;
@@ -129,7 +138,7 @@ public class ReactionsWidget : Grid {
         add_button.add_css_class("pill");
         Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
 
-        EmojiChooser chooser = new EmojiChooser();
+        chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {
             emoji_picked(emoji);
         });
@@ -183,6 +192,27 @@ public class ReactionsWidget : Grid {
 
     public void remove_reaction(string reaction) {
         reaction_buttons[reaction].unparent();
+    }
+
+    protected override void dispose() {
+
+        // the chooser seems to be the most important because it loads
+        // so many subwidgets, emojistuff
+        // But what about all the other widgets?
+
+        if (add_button != null) {
+            add_button.unparent();
+            add_button.dispose();
+            add_button = null;
+        }
+
+        if (chooser != null) {
+            chooser.unparent();
+            chooser.dispose();
+            chooser = null;
+        }
+
+        base.dispose();
     }
 }
 
