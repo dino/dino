@@ -98,7 +98,7 @@ namespace Dino.Ui.Util {
 
         var toggle_view_model = preferences_row as ViewModel.PreferencesRow.Toggle;
         if (toggle_view_model != null) {
-            var view = new Adw.ActionRow() { title = toggle_view_model.title, subtitle = toggle_view_model.subtitle };
+            var view = new Adw.ActionRow() { title = toggle_view_model.title, subtitle = toggle_view_model.subtitle ?? "" };
             var toggle = new Switch() { valign = Align.CENTER };
             view.activatable_widget = toggle;
             view.add_suffix(toggle);

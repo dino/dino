@@ -141,8 +141,8 @@ public class ConversationViewController : Object {
     }
 
     public void unset_conversation() {
-        main_window.conversation_window_title.title = null;
-        main_window.conversation_window_title.subtitle = null;
+        main_window.conversation_window_title.title = "";
+        main_window.conversation_window_title.subtitle = "";
     }
 
     private async void update_file_upload_status() {
