@@ -41,6 +41,10 @@ namespace Dino {
         if (roster_item != null && roster_item.name != null && roster_item.name != "") {
             return roster_item.name;
         }
+        string? nick = stream_interactor.get_module(UserNickManager.IDENTITY).get_nick(account, jid);
+        if (nick != null) {
+            return nick;
+        }
         return null;
     }
 

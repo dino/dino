@@ -44,6 +44,7 @@ public interface Application : GLib.Application {
         OccupantIdStore.start(stream_interactor, db);
         MucManager.start(stream_interactor);
         AvatarManager.start(stream_interactor, db);
+        UserNickManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
         CallStore.start(stream_interactor, db);

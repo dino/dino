@@ -75,6 +75,7 @@ sources = files(
     'src/service/sfs_metadata.vala',
     'src/service/stateless_file_sharing.vala',
     'src/service/stream_interactor.vala',
+    'src/service/user_nick_manager.vala',
     'src/service/util.vala',
     'src/util/display_name.vala',
     'src/util/limit_input_stream.vala',
