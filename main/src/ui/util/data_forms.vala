@@ -84,7 +84,7 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
             return null;
         case DataForms.DataForm.Type.LIST_SINGLE:
             DataForms.DataForm.ListSingleField list_single_field = field as DataForms.DataForm.ListSingleField;
-            var combobox_model = new ViewModel.PreferencesRow.ComboBox();
+            var combobox_model = new ViewModel.PreferencesRow.ComboBox() { subtitle = desc };
             for (int i = 0; i < list_single_field.options.size; i++) {
                 DataForms.DataForm.Option option = list_single_field.options[i];
                 combobox_model.items.add(option.label);

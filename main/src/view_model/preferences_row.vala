@@ -31,12 +31,14 @@ namespace Dino.Ui.ViewModel.PreferencesRow {
     }
 
     public class ComboBox : Any {
+        public string subtitle { get; set; }
         public Gee.List<string> items = new ArrayList<string>();
         public int active_item { get; set; }
     }
 
     public class Button : Any {
         public signal void clicked();
+        public string subtitle { get; set; }
         public string button_text { get; set; }
     }
 }

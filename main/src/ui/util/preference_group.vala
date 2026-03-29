@@ -112,7 +112,7 @@ namespace Dino.Ui.Util {
             foreach (string text in combobox_view_model.items) {
                 string_list.append(text);
             }
-            var view = new Adw.ComboRow() { title = combobox_view_model.title };
+            var view = new Adw.ComboRow() { title = combobox_view_model.title, subtitle = combobox_view_model.subtitle ?? "" };
             view.model = string_list;
             combobox_view_model.bind_property("active-item", view, "selected", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
             return view;
@@ -120,7 +120,7 @@ namespace Dino.Ui.Util {
 
         var button_view_model = preferences_row as ViewModel.PreferencesRow.Button;
         if (button_view_model != null) {
-            var view = new Adw.ActionRow() { title = button_view_model.title };
+            var view = new Adw.ActionRow() { title = button_view_model.title, subtitle = button_view_model.subtitle ?? "" };
             var button = new Button.with_label(button_view_model.button_text) { valign = Align.CENTER };
             view.add_suffix(button);
             button.clicked.connect(() => button_view_model.clicked());
