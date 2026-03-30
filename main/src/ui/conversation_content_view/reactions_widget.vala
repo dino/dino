@@ -26,7 +26,7 @@ public class ReactionsController : Object {
     }
 
     ~ReactionsController() {
-        if (widget != null ) {
+        if (widget != null) {
             widget.unparent();
             widget.dispose();
             widget = null;
