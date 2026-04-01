@@ -330,7 +330,7 @@ public class FileManager : StreamInteractionModule, Object {
             }
 
             file_transfer.path = file.get_basename();
-
+            
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
             if (file_info.get_content_type() != "application/octet-stream" || file_transfer.content_type == null) {
                 // Only overwrite mime_type if it's better than what we had before.
@@ -338,6 +338,13 @@ public class FileManager : StreamInteractionModule, Object {
             }
 
             file_transfer.state = FileTransfer.State.COMPLETE;
+
+#if _WIN32 // Add Zone.Identifier so Windows knows this file was downloaded from the internet
+            var file_alternate_stream = File.new_for_path(Path.build_filename(get_storage_dir(), filename + ":Zone.Identifier"));
+            var os_alternate_stream = file_alternate_stream.create(FileCreateFlags.REPLACE_DESTINATION);
+            os_alternate_stream.write("[ZoneTransfer]\r\nZoneId=3".data);
+#endif
+
         } catch (IOError.CANCELLED e) {
             print("cancelled\n");
         } catch (Error e) {
