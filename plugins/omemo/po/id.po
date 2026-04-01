@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2021-01-10 15:32+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-02-28 11:09+0000\n"
 "Language-Team: none\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 5.16.1-dev\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -109,7 +109,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Tolak kunci"
 
@@ -122,7 +122,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Terima kunci"
 
@@ -213,60 +213,60 @@ msgstr "Memerlukan persetujuan atas OMEMO"
 msgid "Did you add a new device for account %s?"
 msgstr "Apakah Anda menambahkan perangkat baru untuk akun %s?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO secara default"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Aktifkan enkripsi OMEMO untuk percakapan baru"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Enkripsi ke perangkat baru"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
-msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Enkripsi secara otomatis ke perangkat baru dari kontak ini."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
-msgid "Encrypt to new devices"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
 msgid "New keys"
 msgstr "Kunci baru"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Kunci enkripsi baru dari perangkat Anda yang lain akan diterima secara "
 "otomatis."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Perangkat ini"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Perangkat lain"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Perangkat"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
-msgid "Device"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Diterima"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Ditolak"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Terverifikasi"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr ""
+msgstr "Perangkat baru"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -274,6 +274,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Setiap perangkat memiliki kunci OMEMO-nya sendiri. Pesan hanya dapat "
+"didekripsi oleh perangkat jika dienkripsi menggunakan kuncinya. Pesan hanya "
+"dienkripsi ke perangkat yang telah diterima."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Pengaturan kunci OMEMO"

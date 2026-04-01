@@ -53,6 +53,7 @@
     </child>
     <child>
       <object class="GtkLabel" id="message">
+        <property name="use_markup">1</property>
         <property name="ellipsize">end</property>
         <property name="halign">start</property>
         <property name="xalign">0</property>
@@ -65,7 +66,7 @@
     </child>
     <child>
       <object class="GtkButton" id="abort-button">
-        <property name="icon-name">window-close-symbolic</property>
+        <property name="icon-name">dino-window-close-symbolic</property>
         <property name="has-frame">False</property>
         <property name="valign">center</property>
         <layout>

@@ -10,7 +10,7 @@ public class Dino.Ui.PreferencesWindowEncryption : Adw.PreferencesPage {
     private Adw.PreferencesGroup accounts_group = new Adw.PreferencesGroup();
     private ArrayList<Adw.PreferencesGroup> added_widgets = new ArrayList<Adw.PreferencesGroup>();
 
-    public ViewModel.PreferencesWindow model { get; set; }
+    public ViewModel.PreferencesDialog model { get; set; }
 
     construct {
         this.add(accounts_group);

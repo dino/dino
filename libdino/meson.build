@@ -1,10 +1,16 @@
 # version_vala
-dot_git = meson.current_source_dir() / '../.git'
-version_file = meson.current_source_dir() / '../VERSION'
-command = [prog_python, files('version.py'), version_file, '--git-repo', meson.current_source_dir()]
+version_py = files('version.py')[0]
+if meson.version().version_compare('>=1.4.0')
+    version_py_path = version_py.full_path()
+else
+    version_py_path = meson.current_source_dir() / 'version.py'
+endif
+command = [prog_python, version_py_path, version_file_path, '--git-repo', meson.current_source_dir()]
 if prog_git.found()
     command += ['--git', prog_git]
 endif
+# We add those dummy args to ensure meson sees the dependency
+command += [version_py, version_file]
 version_vala = vcs_tag(command: command, input: 'src/version.vala.in', output: 'version.vala', replace_string: '%VERSION%')
 
 # libdino
@@ -53,11 +59,13 @@ sources = files(
     'src/service/history_sync.vala',
     'src/service/jingle_file_transfers.vala',
     'src/service/message_correction.vala',
+    'src/service/message_deletion.vala',
     'src/service/message_processor.vala',
     'src/service/message_storage.vala',
     'src/service/module_manager.vala',
     'src/service/muc_manager.vala',
     'src/service/notification_events.vala',
+    'src/service/occupant_id_store.vala',
     'src/service/presence_manager.vala',
     'src/service/replies.vala',
     'src/service/reactions.vala',

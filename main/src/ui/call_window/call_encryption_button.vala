@@ -20,10 +20,10 @@ public class Dino.Ui.CallEncryptionButtonController : Object {
 
     public void set_icon(bool encrypted, string? icon_name) {
         if (encrypted) {
-            button.icon_name = icon_name ?? "changes-prevent-symbolic";
+            button.icon_name = icon_name ?? "dino-changes-prevent-symbolic";
             button.remove_css_class("unencrypted");
         } else {
-            button.icon_name = icon_name ?? "changes-allow-symbolic";
+            button.icon_name = icon_name ?? "dino-changes-allow-symbolic";
             button.add_css_class("unencrypted");
         }
         has_been_set = true;

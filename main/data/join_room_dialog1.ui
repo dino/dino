@@ -120,7 +120,7 @@
                     <property name="name">no-results</property>
                     <property name="child">
                       <object class="AdwStatusPage">
-                        <property name="icon-name">face-uncertain-symbolic</property>
+                        <property name="icon-name">dino-face-uncertain-symbolic</property>
                         <property name="title">No channels found</property>
                         <property name="description">None of your bookmarks matches your search and the XMPP address could not be resolved.</property>
                       </object>

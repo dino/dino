@@ -66,6 +66,7 @@ public class ChatTextView : Box {
 
         scrolled_window.vadjustment.changed.connect(on_upper_notify);
 
+        text_view.remove_css_class("view");
         text_view.realize.connect(() => {
             var minimum_size = Requisition();
             scrolled_window.get_preferred_size(out minimum_size, null);

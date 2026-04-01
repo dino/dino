@@ -124,7 +124,7 @@
                                                                         <child>
                                                                             <object class="GtkImage">
                                                                                 <property name="icon-size">normal</property>
-                                                                                <property name="icon-name">edit-copy-symbolic</property>
+                                                                                <property name="icon-name">dino-edit-copy-symbolic</property>
                                                                             </object>
                                                                         </child>
                                                                     </object>

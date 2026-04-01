@@ -7,7 +7,7 @@ using Gtk;
 namespace Dino.Ui.ConversationDetails {
 
     [GtkTemplate (ui = "/im/dino/Dino/conversation_details.ui")]
-    public class Dialog : Adw.Window {
+    public class Dialog : Adw.Dialog {
         [GtkChild] public unowned Stack stack;
         [GtkChild] public unowned Box about_box;
         [GtkChild] public unowned Button pin_button;
@@ -25,6 +25,9 @@ namespace Dino.Ui.ConversationDetails {
 
         public StackPage? encryption_stack_page = null;
         public Box? encryption_box = null;
+
+        public StackPage? room_config_stack_page = null;
+        public Box? room_config_box = null;
 
         public StackPage? member_stack_page = null;
         public Box? member_box = null;
@@ -50,9 +53,10 @@ namespace Dino.Ui.ConversationDetails {
             model.notify["notification-options"].connect(update_notification_button_visibility);
             model.notify["notification-is-default"].connect(update_notification_button_visibility);
 
-            model.about_rows.items_changed.connect(create_preferences_rows);
-            model.settings_rows.items_changed.connect(create_preferences_rows);
-            model.notify["room-configuration-rows"].connect(create_preferences_rows);
+            model.about_rows.items_changed.connect(populate_about_tab);
+            model.settings_rows.items_changed.connect(populate_about_tab);
+            // TODO add_room_configuration_tab_element gets called even after the window is closed
+            model.notify["room-configuration-rows"].connect(add_room_configuration_tab_element);
 
             model.notify["members"].connect(create_members);
             create_members();
@@ -78,15 +82,14 @@ namespace Dino.Ui.ConversationDetails {
             }
             block_button.menu_model = block_menu_model;
 
-#if Adw_1_4
             // TODO: replace with putting buttons in new line on small screens
             notification_button_menu_content.can_shrink = true;
-#endif
+
             update_blocked_button();
         }
 
         private void update_pinned_button() {
-            pin_button_content.icon_name = "view-pin-symbolic";
+            pin_button_content.icon_name = "dino-view-pin-symbolic";
             pin_button_content.label = model.pinned ? _("Pinned") : _("Pin");
             if (model.pinned) {
                 pin_button.add_css_class("accent");
@@ -182,7 +185,7 @@ namespace Dino.Ui.ConversationDetails {
             add_members_tab_element(list_view);
         }
 
-        private void create_preferences_rows() {
+        private void populate_about_tab() {
             var widget = about_box.get_first_child();
             while (widget != null) {
                 about_box.remove(widget);
@@ -196,7 +199,31 @@ namespace Dino.Ui.ConversationDetails {
                 about_box.append(Util.rows_to_preference_group(model.settings_rows, _("Settings")));
             }
             if (model.room_configuration_rows != null && model.room_configuration_rows.get_n_items() > 0) {
-                about_box.append(Util.rows_to_preference_group(model.room_configuration_rows, _("Room Configuration")));
+                add_room_configuration_tab_element();
+            }
+
+            if (model.account_jid != null) {
+                var account_label = new Label(@"via $(model.account_jid)") { halign=Align.START, margin_start=14, margin_top=4 };
+                account_label.add_css_class("dim-label");
+                about_box.append(account_label);
+            }
+        }
+
+        public void add_room_configuration_tab_element() {
+            if (model.room_configuration_rows == null || model.room_configuration_rows.get_n_items() == 0) return;
+
+            if (room_config_stack_page == null) {
+                room_config_box = new Box(Orientation.VERTICAL, 12) { margin_end = 12, margin_start = 12, margin_top = 18, margin_bottom = 40 };
+                var scrolled_window = new ScrolledWindow() { vexpand = true };
+                var clamp = new Adw.Clamp();
+                clamp.set_child(room_config_box);
+                scrolled_window.set_child(clamp);
+                room_config_stack_page = stack.add_child(scrolled_window);
+                room_config_stack_page.title = _("Room Configuration");
+                room_config_stack_page.name = "room_config";
+            }
+            foreach (Adw.PreferencesGroup preferences_group in Util.rows_to_preference_window_split_at_text(model.room_configuration_rows)) {
+                room_config_box.append(preferences_group);
             }
         }
 

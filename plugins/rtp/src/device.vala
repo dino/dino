@@ -10,7 +10,7 @@ public enum Dino.Plugins.Rtp.DeviceProtocol {
 }
 
 public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
-    private const int[] common_widths = {320, 360, 400, 480, 640, 960, 1280, 1920, 2560, 3840};
+    private const int[] common_widths = {320, 352, 416, 480, 640, 960, 1280, 1920, 2560, 3840};
 
     public Plugin plugin { get; private set; }
     public CodecUtil codec_util { get { return plugin.codec_util; } }
@@ -218,6 +218,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         }
         if (new_width == active_caps_width) return;
         int new_height = device_caps_height * new_width / device_caps_width;
+        if ((new_height % 2) != 0) {
+            new_height += 1;
+        }
         Gst.Caps new_caps;
         if (device_caps_framerate_den != 0) {
             new_caps = new Gst.Caps.simple("video/x-raw", "width", typeof(int), new_width, "height", typeof(int), new_height, "framerate", typeof(Gst.Fraction), device_caps_framerate_num, device_caps_framerate_den, null);
@@ -362,8 +365,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             int best_height = 0;
             for (int i = 0; i < device.caps.get_size(); i++) {
                 unowned Gst.Structure? that = device.caps.get_structure(i);
+                unowned Gst.CapsFeatures? features = device.caps.get_features(i);
                 Value? best_fraction_now = null;
-                if (!that.has_name("video/x-raw")) continue;
+                if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
                 int num = 0, den = 0, width = 0, height = 0;
                 if (!that.has_field("framerate")) continue;
                 Value framerate = that.get_value("framerate");
@@ -400,16 +404,46 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             }
             if (best_index == -1) {
                 // No caps in first round, try without framerate
+                int target_pixel_count = 1280 * 720;
+                double target_pixel_ratio = 16.0 / 9.0;
+                double best_diversion_factor = 0.0;
+
                 for (int i = 0; i < device.caps.get_size(); i++) {
                     unowned Gst.Structure? that = device.caps.get_structure(i);
-                    if (!that.has_name("video/x-raw")) continue;
+                    unowned Gst.CapsFeatures? features = device.caps.get_features(i);
+                    if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
                     int width = 0, height = 0;
-                    if (!that.has_field("width") || !that.get_int("width", out width)) continue;
-                    if (!that.has_field("height") || !that.get_int("height", out height)) continue;
-                    if (best_width < width || best_width == width && best_height < height) {
+                    if (!that.has_field("width") || !that.get_int("width", out width) || width == 0) continue;
+                    if (!that.has_field("height") || !that.get_int("height", out height) || height == 0) continue;
+
+                    int pixel_count = width * height;
+                    double pixel_count_diversion_factor;
+                    if (pixel_count > target_pixel_count)
+                        pixel_count_diversion_factor = (double)pixel_count / target_pixel_count;
+                    else
+                        pixel_count_diversion_factor = (double)target_pixel_count / pixel_count;
+
+                    double pixel_ratio;
+                    if (width > height)
+                        pixel_ratio = (double)width / height;
+                    else
+                        pixel_ratio = (double)height / width;
+
+                    double ratio_diversion_factor;
+                    if (pixel_ratio > target_pixel_ratio)
+                        ratio_diversion_factor = pixel_ratio / target_pixel_ratio;
+                    else
+                        ratio_diversion_factor = target_pixel_ratio / pixel_ratio;
+
+                    // 1.0 is the best possible value. Any diversion from
+                    // target_pixel_count or target_pixel_ratio increases it.
+                    double diversion_factor = pixel_count_diversion_factor * ratio_diversion_factor;
+
+                    if (best_index == -1 || diversion_factor < best_diversion_factor) {
+                        best_index = i;
                         best_width = width;
                         best_height = height;
-                        best_index = i;
+                        best_diversion_factor = diversion_factor;
                     }
                 }
             }
@@ -418,6 +452,11 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
             Value? framerate = that.get_value("framerate");
             if (framerate != null && framerate.type() == typeof(Gst.ValueList) && best_fraction != null) {
                 that.set_value("framerate", best_fraction);
+            } else if (framerate == null) {
+                // The source does not support framerate negotiation. Just set a
+                // reasonable value. The source might be able to honor it and
+                // should ignore it otherwise.
+                that.@set("framerate", typeof(Gst.Fraction), 30, 1, null);
             }
             debug("Selected caps %s", res.to_string());
             return res;

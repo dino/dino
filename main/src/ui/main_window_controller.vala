@@ -43,7 +43,7 @@ public class MainWindowController : Object {
     public void set_window(MainWindow window) {
         this.window = window;
 
-        this.conversation_view_controller = new ConversationViewController(window.conversation_view, window.conversation_titlebar, stream_interactor);
+        this.conversation_view_controller = new ConversationViewController(window, window.conversation_view, stream_interactor);
 
         conversation_view_controller.search_menu_entry.button.bind_property("active", window.search_flap, "reveal-flap", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
 
@@ -66,8 +66,7 @@ public class MainWindowController : Object {
 
         window.welcome_placeholder.primary_button.clicked.connect(() => {
             ManageAccounts.AddAccountDialog dialog = new ManageAccounts.AddAccountDialog(stream_interactor, db);
-            dialog.set_transient_for(app.get_active_window());
-            dialog.present();
+            dialog.present(app.get_active_window());
         });
         window.accounts_placeholder.primary_button.clicked.connect(() => { app.activate_action("preferences", null); });
         window.conversation_selector.conversation_selected.connect((conversation) => select_conversation(conversation));
@@ -132,6 +131,7 @@ public class MainWindowController : Object {
         if (do_reset_search) {
             reset_search_entry();
         }
+        window.navigation_split_view.show_content = true;
     }
 
     private void check_unset_conversation() {

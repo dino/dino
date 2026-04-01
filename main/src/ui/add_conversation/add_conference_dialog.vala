@@ -54,7 +54,7 @@ public class AddConferenceDialog : Gtk.Dialog {
     }
 
     private void show_conference_details_view() {
-        cancel_button.set_icon_name("go-previous-symbolic");
+        cancel_button.set_icon_name("dino-go-previous-symbolic");
         cancel_button.clicked.disconnect(on_cancel);
         cancel_button.clicked.connect(show_jid_add_view);
         ok_button.label = _("Join");

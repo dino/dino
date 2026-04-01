@@ -84,7 +84,7 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
             return null;
         case DataForms.DataForm.Type.LIST_SINGLE:
             DataForms.DataForm.ListSingleField list_single_field = field as DataForms.DataForm.ListSingleField;
-            var combobox_model = new ViewModel.PreferencesRow.ComboBox();
+            var combobox_model = new ViewModel.PreferencesRow.ComboBox() { subtitle = desc };
             for (int i = 0; i < list_single_field.options.size; i++) {
                 DataForms.DataForm.Option option = list_single_field.options[i];
                 combobox_model.items.add(option.label);
@@ -113,6 +113,12 @@ public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataF
             break;
         default:
             return null;
+    }
+
+    var media_node = field.node.get_subnode("media", "urn:xmpp:media-element");
+    if (media_node != null) {
+        view_model.media_type = media_node.get_attribute("type", "urn:xmpp:media-element");
+        view_model.media_uri = media_node.get_deep_string_content("uri");
     }
 
     view_model.title = label;

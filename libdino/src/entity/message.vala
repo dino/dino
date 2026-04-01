@@ -46,6 +46,7 @@ public class Message : Object {
     }
     public bool direction { get; set; }
     public Jid? real_jid { get; set; }
+    public int occupant_db_id { get; set; default=-1; }
     public Type type_ { get; set; default = Type.UNKNOWN; }
     private string? body_;
     public string? body {
@@ -67,6 +68,7 @@ public class Message : Object {
         }
     }
     public string? edit_to = null;
+    public int edit_to_id { get; set; default=0; }
     public int quoted_item_id { get; private set; default=0; }
 
     private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
@@ -105,10 +107,14 @@ public class Message : Object {
         body = row[db.message.body];
         marked = (Message.Marked) row[db.message.marked];
         encryption = (Encryption) row[db.message.encryption];
+
         string? real_jid_str = row[db.real_jid.real_jid];
         if (real_jid_str != null) real_jid = new Jid(real_jid_str);
 
+        occupant_db_id = row[db.message_occupant_id.occupant_id];
+
         edit_to = row[db.message_correction.to_stanza_id];
+        edit_to_id = row[db.message_correction.to_message_db_id];
         quoted_item_id = row[db.reply.quoted_content_item_id];
 
         notify.connect(on_update);
@@ -138,6 +144,13 @@ public class Message : Object {
             db.real_jid.insert()
                 .value(db.real_jid.message_id, id)
                 .value(db.real_jid.real_jid, real_jid.to_string())
+                .perform();
+        }
+
+        if (occupant_db_id != -1) {
+            db.message_occupant_id.insert()
+                .value(db.message_occupant_id.occupant_id, occupant_db_id)
+                .value(db.message_occupant_id.message_id, id)
                 .perform();
         }
         notify.connect(on_update);
@@ -200,7 +213,7 @@ public class Message : Object {
                     if (!fallbacks_by_ns.has_key(ns_uri)) {
                         fallbacks_by_ns[ns_uri] = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
                     }
-                    fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation(row[db.body_meta.from_char], row[db.body_meta.to_char]));
+                    fallbacks_by_ns[ns_uri].add(new Xep.FallbackIndication.FallbackLocation.partial_body(row[db.body_meta.from_char], row[db.body_meta.to_char]));
                     break;
                 case Xep.MessageMarkup.NS_URI:
                     var types = new ArrayList<Xep.MessageMarkup.SpanType>();
@@ -212,7 +225,7 @@ public class Message : Object {
 
         var fallbacks = new ArrayList<Xep.FallbackIndication.Fallback>();
         foreach (string ns_uri in fallbacks_by_ns.keys) {
-            fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri].to_array()));
+            fallbacks.add(new Xep.FallbackIndication.Fallback(ns_uri, fallbacks_by_ns[ns_uri]));
         }
         this.fallbacks = fallbacks;
         this.markups = markups;
@@ -318,6 +331,13 @@ public class Message : Object {
             db.reply.upsert()
                 .value(db.reply.message_id, id, true)
                 .value(db.reply.quoted_content_item_id, quoted_item_id)
+                .perform();
+        }
+
+        if (sp.get_name() == "message-occupant-id" && occupant_db_id != -1) {
+            db.message_occupant_id.upsert()
+                .value(db.message_occupant_id.occupant_id, occupant_db_id, true)
+                .value(db.message_occupant_id.message_id, id)
                 .perform();
         }
     }

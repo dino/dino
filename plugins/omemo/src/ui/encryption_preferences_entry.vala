@@ -36,10 +36,8 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
     private Store store;
     private Set<uint32> displayed_ids = new HashSet<uint32>();
 
-    [GtkChild] private unowned Adw.ActionRow automatically_accept_new_row;
-    [GtkChild] private Switch automatically_accept_new_switch;
-    [GtkChild] private unowned Adw.ActionRow encrypt_by_default_row;
-    [GtkChild] private Switch encrypt_by_default_switch;
+    [GtkChild] private unowned Adw.SwitchRow automatically_accept_new_row;
+    [GtkChild] private unowned Adw.SwitchRow encrypt_by_default_row;
     [GtkChild] private unowned Label new_keys_label;
 
     [GtkChild] private unowned Adw.PreferencesGroup keys_preferences_group;
@@ -71,12 +69,12 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
             return;
         }
 
-        automatically_accept_new_switch.set_active(plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true));
-        automatically_accept_new_switch.state_set.connect(on_auto_accept_toggled);
+        automatically_accept_new_row.active = plugin.db.trust.get_blind_trust(identity_id, jid.bare_jid.to_string(), true);
+        automatically_accept_new_row.notify["active"].connect((obj, _) => { on_auto_accept_toggled(((Adw.SwitchRow) obj).active); });
 
         encrypt_by_default_row.visible = account.bare_jid.equals_bare(jid);
-        encrypt_by_default_switch.set_active(plugin.app.settings.get_default_encryption(account) != Encryption.NONE);
-        encrypt_by_default_switch.state_set.connect(on_omemo_by_default_toggled);
+        encrypt_by_default_row.active = plugin.app.settings.get_default_encryption(account) != Encryption.NONE;
+        encrypt_by_default_row.notify["active"].connect((obj, _) => { on_omemo_by_default_toggled(((Adw.SwitchRow) obj).active); });
 
         Dino.Application? app = Application.get_default() as Dino.Application;
         if (app != null) {
@@ -154,7 +152,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         var own_action_box = new Box(Orientation.HORIZONTAL, 6);
         var show_qrcode_button = new MenuButton() { icon_name="dino-qr-code-symbolic", valign=Align.CENTER };
         own_action_box.append(show_qrcode_button);
-        var copy_button = new Button() { icon_name="edit-copy-symbolic", valign=Align.CENTER };
+        var copy_button = new Button() { icon_name="dino-edit-copy-symbolic", valign=Align.CENTER };
         copy_button.clicked.connect(() => { copy_button.get_clipboard().set_text(fingerprint); });
         own_action_box.append(copy_button);
 
@@ -269,7 +267,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
             case TrustLevel.VERIFIED:
                 plugin.trust_manager.set_device_trust(account, jid, device[plugin.db.identity_meta.device_id], TrustLevel.VERIFIED);
                 plugin.trust_manager.set_blind_trust(account, jid, false);
-                automatically_accept_new_switch.set_active(false);
+                automatically_accept_new_row.active = false;
                 break;
         }
     }
@@ -280,7 +278,7 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
         action_row.subtitle = fingerprint_markup(fingerprint_from_base64(device[plugin.db.identity_meta.identity_key_public_base64]));
 
         Button accept_button = new Button() { visible = true, valign = Align.CENTER, hexpand = true };
-        accept_button.set_icon_name("emblem-ok-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
+        accept_button.set_icon_name("dino-check-plain-symbolic"); // using .image = sets .image-button. Together with .suggested/destructive action that breaks the button Adwaita
         accept_button.add_css_class("suggested-action");
         accept_button.tooltip_text = _("Accept key");
 

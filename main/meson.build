@@ -57,11 +57,9 @@ sources = files(
     'src/ui/conversation_content_view/subscription_notification.vala',
     'src/ui/conversation_content_view/unread_indicator_populator.vala',
     'src/ui/conversation_details.vala',
-    'src/ui/conversation_list_titlebar.vala',
     'src/ui/conversation_selector/conversation_selector.vala',
     'src/ui/conversation_selector/conversation_selector_row.vala',
     'src/ui/conversation_titlebar/call_entry.vala',
-    'src/ui/conversation_titlebar/conversation_titlebar.vala',
     'src/ui/conversation_titlebar/menu_entry.vala',
     'src/ui/conversation_titlebar/occupants_entry.vala',
     'src/ui/conversation_titlebar/search_entry.vala',
@@ -81,7 +79,6 @@ sources = files(
     'src/ui/util/data_forms.vala',
     'src/ui/util/file_metadata_providers.vala',
     'src/ui/util/helper.vala',
-    'src/ui/util/label_hybrid.vala',
     'src/ui/util/preference_group.vala',
     'src/ui/util/size_request_box.vala',
     'src/ui/util/sizing_bin.vala',
@@ -91,15 +88,15 @@ sources = files(
     'src/ui/widgets/natural_size_increase.vala',
     'src/view_model/account_details.vala',
     'src/view_model/conversation_details.vala',
+    'src/view_model/preferences_dialog.vala',
     'src/view_model/preferences_row.vala',
-    'src/view_model/preferences_window.vala',
     'src/windows/preferences_window/account_preferences_subpage.vala',
     'src/windows/preferences_window/accounts_preferences_page.vala',
     'src/windows/preferences_window/add_account_dialog.vala',
     'src/windows/preferences_window/change_password_dialog.vala',
     'src/windows/preferences_window/encryption_preferences_page.vala',
     'src/windows/preferences_window/general_preferences_page.vala',
-    'src/windows/preferences_window/preferences_window.vala',
+    'src/windows/preferences_window/preferences_dialog.vala',
     'src/windows/conversation_details.vala',
 )
 sources += gnome.compile_resources(
@@ -135,9 +132,6 @@ endif
 if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.14')
     vala_args += ['-D', 'GTK_4_14']
     sources += files('src/ui/conversation_content_view/file_transmission_progress.c')
-endif
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.3')
-    vala_args += ['-D', 'Adw_1_3']
 endif
 if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.4')
     vala_args += ['-D', 'Adw_1_4']

@@ -80,7 +80,7 @@
             </child>
             <child>
               <object class="GtkMenuButton" id="file_menu">
-                <property name="icon-name">view-more-symbolic</property>
+                <property name="icon-name">dino-view-more-symbolic</property>
                 <property name="opacity">0</property>
                 <property name="has_frame">False</property>
               </object>

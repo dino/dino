@@ -27,7 +27,7 @@
                                 </style>
                                 <child>
                                     <object class="GtkImage">
-                                        <property name="icon-name">emoji-people-symbolic</property>
+                                        <property name="icon-name">dino-emoji-people-symbolic</property>
                                         <property name="icon-size">1</property>
                                     </object>
                                 </child>

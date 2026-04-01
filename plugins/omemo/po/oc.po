@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2023-02-24 11:39+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2025-12-19 22:00+0000\n"
 "Language-Team: none\n"
 "Language: oc\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 5.15.1\n"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:168
 #, c-format
@@ -23,12 +23,12 @@ msgid ""
 "%s has been using an untrusted device. You won't see messages from devices "
 "that you do not trust."
 msgstr ""
-"%s a utilizat un periferic desconegut. Veiretz pas los messatges venents de "
+"%s a utilizat un aparelh desconegut. Veiretz pas los messatges venents de "
 "client que vos fisatz pas."
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:169
 msgid "Manage devices"
-msgstr "Gerir los periferics"
+msgstr "Gerir los aparelhs"
 
 #: plugins/omemo/src/ui/bad_messages_populator.vala:171
 #, c-format
@@ -104,12 +104,12 @@ msgid ""
 "Compare this key's fingerprint with the fingerprint displayed on the "
 "contact's device."
 msgstr ""
-"Comparatz aquesta clau amb l’emprenta afichada al periferic de vòstre "
+"Comparatz aquesta clau amb l’emprenta afichada sus l'aparelh de vòstre "
 "contacte."
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:125
 #: plugins/omemo/src/ui/manage_key_dialog.vala:151
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:290
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:288
 msgid "Reject key"
 msgstr "Regetar la clau"
 
@@ -122,7 +122,7 @@ msgstr ""
 
 #: plugins/omemo/src/ui/manage_key_dialog.vala:127
 #: plugins/omemo/src/ui/manage_key_dialog.vala:159
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:285
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:283
 msgid "Accept key"
 msgstr "Acceptar la clau"
 
@@ -215,60 +215,60 @@ msgstr "Decision de fisança OMEMO requerida"
 msgid "Did you add a new device for account %s?"
 msgstr "Avètz apondut un aparelh novèl pel compte de %s ?"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:52
 msgid "OMEMO by default"
-msgstr ""
+msgstr "OMEMO per defaut"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Activar lo chiframent OMEMO per las discussions novèlas"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Chifrar pels aparelhs novèls"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:55
-msgid "Enable OMEMO encryption for new conversations"
-msgstr ""
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Chifrar automaticament pels aparelhs novèls d'aqueste contacte."
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:56
-msgid "Encrypt to new devices"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:57
-msgid "Automatically encrypt to new devices from this contact."
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:58
 msgid "New keys"
 msgstr "Claus novèlas"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:102
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:100
 msgid ""
 "New encryption keys from your other devices will be accepted automatically."
 msgstr ""
 "Las claus novèlas de deschiframent de vòstres autres aparelhs seràn "
 "automaticament acceptadas."
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:162
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:160
 msgid "This device"
-msgstr ""
+msgstr "Aqueste aparelh"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
 msgid "Other device"
-msgstr ""
+msgstr "Un autre aparelh"
+
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Aparelh"
 
 #: plugins/omemo/src/ui/encryption_preferences_entry.vala:222
-msgid "Device"
-msgstr ""
-
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:224
 msgid "Accepted"
 msgstr "Acceptada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:227
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:225
 msgid "Rejected"
 msgstr "Regetada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:230
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:228
 msgid "Verified"
 msgstr "Verificada"
 
-#: plugins/omemo/src/ui/encryption_preferences_entry.vala:279
+#: plugins/omemo/src/ui/encryption_preferences_entry.vala:277
 msgid "New device"
-msgstr ""
+msgstr "Aparelh novèl"
 
 #: plugins/omemo/data/encryption_preferences_entry.ui:8
 msgid ""
@@ -276,6 +276,9 @@ msgid ""
 "device if they are encrypted to its key. Messages are only encrypted to "
 "accepted devices."
 msgstr ""
+"Cada aparelh a sa pròpria clau OMEMO. Los messatges pòdon èsser deschifrats "
+"per un aparelh solament se son chifrats amb sa clau. Los messatges son "
+"chifrats unicament pels aparelhs acceptats."
 
 #~ msgid "OMEMO Key Management"
 #~ msgstr "Gestion de las claus OMEMO"

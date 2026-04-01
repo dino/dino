@@ -43,7 +43,9 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(received_message_listener);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect((conversation) => {
-            if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            // Conversation is still active if only the account is disabled. We don't need to part the room in this
+            // case, as we will just go offline instead.
+            if (conversation.type_ == Conversation.Type.GROUPCHAT && !conversation.active) {
                 part(conversation.account, conversation.counterpart);
             }
         });
@@ -110,7 +112,9 @@ public class MucManager : StreamInteractionModule, Object {
                     }
                     if (!mucs_sync_cancellables[account].has_key(jid.bare_jid)) {
                         mucs_sync_cancellables[account][jid.bare_jid] = new Cancellable();
-                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], conversation.active_last_changed, (_, res) => {
+                        // If the conversation was newly opened, fetch a bit before
+                        DateTime fetch_from_time = conversation.active_last_changed.add(-TimeSpan.DAY * 5);
+                        history_sync.fetch_everything.begin(account, jid.bare_jid, mucs_sync_cancellables[account][jid.bare_jid], fetch_from_time, (_, res) => {
                             history_sync.fetch_everything.end(res);
                             mucs_sync_cancellables[account].unset(jid.bare_jid);
                         });
@@ -349,6 +353,13 @@ public class MucManager : StreamInteractionModule, Object {
             return flag.get_occupant_role(jid);
         }
         return null;
+    }
+
+    public Xep.Muc.Role? get_own_role(Conversation conversation) {
+        Xmpp.Jid? own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        if (own_jid == null) return null;
+
+        return stream_interactor.get_module(MucManager.IDENTITY).get_role(own_jid, conversation.account);
     }
 
     public Xep.Muc.Affiliation? get_affiliation(Jid muc_jid, Jid jid, Account account) {
@@ -696,6 +707,13 @@ public class MucManager : StreamInteractionModule, Object {
                     message.real_jid = real_jid.bare_jid;
                 }
             }
+
+            string? occupant_id = Xep.OccupantIds.get_occupant_id(stanza.stanza);
+            if (occupant_id != null) {
+                message.occupant_db_id = stream_interactor.get_module(OccupantIdStore.IDENTITY)
+                        .cache_occupant_id(conversation.account, occupant_id, message.from);
+            }
+
             Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(message.counterpart.bare_jid, conversation.account);
             if (stanza.id != null && own_muc_jid != null && message.from.equals(own_muc_jid)) {
                 Entities.Message? m = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza.id, conversation);

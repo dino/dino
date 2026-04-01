@@ -63,8 +63,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         } else {
             // The MUC server needs to 1) support stable stanza ids 2) either support occupant ids or be a private room (where we know real jids)
             var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-            bool server_supports_sid = (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
+            bool server_supports_sid = entity_info.has_feature_cached(conversation.account, conversation.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
             if (!server_supports_sid) return false;
 
             bool? supports_occupant_ids = entity_info.has_feature_cached(conversation.account, conversation.counterpart, Xep.OccupantIds.NS_URI);
@@ -252,7 +251,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         Message reaction_message = yield stream_interactor.get_module(MessageProcessor.IDENTITY).parse_message_stanza(account, stanza);
         Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(reaction_message);
 
-        int content_item_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_id_for_message_id(conversation, message_id);
+        int content_item_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_id_for_referencing_id(conversation, message_id);
         var reaction_info = new ReactionInfo() { conversation=conversation, from_jid=from_jid, reactions=reactions, stanza=stanza, received_time=new DateTime.now() };
 
         if (content_item_id != -1) {
@@ -426,23 +425,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
 
         if (occupant_id != null) {
-            RowOption row = db.occupantid.select()
-                    .with(db.occupantid.account_id, "=", account.id)
-                    .with(db.occupantid.jid_id, "=", jid_id)
-                    .with(db.occupantid.occupant_id, "=", occupant_id)
-                    .single().row();
-
-            int occupant_db_id = -1;
-            if (row.is_present()) {
-                occupant_db_id = row[db.occupantid.id];
-            } else {
-                occupant_db_id = (int)db.occupantid.upsert()
-                        .value(db.occupantid.account_id, account.id, true)
-                        .value(db.occupantid.jid_id, jid_id, true)
-                        .value(db.occupantid.occupant_id, occupant_id, true)
-                        .value(db.occupantid.last_nick, jid.resourcepart, false)
-                        .perform();
-            }
+            int occupant_db_id = stream_interactor.get_module(OccupantIdStore.IDENTITY).cache_occupant_id(account, occupant_id, jid);
             builder.value(db.reaction.occupant_id, occupant_db_id, true);
         }
 

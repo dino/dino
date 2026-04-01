@@ -103,7 +103,7 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     }
 
     public void show_audio_device_error() {
-        audio_settings_button.set_icon_name("dialog-warning-symbolic");
+        audio_settings_button.set_icon_name("dino-dialog-warning-symbolic");
         Util.force_error_color(audio_settings_button);
     }
 
@@ -120,17 +120,17 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     }
 
     public void show_video_device_error() {
-        video_settings_button.set_icon_name("dialog-warning-symbolic");
+        video_settings_button.set_icon_name("dino-dialog-warning-symbolic");
         Util.force_error_color(video_settings_button);
     }
 
     public void on_audio_enabled_changed() {
         if (audio_enabled) {
-            audio_image.icon_name = "audio-input-microphone-symbolic";
+            audio_image.icon_name = "dino-audio-input-microphone-symbolic";
             audio_button.add_css_class("white-button");
             audio_button.remove_css_class("transparent-white-button");
         } else {
-            audio_image.icon_name = "microphone-disabled-symbolic";
+            audio_image.icon_name = "dino-microphone-disabled-symbolic";
             audio_button.remove_css_class("white-button");
             audio_button.add_css_class("transparent-white-button");
         }

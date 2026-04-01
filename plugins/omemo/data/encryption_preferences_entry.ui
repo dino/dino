@@ -12,24 +12,10 @@
     <child>
       <object class="AdwPreferencesGroup">
         <child>
-          <object class="AdwActionRow" id="encrypt_by_default_row">
-            <child type="suffix">
-              <object class="GtkSwitch" id="encrypt_by_default_switch">
-                <property name="valign">center</property>
-              </object>
-            </child>
-          </object>
+          <object class="AdwSwitchRow" id="encrypt_by_default_row" />
         </child>
         <child>
-          <!-- TODO: make this a SwitchRow once we depend on Adwaita 1.4-->
-          <object class="AdwActionRow" id="automatically_accept_new_row">
-            <property name="activatable-widget">automatically_accept_new_switch</property>
-            <child type="suffix">
-              <object class="GtkSwitch" id="automatically_accept_new_switch">
-                <property name="valign">center</property>
-              </object>
-            </child>
-          </object>
+          <object class="AdwSwitchRow" id="automatically_accept_new_row" />
         </child>
       </object>
     </child>

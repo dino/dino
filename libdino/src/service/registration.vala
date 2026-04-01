@@ -141,6 +141,7 @@ public class Register : StreamInteractionModule, Object{
         Gee.List<XmppStreamModule> list = new ArrayList<XmppStreamModule>();
         list.add(new Iq.Module());
         list.add(new Xep.InBandRegistration.Module());
+        list.add(new Xep.BitsOfBinary.Module());
 
         XmppStreamResult stream_result = yield Xmpp.establish_stream(jid.domain_jid, list, Application.print_xmpp,
                 (peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(jid.domainpart, peer_cert, errors); }

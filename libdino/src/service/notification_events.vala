@@ -83,7 +83,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
                 break;
             case FileItem.TYPE:
                 FileTransfer file_transfer = ((FileItem) item).file_transfer;
-                bool is_image = file_transfer.mime_type != null && file_transfer.mime_type.has_prefix("image");
+                bool is_image = file_transfer.content_type != null && file_transfer.content_type.is_image();
 
                 // Don't notify on file transfers in a groupchat set to "mention only"
                 if (notify == Conversation.NotifySetting.HIGHLIGHT) return;

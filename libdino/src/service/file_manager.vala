@@ -110,7 +110,7 @@ public class FileManager : StreamInteractionModule, Object {
         try {
             var file_meta = new FileMeta();
             file_meta.size = file_transfer.size;
-            file_meta.mime_type = file_transfer.mime_type;
+            file_meta.content_type = file_transfer.content_type;
 
             FileSender file_sender = null;
             FileEncryptor file_encryptor = null;
@@ -244,7 +244,7 @@ public class FileManager : StreamInteractionModule, Object {
 
             file_transfer.size = (int)file_meta.size;
             file_transfer.file_name = file_meta.file_name;
-            file_transfer.mime_type = file_meta.mime_type;
+            file_transfer.content_type = file_meta.content_type;
         }
         return file_meta;
     }
@@ -332,7 +332,10 @@ public class FileManager : StreamInteractionModule, Object {
             file_transfer.path = file.get_basename();
             
             FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
-            file_transfer.mime_type = Dino.Util.get_content_type(file_info);
+            if (file_info.get_content_type() != "application/octet-stream" || file_transfer.content_type == null) {
+                // Only overwrite mime_type if it's better than what we had before.
+                file_transfer.content_type = new FileContentType.from_file_info(file_info);
+            }
 
             file_transfer.state = FileTransfer.State.COMPLETE;
 
@@ -440,7 +443,7 @@ public errordomain FileReceiveError {
 
 public class FileMeta {
     public int64 size = -1;
-    public string? mime_type = null;
+    public FileContentType? content_type = null;
     public string? file_name = null;
     public Encryption encryption = Encryption.NONE;
 }

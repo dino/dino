@@ -218,6 +218,7 @@ dino_plugins_rtp_voice_processor_process_stream(void *native_ptr, GstAudioInfo *
     frame.samples_per_channel_ = info->rate / 100;
     memcpy(frame.data_, map.data, frame.samples_per_channel_ * info->bpf);
 
+    apm->set_stream_delay_ms(native->stream_delay);
     err = apm->ProcessStream(&frame);
     if (err >= 0) memcpy(map.data, frame.data_, frame.samples_per_channel_ * info->bpf);
 

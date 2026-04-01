@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 29;
+    private const int VERSION = 31;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -103,6 +103,19 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class MessageOccupantId : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> message_id = new Column.Integer("message_id") { not_null = true };
+        public Column<int> occupant_id = new Column.Integer("occupant_id") { not_null = true };
+
+        internal MessageOccupantId(Database db) {
+            base(db, "message_occupant_id");
+            init({id, message_id, occupant_id});
+
+            index("message_id_occupant_id", { message_id, occupant_id });
+        }
+    }
+
     public class BodyMeta : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> message_id = new Column.Integer("message_id");
@@ -121,10 +134,11 @@ public class Database : Qlite.Database {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> message_id = new Column.Integer("message_id") { unique=true };
         public Column<string> to_stanza_id = new Column.Text("to_stanza_id");
+        public Column<int> to_message_db_id = new Column.Integer("to_message_db_id") { min_version=31 };
 
         internal MessageCorrectionTable(Database db) {
             base(db, "message_correction");
-            init({id, message_id, to_stanza_id});
+            init({id, message_id, to_stanza_id, to_message_db_id});
             index("message_correction_to_stanza_id_idx", {to_stanza_id});
         }
     }
@@ -223,6 +237,7 @@ public class Database : Qlite.Database {
 
     public class FileThumbnailsTable : Table {
         public Column<int> id = new Column.Integer("id");
+        // TODO store data as bytes, not as data uri
         public Column<string> uri = new Column.Text("uri") { not_null = true };
         public Column<string> mime_type = new Column.Text("mime_type");
         public Column<int> width = new Column.Integer("width");
@@ -439,6 +454,7 @@ public class Database : Qlite.Database {
     public EntityTable entity { get; private set; }
     public ContentItemTable content_item { get; private set; }
     public MessageTable message { get; private set; }
+    public MessageOccupantId message_occupant_id { get; private set; }
     public BodyMeta body_meta { get; private set; }
     public ReplyTable reply { get; private set; }
     public MessageCorrectionTable message_correction { get; private set; }
@@ -472,6 +488,7 @@ public class Database : Qlite.Database {
         entity = new EntityTable(this);
         content_item = new ContentItemTable(this);
         message = new MessageTable(this);
+        message_occupant_id = new MessageOccupantId(this);
         body_meta = new BodyMeta(this);
         message_correction = new MessageCorrectionTable(this);
         reply = new ReplyTable(this);
@@ -493,7 +510,7 @@ public class Database : Qlite.Database {
         settings = new SettingsTable(this);
         account_settings = new AccountSettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");

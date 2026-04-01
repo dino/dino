@@ -56,8 +56,8 @@ public class ChatInputController : Object {
 
         status_description_label.activate_link.connect((uri) => {
             if (uri == OPEN_CONVERSATION_DETAILS_URI){
-                var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, (Window)chat_input.get_root());
-                conversation_details.present();
+                var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor);
+                conversation_details.present((Window)chat_input.get_root());
             }
             return true;
         });

@@ -46,16 +46,12 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             NotificationEvents notification_events = stream_interactor.get_module(NotificationEvents.IDENTITY);
             get_notifications_dbus.begin((_, res) => {
                 // It might take a bit to get the interface. NotificationEvents will queue any notifications in the meantime.
-                try {
-                    DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
-                    if (dbus_notifications != null) {
-                        FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
-                        notification_events.register_notification_provider.begin(free_desktop_notifier);
-                    } else {
-                        notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
-                    }
-                } catch (Error e) {
-                    debug("Failed accessing fdo notification server: %s", e.message);
+                DBusNotifications? dbus_notifications = get_notifications_dbus.end(res);
+                if (dbus_notifications != null) {
+                    FreeDesktopNotifier free_desktop_notifier = new FreeDesktopNotifier(stream_interactor, dbus_notifications);
+                    notification_events.register_notification_provider.begin(free_desktop_notifier);
+                } else {
+                    notification_events.register_notification_provider.begin(new GNotificationsNotifier(stream_interactor));
                 }
             });
 
@@ -153,9 +149,9 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
 
             string stack_value = variant.get_child_value(1).get_string();
 
-            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor, window);
+            var conversation_details = ConversationDetails.setup_dialog(conversation, stream_interactor);
             conversation_details.stack.visible_child_name = stack_value;
-            conversation_details.present();
+            conversation_details.present(window);
         });
         add_action(open_conversation_details_action);
 
@@ -251,16 +247,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
     }
 
     private void show_preferences_window() {
-        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        Ui.PreferencesDialog dialog = new Ui.PreferencesDialog();
         dialog.model.populate(db, stream_interactor);
-        dialog.present();
+        dialog.present(window);
     }
 
     private void show_preferences_account_window(Account account) {
-        Ui.PreferencesWindow dialog = new Ui.PreferencesWindow() { transient_for = window };
+        Ui.PreferencesDialog dialog = new Ui.PreferencesDialog();
         dialog.model.populate(db, stream_interactor);
         dialog.accounts_page.account_chosen(account);
-        dialog.present();
+        dialog.present(window);
     }
 
     private void show_about_window() {
@@ -274,19 +270,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             }
         }
 
-        Adw.AboutWindow about_window = new Adw.AboutWindow();
-        about_window.application_icon = "im.dino.Dino";
-        about_window.application_name = "Dino";
-        about_window.issue_url = "https://github.com/dino/dino/issues";
-        about_window.destroy_with_parent = true;
-        about_window.transient_for = window;
-        about_window.modal = true;
-        about_window.title = _("About Dino");
-        about_window.version = version;
-        about_window.website = "https://dino.im/";
-        about_window.copyright = "Copyright © 2016-2025 - Dino Team";
-        about_window.license_type = License.GPL_3_0;
-        about_window.present();
+        Adw.AboutDialog about_dialog = new Adw.AboutDialog();
+        about_dialog.application_icon = "im.dino.Dino";
+        about_dialog.application_name = "Dino";
+        about_dialog.issue_url = "https://github.com/dino/dino/issues";
+        about_dialog.title = _("About Dino");
+        about_dialog.version = version;
+        about_dialog.website = "https://dino.im/";
+        about_dialog.copyright = "Copyright © 2016-2025 - Dino Team";
+        about_dialog.license_type = License.GPL_3_0;
+        about_dialog.present(window);
     }
 
     private void show_join_muc_dialog(Account? account, string jid) {

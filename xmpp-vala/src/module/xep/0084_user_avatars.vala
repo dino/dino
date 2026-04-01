@@ -57,10 +57,14 @@ namespace Xmpp.Xep.UserAvatars {
         }
 
         public void on_pupsub_item(XmppStream stream, Jid jid, string hash, StanzaNode? node) {
-            StanzaNode? info_node = node.get_subnode("info", NS_URI_METADATA);
-            string? type = info_node == null ? null : info_node.get_attribute("type");
-            if (type != "image/png" && type != "image/jpeg") return;
-            received_avatar_hash(stream, jid, hash);
+            foreach (var info_node in node.get_subnodes("info", NS_URI_METADATA)) {
+                if (info_node.get_attribute("id") == hash) {
+                    string? type = info_node == null ? null : info_node.get_attribute("type");
+                    if (type != "image/png" && type != "image/jpeg") return;
+                    received_avatar_hash(stream, jid, hash);
+                    return;
+                }
+            }
         }
 
         public void on_pubsub_delete(XmppStream stream, Jid jid) {

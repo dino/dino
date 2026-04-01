@@ -40,6 +40,8 @@ public class Dino.Ui.ViewModel.ConversationDetails : Object {
     public BlockState blocked { get; set; }
 
     public GLib.ListStore about_rows = new GLib.ListStore(typeof(PreferencesRow.Any));
+    public string? account_jid { get; set; }
+
     public GLib.ListStore settings_rows = new GLib.ListStore(typeof(PreferencesRow.Any));
     public GLib.ListStore room_configuration_rows { get; set; }
     public MapListModel members = new MapListModel(null, null);

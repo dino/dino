@@ -54,15 +54,15 @@ namespace Dino.Ui {
             switch (this.state) {
                 case UNKNOWN_SOURCE:
                 case DOWNLOAD_NOT_STARTED:
-                    button.icon_name = "document-save-symbolic";
+                    button.icon_name = "dino-document-save-symbolic";
                     break;
                 case DOWNLOADING:
                 case UPLOADING:
-                    button.icon_name = "small-x-symbolic";
+                    button.icon_name = "dino-small-x-symbolic";
                     break;
                 case DOWNLOAD_NOT_STARTED_FAILED_BEFORE:
                 case UPLOAD_FAILED:
-                    button.icon_name = "dialog-warning-symbolic";
+                    button.icon_name = "dino-dialog-warning-symbolic";
                     break;
             }
         }

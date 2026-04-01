@@ -39,29 +39,15 @@ public class ConversationSelectorRow : ListBoxRow {
         this.conversation = conversation;
         this.stream_interactor = stream_interactor;
 
-        switch (conversation.type_) {
-            case Conversation.Type.CHAT:
-                stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-                    if (conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
-                        update_name_label();
-                    }
-                });
-                break;
-            case Conversation.Type.GROUPCHAT:
-                stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
-                    if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                        update_name_label();
-                        update_read(true); // bubble color might have changed
-                    }
-                });
-                stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
-                    if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
-                        update_name_label();
-                    }
-                });
-                break;
-            case Conversation.Type.GROUPCHAT_PM:
-                break;
+        var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
+        display_name_model.bind_property("display-name", name_label, "label", BindingFlags.SYNC_CREATE);
+
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
+                if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
+                    update_read(true); // bubble color might have changed
+                }
+            });
         }
 
         // Set tooltip
@@ -87,6 +73,11 @@ public class ConversationSelectorRow : ListBoxRow {
             }
         });
         stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((item) => {
+            if (last_content_item != null && last_content_item.id == item.id) {
+                content_item_received(item);
+            }
+        });
+        stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.connect((item) => {
             if (last_content_item != null && last_content_item.id == item.id) {
                 content_item_received(item);
             }
@@ -175,8 +166,13 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label += ": ";
                     }
 
-                    change_label_attribute(message_label, attr_style_new(Pango.Style.NORMAL));
-                    message_label.label = Util.summarize_whitespaces_to_space(body);
+                    if (message_item.message.body == "") {
+                        change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
+                        message_label.label = _("Message deleted");
+                    } else {
+                        change_label_attribute(message_label, attr_style_new(Pango.Style.NORMAL));
+                        message_label.label = Util.summarize_whitespaces_to_space(body);
+                    }
 
                     break;
                 case FileItem.TYPE:
@@ -190,7 +186,7 @@ public class ConversationSelectorRow : ListBoxRow {
                         nick_label.label = transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
                     }
 
-                    bool file_is_image = transfer.mime_type != null && transfer.mime_type.has_prefix("image");
+                    bool file_is_image = transfer.content_type != null && transfer.content_type.is_image();
                     change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
                     if (transfer.direction == Message.DIRECTION_SENT) {
                         message_label.label = (file_is_image ? _("Image sent") : _("File sent") );

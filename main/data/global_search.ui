@@ -23,7 +23,7 @@
                                         <style>
                                             <class name="compact"/>
                                         </style>
-                                        <property name="icon-name">system-search-symbolic</property>
+                                        <property name="icon-name">dino-loupe-large-symbolic</property>
                                         <property name="title" translatable="1">No active search</property>
                                         <property name="description" translatable="1">Type to start a search</property>
                                     </object>
@@ -38,7 +38,7 @@
                                         <style>
                                             <class name="compact"/>
                                         </style>
-                                        <property name="icon-name">face-uncertain-symbolic</property>
+                                        <property name="icon-name">dino-face-uncertain-symbolic</property>
                                         <property name="title" translatable="1">No matching messages</property>
                                         <property name="description" translatable="1">Check the spelling or try to remove filters</property>
                                     </object>

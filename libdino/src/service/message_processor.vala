@@ -156,27 +156,27 @@ public class MessageProcessor : StreamInteractionModule, Object {
         new_message.counterpart = counterpart_override ?? (new_message.direction == Entities.Message.DIRECTION_SENT ? message.to : message.from);
         new_message.ourpart = new_message.direction == Entities.Message.DIRECTION_SENT ? message.from : message.to;
 
+        // Parse server stanza-id
         Xmpp.MessageArchiveManagement.MessageFlag? mam_message_flag = Xmpp.MessageArchiveManagement.MessageFlag.get_flag(message);
         EntityInfo entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
         if (mam_message_flag != null && mam_message_flag.mam_id != null) {
-            bool server_does_mam = entity_info.has_feature_cached(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI);
-            if (server_does_mam) {
+            bool sender_supports_mam = entity_info.has_feature_cached(account, mam_message_flag.sender_jid, Xmpp.MessageArchiveManagement.NS_URI);
+            if (sender_supports_mam) {
                 new_message.server_id = mam_message_flag.mam_id;
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
-            bool server_supports_sid = (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
+            bool server_supports_sid = yield entity_info.has_feature(account, new_message.counterpart.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, new_message.counterpart.bare_jid);
             }
         } else if (message.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
-            bool server_supports_sid = (yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI)) ||
-                    (yield entity_info.has_feature(account, account.bare_jid, Xmpp.MessageArchiveManagement.NS_URI));
+            bool server_supports_sid = yield entity_info.has_feature(account, account.bare_jid, Xep.UniqueStableStanzaIDs.NS_URI);
             if (server_supports_sid) {
                 new_message.server_id = Xep.UniqueStableStanzaIDs.get_stanza_id(message, account.bare_jid);
             }
         }
 
+        // Parse times
         if (mam_message_flag != null) new_message.local_time = mam_message_flag.server_time;
         DateTime now = new DateTime.from_unix_utc(new DateTime.now_utc().to_unix()); // Remove milliseconds. They are not stored in the db and might lead to ordering issues when compared with times from the db.
         if (new_message.local_time == null || new_message.local_time.compare(now) > 0) new_message.local_time = now;
@@ -186,6 +186,15 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (new_message.time == null || new_message.time.compare(new_message.local_time) > 0) new_message.time = new_message.local_time;
 
         new_message.type_ = yield determine_message_type(account, message, new_message);
+
+        // Parse occupant ids (in MUCs)
+        if (message.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
+            bool muc_supports_occupant_ids = entity_info.has_feature_cached(account, message.from.bare_jid, Xmpp.Xep.OccupantIds.NS_URI);
+            string? occupant_id = OccupantIds.get_occupant_id(message.stanza);
+            if (muc_supports_occupant_ids && occupant_id != null) {
+                new_message.occupant_db_id = stream_interactor.get_module(OccupantIdStore.IDENTITY).cache_occupant_id(account, occupant_id, message.from);
+            }
+        }
 
         return new_message;
     }
@@ -302,7 +311,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
     private class FilterMessageListener : MessageListener {
 
-        public string[] after_actions_const = new string[]{ "DECRYPT" };
+        public string[] after_actions_const = new string[]{ "DECRYPT", "DELETE" };
         public override string action_group { get { return "FILTER_EMPTY"; } }
         public override string[] after_actions { get { return after_actions_const; } }
 
@@ -416,9 +425,9 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (message.quoted_item_id != 0) {
             ContentItem? quoted_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, message.quoted_item_id);
             if (quoted_content_item != null) {
-                Jid? quoted_sender = message.from;
+                Jid quoted_sender = quoted_content_item.jid;
                 string? quoted_stanza_id = stream_interactor.get_module(ContentItemStore.IDENTITY).get_message_id_for_content_item(conversation, quoted_content_item);
-                if (quoted_sender != null && quoted_stanza_id != null) {
+                if (quoted_stanza_id != null) {
                     Xep.Replies.set_reply_to(new_message, new Xep.Replies.ReplyTo(quoted_sender, quoted_stanza_id));
                 }
 

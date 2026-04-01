@@ -48,7 +48,7 @@ public abstract class AccountSettingsEntry : Object {
     public abstract string name { get; }
     public virtual int16 label_top_padding { get { return -1; } }
 
-    public abstract signal void activated();
+    public signal void activated();
     public abstract void deactivate();
 
     public abstract void set_account(Account account);
@@ -72,7 +72,7 @@ public interface ContactDetailsProvider : Object {
 
 public class ContactDetails : Object {
     public signal void save();
-    public signal void add(string category, string label, string? desc, Object widget);
+    public signal void add_settings_action_row(Object action_row_model);
 }
 
 public interface TextCommand : Object {
@@ -90,17 +90,17 @@ public interface ConversationTitlebarEntry : Object {
     public abstract void unset_conversation();
 }
 
-public abstract interface ConversationItemPopulator : Object {
+public interface ConversationItemPopulator : Object {
     public abstract string id { get; }
     public abstract void init(Conversation conversation, ConversationItemCollection summary, WidgetType type);
     public abstract void close(Conversation conversation);
 }
 
-public abstract interface ConversationAdditionPopulator : ConversationItemPopulator {
+public interface ConversationAdditionPopulator : ConversationItemPopulator {
     public virtual void populate_timespan(Conversation conversation, DateTime from, DateTime to) { }
 }
 
-public abstract interface VideoCallPlugin : Object {
+public interface VideoCallPlugin : Object {
 
     public abstract bool supported();
     // Video widget
@@ -117,14 +117,14 @@ public abstract interface VideoCallPlugin : Object {
     public abstract void dump_dot();
 }
 
-public abstract interface VideoCallWidget : Object {
+public interface VideoCallWidget : Object {
     public signal void resolution_changed(uint width, uint height);
     public abstract void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Jid jid);
     public abstract void display_device(MediaDevice device);
     public abstract void detach();
 }
 
-public abstract interface MediaDevice : Object {
+public interface MediaDevice : Object {
     public abstract string id { owned get; }
     public abstract string display_name { owned get; }
     public abstract string? detail_name { owned get; }
@@ -133,7 +133,7 @@ public abstract interface MediaDevice : Object {
     public abstract bool incoming { get; }
 }
 
-public abstract interface NotificationPopulator : Object {
+public interface NotificationPopulator : Object {
     public abstract string id { get; }
     public abstract void init(Conversation conversation, NotificationCollection summary, WidgetType type);
     public abstract void close(Conversation conversation);
@@ -164,10 +164,12 @@ public delegate void MessageActionEvoked(Variant? variant);
 public class MessageAction : Object {
     public string name;
     public bool sensitive = true;
+    public bool shortcut_action = true;
     public string icon_name;
     public string? tooltip;
     public Object? popover;
     public MessageActionEvoked? callback;
+    public Variant? extras;
 }
 
 public abstract class MetaConversationNotification : Object {

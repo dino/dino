@@ -3,7 +3,7 @@ using Xmpp;
 using Xmpp.Xep;
 using Gee;
 
-public class Dino.Ui.ViewModel.PreferencesWindow : Object {
+public class Dino.Ui.ViewModel.PreferencesDialog : Object {
     public signal void update();
 
     public HashMap<Account, AccountDetails> account_details = new HashMap<Account, AccountDetails>(Account.hash_func, Account.equals_func);
@@ -66,8 +66,8 @@ public class Dino.Ui.ViewModel.PreferencesWindow : Object {
         update();
     }
 
-    public void set_avatar_uri(Account account, string uri) {
-        stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, uri);
+    public void set_avatar_file(Account account, File file) {
+        stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, file);
     }
 
     public void remove_avatar(Account account) {

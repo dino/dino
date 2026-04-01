@@ -254,7 +254,7 @@ public class Xmpp.Xep.Jingle.ContentEncryption : Object {
     public uint8[] our_key;
     public uint8[] peer_key;
 
-    public class ContentEncryption(string encryption_ns, string encryption_name, uint8[] our_key = new uint8[]{}, uint8[] peer_key = new uint8[]{}) {
+    public ContentEncryption(string encryption_ns, string encryption_name, uint8[] our_key = new uint8[]{}, uint8[] peer_key = new uint8[]{}) {
         this.encryption_ns = encryption_ns;
         this.encryption_name = encryption_name;
         this.our_key = our_key;

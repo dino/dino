@@ -1,5 +1,4 @@
 dependencies = [
-    dep_gdk_pixbuf,
     dep_gee,
     dep_gio,
     dep_glib,
@@ -96,6 +95,7 @@ sources = files(
     'src/module/xep/0199_ping.vala',
     'src/module/xep/0203_delayed_delivery.vala',
     'src/module/xep/0215_external_service_discovery.vala',
+    'src/module/xep/0231_bits_of_binary.vala',
     'src/module/xep/0234_jingle_file_transfer.vala',
     'src/module/xep/0249_direct_muc_invitations.vala',
     'src/module/xep/0260_jingle_socks5_bytestreams.vala',
@@ -124,13 +124,15 @@ sources = files(
     'src/module/xep/0402_bookmarks2.vala',
     'src/module/xep/0410_muc_self_ping.vala',
     'src/module/xep/0421_occupant_ids.vala',
+    'src/module/xep/0424_message_retraction.vala',
+    'src/module/xep/0425_message_moderation.vala',
     'src/module/xep/0428_fallback_indication.vala',
     'src/module/xep/0444_reactions.vala',
     'src/module/xep/0446_file_metadata_element.vala',
     'src/module/xep/0447_stateless_file_sharing.vala',
     'src/module/xep/0461_replies.vala',
     'src/module/xep/0482_call_invites.vala',
-    'src/module/xep/pixbuf_storage.vala',
+    'src/file_content_type.vala',
     'src/util.vala',
 )
 c_args = [

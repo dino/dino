@@ -2,11 +2,13 @@ using Dino.Entities;
 using Xmpp;
 using Xmpp.Xep;
 using Gee;
-using Gtk;
 
 namespace Dino.Ui.ViewModel.PreferencesRow {
     public abstract class Any : Object {
         public string title { get; set; }
+
+        public string? media_type { get; set; }
+        public string? media_uri { get; set; }
     }
 
     public class Text : Any {
@@ -29,11 +31,14 @@ namespace Dino.Ui.ViewModel.PreferencesRow {
     }
 
     public class ComboBox : Any {
+        public string subtitle { get; set; }
         public Gee.List<string> items = new ArrayList<string>();
         public int active_item { get; set; }
     }
 
-    public class WidgetDeprecated : Any {
-        public Widget widget;
+    public class Button : Any {
+        public signal void clicked();
+        public string subtitle { get; set; }
+        public string button_text { get; set; }
     }
 }

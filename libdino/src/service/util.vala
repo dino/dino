@@ -49,8 +49,10 @@ public class Util {
         }
     }
 
-    public static bool is_pixbuf_supported_mime_type(string mime_type) {
-        if (mime_type == null) return false;
+    public static bool is_pixbuf_supported_content_type(Xmpp.FileContentType? content_type) {
+        if (content_type == null) return false;
+
+        string mime_type = content_type.get_mime_type();
 
         foreach (Gdk.PixbufFormat pixbuf_format in Gdk.Pixbuf.get_formats()) {
             foreach (string pixbuf_mime in pixbuf_format.get_mime_types()) {
@@ -67,25 +69,6 @@ public class Util {
 #else
         AppInfo.launch_default_for_uri(file_uri, null);
 #endif
-    }
-    
-    public static string get_content_type(FileInfo fileInfo)
-    {
-#if _WIN32
-        string fileName = fileInfo.get_name();
-        int fileNameLength = fileName.length;
-        int extIndex = fileName.last_index_of(".");
-        if (extIndex < fileNameLength)
-        {
-            string extension = fileName.substring(extIndex, fileNameLength - extIndex);
-            string mime_type = ContentType.get_mime_type(extension);
-            if (mime_type != null && mime_type.length != 0)
-            {
-                return mime_type;
-            }
-        }
-#endif
-        return fileInfo.get_content_type();
     }
 }
 

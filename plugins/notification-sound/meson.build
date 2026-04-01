@@ -1,12 +1,12 @@
 dependencies = [
     dep_dino,
-    dep_gdk_pixbuf,
     dep_gee,
     dep_glib,
     dep_gmodule,
     dep_libcanberra,
     dep_qlite,
     dep_xmpp_vala,
+    dep_gio,
 ]
 sources = files(
     'src/plugin.vala',

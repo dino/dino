@@ -4,6 +4,8 @@
   <object class="GtkGrid" id="main_grid">
     <property name="column-spacing">7</property>
     <property name="row-spacing">2</property>
+    <property name="can-focus">True</property>
+    <property name="focusable">True</property>
     <child>
       <object class="DinoUiAvatarPicture" id="avatar_picture">
         <property name="height-request">35</property>

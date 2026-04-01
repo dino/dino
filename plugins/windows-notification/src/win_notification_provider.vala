@@ -233,7 +233,11 @@ namespace Dino.Plugins.WindowsNotification {
 
         private string? get_avatar(Conversation conversation) {
             var avatar_manager = app.stream_interactor.get_module(AvatarManager.IDENTITY);
-            return avatar_manager.get_avatar_filepath(conversation.account, conversation.counterpart);
+            var avatar_file = avatar_manager.get_avatar_file(conversation.account, conversation.counterpart);
+            if (avatar_file == null) {
+                return null;
+            }
+            return avatar_file.get_path();
         }
 
         public async void retract_content_item_notifications() {

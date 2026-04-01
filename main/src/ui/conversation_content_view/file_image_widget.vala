@@ -37,7 +37,7 @@ public class FileImageWidget : Widget {
 
         // Setup menu button overlay
         MenuButton button = new MenuButton();
-        button.icon_name = "view-more";
+        button.icon_name = "dino-view-more";
         Menu menu_model = new Menu();
         menu_model.append(_("Open"), "file.open");
         menu_model.append(_("Save as…"), "file.save_as");
@@ -46,7 +46,7 @@ public class FileImageWidget : Widget {
         image_overlay_toolbar.append(button);
         image_overlay_toolbar.add_css_class("card");
         image_overlay_toolbar.add_css_class("toolbar");
-        image_overlay_toolbar.add_css_class("overlay-toolbar");
+        image_overlay_toolbar.add_css_class("compact-card-toolbar");
         image_overlay_toolbar.set_cursor_from_name("default");
 
         file_size_label.add_css_class("file-details");
@@ -154,10 +154,20 @@ public class FileImageWidget : Widget {
     public async void load_from_file(File file, string file_name) throws GLib.Error {
         FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
 
-        // Work-around because Gtk.Picture does not apply the orientation itself
-        Gdk.Pixbuf? pixbuf = new Pixbuf.from_file(file.get_path());
-        pixbuf = pixbuf.apply_embedded_orientation();
-        image.paintable = Texture.for_pixbuf(pixbuf);
+        FileInputStream file_stream = null;
+        try {
+            file_stream = file.read();
+            // Work-around because Gtk.Picture does not apply the orientation itself
+            Gdk.Pixbuf? pixbuf = new Pixbuf.from_stream(file_stream);
+            pixbuf = pixbuf.apply_embedded_orientation();
+            image.paintable = Texture.for_pixbuf(pixbuf);
+        } finally {
+            try {
+                if (file_stream != null) file_stream.close();
+            } catch (Error e) {
+                // Ignore
+            }
+        }
 
         stack.add_child(image);
         stack.set_visible_child(image);
@@ -217,41 +227,12 @@ public class FileImageWidget : Widget {
     }
 
     public static Pixbuf? parse_thumbnail(Xep.JingleContentThumbnails.Thumbnail thumbnail) {
-        string[] splits = thumbnail.uri.split(":", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ':' not found");
-            return null;
-        }
-        if (splits[0] != "data") {
-            warning("Unsupported thumbnail: unimplemented uri type\n");
-            return null;
-        }
-        splits = splits[1].split(";", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ';' not found");
-            return null;
-        }
-        if (splits[0] != "image/png") {
-            warning("Unsupported thumbnail: unsupported mime-type\n");
-            return null;
-        }
-        splits = splits[1].split(",", 2);
-        if (splits.length != 2) {
-            warning("Thumbnail parsing error: ',' not found");
-            return null;
-        }
-        if (splits[0] != "base64") {
-            warning("Unsupported thumbnail: data is not base64 encoded\n");
-            return null;
-        }
-        uint8[] data = Base64.decode(splits[1]);
-        MemoryInputStream input_stream = new MemoryInputStream.from_data(data);
-        Pixbuf pixbuf = new Pixbuf.from_stream(input_stream);
-        return pixbuf;
+        MemoryInputStream input_stream = new MemoryInputStream.from_data(thumbnail.data.get_data());
+        return new Pixbuf.from_stream(input_stream);
     }
 
     public static bool can_display(FileTransfer file_transfer) {
-        return file_transfer.mime_type != null && Dino.Util.is_pixbuf_supported_mime_type(file_transfer.mime_type) &&
+        return file_transfer.content_type != null && Dino.Util.is_pixbuf_supported_content_type(file_transfer.content_type) &&
                 (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.thumbnails.size > 0);
     }
 

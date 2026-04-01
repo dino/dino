@@ -28,7 +28,11 @@ namespace Dino.Ui.Quote {
             this.display_name = Util.get_participant_display_name(stream_interactor, conversation, content_item.jid, true);
             if (content_item.type_ == MessageItem.TYPE) {
                 var message = ((MessageItem) content_item).message;
-                this.message = Dino.message_body_without_reply_fallback(message);
+                this.message = Markup.escape_text(Dino.message_body_without_reply_fallback(message));
+
+                if (message.body.has_prefix("/me ")) {
+                    this.message = @"<i><b>$(Markup.escape_text(display_name))</b> " + this.message.substring(4) + "</i>";
+                }
             } else if (content_item.type_ == FileItem.TYPE) {
                 var file_transfer = ((FileItem) content_item).file_transfer;
                 this.message = _("File") + ": " + file_transfer.file_name;

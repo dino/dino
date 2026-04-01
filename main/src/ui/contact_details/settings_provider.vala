@@ -10,9 +10,6 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
 
     private StreamInteractor stream_interactor;
 
-    private string DETAILS_HEADLINE_CHAT = "Settings";
-    private string DETAILS_HEADLINE_ROOM = "Local Settings";
-
     public SettingsProvider(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
     }
@@ -21,54 +18,24 @@ public class SettingsProvider : Plugins.ContactDetailsProvider, Object {
         if (type != Plugins.WidgetType.GTK4) return;
 
         if (!stream_interactor.get<MucManager>().is_public_room(conversation.account, conversation.counterpart)) {
-            string details_headline = conversation.type_ == Conversation.Type.GROUPCHAT ? DETAILS_HEADLINE_ROOM : DETAILS_HEADLINE_CHAT;
-
-            ComboBoxText combobox_typing = get_combobox(Dino.Application.get_default().settings.send_typing);
-            combobox_typing.active_id = get_setting_id(conversation.send_typing);
-            combobox_typing.changed.connect(() => { conversation.send_typing = get_setting(combobox_typing.active_id); } );
-            contact_details.add(details_headline, _("Send typing notifications"), "", combobox_typing);
+            string typing_default_setting = Dino.Application.get_default().settings.send_typing ? _("On") : _("Off");
+            var setting_model = new Dino.Ui.ViewModel.PreferencesRow.ComboBox() { title = _("Send typing notifications") };
+            setting_model.items.add(_("Default: %s").printf(typing_default_setting));
+            setting_model.items.add(_("On"));
+            setting_model.items.add(_("Off"));
+            conversation.bind_property("send-typing", setting_model, "active-item", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+            contact_details.add_settings_action_row(setting_model);
         }
 
         if (conversation.type_ == Conversation.Type.CHAT) {
-            ComboBoxText combobox_marker = get_combobox(Dino.Application.get_default().settings.send_marker);
-            contact_details.add(DETAILS_HEADLINE_CHAT, _("Send read receipts"), "", combobox_marker);
-            combobox_marker.active_id = get_setting_id(conversation.send_marker);
-            combobox_marker.changed.connect(() => { conversation.send_marker = get_setting(combobox_marker.active_id); } );
+            string marker_default_setting = Dino.Application.get_default().settings.send_marker ? _("On") : _("Off");
+            var setting_model = new Dino.Ui.ViewModel.PreferencesRow.ComboBox() { title = _("Send read receipts") };
+            setting_model.items.add(_("Default: %s").printf(marker_default_setting));
+            setting_model.items.add(_("On"));
+            setting_model.items.add(_("Off"));
+            conversation.bind_property("send-marker", setting_model, "active-item", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL);
+            contact_details.add_settings_action_row(setting_model);
         }
-    }
-
-    private Conversation.Setting get_setting(string id) {
-        switch (id) {
-            case "default":
-                return Conversation.Setting.DEFAULT;
-            case "on":
-                return Conversation.Setting.ON;
-            case "off":
-                return Conversation.Setting.OFF;
-        }
-        assert_not_reached();
-    }
-
-    private string get_setting_id(Conversation.Setting setting) {
-        switch (setting) {
-            case Conversation.Setting.DEFAULT:
-                return "default";
-            case Conversation.Setting.ON:
-                return "on";
-            case Conversation.Setting.OFF:
-                return "off";
-        }
-        assert_not_reached();
-    }
-
-    private ComboBoxText get_combobox(bool default_val) {
-        ComboBoxText combobox = new ComboBoxText();
-        combobox = new ComboBoxText();
-        string default_setting = default_val ? _("On") : _("Off");
-        combobox.append("default", _("Default: %s").printf(default_setting) );
-        combobox.append("on", _("On"));
-        combobox.append("off", _("Off"));
-        return combobox;
     }
 
     public Object? get_widget(Conversation conversation) {

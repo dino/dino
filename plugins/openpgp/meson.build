@@ -45,4 +45,4 @@ if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_com
 endif
 lib_openpgp = shared_library('openpgp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / get_option('plugindir'), install_rpath: default_install_rpath)
 dep_openpgp = declare_dependency(link_with: lib_openpgp, include_directories: include_directories('.'))
-summary('End-to-end encryption using PGP (openpgp)', dep_openpgp, section: 'Plugins')
+summary('End-to-end encryption using PGP (openpgp)', dep_openpgp.found(), bool_yn: true, section: 'Plugins')

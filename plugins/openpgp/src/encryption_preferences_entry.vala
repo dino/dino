@@ -38,17 +38,9 @@ namespace Dino.Plugins.OpenPgp {
             }
 
             StringList string_list = new StringList(null);
-#if Adw_1_4
             var drop_down = new Adw.ComboRow() { title = _("Announce key") };
             drop_down.model = string_list;
             preferences_group.add(drop_down);
-#else
-            var view = new Adw.ActionRow() { title = "Announce key" };
-            var drop_down = new DropDown(string_list, null) { valign = Align.CENTER };
-            view.activatable_widget = drop_down;
-            view.add_suffix(drop_down);
-            preferences_group.add(view);
-#endif
 
             string_list.append(_("Disabled"));
             for (int i = 0; i < keys.size; i++) {

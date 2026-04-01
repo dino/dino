@@ -9,10 +9,10 @@ public class Dino.Ui.ViewModel.GeneralPreferencesPage : Object {
 
 [GtkTemplate (ui = "/im/dino/Dino/preferences_window/general_preferences_page.ui")]
 public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
-    [GtkChild] private unowned Switch typing_switch;
-    [GtkChild] private unowned Switch marker_switch;
-    [GtkChild] private unowned Switch notification_switch;
-    [GtkChild] private unowned Switch emoji_switch;
+    [GtkChild] private unowned Adw.SwitchRow typing_row;
+    [GtkChild] private unowned Adw.SwitchRow marker_row;
+    [GtkChild] private unowned Adw.SwitchRow notification_row;
+    [GtkChild] private unowned Adw.SwitchRow emoji_row;
 
     public ViewModel.GeneralPreferencesPage model { get; set; default = new ViewModel.GeneralPreferencesPage(); }
     private Binding[] model_bindings = new Binding[0];
@@ -27,10 +27,10 @@ public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
         }
         if (model != null) {
             model_bindings = new Binding[] {
-                model.bind_property("send-typing", typing_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
-                model.bind_property("send-marker", marker_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
-                model.bind_property("notifications", notification_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
-                model.bind_property("convert-emojis", emoji_switch, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL)
+                model.bind_property("send-typing", typing_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
+                model.bind_property("send-marker", marker_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
+                model.bind_property("notifications", notification_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
+                model.bind_property("convert-emojis", emoji_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL)
             };
         } else {
             model_bindings = new Binding[0];

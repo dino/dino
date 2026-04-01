@@ -66,7 +66,7 @@ public class FileTransfer : Object {
         set { server_file_name_ = value; }
     }
     public string path { get; set; }
-    public string? mime_type { get; set; }
+    public FileContentType? content_type { get; set; }
     public int64 size { get; set; }
     public State state { get; set; default=State.NOT_STARTED; }
     public int provider { get; set; }
@@ -80,7 +80,7 @@ public class FileTransfer : Object {
         owned get {
             return new Xep.FileMetadataElement.FileMetadata() {
                 name = this.file_name,
-                mime_type = this.mime_type,
+                content_type = this.content_type,
                 size = this.size,
                 desc = this.desc,
                 date = this.modification_date,
@@ -93,7 +93,7 @@ public class FileTransfer : Object {
         }
         set {
             this.file_name = value.name;
-            this.mime_type = value.mime_type;
+            this.content_type = value.content_type;
             this.size = value.size;
             this.desc = value.desc;
             this.modification_date = value.date;
@@ -140,7 +140,9 @@ public class FileTransfer : Object {
         encryption = (Encryption) row[db.file_transfer.encryption];
         file_name = row[db.file_transfer.file_name];
         path = row[db.file_transfer.path];
-        mime_type = row[db.file_transfer.mime_type];
+        if (row[db.file_transfer.mime_type] != null) {
+            content_type = new FileContentType.from_mime_type(row[db.file_transfer.mime_type]);
+        }
         size = (int64) row[db.file_transfer.size];
         state = (State) row[db.file_transfer.state];
         provider = row[db.file_transfer.provider];
@@ -160,7 +162,7 @@ public class FileTransfer : Object {
 
         foreach(var thumbnail_row in db.file_thumbnails.select().with(db.file_thumbnails.id, "=", id)) {
             Xep.JingleContentThumbnails.Thumbnail thumbnail = new Xep.JingleContentThumbnails.Thumbnail();
-            thumbnail.uri = thumbnail_row[db.file_thumbnails.uri];
+            thumbnail.data = Xmpp.get_data_for_uri(thumbnail_row[db.file_thumbnails.uri]);
             thumbnail.media_type = thumbnail_row[db.file_thumbnails.mime_type];
             thumbnail.width = thumbnail_row[db.file_thumbnails.width];
             thumbnail.height = thumbnail_row[db.file_thumbnails.height];
@@ -197,7 +199,7 @@ public class FileTransfer : Object {
 
         if (file_sharing_id != null) builder.value(db.file_transfer.file_sharing_id, file_sharing_id);
         if (path != null) builder.value(db.file_transfer.path, path);
-        if (mime_type != null) builder.value(db.file_transfer.mime_type, mime_type);
+        if (content_type != null) builder.value(db.file_transfer.mime_type, content_type.get_mime_type());
         if (path != null) builder.value(db.file_transfer.path, path);
         if (modification_date != null) builder.value(db.file_transfer.modification_date, (long) modification_date.to_unix());
         if (width != -1) builder.value(db.file_transfer.width, width);
@@ -214,9 +216,11 @@ public class FileTransfer : Object {
                     .perform();
         }
         foreach (Xep.JingleContentThumbnails.Thumbnail thumbnail in thumbnails) {
+            string data_uri = "data:image/png;base64," + Base64.encode(thumbnail.data.get_data());
+
             db.file_thumbnails.insert()
                     .value(db.file_thumbnails.id, id)
-                    .value(db.file_thumbnails.uri, thumbnail.uri)
+                    .value(db.file_thumbnails.uri, data_uri)
                     .value(db.file_thumbnails.mime_type, thumbnail.media_type)
                     .value(db.file_thumbnails.width, thumbnail.width)
                     .value(db.file_thumbnails.height, thumbnail.height)
@@ -224,7 +228,7 @@ public class FileTransfer : Object {
         }
 
         foreach (Xep.StatelessFileSharing.Source source in sfs_sources) {
-            add_sfs_source(source);
+            persist_source(source);
         }
 
         notify.connect(on_update);
@@ -234,7 +238,13 @@ public class FileTransfer : Object {
         if (sfs_sources.contains(source)) return; // Don't add the same source twice. Might happen due to MAM and lacking deduplication.
 
         sfs_sources.add(source);
+        if (id != -1) {
+            persist_source(source);
+        }
+        sources_changed();
+    }
 
+    private void persist_source(Xep.StatelessFileSharing.Source source) {
         Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
         if (http_source != null) {
             db.sfs_sources.insert()
@@ -243,8 +253,6 @@ public class FileTransfer : Object {
                     .value(db.sfs_sources.data, http_source.url)
                     .perform();
         }
-
-        sources_changed();
     }
 
     public File? get_file() {
@@ -274,8 +282,8 @@ public class FileTransfer : Object {
                 update_builder.set(db.file_transfer.file_name, file_name); break;
             case "path":
                 update_builder.set(db.file_transfer.path, path); break;
-            case "mime-type":
-                update_builder.set(db.file_transfer.mime_type, mime_type); break;
+            case "content-type":
+                update_builder.set(db.file_transfer.mime_type, content_type.get_mime_type()); break;
             case "size":
                 update_builder.set(db.file_transfer.size, (long) size); break;
             case "state":

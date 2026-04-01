@@ -3,7 +3,7 @@ namespace Xmpp.Xep.FileMetadataElement {
 
     public class FileMetadata {
         public string? name { get; set; }
-        public string? mime_type { get; set; }
+        public FileContentType? content_type { get; set; }
         public int64 size { get; set; default=-1; }
         public string? desc { get; set; }
         public DateTime? date { get; set; }
@@ -19,14 +19,18 @@ namespace Xmpp.Xep.FileMetadataElement {
             if (this.name != null) {
                 node.put_node(new StanzaNode.build("name", NS_URI).put_node(new StanzaNode.text(this.name)));
             }
-            if (this.mime_type != null) {
-                node.put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.mime_type)));
+            if (this.content_type != null) {
+                // TODO remove the media_type node, it was implemented by accident and temporary provides backwards-compatibility
+                node.put_node(new StanzaNode.build("media_type", NS_URI).put_node(new StanzaNode.text(this.content_type.get_mime_type())));
+                node.put_node(new StanzaNode.build("media-type", NS_URI).put_node(new StanzaNode.text(this.content_type.get_mime_type())));
             }
             if (this.size != -1) {
                 node.put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(this.size.to_string())));
             }
             if (this.date != null) {
-                node.put_node(new StanzaNode.build("date", NS_URI).put_node(new StanzaNode.text(this.date.to_string())));
+                node.put_node(new StanzaNode.build("date", NS_URI).put_node(
+                        new StanzaNode.text(DateTimeProfiles.to_datetime(this.date))
+                ));
             }
             if (this.desc != null) {
                 node.put_node(new StanzaNode.build("desc", NS_URI).put_node(new StanzaNode.text(this.desc)));
@@ -65,9 +69,14 @@ namespace Xmpp.Xep.FileMetadataElement {
         if (desc_node != null && desc_node.get_string_content() != null) {
             metadata.desc = desc_node.get_string_content();
         }
-        StanzaNode? mime_node = file_node.get_subnode("media_type");
+        // TODO remove media_type handling, it was implemented by accident and temporary provides backwards-compatibility
+        StanzaNode? mime_node_bad = file_node.get_subnode("media_type");
+        if (mime_node_bad != null && mime_node_bad.get_string_content() != null) {
+            metadata.content_type = new FileContentType.from_mime_type(mime_node_bad.get_string_content());
+        }
+        StanzaNode? mime_node = file_node.get_subnode("media-type");
         if (mime_node != null && mime_node.get_string_content() != null) {
-            metadata.mime_type = mime_node.get_string_content();
+            metadata.content_type = new FileContentType.from_mime_type(mime_node.get_string_content());
         }
         StanzaNode? size_node = file_node.get_subnode("size");
         if (size_node != null && size_node.get_string_content() != null) {
@@ -75,7 +84,7 @@ namespace Xmpp.Xep.FileMetadataElement {
         }
         StanzaNode? date_node = file_node.get_subnode("date");
         if (date_node != null && date_node.get_string_content() != null) {
-            metadata.date = new DateTime.from_iso8601(date_node.get_string_content(), null);
+            metadata.date = DateTimeProfiles.parse_string(date_node.get_string_content());
         }
         StanzaNode? width_node = file_node.get_subnode("width");
         if (width_node != null && width_node.get_string_content() != null) {

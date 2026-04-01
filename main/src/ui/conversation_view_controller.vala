@@ -8,13 +8,10 @@ namespace Dino.Ui {
 
 public class ConversationViewController : Object {
 
-    public new string? conversation_display_name { get; set; }
-    public string? conversation_topic { get; set; }
-
     private Application app;
+    private MainWindow main_window;
     private ConversationView view;
     private Widget? overlay_dialog;
-    private ConversationTitlebar titlebar;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
     public ListView list_view = new ListView(null, null);
     private DropTarget drop_event_controller = new DropTarget(typeof(File), DragAction.COPY );
@@ -23,9 +20,13 @@ public class ConversationViewController : Object {
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
 
-    public ConversationViewController(ConversationView view, ConversationTitlebar titlebar, StreamInteractor stream_interactor) {
+    private Binding? display_name_binding = null;
+
+    private const string[] KEY_COMBINATION_CLOSE_CONVERSATION = {"<Ctrl>W", null};
+
+    public ConversationViewController(MainWindow main_window, ConversationView view, StreamInteractor stream_interactor) {
+        this.main_window = main_window;
         this.view = view;
-        this.titlebar = titlebar;
         this.stream_interactor = stream_interactor;
         this.app = GLib.Application.get_default() as Application;
 
@@ -50,7 +51,7 @@ public class ConversationViewController : Object {
 
         var key_controller3 = new EventControllerKey() { name = "dino-forward-to-input-key-events-3" };
         key_controller3.key_pressed.connect(forward_key_press_to_chat_input);
-        titlebar.get_widget().add_controller(key_controller3);
+        main_window.conversation_headerbar.add_controller(key_controller3);
 
 //      goto-end floating button
         var vadjustment = view.conversation_frame.scrolled.vadjustment;
@@ -63,27 +64,10 @@ public class ConversationViewController : Object {
             view.conversation_frame.initialize_for_conversation(conversation);
         });
 
-        // Update conversation display name & topic
-        this.bind_property("conversation-display-name", titlebar, "title");
-        this.bind_property("conversation-topic", titlebar, "subtitle");
-        stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
-            if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                update_conversation_display_name();
-            }
-        });
-        stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
-            if (conversation != null && conversation.counterpart.equals_bare(room.bare_jid) && conversation.account.equals(account)) {
-                update_conversation_display_name();
-            }
-        });
+        // Update conversation topic
         stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {
             if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
                 update_conversation_topic(subject);
-            }
-        });
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect((account, jid, roster_item) => {
-            if (conversation != null && conversation.account.equals(account) && conversation.counterpart.equals(jid)) {
-                update_conversation_display_name();
             }
         });
 
@@ -99,7 +83,7 @@ public class ConversationViewController : Object {
             if (button == null) {
                 continue;
             }
-            titlebar.insert_button(button);
+            main_window.conversation_headerbar.pack_end(button);
         }
 
         Shortcut shortcut = new Shortcut(new KeyvalTrigger(Key.U, ModifierType.CONTROL_MASK), new CallbackAction(() => {
@@ -112,14 +96,18 @@ public class ConversationViewController : Object {
             return false;
         }));
         ((Gtk.Window)view.get_root()).add_shortcut(shortcut);
+
+        SimpleAction close_conversation_action = new SimpleAction("close-current-conversation", null);
+        close_conversation_action.activate.connect(() => {
+            stream_interactor.get_module(ConversationManager.IDENTITY).close_conversation(conversation);
+        });
+        app.add_action(close_conversation_action);
+        app.set_accels_for_action("app.close-current-conversation", KEY_COMBINATION_CLOSE_CONVERSATION);
     }
 
     public void select_conversation(Conversation? conversation, bool default_initialize_conversation) {
         if (this.conversation != null) {
             conversation.notify["encryption"].disconnect(update_file_upload_status);
-        }
-        if (overlay_dialog != null) {
-            overlay_dialog.destroy();
         }
 
         this.conversation = conversation;
@@ -135,7 +123,10 @@ public class ConversationViewController : Object {
 
         chat_input_controller.set_conversation(conversation);
 
-        update_conversation_display_name();
+        if (display_name_binding != null) display_name_binding.unbind();
+        var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
+        display_name_binding = display_name_model.bind_property("display-name", main_window.conversation_window_title, "title", BindingFlags.SYNC_CREATE);
+
         update_conversation_topic();
 
         foreach(Plugins.ConversationTitlebarEntry e in this.app.plugin_registry.conversation_titlebar_entries) {
@@ -150,8 +141,8 @@ public class ConversationViewController : Object {
     }
 
     public void unset_conversation() {
-        conversation_display_name = null;
-        conversation_topic = null;
+        main_window.conversation_window_title.title = "";
+        main_window.conversation_window_title.subtitle = "";
     }
 
     private async void update_file_upload_status() {
@@ -160,7 +151,7 @@ public class ConversationViewController : Object {
         bool upload_available = yield stream_interactor.get_module(FileManager.IDENTITY).is_upload_available(conversation);
         chat_input_controller.set_file_upload_active(upload_available);
 
-        if (upload_available && overlay_dialog == null) {
+        if (upload_available) {
             if (drop_event_controller.widget == null) {
                 view.add_controller(drop_event_controller);
             }
@@ -171,25 +162,18 @@ public class ConversationViewController : Object {
         }
     }
 
-    private void update_conversation_display_name() {
-        conversation_display_name = Util.get_conversation_display_name(stream_interactor, conversation);
-    }
-
     private void update_conversation_topic(string? subtitle = null) {
+        string str = "";
         if (subtitle != null) {
-            string summarized_topic = Util.summarize_whitespaces_to_space(subtitle);
-            conversation_topic = Util.parse_add_markup(summarized_topic, null, true, true);
+            str = Util.summarize_whitespaces_to_space(subtitle);
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             string? subject = stream_interactor.get_module(MucManager.IDENTITY).get_groupchat_subject(conversation.counterpart, conversation.account);
             if (subject != null) {
-                string summarized_topic = Util.summarize_whitespaces_to_space(subject);
-                conversation_topic = Util.parse_add_markup(summarized_topic, null, true, true);
-            } else {
-                conversation_topic = null;
+                str = Util.summarize_whitespaces_to_space(subject);
             }
-        } else {
-            conversation_topic = null;
         }
+
+        main_window.conversation_window_title.subtitle = str;
     }
 
     private async void on_clipboard_paste() {
@@ -216,7 +200,7 @@ public class ConversationViewController : Object {
         FileChooserNative chooser = new FileChooserNative(_("Select file"), view.get_root() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
         chooser.response.connect((response) => {
             if (response == ResponseType.ACCEPT) {
-                open_send_file_overlay(File.new_for_path(chooser.get_file().get_path()));
+                open_send_file_overlay(chooser.get_file());
             }
         });
         chooser.show();
@@ -226,10 +210,13 @@ public class ConversationViewController : Object {
         FileInfo file_info;
         try {
             file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        } catch (Error e) { return; }
+        } catch (Error e) {
+            warning("Failed querying info for file %s", file.get_path());
+            return;
+        }
 
-        FileSendOverlay overlay = new FileSendOverlay(file, file_info);
-        overlay.send_file.connect(() => send_file(file));
+        FileSendOverlay file_send_overlay = new FileSendOverlay(file, file_info);
+        file_send_overlay.send_file.connect(send_file);
 
         stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
             HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);
@@ -240,20 +227,18 @@ public class ConversationViewController : Object {
                 }
             }
             if (!something_works && limits.has_key(0)) {
-                if (!something_works && file_info.get_size() > limits[0]) {
-                    overlay.set_file_too_large();
+                if (!something_works && file_info.get_size() > limits[0] && file_send_overlay != null) {
+                    file_send_overlay.set_file_too_large();
                 }
             }
         });
 
-        overlay.close.connect(() => {
+        file_send_overlay.closed.connect(() => {
             // We don't want drag'n'drop to be active while the overlay is active
-            overlay_dialog = null;
             update_file_upload_status.begin();
         });
 
-        view.add_overlay_dialog(overlay.get_widget());
-        overlay_dialog = overlay.get_widget();
+        file_send_overlay.present(view);
 
         update_file_upload_status.begin();
     }
@@ -267,13 +252,16 @@ public class ConversationViewController : Object {
             return false;
         }
 
-        // Don't forward / change focus on Control / Alt
+        // Don't forward / change focus on control keys
         if (keyval == Gdk.Key.Control_L || keyval == Gdk.Key.Control_R ||
-                keyval == Gdk.Key.Alt_L || keyval == Gdk.Key.Alt_R) {
+                keyval == Gdk.Key.Alt_L || keyval == Gdk.Key.Alt_R ||
+                keyval == Gdk.Key.Meta_L || keyval == Gdk.Key.Meta_R ||
+                keyval == Gdk.Key.Super_L || keyval == Gdk.Key.Super_R) {
             return false;
         }
-        // Don't forward / change focus on Control + ...
-        if ((state & ModifierType.CONTROL_MASK) > 0) {
+        // Don't forward / change focus on keyboard shortcuts (which include control keys)
+        if ((state & (ModifierType.CONTROL_MASK | ModifierType.ALT_MASK |
+                ModifierType.META_MASK | ModifierType.SUPER_MASK)) > 0) {
             return false;
         }
 

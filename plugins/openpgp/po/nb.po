@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 18:06+0200\n"
-"PO-Revision-Date: 2017-11-18 00:23+0000\n"
+"POT-Creation-Date: 2026-03-29 11:32+0200\n"
+"PO-Revision-Date: 2026-03-17 06:09+0000\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/dino/"
 "plugin-openpgp/nb/>\n"
 "Language: nb\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:18
 msgid "Querying GnuPG"
@@ -24,9 +24,9 @@ msgstr "Sender spørring til GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
-#: plugins/openpgp/src/encryption_preferences_entry.vala:42
+#: plugins/openpgp/src/encryption_preferences_entry.vala:41
 msgid "Announce key"
-msgstr ""
+msgstr "Kunngjør nøkkel"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:32
 msgid "Error in GnuPG"
@@ -34,11 +34,11 @@ msgstr "Feil i GnuPG"
 
 #: plugins/openpgp/src/encryption_preferences_entry.vala:36
 msgid "No keys available. Generate one!"
-msgstr "Ingen nøkler tilgjengelige. Generer én."
+msgstr "Ingen nøkler tilgjengelige. Generer én!"
 
-#: plugins/openpgp/src/encryption_preferences_entry.vala:53
+#: plugins/openpgp/src/encryption_preferences_entry.vala:45
 msgid "Disabled"
-msgstr ""
+msgstr "Deaktivert"
 
 #: plugins/openpgp/src/contact_details_provider.vala:36
 msgid "Key not in keychain"
@@ -46,7 +46,7 @@ msgstr "Nøkkelen finnes ikke i nøkkelknippet"
 
 #: plugins/openpgp/src/contact_details_provider.vala:40
 msgid "Fingerprint"
-msgstr ""
+msgstr "Fingeravtrykk"
 
 #~ msgid "Encryption"
 #~ msgstr "Kryptering"

@@ -24,7 +24,7 @@ public class Module : XmppStreamModule {
         public string url_put { get; set; }
         public HashMap<string, string> headers { get; set; }
     }
-    public async SlotResult request_slot(XmppStream stream, string filename, int64 file_size, string? content_type) throws HttpFileTransferError {
+    public async SlotResult request_slot(XmppStream stream, string filename, int64 file_size, FileContentType? content_type) throws HttpFileTransferError {
         Flag? flag = stream.get_flag(Flag.IDENTITY);
         if (flag == null) {
             throw new HttpFileTransferError.SLOT_REQUEST("No flag");
@@ -35,14 +35,14 @@ public class Module : XmppStreamModule {
             case NS_URI_0:
                 request_node = new StanzaNode.build("request", NS_URI_0).add_self_xmlns();
                 request_node.put_attribute("filename", filename).put_attribute("size", file_size.to_string());
-                if (content_type != null) request_node.put_attribute("content-type", content_type);
+                if (content_type != null) request_node.put_attribute("content-type", content_type.get_mime_type());
                 break;
             case NS_URI:
                 request_node = new StanzaNode.build("request", NS_URI).add_self_xmlns()
                         .put_node(new StanzaNode.build("filename", NS_URI).put_node(new StanzaNode.text(filename)))
                         .put_node(new StanzaNode.build("size", NS_URI).put_node(new StanzaNode.text(file_size.to_string())));
                 if (content_type != null) {
-                    request_node.put_node(new StanzaNode.build("content-type", NS_URI).put_node(new StanzaNode.text(content_type)));
+                    request_node.put_node(new StanzaNode.build("content-type", NS_URI).put_node(new StanzaNode.text(content_type.get_mime_type())));
                 }
                 break;
         }

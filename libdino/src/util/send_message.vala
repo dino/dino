@@ -13,6 +13,7 @@ namespace Dino {
         if (correction_to != null) {
             string correction_to_stanza_id = correction_to.edit_to ?? correction_to.stanza_id;
             out_message.edit_to = correction_to_stanza_id;
+            out_message.edit_to_id = correction_to.edit_to == null ? correction_to.id : 0;
             stream_interactor.get_module(MessageCorrection.IDENTITY).set_correction(conversation, out_message, correction_to);
         }
 
@@ -26,9 +27,10 @@ namespace Dino {
             out_message.body = fallback + out_message.body;
 
             // Store fallback location
-            var fallback_location = new Xep.FallbackIndication.FallbackLocation(0, (int)fallback.char_count());
+            var fallback_locations = new ArrayList<Xep.FallbackIndication.FallbackLocation>();
+            fallback_locations.add(new Xep.FallbackIndication.FallbackLocation.partial_body(0, (int)fallback.char_count()));
             var fallback_list = new ArrayList<Xep.FallbackIndication.Fallback>();
-            fallback_list.add(new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, new Xep.FallbackIndication.FallbackLocation[] { fallback_location }));
+            fallback_list.add(new Xep.FallbackIndication.Fallback(Xep.Replies.NS_URI, fallback_locations));
             out_message.set_fallbacks(fallback_list);
 
             // Adjust markups to new prefix
