@@ -330,7 +330,7 @@ public class AddAccountDialog : Adw.Dialog {
         // Button is opening a registration website
         if (form.oob != null) {
             try {
-                Dino.Util.launch_default_for_uri(form.oob);
+                AppInfo.launch_default_for_uri(form.oob, null);
             } catch (Error e) { }
             show_sign_in();
             return;
