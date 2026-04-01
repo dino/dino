@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 31;
+    private const int VERSION = 32;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -343,6 +343,16 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class UserNickTable : Table {
+        public Column<string> jid = new Column.Text("jid") { primary_key = true };
+        public Column<string> nick = new Column.Text("nick");
+
+        internal UserNickTable(Database db) {
+            base(db, "user_nick");
+            init({jid, nick});
+        }
+    }
+
     public class EntityFeatureTable : Table {
         public Column<string> entity = new Column.Text("entity");
         public Column<string> feature = new Column.Text("feature");
@@ -470,6 +480,7 @@ public class Database : Qlite.Database {
     public AvatarTable avatar { get; private set; }
     public EntityIdentityTable entity_identity { get; private set; }
     public EntityFeatureTable entity_feature { get; private set; }
+    public UserNickTable user_nick { get; private set; }
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
     public ReactionTable reaction { get; private set; }
@@ -504,13 +515,14 @@ public class Database : Qlite.Database {
         avatar = new AvatarTable(this);
         entity_identity = new EntityIdentityTable(this);
         entity_feature = new EntityFeatureTable(this);
+        user_nick = new UserNickTable(this);
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         reaction = new ReactionTable(this);
         settings = new SettingsTable(this);
         account_settings = new AccountSettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, user_nick, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -778,6 +790,24 @@ public class Database : Qlite.Database {
             }
         }
         return ret;
+    }
+
+    public HashMap<Jid, string> get_nicks() {
+        HashMap<Jid, string> ret = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
+        foreach (Row row in user_nick.select({user_nick.jid, user_nick.nick})) {
+          ret[new Jid(row[user_nick.jid])] = row[user_nick.nick];
+        }
+        return ret;
+    }
+
+    public string? get_nick(Jid jid_obj) {
+        Row? row = user_nick.row_with(user_nick.jid, jid_obj.bare_jid.to_string()).inner;
+        if (row == null) {
+            return null;
+        }
+        else {
+            return row[user_nick.nick];
+        }
     }
 
     public int get_jid_id(Jid jid_obj) {

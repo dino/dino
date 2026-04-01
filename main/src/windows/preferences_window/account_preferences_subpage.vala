@@ -27,7 +27,7 @@ public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
 
     private Binding[] bindings = new Binding[0];
     private ulong[] account_notify_ids = new ulong[0];
-    private ulong alias_entry_changed = 0;
+    private ulong alias_applied = 0;
 
     construct {
         title = "Account";
@@ -76,10 +76,11 @@ public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
                 avatar.model = model.selected_account.avatar_model;
                 xmpp_address.subtitle = account.bare_jid.to_string();
 
-                if (alias_entry_changed != 0) local_alias.disconnect(alias_entry_changed);
-                local_alias.text = account.alias ?? "";
-                alias_entry_changed = local_alias.changed.connect(() => {
+                if (alias_applied != 0) local_alias.disconnect(alias_applied);
+                local_alias.text = model.get_nick(account);
+                alias_applied = local_alias.apply.connect(() => {
                     account.alias = local_alias.text;
+		    model.set_nick(account, local_alias.text);
                 });
 
                 bindings += account.bind_property("enabled", disable_account_button, "label", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
