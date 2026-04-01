@@ -8,7 +8,7 @@ public class Module : XmppStreamModule {
     public signal void received_nick(XmppStream stream, Jid jid, string nick);
 
     public void publish_nick(XmppStream stream, string nick) {
-        StanzaNode nick_node = new StanzaNode.build("nick", NS_URI)
+        StanzaNode nick_node = new StanzaNode.build("nick", NS_URI).add_self_xmlns()
             .put_node(new StanzaNode.text(nick));
         stream.get_module(Pubsub.Module.IDENTITY).publish(stream, null, NS_URI, null, nick_node);
     }

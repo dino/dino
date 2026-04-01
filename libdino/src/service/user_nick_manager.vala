@@ -47,6 +47,10 @@ public class UserNickManager : StreamInteractionModule, Object {
     }
 
     private void on_user_nick_received(Account account, Jid jid, string nick) {
+        if (jid.equals_bare(account.bare_jid)) {
+            // when we receive our own nick, set the local alias as well
+            account.alias = nick;
+        }
         db.user_nick.insert().or("REPLACE")
             .value(db.user_nick.jid, jid.bare_jid.to_string())
             .value(db.user_nick.nick, nick)

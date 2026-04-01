@@ -66,6 +66,14 @@ public class Dino.Ui.ViewModel.PreferencesDialog : Object {
         update();
     }
 
+    public string get_nick(Account account) {
+        return stream_interactor.get_module(UserNickManager.IDENTITY).get_nick(account, account.bare_jid);
+    }
+
+    public void set_nick(Account account, string new_nick) {
+        stream_interactor.get_module(UserNickManager.IDENTITY).publish_nick(account, new_nick);
+    }
+
     public void set_avatar_file(Account account, File file) {
         stream_interactor.get_module(AvatarManager.IDENTITY).publish(account, file);
     }
