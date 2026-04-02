@@ -7,13 +7,24 @@
     <property name="can-focus">True</property>
     <property name="focusable">True</property>
     <child>
+      <object class="GtkCheckButton" id="select">
+        <property name="valign">start</property>
+        <property name="visible">false</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">0</property>
+          <property name="row-span">2</property>
+        </layout>
+      </object>
+    </child>
+     <child>
       <object class="DinoUiAvatarPicture" id="avatar_picture">
         <property name="height-request">35</property>
         <property name="width-request">35</property>
         <property name="valign">start</property>
         <property name="margin-top">2</property>
         <layout>
-          <property name="column">0</property>
+          <property name="column">1</property>
           <property name="row">0</property>
           <property name="row-span">2</property>
         </layout>
@@ -28,7 +39,7 @@
           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
         </attributes>
         <layout>
-          <property name="column">1</property>
+          <property name="column">2</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -44,7 +55,7 @@
           <class name="dim-label"/>
         </style>
         <layout>
-          <property name="column">2</property>
+          <property name="column">3</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -55,7 +66,7 @@
         <property name="pixel-size">12</property>
         <property name="margin-top">2</property>
         <layout>
-          <property name="column">3</property>
+          <property name="column">4</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -68,7 +79,7 @@
         <property name="halign">start</property>
         <property name="hexpand">True</property>
         <layout>
-          <property name="column">4</property>
+          <property name="column">5</property>
           <property name="row">0</property>
         </layout>
       </object>
