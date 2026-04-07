@@ -16,7 +16,7 @@ public class ReactionsController : Object {
 
     private HashMap<string, Gee.List<Jid>> reactions = new HashMap<string, Gee.List<Jid>>();
 
-    private ReactionsWidget? widget = null;
+    private WeakRef widget = WeakRef(null);
 
     public ReactionsController(Conversation conversation, ContentItem content_item, StreamInteractor stream_interactor) {
         this.conversation = conversation;
@@ -45,8 +45,9 @@ public class ReactionsController : Object {
         });
     }
 
-    private void initialize_widget() {
-        widget = new ReactionsWidget();
+    private ReactionsWidget initialize_widget() {
+        var widget = new ReactionsWidget();
+        this.widget.set(widget);
         widget.emoji_picked.connect((emoji) => {
             stream_interactor.get_module(Reactions.IDENTITY).add_reaction(conversation, content_item, emoji);
         });
@@ -58,11 +59,13 @@ public class ReactionsController : Object {
             }
         });
         box_activated(widget);
+        return widget;
     }
 
     public void reaction_added(string reaction, Jid jid) {
+        var widget = this.widget.get() as ReactionsWidget;
         if (widget == null) {
-            initialize_widget();
+            widget = initialize_widget();
         }
 
         if (!reactions.has_key(reaction)) {
@@ -79,6 +82,7 @@ public class ReactionsController : Object {
     }
 
     public void reaction_removed(string reaction, Jid jid) {
+        var widget = this.widget.get() as ReactionsWidget;
         if (!reactions.has_key(reaction)) return;
         reactions[reaction].remove(jid);
 
@@ -91,7 +95,7 @@ public class ReactionsController : Object {
 
         if (reactions.size == 0) {
             widget.unparent();
-            widget = null;
+            this.widget.set(null);
         }
     }
 
@@ -111,14 +115,15 @@ public class ReactionsController : Object {
     }
 }
 
+private const string REACTIONS_BUTTON_REACTION = "dino_reactions_button_reaction";
 public class ReactionsWidget : Grid {
 
     public signal void emoji_picked(string emoji);
     public signal void emoji_clicked(string emoji);
 
-    private HashMap<string, Label> reaction_counts = new HashMap<string, Label>();
-    private HashMap<string, Button> reaction_buttons = new HashMap<string, Button>();
-    private MenuButton add_button;
+    private HashMap<string, weak Label> reaction_counts = new HashMap<string, weak Label>();
+    private HashMap<string, weak Button> reaction_buttons = new HashMap<string, weak Button>();
+    private unowned MenuButton add_button;
 
     construct {
         check_widget_leak(this);
@@ -128,8 +133,10 @@ public class ReactionsWidget : Grid {
         this.row_spacing = this.column_spacing = 5;
         this.margin_top = 2;
         this.add_css_class("reaction-grid");
+    }
 
-        add_button = new MenuButton() { tooltip_text= _("Add reaction") };
+    private MenuButton create_add_button() {
+        MenuButton add_button = new MenuButton() { tooltip_text= _("Add reaction") };
         check_widget_leak(add_button);
         add_button.add_css_class("pill");
         Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
@@ -139,6 +146,16 @@ public class ReactionsWidget : Grid {
             emoji_picked(emoji);
         });
         add_button.set_popover(chooser);
+        return add_button;
+    }
+
+    private static void on_reactions_button_clicked(Button button) {
+        ReactionsWidget widget = button.parent as ReactionsWidget;
+        if (widget != null) {
+            widget.emoji_clicked(button.get_data(REACTIONS_BUTTON_REACTION));
+        } else {
+            warning("Reaction button was not in ReactionsWidget");
+        }
     }
 
     public void update_reaction(string reaction, int count, bool own, Gee.List<string> names) {
@@ -157,13 +174,16 @@ public class ReactionsWidget : Grid {
             reaction_buttons[reaction] = button;
 
             this.attach(button, (reaction_buttons.size - 1) % 10, (reaction_buttons.size - 1) / 10, 1, 1);
-            if (add_button.get_parent() != null) this.remove(add_button);
+            MenuButton add_button = this.add_button;
+            if (add_button == null) {
+                add_button = create_add_button();
+                this.add_button = add_button;
+            } else {
+                this.remove(add_button);
+            }
             this.attach(add_button, reaction_buttons.size % 10, reaction_buttons.size / 10, 1, 1);
-
-
-            button.clicked.connect(() => {
-                emoji_clicked(reaction);
-            });
+            button.set_data(REACTIONS_BUTTON_REACTION, reaction);
+            button.clicked.connect(on_reactions_button_clicked);
         }
 
         reaction_counts[reaction].label = "<span font_family='monospace' size='small'>" + count.to_string() + "</span>";

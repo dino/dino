@@ -302,6 +302,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
             received_image.dispose();
             received_image = null;
         }
+        content_widgets.clear();
         base.dispose();
     }
 }
