@@ -86,6 +86,8 @@ namespace Dino.Ui.ConversationDetails {
             notification_button_menu_content.can_shrink = true;
 
             update_blocked_button();
+
+            check_widget_leak(this);
         }
 
         private void update_pinned_button() {

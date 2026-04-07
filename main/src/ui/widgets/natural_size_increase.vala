@@ -6,6 +6,7 @@ public class Dino.Ui.NaturalSizeIncrease : Gtk.Widget {
 
     construct {
         this.notify.connect(queue_resize);
+        check_widget_leak(this);
     }
 
     public override void compute_expand_internal(out bool hexpand, out bool vexpand) {

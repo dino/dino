@@ -351,6 +351,8 @@ public class MessageItemEditMode : Box {
         send_button.clicked.connect(() => send());
         chat_text_view.cancel_input.connect(() => cancelled());
         chat_text_view.send_text.connect(() => send());
+
+        check_widget_leak(this);
     }
 
     private void on_text_view_changed() {

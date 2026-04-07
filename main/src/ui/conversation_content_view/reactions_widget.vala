@@ -120,12 +120,17 @@ public class ReactionsWidget : Grid {
     private HashMap<string, Button> reaction_buttons = new HashMap<string, Button>();
     private MenuButton add_button;
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public ReactionsWidget() {
         this.row_spacing = this.column_spacing = 5;
         this.margin_top = 2;
         this.add_css_class("reaction-grid");
 
         add_button = new MenuButton() { tooltip_text= _("Add reaction") };
+        check_widget_leak(add_button);
         add_button.add_css_class("pill");
         Util.menu_button_set_icon_with_size(add_button, "dino-emoticon-add-symbolic", 14);
 
@@ -141,6 +146,7 @@ public class ReactionsWidget : Grid {
             Label reaction_label = new Label("<span size='small'>" + reaction + "</span>") { use_markup=true };
             Label count_label = new Label("") { use_markup=true };
             Button button = new Button();
+            check_widget_leak(button);
             button.add_css_class("pill");
             Box reaction_box = new Box(Orientation.HORIZONTAL, 4) { halign=Align.CENTER };
             reaction_box.append(reaction_label);

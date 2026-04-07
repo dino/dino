@@ -72,6 +72,7 @@ public class FileWidget : SizeRequestBin {
     construct {
         margin_top = 4;
         size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
+        check_widget_leak(this);
     }
 
     public FileWidget(FileTransfer file_transfer) {

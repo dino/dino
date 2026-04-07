@@ -48,6 +48,8 @@ public class ConversationSelector : Widget {
         });
 
         list_box.row_activated.connect(row_activated);
+
+        check_widget_leak(this);
     }
 
     public void row_activated(ListBoxRow r) {

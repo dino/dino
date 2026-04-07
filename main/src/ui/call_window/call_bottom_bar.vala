@@ -26,6 +26,10 @@ public class Dino.Ui.CallBottomBar : Gtk.Box {
     private Label label = new Label("") { halign=Align.CENTER, valign=Align.CENTER, wrap=true, wrap_mode=Pango.WrapMode.WORD_CHAR, hexpand=true };
     private Stack stack = new Stack();
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public CallBottomBar() {
         Object(orientation:Orientation.HORIZONTAL, spacing:0);
 

@@ -52,6 +52,8 @@ namespace Dino.Ui {
             overlay.get_child_position.connect(on_get_child_position);
 
             set_child(overlay);
+
+            check_widget_leak(this);
         }
 
         public CallWindow() {

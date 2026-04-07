@@ -345,6 +345,7 @@ public class Dino.Ui.AvatarPicture : Gtk.Widget {
         add_css_class("avatar");
         notify["radius-percent"].connect(queue_draw);
         notify["model"].connect(on_model_changed);
+        check_widget_leak(this);
     }
 
     private void on_model_changed() {
@@ -461,6 +462,7 @@ public class Dino.Ui.AvatarPicture : Gtk.Widget {
 #endif
             picture.insert_after(this, label);
             this.notify["model"].connect(on_model_changed);
+            check_widget_leak(this);
         }
 
         private void on_model_changed() {

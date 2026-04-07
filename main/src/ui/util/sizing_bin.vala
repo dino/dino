@@ -9,6 +9,10 @@ public class SizingBin : Widget {
     public int target_height { get; set; default = -1; }
     public int max_height { get; set; default = -1; }
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public override void compute_expand_internal(out bool hexpand, out bool vexpand) {
         hexpand = false;
         vexpand = false;

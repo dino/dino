@@ -18,6 +18,7 @@ class Dino.Ui.FixedRatioPicture : Gtk.Widget {
         add_css_class("fixed-ratio");
         inner.insert_after(this, null);
         this.notify.connect(queue_resize);
+        check_widget_leak(this);
     }
 
     private void measure_target_size(out int width, out int height) {

@@ -20,6 +20,10 @@ public class FileDefaultWidget : Box {
 
     private FileTransfer.State state;
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public void init_updating_file_info() {
         EventControllerMotion this_motion_events = new EventControllerMotion();
         this.add_controller(this_motion_events);

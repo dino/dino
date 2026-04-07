@@ -33,6 +33,7 @@ public class ConversationSelectorRow : ListBoxRow {
 
     construct {
         name_label.attributes = new AttrList();
+        check_widget_leak(this);
     }
 
     public ConversationSelectorRow(StreamInteractor stream_interactor, Conversation conversation) {

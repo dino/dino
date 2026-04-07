@@ -50,6 +50,7 @@ namespace Dino.Ui {
         construct {
             margin_top = 4;
             size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
+            check_widget_leak(this);
         }
 
         /** @param call_state Null if it's an old call and we can't interact with it anymore */

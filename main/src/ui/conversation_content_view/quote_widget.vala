@@ -83,6 +83,7 @@ namespace Dino.Ui.Quote {
         });
 
         Widget outer = builder.get_object("outer") as Widget;
+        check_widget_leak(outer);
 
         GestureClick gesture_click_controller = new GestureClick();
         outer.add_controller(gesture_click_controller);

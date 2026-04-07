@@ -34,6 +34,10 @@ namespace Dino.Ui {
             install_action("menu.debuginfo", null, (widget, action_name) => { ((ParticipantWidget) widget).debug_information_clicked(); });
         }
 
+        construct {
+            check_widget_leak(this);
+        }
+
         public ParticipantWidget(string participant_name) {
             encryption_button_controller = new CallEncryptionButtonController(encryption_button);
 

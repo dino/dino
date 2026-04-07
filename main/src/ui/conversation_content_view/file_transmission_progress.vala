@@ -41,6 +41,8 @@ namespace Dino.Ui {
             on_state_changed();
 
             setup_animation();
+
+            check_widget_leak(this);
         }
 
         private void setup_animation() {

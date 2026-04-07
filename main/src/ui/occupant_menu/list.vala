@@ -20,6 +20,10 @@ public class List : Box {
     private HashMap<Jid, Widget> rows = new HashMap<Jid, Widget>(Jid.hash_func, Jid.equals_func);
     public HashMap<Widget, ListRow> row_wrappers = new HashMap<Widget, ListRow>();
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public List(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         list_box.set_header_func(header);

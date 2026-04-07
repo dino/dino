@@ -18,6 +18,10 @@ public class View : Popover {
 
     private Jid? selected_jid;
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public View(StreamInteractor stream_interactor, Conversation conversation) {
         this.stream_interactor = stream_interactor;
         this.conversation = conversation;

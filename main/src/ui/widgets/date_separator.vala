@@ -87,6 +87,7 @@ public class Dino.Ui.DateSeparator : Gtk.Widget {
         clamp.insert_after(this, null);
 
         notify["model"].connect(on_model_changed);
+        check_widget_leak(this);
     }
 
     private void on_model_changed() {

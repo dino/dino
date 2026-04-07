@@ -10,6 +10,10 @@ public class Dino.Ui.VideoSettingsPopover : Gtk.Popover {
 
     private HashMap<ListBoxRow, Plugins.MediaDevice> row_device = new HashMap<ListBoxRow, Plugins.MediaDevice>();
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public VideoSettingsPopover() {
         Box box = new Box(Orientation.VERTICAL, 15);
         box.append(create_camera_box());

@@ -2,6 +2,10 @@ using Gtk;
 
 namespace Dino.Ui {
 public class SizeRequestBox : Box {
+    construct {
+        check_widget_leak(this);
+    }
+
     public SizeRequestMode size_request_mode { get; set; default = SizeRequestMode.CONSTANT_SIZE; }
 
     public override Gtk.SizeRequestMode get_request_mode() {
@@ -14,6 +18,7 @@ public class SizeRequestBin : Widget {
 
     construct {
         this.layout_manager = new BinLayout();
+        check_widget_leak(this);
     }
 
     public override void compute_expand_internal(out bool hexpand, out bool vexpand) {

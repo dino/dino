@@ -13,6 +13,10 @@ public class Dino.Ui.AudioSettingsPopover : Gtk.Popover {
     private HashMap<ListBoxRow, Plugins.MediaDevice> row_microphone_device = new HashMap<ListBoxRow, Plugins.MediaDevice>();
     private HashMap<ListBoxRow, Plugins.MediaDevice> row_speaker_device = new HashMap<ListBoxRow, Plugins.MediaDevice>();
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public AudioSettingsPopover() {
         Box box = new Box(Orientation.VERTICAL, 15);
         box.append(create_microphone_box());

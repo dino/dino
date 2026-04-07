@@ -28,6 +28,7 @@ public class FileImageWidget : Widget {
 
     construct {
         layout_manager = new BinLayout();
+        check_widget_leak(this);
     }
 
     public FileImageWidget(int MAX_WIDTH=600, int MAX_HEIGHT=300) {

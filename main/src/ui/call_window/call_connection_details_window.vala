@@ -10,6 +10,10 @@ namespace Dino.Ui {
         private CallContentDetails audio_details = new CallContentDetails("Audio");
         private CallContentDetails video_details = new CallContentDetails("Video");
 
+        construct {
+            check_widget_leak(this);
+        }
+
         public CallConnectionDetailsWindow() {
             box.append(audio_details);
             box.append(video_details);
@@ -51,6 +55,10 @@ namespace Dino.Ui {
 
         private PeerContentInfo? prev_info = null;
         private int row_at = 0;
+
+        construct {
+            check_widget_leak(this);
+        }
 
         public CallContentDetails(string headline) {
             attach(new Label("<b>%s</b>".printf(headline)) { use_markup=true, xalign=0 }, 0, row_at++, 1, 1);

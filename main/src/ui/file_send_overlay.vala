@@ -18,6 +18,10 @@ public class FileSendOverlay : Adw.Dialog {
     private File file;
     private bool can_send = true;
 
+    construct {
+        check_widget_leak(this);
+    }
+
     public FileSendOverlay(File file, FileInfo file_info) {
         this.file = file;
         load_file_widget.begin(file, file_info);

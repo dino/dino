@@ -68,6 +68,7 @@ namespace Dino.Ui.ConversationSummary {
 
         public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
             Box box = new Box(Orientation.HORIZONTAL, 10) { hexpand=true };
+            check_widget_leak(box);
             box.get_style_context().add_class("dino-unread-line");
 
             Separator sep = new Separator(Orientation.HORIZONTAL) { valign=Align.CENTER, hexpand=true };
