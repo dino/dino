@@ -43,14 +43,6 @@ public class ConversationSelectorRow : ListBoxRow {
         var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
         display_name_model.bind_property("display-name", name_label, "label", BindingFlags.SYNC_CREATE);
 
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
-                if (conversation != null && conversation.counterpart.equals_bare(jid) && conversation.account.equals(account)) {
-                    update_read(true); // bubble color might have changed
-                }
-            });
-        }
-
         // Set tooltip
         switch (conversation.type_) {
             case Conversation.Type.CHAT:
@@ -68,22 +60,6 @@ public class ConversationSelectorRow : ListBoxRow {
                 break;
         }
 
-        stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((item, c) => {
-            if (conversation.equals(c)) {
-                content_item_received(item);
-            }
-        });
-        stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((item) => {
-            if (last_content_item != null && last_content_item.id == item.id) {
-                content_item_received(item);
-            }
-        });
-        stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.connect((item) => {
-            if (last_content_item != null && last_content_item.id == item.id) {
-                content_item_received(item);
-            }
-        });
-
         last_content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_latest(conversation);
 
         picture.model = new ViewModel.CompatAvatarPictureModel(stream_interactor).set_conversation(conversation);
@@ -93,6 +69,60 @@ public class ConversationSelectorRow : ListBoxRow {
         update_name_label();
         update_pinned_icon();
         content_item_received();
+
+        connect_signals_weak(this);
+    }
+
+    private static void connect_signals_weak(ConversationSelectorRow local_self) {
+        var self_weak = WeakRef(local_self);
+
+        ulong room_info_updated_handler_id = 0;
+        if (local_self.conversation.type_ == Conversation.Type.GROUPCHAT) {
+            room_info_updated_handler_id = local_self.stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
+                ConversationSelectorRow? self = self_weak.get() as ConversationSelectorRow?;
+                if (self == null) return;
+                if (self.conversation != null && self.conversation.counterpart.equals_bare(jid) && self.conversation.account.equals(account)) {
+                    self.update_read(true); // bubble color might have changed
+                }
+            });
+        }
+
+        ulong new_item_handler_id = 0;
+        new_item_handler_id = local_self.stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect((item, c) => {
+            ConversationSelectorRow? self = self_weak.get() as ConversationSelectorRow?;
+            if (self == null) return;
+            if (self.conversation.equals(c)) {
+                self.content_item_received(item);
+            }
+        });
+
+        ulong received_correction_handler_id = 0;
+        received_correction_handler_id = local_self.stream_interactor.get_module(MessageCorrection.IDENTITY).received_correction.connect((item) => {
+            ConversationSelectorRow? self = self_weak.get() as ConversationSelectorRow?;
+            if (self == null) return;
+            if (self.last_content_item != null && self.last_content_item.id == item.id) {
+                self.content_item_received(item);
+            }
+        });
+
+        ulong item_deleted_handler_id = 0;
+        item_deleted_handler_id = local_self.stream_interactor.get_module(MessageDeletion.IDENTITY).item_deleted.connect((item) => {
+            ConversationSelectorRow? self = self_weak.get() as ConversationSelectorRow?;
+            if (self == null) return;
+            if (self.last_content_item != null && self.last_content_item.id == item.id) {
+                self.content_item_received(item);
+            }
+        });
+
+        local_self.weak_ref((self_obj) => {
+            ConversationSelectorRow self = (ConversationSelectorRow) self_obj;
+            if (room_info_updated_handler_id != 0) {
+                self.stream_interactor.get_module(MucManager.IDENTITY).disconnect(room_info_updated_handler_id);
+            }
+            self.stream_interactor.get_module(ContentItemStore.IDENTITY).disconnect(new_item_handler_id);
+            self.stream_interactor.get_module(MessageCorrection.IDENTITY).disconnect(received_correction_handler_id);
+            self.stream_interactor.get_module(MessageDeletion.IDENTITY).disconnect(item_deleted_handler_id);
+        });
     }
 
     public void update() {
@@ -110,12 +140,13 @@ public class ConversationSelectorRow : ListBoxRow {
         main_revealer.set_transition_type(RevealerTransitionType.SLIDE_UP);
         main_revealer.set_reveal_child(false);
 
-        // Animations can be diabled (=> child_revealed immediately false). Wait for completion in case they're enabled.
+        // Animations can be disabled (=> child_revealed immediately false). Wait for completion in case they're enabled.
         if (main_revealer.child_revealed) {
-            main_revealer.notify["child-revealed"].connect(() => {
+            ulong handler_id = main_revealer.notify["child-revealed"].connect(() => {
                 Idle.add(colapse.callback);
             });
             yield;
+            main_revealer.disconnect(handler_id);
         }
     }
 
