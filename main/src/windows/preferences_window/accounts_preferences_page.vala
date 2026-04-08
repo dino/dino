@@ -4,10 +4,10 @@ using Gtk;
 
 public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
 
-    public signal void account_chosen(Account account);
+    private const string ACCOUNT_ROW_ACCOUNT = "DINO_ACCOUNT_ROW_ACCOUNT";
 
-    public Adw.PreferencesGroup active_accounts;
-    public Adw.PreferencesGroup disabled_accounts;
+    public signal void account_chosen(Account account);
+    private bool refreshed_once = false;
 
     public ViewModel.PreferencesDialog model { get; set; }
 
@@ -15,17 +15,39 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
         this.title = _("Accounts");
         this.icon_name = "dino-system-users-symbolic";
 
-        this.notify["model"].connect(() => {
-            model.update.connect(refresh);
-        });
+        this.notify["model"].connect(on_model_changed);
+
+        check_widget_leak(this);
+    }
+
+    private void on_model_changed() {
+        model.update.connect(refresh);
+    }
+
+    private void on_add_account_clicked() {
+        Ui.ManageAccounts.AddAccountDialog add_account_dialog = new Ui.ManageAccounts.AddAccountDialog(model.stream_interactor, model.db);
+        add_account_dialog.added.connect(refresh);
+        add_account_dialog.present((Window)this.get_root());
+    }
+
+    private static void on_account_row_activated(Adw.ActionRow row) {
+        Widget widget = row;
+        while (widget != null && !(widget is PreferencesWindowAccounts)) {
+            widget = widget.parent;
+        }
+        if (widget is PreferencesWindowAccounts) {
+            ((PreferencesWindowAccounts) widget).account_chosen(row.get_data(ACCOUNT_ROW_ACCOUNT));
+        }
     }
 
     private void refresh() {
-        if (active_accounts != null) this.remove(active_accounts);
-        if (disabled_accounts != null) this.remove(disabled_accounts);
+        if (refreshed_once) {
+            this.remove(this.get_group(1));
+            this.remove(this.get_group(0));
+        }
 
-        active_accounts = new Adw.PreferencesGroup() { title=_("Accounts")};
-        disabled_accounts = new Adw.PreferencesGroup() { title=_("Disabled accounts")};
+        Adw.PreferencesGroup active_accounts = new Adw.PreferencesGroup() { title=_("Accounts")};
+        Adw.PreferencesGroup disabled_accounts = new Adw.PreferencesGroup() { title=_("Disabled accounts")};
         Button add_account_button = new Button.from_icon_name("dino-list-add-symbolic");
         add_account_button.add_css_class("flat");
         add_account_button.tooltip_text = _("Add Account");
@@ -34,13 +56,7 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
         this.add(active_accounts);
         this.add(disabled_accounts);
 
-        add_account_button.clicked.connect(() => {
-            Ui.ManageAccounts.AddAccountDialog add_account_dialog = new Ui.ManageAccounts.AddAccountDialog(model.stream_interactor, model.db);
-            add_account_dialog.added.connect((account) => {
-                refresh();
-            });
-            add_account_dialog.present((Window)this.get_root());
-        });
+        add_account_button.clicked.connect(on_add_account_clicked);
 
         disabled_accounts.visible = false; // Only display disabled section if it contains accounts
         var enabled_account_added = false;
@@ -61,9 +77,8 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
                 disabled_accounts.visible = true;
             }
 
-            row.activated.connect(() => {
-                account_chosen(account_details.account);
-            });
+            row.set_data(ACCOUNT_ROW_ACCOUNT, account_details.account);
+            row.activated.connect(on_account_row_activated);
         }
 
         // We always have to show the active accounts group for the add new button. Display placeholder if there are no active accounts

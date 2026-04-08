@@ -67,64 +67,74 @@ public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
             dialog.present();
         });
 
-        this.notify["model"].connect(() => {
-            model.notify["selected-account"].connect(() => {
-                foreach (var binding in bindings) {
-                    binding.unbind();
-                }
+        this.notify["model"].connect(on_model_changed);
+    }
 
-                avatar.model = model.selected_account.avatar_model;
-                xmpp_address.subtitle = account.bare_jid.to_string();
+    private void on_model_changed() {
+        model.notify["selected-account"].connect(refresh);
+        refresh();
+    }
 
-                if (alias_entry_changed != 0) local_alias.disconnect(alias_entry_changed);
-                local_alias.text = account.alias ?? "";
-                alias_entry_changed = local_alias.changed.connect(() => {
-                    account.alias = local_alias.text;
-                });
+    private static bool account_enabled_to_disable_button_label(Binding binding, Value from_value, ref Value to_value) {
+        bool enabled_bool = (bool) from_value;
+        to_value = enabled_bool ? _("Disable account") : _("Enable account");
+        return true;
+    }
 
-                bindings += account.bind_property("enabled", disable_account_button, "label", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
-                    bool enabled_bool = (bool) from;
-                    to = enabled_bool ? _("Disable account") : _("Enable account");
-                    return true;
-                });
-                bindings += account.bind_property("enabled", avatar_menu_box, "visible", BindingFlags.SYNC_CREATE);
-                bindings += account.bind_property("enabled", password_change, "visible", BindingFlags.SYNC_CREATE);
-                bindings += account.bind_property("enabled", connection_status, "visible", BindingFlags.SYNC_CREATE);
-                bindings += model.selected_account.bind_property("connection-state", connection_status, "subtitle", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
-                    to = get_status_label();
-                    return true;
-                });
-                bindings += model.selected_account.bind_property("connection-error", connection_status, "subtitle", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
-                    to = get_status_label();
-                    return true;
-                });
-                bindings += model.selected_account.bind_property("connection-error", enter_password_button, "visible", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
-                    var error = (ConnectionManager.ConnectionError) from;
-                    to = error != null && error.source == ConnectionManager.ConnectionError.Source.SASL;
-                    return true;
-                });
+    private static bool connection_status_to_label(Binding binding, Value from_value, ref Value to_value) {
+        var account = binding.source as ViewModel.AccountDetails;
+        to_value = get_status_label(account);
+        return true;
+    }
 
-                // Only show avatar removal button if an avatar is set
-                var avatar_model = model.selected_account.avatar_model.tiles.get_item(0) as ViewModel.AvatarPictureTileModel;
-                avatar_model.notify["image-file"].connect(() => {
-                    remove_avatar_button.visible = avatar_model.image_file != null;
-                });
-                remove_avatar_button.visible = avatar_model.image_file != null;
+    private static bool connection_error_to_enter_password_visible(Binding binding, Value from_value, ref Value to_value) {
+        var error = (ConnectionManager.ConnectionError) from_value;
+        to_value = error != null && error.source == ConnectionManager.ConnectionError.Source.SASL;
+        return true;
+    }
 
-                model.selected_account.notify["connection-error"].connect(() => {
-                    if (model.selected_account.connection_error != null) {
-                        connection_status.add_css_class("error");
-                    } else {
-                        connection_status.remove_css_class("error");
-                    }
-                });
-                if (model.selected_account.connection_error != null) {
-                    connection_status.add_css_class("error");
-                } else {
-                    connection_status.remove_css_class("error");
-                }
-            });
+    private static bool image_file_present_to_remove_button_visible(Binding binding, Value from_value, ref Value to_value) {
+        File? image_file = (File) from_value;
+        to_value = image_file != null;
+        return true;
+    }
+
+    private void on_connection_error_updated() {
+        if (model.selected_account.connection_error != null) {
+            connection_status.add_css_class("error");
+        } else {
+            connection_status.remove_css_class("error");
+        }
+    }
+
+    private void refresh() {
+        foreach (var binding in bindings) {
+            binding.unbind();
+        }
+
+        avatar.model = model.selected_account.avatar_model;
+        xmpp_address.subtitle = account.bare_jid.to_string();
+
+        if (alias_entry_changed != 0) local_alias.disconnect(alias_entry_changed);
+        local_alias.text = account.alias ?? "";
+        alias_entry_changed = local_alias.changed.connect(() => {
+            account.alias = local_alias.text;
         });
+
+        bindings += account.bind_property("enabled", disable_account_button, "label", BindingFlags.SYNC_CREATE, account_enabled_to_disable_button_label);
+        bindings += account.bind_property("enabled", avatar_menu_box, "visible", BindingFlags.SYNC_CREATE);
+        bindings += account.bind_property("enabled", password_change, "visible", BindingFlags.SYNC_CREATE);
+        bindings += account.bind_property("enabled", connection_status, "visible", BindingFlags.SYNC_CREATE);
+        bindings += model.selected_account.bind_property("connection-state", connection_status, "subtitle", BindingFlags.SYNC_CREATE, connection_status_to_label);
+        bindings += model.selected_account.bind_property("connection-error", connection_status, "subtitle", BindingFlags.SYNC_CREATE, connection_status_to_label);
+        bindings += model.selected_account.bind_property("connection-error", enter_password_button, "visible", BindingFlags.SYNC_CREATE, connection_error_to_enter_password_visible);
+
+        // Only show avatar removal button if an avatar is set
+        var avatar_model = model.selected_account.avatar_model.tiles.get_item(0) as ViewModel.AvatarPictureTileModel;
+        bindings += avatar_model.bind_property("image-file", remove_avatar_button, "visible", BindingFlags.SYNC_CREATE, image_file_present_to_remove_button_visible);
+
+        model.selected_account.notify["connection-error"].connect(on_connection_error_updated);
+        on_connection_error_updated();
     }
 
     private void show_select_avatar() {
@@ -177,36 +187,31 @@ public class Dino.Ui.AccountPreferencesSubpage : Adw.NavigationPage {
         dialog.present((Window)this.get_root());
     }
 
-    private string get_status_label() {
-        string? error_label = get_connection_error_description();
-        if (error_label != null) return error_label;
-
-        ConnectionManager.ConnectionState state = model.selected_account.connection_state;
-        switch (state) {
-            case ConnectionManager.ConnectionState.CONNECTING:
-                return _("Connecting…");
-            case ConnectionManager.ConnectionState.CONNECTED:
-                return _("Connected");
-            case ConnectionManager.ConnectionState.DISCONNECTED:
-                return _("Disconnected");
-        }
-        assert_not_reached();
-    }
-
-    private string? get_connection_error_description() {
-        ConnectionManager.ConnectionError? error = model.selected_account.connection_error;
-        if (error == null) return null;
-
-        switch (error.source) {
-            case ConnectionManager.ConnectionError.Source.SASL:
-                return _("Wrong password");
-            case ConnectionManager.ConnectionError.Source.TLS:
-                return _("Invalid TLS certificate");
-        }
-        if (error.identifier != null) {
-            return _("Error") + ": " + error.identifier;
+    private static string get_status_label(ViewModel.AccountDetails account) {
+        ConnectionManager.ConnectionError? error = account.connection_error;
+        if (error != null) {
+            switch (error.source) {
+                case ConnectionManager.ConnectionError.Source.SASL:
+                    return _("Wrong password");
+                case ConnectionManager.ConnectionError.Source.TLS:
+                    return _("Invalid TLS certificate");
+            }
+            if (error.identifier != null) {
+                return _("Error") + ": " + error.identifier;
+            } else {
+                return _("Error");
+            }
         } else {
-            return _("Error");
+            ConnectionManager.ConnectionState state = account.connection_state;
+            switch (state) {
+                case ConnectionManager.ConnectionState.CONNECTING:
+                    return _("Connecting…");
+                case ConnectionManager.ConnectionState.CONNECTED:
+                    return _("Connected");
+                case ConnectionManager.ConnectionState.DISCONNECTED:
+                    return _("Disconnected");
+            }
+            assert_not_reached();
         }
     }
 }
