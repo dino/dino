@@ -42,6 +42,7 @@ namespace Dino.Ui {
         private StreamInteractor stream_interactor;
         private CallState call_manager;
         private Call call;
+        private CallState call_state_obj;
         private Conversation conversation;
         public Call.State call_state { get; set; } // needs to be public for binding
         private uint time_update_handler_id = 0;
@@ -58,6 +59,7 @@ namespace Dino.Ui {
             this.stream_interactor = stream_interactor;
             this.call_manager = call_state;
             this.call = call;
+            this.call_state_obj = call_state;
             this.conversation = conversation;
 
 //            size_allocate.connect((allocation) => {
@@ -73,17 +75,18 @@ namespace Dino.Ui {
                 call_manager.peer_joined.connect(update_counterparts);
             }
 
-            accept_call_button.clicked.connect(() => {
-                call_manager.accept();
-
-                var call_window = new CallWindow();
-                call_window.controller = new CallWindowController(call_window, call_state, stream_interactor);
-                call_window.present();
-            });
-
+            accept_call_button.clicked.connect(on_accept_call_clicked);
             reject_call_button.clicked.connect(call_manager.reject);
 
             update_call_state();
+        }
+
+        private void on_accept_call_clicked() {
+            call_manager.accept();
+
+            var call_window = new CallWindow();
+            call_window.controller = new CallWindowController(call_window, call_state_obj, stream_interactor);
+            call_window.present();
         }
 
         private void update_counterparts() {
