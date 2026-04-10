@@ -7,7 +7,9 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
     private const string ACCOUNT_ROW_ACCOUNT = "DINO_ACCOUNT_ROW_ACCOUNT";
 
     public signal void account_chosen(Account account);
-    private bool refreshed_once = false;
+
+    private unowned Adw.PreferencesGroup active_accounts;
+    private unowned Adw.PreferencesGroup disabled_accounts;
 
     public ViewModel.PreferencesDialog model { get; set; }
 
@@ -41,10 +43,8 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
     }
 
     private void refresh() {
-        if (refreshed_once) {
-            this.remove(this.get_group(1));
-            this.remove(this.get_group(0));
-        }
+        if (active_accounts != null) this.remove(active_accounts);
+        if (disabled_accounts != null) this.remove(disabled_accounts);
 
         Adw.PreferencesGroup active_accounts = new Adw.PreferencesGroup() { title=_("Accounts")};
         Adw.PreferencesGroup disabled_accounts = new Adw.PreferencesGroup() { title=_("Disabled accounts")};
