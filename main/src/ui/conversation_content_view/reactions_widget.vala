@@ -7,7 +7,7 @@ using Xmpp;
 namespace Dino.Ui.ConversationSummary {
 
 public class ReactionsController : Object {
-    public signal void box_activated(Widget widget);
+    public signal void box_activated(Widget? widget);
 
     private Conversation conversation;
     private Account account;
@@ -94,7 +94,7 @@ public class ReactionsController : Object {
         }
 
         if (reactions.size == 0) {
-            widget.unparent();
+            box_activated(null);
             this.widget.set(null);
         }
     }

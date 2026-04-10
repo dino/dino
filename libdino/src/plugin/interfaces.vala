@@ -157,7 +157,7 @@ public abstract class MetaConversationItem : Object {
 }
 
 public interface ConversationItemWidgetInterface: Object {
-    public abstract void set_widget(Object object, WidgetType type, int priority);
+    public abstract void set_widget(Object? object, WidgetType type, int priority);
 }
 
 public delegate void MessageActionEvoked(Variant? variant);

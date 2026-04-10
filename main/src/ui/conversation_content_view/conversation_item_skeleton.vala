@@ -102,12 +102,16 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         update_received_mark();
     }
 
-    public void set_widget(Object object, Plugins.WidgetType type, int priority) {
+    public void set_widget(Object? object, Plugins.WidgetType type, int priority) {
         foreach (var content_widget in content_widgets.values) {
             content_widget.unparent();
         }
 
-        content_widgets[priority] = (Widget) object;
+        if (object is Widget) {
+            content_widgets[priority] = (Widget) object;
+        } else {
+            content_widgets.unset(priority);
+        }
         int row_no = 1;
         for (int i = 0; i < 5; i++) {
             if (!content_widgets.has_key(i)) continue;
@@ -169,7 +173,7 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
         }
     }
 
-    private void on_reaction_box_activated(Widget widget) {
+    private void on_reaction_box_activated(Widget? widget) {
         set_widget(widget, Plugins.WidgetType.GTK4, 3);
     }
 
