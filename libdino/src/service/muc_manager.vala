@@ -97,9 +97,7 @@ public class MucManager : StreamInteractionModule, Object {
                 // without this, the room does not fully exist and is "locked"
                 // https://xmpp.org/extensions/xep-0045.html#enter-locked
                 // and gives misleading item-not-found errors to other people attempting to join it.
-
-                var form = yield stream.get_module(Xep.Muc.Module.IDENTITY).get_config_form(stream, jid.bare_jid);
-                yield stream.get_module(Xep.Muc.Module.IDENTITY).set_config_form(stream, jid.bare_jid, form);
+                yield stream.get_module(Xep.Muc.Module.IDENTITY).configure_instant_room(stream, jid.bare_jid);
             }
 
             // Join completed
