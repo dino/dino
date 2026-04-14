@@ -91,6 +91,15 @@ public class MucManager : StreamInteractionModule, Object {
         mucs_joining[account].remove(jid);
 
         if (res.nick != null) {
+
+            if(res.newly_created) {
+                // https://xmpp.org/extensions/xep-0045.html#createroom
+                // without this, the room does not fully exist and is "locked"
+                // https://xmpp.org/extensions/xep-0045.html#enter-locked
+                // and gives misleading item-not-found errors to other people attempting to join it.
+                yield stream.get_module(Xep.Muc.Module.IDENTITY).configure_instant_room(stream, jid.bare_jid);
+            }
+
             // Join completed
             enter_errors.unset(jid);
             if (!already_autojoin) set_autojoin(account, stream, jid, nick, password);

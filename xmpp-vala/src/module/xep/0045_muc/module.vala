@@ -142,6 +142,12 @@ public class Module : XmppStreamModule {
         }
     }
 
+    public async void configure_instant_room(XmppStream stream, Jid jid) {
+        // "instant" room: https://xmpp.org/extensions/xep-0045.html#createroom-instant
+        var form = new DataForms.DataForm();
+        yield set_config_form(stream, jid, form);
+    }
+
     public void change_subject(XmppStream stream, Jid jid, string subject) {
         MessageStanza message = new MessageStanza();
         message.to = jid;
