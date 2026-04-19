@@ -72,11 +72,20 @@ endif
 if get_option('plugin-rtp-msdk').allowed()
     vala_args += ['-D', 'ENABLE_MSDK']
 endif
-if get_option('plugin-rtp-vaapi').allowed()
+
+option_vaapi_enabled = get_option('plugin-rtp-vaapi').enabled() or (get_option('plugin-rtp-vaapi').allowed() and dep_gstreamer_rtp.version().version_compare('>=1.26'))
+if option_vaapi_enabled
     vala_args += ['-D', 'ENABLE_VAAPI']
 endif
-if get_option('plugin-rtp-vp9').allowed()
-    vala_args += ['-D', 'ENABLE_VP9']
+
+option_v4l2_enabled = get_option('plugin-rtp-v4l2').enabled()
+if option_v4l2_enabled
+    vala_args += ['-D', 'ENABLE_V4L2']
+endif
+
+option_v4l2_sl_enabled = get_option('plugin-rtp-v4l2-sl').enabled() or (get_option('plugin-rtp-v4l2-sl').allowed() and dep_gstreamer_rtp.version().version_compare('>=1.26'))
+if option_v4l2_sl_enabled
+    vala_args += ['-D', 'ENABLE_V4L2SL']
 endif
 
 lib_rtp = shared_library('rtp', sources, name_prefix: '', c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, install: true, install_dir: get_option('libdir') / get_option('plugindir'), install_rpath: default_install_rpath)
@@ -85,8 +94,9 @@ summary('Voice/video calls (rtp)', dep_rtp.found(), bool_yn: true, section: 'Plu
 
 if dep_rtp.found()
     summary('H264 codec', get_option('plugin-rtp-h264').allowed(), section: 'RTP configuration')
-    summary('VP9 codec', get_option('plugin-rtp-vp9').allowed(), section: 'RTP configuration')
     summary('Intel MediaSDK', get_option('plugin-rtp-msdk').allowed(), section: 'RTP configuration')
-    summary('Video Acceleration API', get_option('plugin-rtp-vaapi').allowed(), section: 'RTP configuration')
+    summary('Video Acceleration API', option_vaapi_enabled, section: 'RTP configuration')
+    summary('V4L2 API (stateful)', option_v4l2_enabled, section: 'RTP configuration')
+    summary('V4L2 API (stateless)', option_v4l2_sl_enabled, section: 'RTP configuration')
     summary('Voice preprocessing', dep_webrtc_audio_processing.found(), section: 'RTP configuration')
 endif

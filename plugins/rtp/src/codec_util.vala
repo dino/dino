@@ -102,19 +102,10 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkh264enc",
 #endif
 #if ENABLE_VAAPI
-                        "vaapih264enc",
+                        "vah264lpenc",
+                        "vah264enc",
 #endif
                         "x264enc"
-                    };
-                case "vp9":
-                    return new string[] {
-#if ENABLE_MSDK
-                        "msdkvp9enc",
-#endif
-#if ENABLE_VAAPI
-                        "vaapivp9enc",
-#endif
-                        "vp9enc"
                     };
                 case "vp8":
                     return new string[] {
@@ -122,7 +113,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkvp8enc",
 #endif
 #if ENABLE_VAAPI
-                        "vaapivp8enc",
+                        "vavp8enc",
 #endif
                         "vp8enc"
                     };
@@ -154,19 +145,15 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkh264dec",
 #endif
 #if ENABLE_VAAPI
-                        "vaapih264dec",
+                        "vah264dec",
 #endif
-                        null
-                    };
-                case "vp9":
-                    return new string[] {
-#if ENABLE_MSDK
-                        "msdkvp9dec",
+#if ENABLE_V4L2
+                        "v4l2h264dec",
 #endif
-#if ENABLE_VAAPI
-                        "vaapivp9dec",
+#if ENABLE_V4L2SL
+                        "v4l2slh264dec",
 #endif
-                        "vp9dec"
+                        "avdec_h264"
                     };
                 case "vp8":
                     return new string[] {
@@ -174,7 +161,13 @@ public class Dino.Plugins.Rtp.CodecUtil {
                         "msdkvp8dec",
 #endif
 #if ENABLE_VAAPI
-                        "vaapivp8dec",
+                        "vavp8dec",
+#endif
+#if ENABLE_V4L2
+                        "v4l2vp8dec",
+#endif
+#if ENABLE_V4L2SL
+                        "v4l2slvp8dec",
 #endif
                         "vp8dec"
                     };
@@ -185,23 +178,19 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
     public static string? get_encode_prefix(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         if (encode == "msdkh264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
-        if (encode == "vaapih264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
+        if (encode == "vah264lpenc" || encode == "vah264enc") return "capsfilter caps=video/x-raw,format=NV12 ! ";
         return null;
     }
 
     public static string? get_encode_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
         // H264
         if (encode == "msdkh264enc") return @" rate-control=vbr";
-        if (encode == "vaapih264enc") return @" rate-control=vbr";
-        if (encode == "x264enc") return @" byte-stream=1 speed-preset=ultrafast tune=zerolatency bframes=0 cabac=false dct8x8=false";
+        if (encode == "vah264lpenc" || encode == "vah264enc") return @" rate-control=vbr";
+        if (encode == "x264enc") return @" byte-stream=1 speed-preset=faster tune=zerolatency bframes=0 cabac=false dct8x8=false";
 
         // VP8
-        if (encode == "vaapivp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
+        if (encode == "vavp8enc" || encode == "msdkvp8enc") return " rate-control=vbr target-percentage=90";
         if (encode == "vp8enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
-
-        // VP9
-        if (encode == "msdkvp9enc" || encode == "vaapivp9enc") return " rate-control=vbr target-percentage=90";
-        if (encode == "vp9enc") return " deadline=1 error-resilient=3 lag-in-frames=0 resize-allowed=true threads=8 dropframe-threshold=30 end-usage=vbr cpu-used=4";
 
         // OPUS
         if (encode == "opusenc") {
@@ -229,16 +218,14 @@ public class Dino.Plugins.Rtp.CodecUtil {
 
         switch (encode_name) {
             case "msdkh264enc":
-            case "vaapih264enc":
+            case "vah264lpenc":
+            case "vah264enc":
             case "x264enc":
-            case "msdkvp9enc":
-            case "vaapivp9enc":
             case "msdkvp8enc":
-            case "vaapivp8enc":
+            case "vavp8enc":
                 bitrate = uint.min(2048000, bitrate);
                 encode.set("bitrate", bitrate);
                 return bitrate;
-            case "vp9enc":
             case "vp8enc":
                 bitrate = uint.min(2147483, bitrate);
                 encode.set("target-bitrate", bitrate * 1024);
@@ -265,13 +252,14 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_decode_prefix(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
+        if (decode == "vah264dec" || decode == "v4l2h264dec" || decode == "v4l2slh264dec" || decode == "avdec_h264") return "h264parse ! ";
         return null;
     }
 
     public static string? get_decode_args(string media, string codec, string decode, JingleRtp.PayloadType? payload_type) {
         if (decode == "opusdec" && payload_type != null && payload_type.parameters.has("useinbandfec", "1")) return " use-inband-fec=true";
-        if (decode == "vaapivp9dec" || decode == "vaapivp8dec" || decode == "vaapih264dec") return " max-errors=100";
-        if (decode == "vp8dec" || decode == "vp9dec") return " threads=8";
+        if (decode == "vavp8dec" || decode == "v4l2vp8dec" || decode == "v4l2slvp8dec" || decode == "vah264dec" || decode == "v4l2h264dec" || decode == "v4l2slh264dec") return " max-errors=100";
+        if (decode == "vp8dec") return " threads=8";
         return null;
     }
 
@@ -295,7 +283,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
             supported_elements.add(element_name);
             return true;
         } else {
-            warning("%s is not installed or supported on this system", element_name);
+            info("%s is not installed or supported on this system", element_name);
             unsupported_elements.add(element_name);
             return false;
         }
