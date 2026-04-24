@@ -117,6 +117,8 @@ sources = files(
     'src/module/xep/0363_http_file_upload.vala',
     'src/module/xep/0367_message_attaching.vala',
     'src/module/xep/0380_explicit_encryption.vala',
+    'src/module/xep/0386_bind2.vala',
+    'src/module/xep/0388_extensible_sasl_profile.vala',
     'src/module/xep/0384_omemo/omemo_decryptor.vala',
     'src/module/xep/0384_omemo/omemo_encryptor.vala',
     'src/module/xep/0391_jingle_encrypted_transports.vala',

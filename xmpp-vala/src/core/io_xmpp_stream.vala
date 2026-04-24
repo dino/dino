@@ -74,17 +74,22 @@ public abstract class Xmpp.IoXmppStream : XmppStream {
     }
 
     public override async void setup() throws IOError {
-        StanzaNode outs = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
-                .put_attribute("to", remote_name.to_string())
-                .put_attribute("version", "1.0")
-                .put_attribute("xmlns", "jabber:client")
-                .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
-        outs.has_nodes = true;
+        StanzaNode outs = generate_root_node();
         log.node("OUT ROOT", outs, this);
         yield write_async(outs, Priority.HIGH, cancellable);
         received_root_node(this, yield read_root());
 
         setup_needed = false;
+    }
+
+    public virtual StanzaNode generate_root_node() {
+        StanzaNode root_node = new StanzaNode.build("stream", "http://etherx.jabber.org/streams")
+                .put_attribute("to", remote_name.to_string())
+                .put_attribute("version", "1.0")
+                .put_attribute("xmlns", "jabber:client")
+                .put_attribute("stream", "http://etherx.jabber.org/streams", XMLNS_URI);
+        root_node.has_nodes = true;
+        return root_node;
     }
 
     private async StanzaNode read_root() throws IOError {

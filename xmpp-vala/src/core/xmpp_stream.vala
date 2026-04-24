@@ -22,6 +22,7 @@ public abstract class Xmpp.XmppStream : Object {
 
     public XmppLog log = new XmppLog();
     public bool negotiation_complete { get; set; default=false; }
+    public bool expect_further_negotiation_stanzas = false;
     protected bool non_negotiation_modules_attached = false;
     protected bool setup_needed = false;
     protected bool disconnected = false;
@@ -99,6 +100,8 @@ public abstract class Xmpp.XmppStream : Object {
 
     public async void loop() throws IOError {
         while (true) {
+            expect_further_negotiation_stanzas = false;
+
             if (setup_needed) {
                 yield setup();
             }
@@ -112,7 +115,7 @@ public abstract class Xmpp.XmppStream : Object {
 
             yield handle_stanza(node);
 
-            if (!non_negotiation_modules_attached && negotiation_modules_done()) {
+            if (!expect_further_negotiation_stanzas && !non_negotiation_modules_attached && negotiation_modules_done()) {
                 attach_non_negotation_modules();
                 non_negotiation_modules_attached = true;
                 if (!negotiation_complete) {

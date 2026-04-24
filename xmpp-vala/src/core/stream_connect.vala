@@ -60,9 +60,9 @@ namespace Xmpp {
         foreach (SrvTargetInfo target in targets) {
             try {
                 if (target.service == "xmpp-client") {
-                    stream = new StartTlsXmppStream(remote, target.host, target.port, on_invalid_cert_wrapper);
+                    stream = new StartTlsXmppStream(remote, target.host, target.port, bare_jid, on_invalid_cert_wrapper);
                 } else {
-                    stream = new DirectTlsXmppStream(remote, target.host, target.port, on_invalid_cert_wrapper);
+                    stream = new DirectTlsXmppStream(remote, target.host, target.port, bare_jid, on_invalid_cert_wrapper);
                 }
                 stream.log = new XmppLog(bare_jid.to_string(), log_options);
 

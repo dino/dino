@@ -46,8 +46,19 @@ public class ModuleManager {
         lock(module_map) {
             module_map[account] = new ArrayList<XmppStreamModule>();
             module_map[account].add(new Iq.Module());
+
+            var sasl2_module = new Xep.ExtensibleSaslProfile.Module(account.bare_jid.localpart, account.password);
+            module_map[account].add(sasl2_module);
             module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
             module_map[account].add(new Xep.StreamManagement.Module());
+
+            var bind2_sasl2_activation = new Xep.Bind2.Sasl2Activation();
+            bind2_sasl2_activation.inline_activation_providers[Xep.MessageCarbons.NS_URI] = new Xep.MessageCarbons.Bind2Activation();
+            bind2_sasl2_activation.inline_activation_providers[Xep.StreamManagement.NS_URI] = new Xep.StreamManagement.Bind2Activation();
+
+            sasl2_module.inline_activation_providers[Xep.Bind2.NS_URI] = bind2_sasl2_activation;
+            sasl2_module.inline_activation_providers[Xep.StreamManagement.NS_URI] = new Xep.StreamManagement.Sasl2Activation();
+
             module_map[account].add(new Bind.Module(account.resourcepart));
             module_map[account].add(new Session.Module());
             module_map[account].add(new Roster.Module());

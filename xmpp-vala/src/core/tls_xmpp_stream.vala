@@ -1,6 +1,7 @@
 public abstract class Xmpp.TlsXmppStream : IoXmppStream {
 
     public TlsCertificateFlags? errors;
+    private Jid? own_jid;
 
     public delegate bool OnInvalidCert(GLib.TlsCertificate peer_cert, GLib.TlsCertificateFlags errors);
     public class OnInvalidCertWrapper {
@@ -10,8 +11,9 @@ public abstract class Xmpp.TlsXmppStream : IoXmppStream {
         }
     }
 
-    protected TlsXmppStream(Jid remote_name) {
+    protected TlsXmppStream(Jid remote_name, Jid? own_jid) {
         base(remote_name);
+        this.own_jid = own_jid;
     }
 
     protected bool on_invalid_certificate(TlsCertificate peer_cert, TlsCertificateFlags errors) {
@@ -27,5 +29,13 @@ public abstract class Xmpp.TlsXmppStream : IoXmppStream {
         }
         warning(@"[%p, %s] Tls Certificate Errors: %s", this, this.remote_name.to_string(), error_str);
         return false;
+    }
+
+    public override StanzaNode generate_root_node() {
+        StanzaNode root_node = base.generate_root_node();
+        if (own_jid != null) {
+            root_node.put_attribute("from", own_jid.bare_jid.to_string());
+        }
+        return root_node;
     }
 }

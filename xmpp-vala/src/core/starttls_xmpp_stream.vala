@@ -6,8 +6,8 @@ public class Xmpp.StartTlsXmppStream : TlsXmppStream {
     uint16 port;
     TlsXmppStream.OnInvalidCertWrapper on_invalid_cert;
 
-    public StartTlsXmppStream(Jid remote, string host, uint16 port, TlsXmppStream.OnInvalidCertWrapper on_invalid_cert) {
-        base(remote);
+    public StartTlsXmppStream(Jid remote, string host, uint16 port, Jid? own_jid, TlsXmppStream.OnInvalidCertWrapper on_invalid_cert) {
+        base(remote, own_jid);
         this.host = host;
         this.port = port;
         this.on_invalid_cert = on_invalid_cert;

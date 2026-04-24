@@ -1,6 +1,6 @@
 namespace Xmpp.Xep.MessageCarbons {
 
-private const string NS_URI = "urn:xmpp:carbons:2";
+public const string NS_URI = "urn:xmpp:carbons:2";
 
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0280_message_carbons_module");
@@ -8,8 +8,10 @@ public class Module : XmppStreamModule {
     private ReceivedPipelineListener received_pipeline_listener = new ReceivedPipelineListener();
 
     public async void enable(XmppStream stream) {
-        Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
-        yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        if (stream.get_flag(Flag.IDENTITY) == null) {
+            Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("enable", NS_URI).add_self_xmlns());
+            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        }
     }
 
     public async void disable(XmppStream stream) {
@@ -90,12 +92,26 @@ public class MessageFlag : Xmpp.MessageFlag {
         return (MessageFlag) message.get_flag(NS_URI, ID);
     }
 
-    public override string get_ns() {
-        return NS_URI;
+    public override string get_ns() { return NS_URI; }
+
+    public override string get_id() { return ID; }
+}
+
+public class Flag : Xmpp.XmppStreamFlag {
+    public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "carbons");
+
+    public override string get_ns() { return NS_URI; }
+    public override string get_id() { return IDENTITY.id; }
+}
+
+public class Bind2Activation : Bind2.Bind2InlineActivation {
+    public override StanzaNode? get_activation_node(XmppStream stream) {
+        stream.add_flag(new Flag());
+        return new StanzaNode.build("enable", NS_URI).add_self_xmlns();
     }
 
-    public override string get_id() {
-        return ID;
+    public override void on_bound(XmppStream stream, StanzaNode bound_node) {
+        // There is no "enabled" node for carbons
     }
 }
 
