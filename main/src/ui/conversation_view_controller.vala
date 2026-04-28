@@ -124,8 +124,16 @@ public class ConversationViewController : Object {
         chat_input_controller.set_conversation(conversation);
 
         if (display_name_binding != null) display_name_binding.unbind();
-        var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
-        display_name_binding = display_name_model.bind_property("display-name", main_window.conversation_window_title, "title", BindingFlags.SYNC_CREATE);
+        if (conversation.type_ == Conversation.Type.CHAT && conversation.counterpart.equals_bare(conversation.account.bare_jid)) {
+            // Support the virtual "Note to Self" contact added by RosterList.fetch_roster_items().
+            // libdino (in the form of ContactModels) cannot know about this contact without also
+            // learning how to localize "Note to Self" using gettext.
+            display_name_binding = null;
+            main_window.conversation_window_title.title = Util.get_conversation_display_name(stream_interactor, conversation);
+        } else {
+            var display_name_model = stream_interactor.get_module(ContactModels.IDENTITY).get_display_name_model(conversation);
+            display_name_binding = display_name_model.bind_property("display-name", main_window.conversation_window_title, "title", BindingFlags.SYNC_CREATE);
+        }
 
         update_conversation_topic();
 
