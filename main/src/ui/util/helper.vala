@@ -291,6 +291,25 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
         already_escaped = true;
     }
 
+    if (parse_text_markup) {
+        Regex preformatted_regex = new Regex("((?<=\n)|^)(```.*\n)([\\s\\S\n]*?)(\n```(?=\n|$)|$)");
+        MatchInfo preformatted_match_info;
+        preformatted_regex.match(s, 0, out preformatted_match_info);
+        if (preformatted_match_info.matches()) {
+            int start_head, end_head,
+                start_body, end_body,
+                start_foot, end_foot;
+            preformatted_match_info.fetch_pos(2, out start_head, out end_head);
+            preformatted_match_info.fetch_pos(3, out start_body, out end_body);
+            preformatted_match_info.fetch_pos(4, out start_foot, out end_foot);
+            return parse_add_markup_theme(s[0:start_head], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped) +
+                    "<span color='#9E9E9E'>" + s[start_head:end_head] + "</span>" +
+                    "<tt>" + s[start_body:end_body] + "</tt>" +
+                    "<span color='#9E9E9E'>" + s[start_foot:end_foot] + "</span>" +
+                    parse_add_markup_theme(s[end_foot:s.length], highlight_word, parse_links, parse_text_markup, parse_quotes, dark_theme, ref theme_dependent, already_escaped);
+        }
+    }
+
     if (highlight_word != null) {
         try {
             Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b", RegexCompileFlags.CASELESS);
