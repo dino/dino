@@ -85,6 +85,7 @@ sources = files(
     'src/module/xep/0167_jingle_rtp/payload_type.vala',
     'src/module/xep/0167_jingle_rtp/session_info_type.vala',
     'src/module/xep/0167_jingle_rtp/stream.vala',
+    'src/module/xep/0172_user_nickname.vala',
     'src/module/xep/0176_jingle_ice_udp/candidate.vala',
     'src/module/xep/0176_jingle_ice_udp/jingle_ice_udp_module.vala',
     'src/module/xep/0176_jingle_ice_udp/transport_parameters.vala',
