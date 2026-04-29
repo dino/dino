@@ -19,8 +19,16 @@ protected class ConferenceDetailsFragment : Box {
         set {
             accounts_label.label = value.bare_jid.to_string();
             account_combobox.selected = value;
-            if (nick == null && value.alias != null) {
-                nick = value.alias;
+            if (nick == null) {
+                if(value.alias != null && value.alias != "") {
+                    nick = value.alias;
+                } else if(value.bare_jid.localpart != null && value.bare_jid.localpart != "") {
+                    nick = value.bare_jid.localpart;
+                } else {
+                    // if you have managed to log in _as a XMPP component_
+                    // then use the full domain as the MUC nick
+                    nick = value.bare_jid.to_string();
+                }
             }
             accounts_stack.set_visible_child_name("label");
         }
