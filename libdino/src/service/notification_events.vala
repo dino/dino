@@ -123,6 +123,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
 
     private async void on_call_incoming(Call call, CallState call_state, Conversation conversation, bool video, bool multiparty) {
         if (!stream_interactor.get_module(Calls.IDENTITY).can_we_do_calls(call.account)) return;
+        if (call.state == Call.State.OTHER_DEVICE) return;
         string conversation_display_name = get_conversation_display_name(stream_interactor, conversation, null);
 
         foreach (var promise in promises) {
@@ -137,6 +138,7 @@ public class NotificationEvents : StreamInteractionModule, Object {
     }
 
     private async void on_call_outgoing(Call call) {
+        if (call.state == Call.State.OTHER_DEVICE) return;
         foreach (var promise in promises) {
             NotificationProvider notifier = yield promise.future.wait_async();
             yield notifier.notify_dialing();
