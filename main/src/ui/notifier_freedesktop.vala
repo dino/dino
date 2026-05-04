@@ -153,6 +153,9 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         } catch (Error e) { }
     }
 
+    public async void notify_dialing(){}
+    public async void retract_dialing(){}
+
     public async void notify_subscription_request(Conversation conversation) {
         string summary = _("Subscription request");
         string body = Markup.escape_text(conversation.counterpart.to_string());
