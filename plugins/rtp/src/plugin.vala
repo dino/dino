@@ -243,13 +243,11 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
                 device = new Device(this, gst_device);
                 devices.add(device);
                 break;
-#if GST_1_16
             case Gst.MessageType.DEVICE_CHANGED:
                 message.parse_device_changed(out gst_device, out old_gst_device);
                 device = devices.first_match((it) => it.matches(old_gst_device));
                 if (device != null) device.update(gst_device);
                 break;
-#endif
             case Gst.MessageType.DEVICE_REMOVED:
                 message.parse_device_removed(out gst_device);
                 device = devices.first_match((it) => it.matches(gst_device));
