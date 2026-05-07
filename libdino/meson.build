@@ -84,9 +84,11 @@ sources = files(
     'src/util/weak_timeout.vala',
 )
 sources += [version_vala]
+plugin_suffix = host_machine.system() == 'darwin' ? '.dylib' : '.so'
 c_args = [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
+    '-DDINO_PLUGIN_SUFFIX="@0@"'.format(plugin_suffix),
     '-DG_LOG_DOMAIN="libdino"',
 ]
 vala_args = []
