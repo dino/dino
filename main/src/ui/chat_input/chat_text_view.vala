@@ -162,7 +162,7 @@ public class ChatTextView : Box {
 
         // Style text section bold (CTRL + b) or italic (CTRL + i)
         if ((state & ModifierType.CONTROL_MASK) > 0) {
-            if (keyval in new uint[]{ Key.i, Key.b }) {
+            if (keyval in new uint[]{ Key.i, Key.b, Key.s }) {
                 TextIter start_selection, end_selection;
                 text_view.buffer.get_selection_bounds(out start_selection, out end_selection);
 
