@@ -193,11 +193,6 @@ public class ChatTextView : Box {
     }
 
     public Gee.List<Xep.MessageMarkup.Span> get_markups() {
-        var markups = new HashMap<Xep.MessageMarkup.SpanType, Xep.MessageMarkup.SpanType>();
-        markups[Xep.MessageMarkup.SpanType.EMPHASIS] = Xep.MessageMarkup.SpanType.EMPHASIS;
-        markups[Xep.MessageMarkup.SpanType.STRONG_EMPHASIS] = Xep.MessageMarkup.SpanType.STRONG_EMPHASIS;
-        markups[Xep.MessageMarkup.SpanType.DELETED] = Xep.MessageMarkup.SpanType.DELETED;
-
         var ended_groups = new ArrayList<Xep.MessageMarkup.Span>();
         Xep.MessageMarkup.Span current_span = null;
 
