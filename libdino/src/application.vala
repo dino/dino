@@ -42,7 +42,7 @@ public interface Application : GLib.Application {
         Calls.start(stream_interactor, db);
         ConversationManager.start(stream_interactor, db);
         OccupantIdStore.start(stream_interactor, db);
-        MucManager.start(stream_interactor);
+        MucManager.start(stream_interactor, db);
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);

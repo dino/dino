@@ -12,7 +12,7 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void left(Account account, Jid jid);
     public signal void subject_set(Account account, Jid jid, string? subject);
     public signal void room_info_updated(Account account, Jid muc_jid);
-    public signal void private_room_occupant_updated(Account account, Jid room, Jid occupant);
+    public signal void private_room_occupants_updated(Account account, Jid room);
     public signal void invite_received(Account account, Jid room_jid, Jid from_jid, string? password, string? reason);
     public signal void voice_request_received(Account account, Jid room_jid, Jid from_jid, string nick);
     public signal void received_occupant_role(Account account, Jid jid, Xep.Muc.Role? role);
@@ -21,6 +21,9 @@ public class MucManager : StreamInteractionModule, Object {
     public signal void conference_removed(Account account, Jid jid);
 
     private StreamInteractor stream_interactor;
+    private Database db;
+    private MucAffiliations muc_affiliations;
+
     private HashMap<Account, HashSet<Jid>> mucs_joined = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashSet<Jid>> mucs_joining = new HashMap<Account, HashSet<Jid>>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<Jid, Cancellable>> mucs_sync_cancellables = new HashMap<Account, HashMap<Jid, Cancellable>>(Account.hash_func, Account.equals_func);
@@ -31,13 +34,16 @@ public class MucManager : StreamInteractionModule, Object {
     public HashMap<Account, Jid> default_muc_server = new HashMap<Account, Jid>(Account.hash_func, Account.equals_func);
     private HashMap<Account, HashMap<Jid, string>> own_occupant_ids = new HashMap<Account, HashMap<Jid, string>>(Account.hash_func, Account.equals_func);
 
-    public static void start(StreamInteractor stream_interactor) {
-        MucManager m = new MucManager(stream_interactor);
+    public static void start(StreamInteractor stream_interactor, Database db) {
+        MucManager m = new MucManager(stream_interactor, db);
         stream_interactor.add_module(m);
     }
 
-    private MucManager(StreamInteractor stream_interactor) {
+    private MucManager(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
+        this.db = db;
+        this.muc_affiliations = new MucAffiliations(db);
+
         this.received_message_listener = new ReceivedMessageListener(stream_interactor);
         stream_interactor.account_added.connect(on_account_added);
         stream_interactor.stream_negotiated.connect(on_stream_negotiated);
@@ -86,7 +92,9 @@ public class MucManager : StreamInteractionModule, Object {
         }
         mucs_joining[account].add(jid);
 
-        Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null);
+        string? mav_version = muc_affiliations.get_mav_version(account, jid);
+
+        Muc.JoinResult? res = yield stream.get_module(Xep.Muc.Module.IDENTITY).enter(stream, jid.bare_jid, nick_, password, history_since, receive_history, null, mav_version);
 
         mucs_joining[account].remove(jid);
 
@@ -99,6 +107,14 @@ public class MucManager : StreamInteractionModule, Object {
             Conversation joined_conversation = stream_interactor.get_module(ConversationManager.IDENTITY).create_conversation(jid, account, Conversation.Type.GROUPCHAT);
             joined_conversation.nickname = nick;
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(joined_conversation);
+
+            bool can_do_affiliation_versioning = yield entity_info.has_feature(account, jid, Xmpp.Xep.MucAffiliationsVersioning.NS_URI);
+            if (!can_do_affiliation_versioning) {
+                stream.get_module(Xep.Muc.Module.IDENTITY).fetch_affiliations.begin(stream, jid.bare_jid, () => {
+                    muc_affiliations.clear_affiliations(account, jid);
+                    persist_muc_affiliations(account, jid.bare_jid);
+                });
+            }
 
             if (can_do_mam) {
                 var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
@@ -371,11 +387,16 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public Gee.List<Jid>? get_offline_members(Jid jid, Account account) {
-        Xep.Muc.Flag? flag = get_muc_flag(account);
-        if (flag != null) {
-            return flag.get_offline_members(jid);
+        Gee.List<Jid> ret = new ArrayList<Jid>(Jid.equals_func);
+
+        var qry = db.muc_affiliation.select()
+            .with(db.muc_affiliation.account_id, "=", account.id)
+            .with(db.muc_affiliation.muc_jid_id, "=", db.get_jid_id(jid));
+
+        foreach (Qlite.Row affiliation_row in qry) {
+            ret.add(db.get_jid_by_id(affiliation_row[db.muc_affiliation.real_jid_id]));
         }
-        return null;
+        return ret;
     }
 
      public Gee.List<Jid>? get_other_offline_members(Jid jid, Account account) {
@@ -444,13 +465,14 @@ public class MucManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).received_occupant_role.connect( (stream, from_jid, role) => {
             received_occupant_role(account, from_jid, role);
         });
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).received_affiliations.connect( (stream, muc_jid, affiliations, mav_since, mav_until) => {
+            muc_affiliations.update_affiliations(account, muc_jid, affiliations, mav_since, mav_until);
+            if (is_private_room(account, muc_jid)) {
+                private_room_occupants_updated(account, muc_jid);
+            }
+        });
         stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_info_updated.connect( (stream, muc_jid) => {
             room_info_updated(account, muc_jid);
-        });
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).received_occupant_jid.connect( (stream, room, occupant) => {
-            if (is_private_room(account, room.bare_jid)) {
-                private_room_occupant_updated(account, room, occupant);
-            }
         });
         stream_interactor.module_manager.get_module(account, Xep.OccupantIds.Module.IDENTITY).received_own_occupant_id.connect( (stream, jid, occupant_id) => {
             if (!own_occupant_ids.has_key(account)) {
@@ -553,6 +575,24 @@ public class MucManager : StreamInteractionModule, Object {
             invites[account].remove(room_jid);
             return false;
         });
+    }
+
+    private void persist_muc_affiliations(Account account, Jid muc_jid) {
+        Xep.Muc.Flag? flag = get_muc_flag(account);
+        if (flag == null) return;
+
+        var affiliations = new HashMap<Jid, Muc.Affiliation>();
+
+        Gee.List<Jid> offline_members = flag.get_offline_members(muc_jid);
+        foreach (Jid offline_member in offline_members) {
+            Xep.Muc.Affiliation affiliation = flag.get_affiliation(muc_jid, offline_member);
+            affiliations[offline_member] = affiliation;
+        }
+
+        muc_affiliations.update_affiliations(account, muc_jid, affiliations, null, null);
+        if (is_private_room(account, muc_jid)) {
+            private_room_occupants_updated(account, muc_jid);
+        }
     }
 
     private void join_all_active(Account account) {

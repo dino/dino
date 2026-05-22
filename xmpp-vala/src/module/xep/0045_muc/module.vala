@@ -2,10 +2,10 @@ using Gee;
 
 namespace Xmpp.Xep.Muc {
 
-private const string NS_URI = "http://jabber.org/protocol/muc";
+public const string NS_URI = "http://jabber.org/protocol/muc";
 private const string NS_URI_ADMIN = NS_URI + "#admin";
 private const string NS_URI_OWNER = NS_URI + "#owner";
-private const string NS_URI_USER = NS_URI + "#user";
+public const string NS_URI_USER = NS_URI + "#user";
 private const string NS_URI_REQUEST = NS_URI + "#request";
 
 public enum MucEnterError {
@@ -69,8 +69,7 @@ public class JoinResult {
 public class Module : XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0045_muc_module");
 
-    public signal void received_occupant_affiliation(XmppStream stream, Jid jid, Affiliation? affiliation);
-    public signal void received_occupant_jid(XmppStream stream, Jid jid, Jid? real_jid);
+    public signal void received_affiliations(XmppStream stream, Jid muc_jid, HashMap<Jid, Affiliation> affiliations, string? mav_since, string? mav_until);
     public signal void received_occupant_role(XmppStream stream, Jid jid, Role? role);
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
@@ -86,7 +85,7 @@ public class Module : XmppStreamModule {
         received_pipeline_listener = new ReceivedPipelineListener(this);
     }
 
-    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since, bool receive_history, StanzaNode? additional_node) {
+    public async JoinResult? enter(XmppStream stream, Jid bare_jid, string nick, string? password, DateTime? history_since, bool receive_history, StanzaNode? additional_node, string? mav_since) {
         try {
             Presence.Stanza presence = new Presence.Stanza();
             presence.to = bare_jid.with_resource(nick);
@@ -105,6 +104,8 @@ public class Module : XmppStreamModule {
                     history_node.set_attribute("maxchars", "0");
                 }
             }
+            x_node.put_node(Xep.MucAffiliationsVersioning.get_join_presence_node(mav_since));
+
             presence.stanza.put_node(x_node);
 
             if (additional_node != null) {
@@ -360,11 +361,6 @@ public class Module : XmppStreamModule {
 
                         query_room_info.begin(stream, bare_jid);
 
-                        // TODO only query that if we actually have the rights to
-                        query_affiliation.begin(stream, bare_jid, "member");
-                        query_affiliation.begin(stream, bare_jid, "admin");
-                        query_affiliation.begin(stream, bare_jid, "owner");
-
                         flag.finish_muc_enter(bare_jid);
                         var join_result = new JoinResult() { nick=presence.from.resourcepart, newly_created=status_codes.contains(StatusCode.NEW_ROOM_CREATED) };
                         flag.enter_futures[bare_jid].set_value(join_result);
@@ -377,17 +373,22 @@ public class Module : XmppStreamModule {
                 if (affiliation_str != null) {
                     affiliation = parse_affiliation(affiliation_str);
                     flag.set_affiliation(presence.from.bare_jid, presence.from, affiliation);
-                    received_occupant_affiliation(stream, presence.from, affiliation);
                 }
                 string? jid_ = x_node.get_deep_attribute("item", "jid");
                 if (jid_ != null) {
                     try {
-                        Jid jid = new Jid(jid_);
-                        flag.set_real_jid(presence.from, jid);
+                        Jid real_jid = new Jid(jid_);
+                        flag.set_real_jid(presence.from, real_jid);
                         if (affiliation != null) {
-                            stream.get_flag(Flag.IDENTITY).set_offline_member(presence.from, jid, affiliation);
+                            stream.get_flag(Flag.IDENTITY).set_offline_member(presence.from, real_jid, affiliation);
+                            var affiliations = new HashMap<Jid, Affiliation>();
+                            affiliations[real_jid.bare_jid] = affiliation;
+
+                            string? mav_since = MucAffiliationsVersioning.get_mav_since(x_node);
+                            string? mav_until = MucAffiliationsVersioning.get_mav_until(x_node);
+
+                            received_affiliations(stream, presence.from.bare_jid, affiliations, mav_since, mav_until);
                         }
-                        received_occupant_jid(stream, presence.from, jid);
                     } catch (InvalidJidError e) {
                         warning("Received invalid occupant jid: %s", e.message);
                     }
@@ -468,6 +469,12 @@ public class Module : XmppStreamModule {
         room_info_updated(stream, jid);
     }
 
+    public async void fetch_affiliations(XmppStream stream, Jid muc_jid) {
+        query_affiliation.begin(stream, muc_jid, "member");
+        query_affiliation.begin(stream, muc_jid, "admin");
+        yield query_affiliation(stream, muc_jid, "owner");
+    }
+
     private async Gee.List<Jid>? query_affiliation(XmppStream stream, Jid jid, string affiliation) {
         Iq.Stanza iq = new Iq.Stanza.get(
             new StanzaNode.build("query", NS_URI_ADMIN)
@@ -492,7 +499,6 @@ public class Module : XmppStreamModule {
                     Jid jid_ = new Jid(jid__);
                     stream.get_flag(Flag.IDENTITY).set_offline_member(iq_result.from, jid_, parse_affiliation(affiliation_));
                     ret_jids.add(jid_);
-                    received_occupant_jid(stream, iq_result.from, jid_);
                 } catch (InvalidJidError e) {
                     warning("Received invalid occupant jid: %s", e.message);
                 }
@@ -509,7 +515,7 @@ public class Module : XmppStreamModule {
         return ret;
     }
 
-    private static Affiliation parse_affiliation(string affiliation_str) {
+    public static Affiliation parse_affiliation(string affiliation_str) {
         Affiliation affiliation;
         switch (affiliation_str) {
             case "admin":
@@ -559,6 +565,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
         if (message.type_ == MessageStanza.TYPE_NORMAL) {
             StanzaNode? x_node = message.stanza.get_subnode("x", NS_URI_USER);
             if (x_node != null) {
+                // Parse Invite
                 StanzaNode? invite_node = x_node.get_subnode("invite", NS_URI_USER);
                 string? password = null;
                 StanzaNode? password_node = x_node.get_subnode("password", NS_URI_USER);
@@ -579,6 +586,27 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         if (!is_mam_message) outer.invite_received(stream, message.from, from_jid, password, reason);
                         return true;
                     }
+                }
+
+                // Parse affiliation update
+                Gee.List<StanzaNode> item_nodes = x_node.get_subnodes("item", Muc.NS_URI_USER);
+                if (item_nodes.size > 0) {
+                    var affiliations = new HashMap<Jid, Affiliation>();
+                    foreach (StanzaNode item_node in item_nodes) {
+                        string jid_str = item_node.get_attribute("jid", Muc.NS_URI_USER);
+                        Jid real_jid = new Jid(jid_str);
+                        string affiliation_str = item_node.get_attribute("affiliation", Muc.NS_URI_USER);
+                        Muc.Affiliation affiliation = Muc.Module.parse_affiliation(affiliation_str);
+
+                        affiliations[real_jid] = affiliation;
+
+                        stream.get_flag(Flag.IDENTITY).set_offline_member(message.from, real_jid, affiliation);
+                    }
+
+                    string? mav_since = MucAffiliationsVersioning.get_mav_since(x_node);
+                    string? mav_until = MucAffiliationsVersioning.get_mav_until(x_node);
+
+                    outer.received_affiliations(stream, message.from, affiliations, mav_since, mav_until);
                 }
             }
 

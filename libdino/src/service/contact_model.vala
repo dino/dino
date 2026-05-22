@@ -27,7 +27,7 @@ namespace Dino {
             stream_interactor.get_module(MucManager.IDENTITY).room_info_updated.connect((account, jid) => {
                 check_update_models(account, jid, Conversation.Type.GROUPCHAT);
             });
-            stream_interactor.get_module(MucManager.IDENTITY).private_room_occupant_updated.connect((account, room, occupant) => {
+            stream_interactor.get_module(MucManager.IDENTITY).private_room_occupants_updated.connect((account, room) => {
                 check_update_models(account, room, Conversation.Type.GROUPCHAT);
             });
             stream_interactor.get_module(MucManager.IDENTITY).subject_set.connect((account, jid, subject) => {

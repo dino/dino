@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 31;
+    private const int VERSION = 32;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -385,6 +385,32 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class MucAffiliationTable : Table {
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<int> muc_jid_id = new Column.Integer("muc_jid_id");
+        public Column<int> real_jid_id = new Column.Integer("real_jid_id");
+        public Column<int> affiliation = new Column.Integer("affiliation");
+
+        internal MucAffiliationTable(Database db) {
+            base(db, "muc_affiliation");
+            init({account_id, muc_jid_id, real_jid_id, affiliation});
+            index("muc_affiliation_idx", {muc_jid_id});
+            unique({account_id, muc_jid_id, real_jid_id}, "REPLACE");
+        }
+    }
+
+    public class MucAffiliationVersionTable : Table {
+        public Column<int> account_id = new Column.Integer("account_id");
+        public Column<int> muc_jid_id = new Column.Integer("muc_jid_id");
+        public Column<string> version = new Column.Text("version");
+
+        internal MucAffiliationVersionTable(Database db) {
+            base(db, "muc_affiliation_version");
+            init({account_id, muc_jid_id, version});
+            unique({account_id, muc_jid_id}, "REPLACE");
+        }
+    }
+
     public class ReactionTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
         public Column<int> account_id = new Column.Integer("account_id") { not_null = true };
@@ -473,6 +499,8 @@ public class Database : Qlite.Database {
     public RosterTable roster { get; private set; }
     public MamCatchupTable mam_catchup { get; private set; }
     public ReactionTable reaction { get; private set; }
+    public MucAffiliationTable muc_affiliation { get; private set; }
+    public MucAffiliationVersionTable muc_affiliation_version { get; private set; }
     public SettingsTable settings { get; private set; }
     public AccountSettingsTable account_settings { get; private set; }
     public ConversationSettingsTable conversation_settings { get; private set; }
@@ -507,10 +535,12 @@ public class Database : Qlite.Database {
         roster = new RosterTable(this);
         mam_catchup = new MamCatchupTable(this);
         reaction = new ReactionTable(this);
+        muc_affiliation = new MucAffiliationTable(this);
+        muc_affiliation_version = new MucAffiliationVersionTable(this);
         settings = new SettingsTable(this);
         account_settings = new AccountSettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, settings, account_settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, muc_affiliation, muc_affiliation_version, settings, account_settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");

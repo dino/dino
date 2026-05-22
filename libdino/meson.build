@@ -63,6 +63,7 @@ sources = files(
     'src/service/message_processor.vala',
     'src/service/message_storage.vala',
     'src/service/module_manager.vala',
+    'src/service/muc_affiliations.vala',
     'src/service/muc_manager.vala',
     'src/service/notification_events.vala',
     'src/service/occupant_id_store.vala',

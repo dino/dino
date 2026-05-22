@@ -96,17 +96,17 @@ public class Dino.Ui.ViewModel.CompatAvatarPictureModel : AvatarPictureModel {
 
     private static void connect_signals_weak(CompatAvatarPictureModel model_) {
         WeakRef model_weak = WeakRef(model_);
-        ulong muc_manager_private_room_occupant_updated_handler_id = 0;
+        ulong muc_manager_private_room_occupants_updated_handler_id = 0;
         ulong muc_manager_proom_info_updated_handler_id = 0;
         ulong avatar_manager_received_avatar_handler_id = 0;
         ulong avatar_manager_fetched_avatar_handler_id = 0;
-        muc_manager_private_room_occupant_updated_handler_id = model_.muc_manager.private_room_occupant_updated.connect((muc_manager, account, room, jid) => {
+        muc_manager_private_room_occupants_updated_handler_id = model_.muc_manager.private_room_occupants_updated.connect((muc_manager, account, room) => {
             CompatAvatarPictureModel? model = (CompatAvatarPictureModel) model_weak.get();
             if (model != null) {
                 model.on_room_updated(account, room);
-            } else if (muc_manager_private_room_occupant_updated_handler_id != 0) {
-                muc_manager.disconnect(muc_manager_private_room_occupant_updated_handler_id);
-                muc_manager_private_room_occupant_updated_handler_id = 0;
+            } else if (muc_manager_private_room_occupants_updated_handler_id != 0) {
+                muc_manager.disconnect(muc_manager_private_room_occupants_updated_handler_id);
+                muc_manager_private_room_occupants_updated_handler_id = 0;
             }
         });
         muc_manager_proom_info_updated_handler_id = model_.muc_manager.room_info_updated.connect((muc_manager, account, room) => {
