@@ -18,6 +18,7 @@
     <file>conversation_view.ui</file>
     <file>dino-conversation-list-placeholder-arrow.svg</file>
     <file>file_default_widget.ui</file>
+    <file>file_input_widget.ui</file>
     <file>file_send_overlay.ui</file>
     <file>global_search.ui</file>
     <file>gtk/help-overlay.ui</file>
@@ -38,6 +39,7 @@
     <file>icons/scalable/actions/dino-notification-symbolic.svg</file>
     <file>icons/scalable/actions/dino-open-menu-symbolic.svg</file>
     <file>icons/scalable/actions/dino-pan-down-symbolic.svg</file>
+    <file>icons/scalable/actions/dino-paper-plane-symbolic.svg</file>
     <file>icons/scalable/actions/dino-qr-code-symbolic.svg</file>
     <file>icons/scalable/actions/dino-small-x-symbolic.svg</file>
     <file>icons/scalable/actions/dino-user-trash-symbolic.svg</file>

@@ -29,7 +29,7 @@
                     <property name="child">
                       <object class="GtkImage">
                         <property name="icon-name">dino-file-download-symbolic</property>
-                        <property name="pixel-size">30</property>
+                        <property name="pixel-size">36</property>
                         <property name="opacity">0.7</property>
                       </object>
                     </property>
@@ -40,7 +40,7 @@
                     <property name="name">content_type_image</property>
                     <property name="child">
                       <object class="GtkImage" id="content_type_image">
-                        <property name="pixel-size">30</property>
+                        <property name="pixel-size">36</property>
                         <property name="opacity">0.7</property>
                       </object>
                     </property>
@@ -59,6 +59,7 @@
             <child>
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
+                <property name="valign">center</property>
                 <property name="hexpand">1</property>
                 <child>
                   <object class="GtkLabel" id="name_label">

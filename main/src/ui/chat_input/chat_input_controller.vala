@@ -27,6 +27,10 @@ public class ChatInputController : Object {
     private ChatTextViewController chat_text_view_controller;
 
     private ContentItem? quoted_content_item = null;
+    private ArrayList<File> files_to_send = new ArrayList<File>();
+
+    private HashMap<Conversation, string> message_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
+    private HashMap<Conversation, ArrayList<File>> file_cache = new HashMap<Conversation, ArrayList<File>>(Conversation.hash_func, Conversation.equals_func);
 
     public ChatInputController(ChatInput.View chat_input, StreamInteractor stream_interactor) {
         this.chat_input = chat_input;
@@ -45,7 +49,12 @@ public class ChatInputController : Object {
         chat_input.chat_text_view.text_view.paste_clipboard.connect(() => clipboard_pasted());
         chat_input.chat_text_view.text_view.buffer.changed.connect(on_text_input_changed);
 
-        chat_text_view_controller.send_text.connect(send_text);
+        chat_text_view_controller.send_text.connect(send_message);
+        chat_input.send_button.clicked.connect(send_message);
+
+        chat_input.file_removed.connect((file) => {
+            remove_file_transfer(file);
+        });
 
         chat_input.encryption_widget.encryption_changed.connect(on_encryption_changed);
 
@@ -84,11 +93,32 @@ public class ChatInputController : Object {
     }
 
     public void set_conversation(Conversation conversation) {
-        reset_input_field_status();
-        this.quoted_content_item = null;
-        chat_input.unset_quoted_message();
+        Conversation? previous_conversation = this.conversation;
 
+        // Save state of the previous conversation and unset it
+        if (previous_conversation != null) {
+            message_cache[previous_conversation] = chat_input.chat_text_view.text_view.buffer.text;
+            file_cache[previous_conversation] = files_to_send;
+
+            chat_input.chat_text_view.text_view.buffer.text = "";
+            reset_input_field_status();
+            this.files_to_send = new ArrayList<File>();
+            this.quoted_content_item = null;
+            chat_input.unset_quoted_message();
+            chat_input.clear_files();
+        }
+
+        // Set the new conversation
         this.conversation = conversation;
+
+        if (message_cache.has_key(conversation)) chat_input.chat_text_view.text_view.buffer.text = message_cache[conversation];
+        if (file_cache.has_key(conversation)) {
+            foreach (File file in file_cache[conversation]) chat_input.add_file(file);
+            files_to_send = file_cache[conversation];
+        }
+
+        message_cache.unset(conversation);
+        file_cache.unset(conversation);
 
         chat_input.encryption_widget.set_conversation(conversation);
 
@@ -96,6 +126,16 @@ public class ChatInputController : Object {
         chat_text_view_controller.initialize_for_conversation(conversation);
 
         update_moderated_input_status(conversation.account);
+    }
+
+    public void add_file_transfer(File file) {
+        files_to_send.add(file);
+        chat_input.add_file(file);
+    }
+
+    private void remove_file_transfer(File file) {
+        files_to_send.remove(file);
+        chat_input.remove_file(file);
     }
 
     public void set_file_upload_active(bool active) {
@@ -129,12 +169,6 @@ public class ChatInputController : Object {
     }
 
     private void send_text() {
-        // Don't do anything if we're in a NO_SEND state. Don't clear the chat input, don't send.
-        if (input_field_status.input_state == Plugins.InputFieldStatus.InputState.NO_SEND) {
-            chat_input.highlight_state_description();
-            return;
-        }
-
         string text = chat_input.chat_text_view.text_view.buffer.text;
         ContentItem? quoted_content_item_bak = quoted_content_item;
         var markups = chat_input.chat_text_view.get_markups();
@@ -198,6 +232,24 @@ public class ChatInputController : Object {
         }
 
         Dino.send_message(conversation, text, quoted_content_item_bak != null ? quoted_content_item_bak.id : 0, null, markups);
+    }
+
+    public void send_message() {
+        // Don't do anything if we're in a NO_SEND state. Don't clear the chat input, don't send.
+        if (input_field_status.input_state == Plugins.InputFieldStatus.InputState.NO_SEND) {
+            chat_input.highlight_state_description();
+            return;
+        }
+
+        if (chat_input.chat_text_view.text_view.buffer.text.strip() != "") {
+            send_text();
+        }
+
+        foreach (File file in files_to_send) {
+            stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(file, conversation);
+        }
+        files_to_send = new ArrayList<File>();
+        chat_input.clear_files();
     }
 
     private void on_text_input_changed() {

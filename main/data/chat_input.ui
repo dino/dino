@@ -70,6 +70,22 @@
                                         <property name="margin_start">7</property>
                                     </object>
                                 </child>
+                                <child>
+                                    <object class="GtkScrolledWindow">
+                                        <property name="vscrollbar-policy">never</property>
+                                        <style>
+                                            <class name="undershoot-start" />
+                                            <class name="undershoot-end" />
+                                        </style>
+                                        <child>
+                                            <object class="GtkBox" id="file_box">
+                                                <property name="halign">start</property>
+                                                <property name="orientation">horizontal</property>
+                                                <property name="margin_start">7</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
                             </object>
                         </child>
                         <child>
@@ -87,6 +103,18 @@
                         <child>
                             <object class="GtkMenuButton" id="encryption_button">
                                 <property name="icon-name">dino-changes-allow-symbolic</property>
+                                <property name="has-frame">False</property>
+                                <property name="valign">start</property>
+                                <style>
+                                    <class name="flat"/>
+                                    <class name="dino-chatinput-button"/>
+                                    <class name="image-button"/>
+                                </style>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkButton" id="send_button">
+                                <property name="icon-name">dino-paper-plane-symbolic</property>
                                 <property name="has-frame">False</property>
                                 <property name="valign">start</property>
                                 <style>

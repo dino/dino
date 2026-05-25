@@ -14,7 +14,7 @@ public class ConversationViewController : Object {
     private Widget? overlay_dialog;
     public SearchMenuEntry search_menu_entry = new SearchMenuEntry();
     public ListView list_view = new ListView(null, null);
-    private DropTarget drop_event_controller = new DropTarget(typeof(File), DragAction.COPY );
+    private DropTarget drop_event_controller = new DropTarget(typeof(FileList), DragAction.COPY );
 
     private ChatInputController chat_input_controller;
     private StreamInteractor stream_interactor;
@@ -182,65 +182,36 @@ public class ConversationViewController : Object {
             Gdk.Texture? texture = yield clipboard.read_texture_async(null); // TODO critical
             var file_name = Path.build_filename(FileManager.get_storage_dir(), Xmpp.random_uuid() + ".png");
             texture.save_to_png(file_name);
-            open_send_file_overlay(File.new_for_path(file_name));
+            chat_input_controller.add_file_transfer(File.new_for_path(file_name));
         } catch (IOError.NOT_SUPPORTED e) {
             // Format not supported, ignore
         }
     }
 
     private bool on_drag_data_received(DropTarget target, Value val, double x, double y) {
-        if (val.type() == typeof(File)) {
-            open_send_file_overlay((File)val);
+        if (val.type() == typeof(FileList)) {
+            foreach (File file in ((FileList)val).get_files()) {
+                chat_input_controller.add_file_transfer(file);
+            }
             return true;
         }
         return false;
     }
 
     private void open_file_picker() {
-        FileChooserNative chooser = new FileChooserNative(_("Select file"), view.get_root() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel"));
+        FileChooserNative chooser = new FileChooserNative(_("Select file"), view.get_root() as Gtk.Window, FileChooserAction.OPEN, _("Select"), _("Cancel")) {
+            select_multiple = true
+        };
         chooser.response.connect((response) => {
             if (response == ResponseType.ACCEPT) {
-                open_send_file_overlay(chooser.get_file());
+                var files_model = chooser.get_files();
+                for (int i = 0; i < files_model.get_n_items(); i++) {
+                    File file = (File) files_model.get_item(i);
+                    chat_input_controller.add_file_transfer(file);
+                }
             }
         });
         chooser.show();
-    }
-
-    private void open_send_file_overlay(File file) {
-        FileInfo file_info;
-        try {
-            file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-        } catch (Error e) {
-            warning("Failed querying info for file %s", file.get_path());
-            return;
-        }
-
-        FileSendOverlay file_send_overlay = new FileSendOverlay(file, file_info);
-        file_send_overlay.send_file.connect(send_file);
-
-        stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.begin(conversation, (_, res) => {
-            HashMap<int, long> limits = stream_interactor.get_module(FileManager.IDENTITY).get_file_size_limits.end(res);
-            bool something_works = false;
-            foreach (var limit in limits.values) {
-                if (limit >= file_info.get_size()) {
-                    something_works = true;
-                }
-            }
-            if (!something_works && limits.has_key(0)) {
-                if (!something_works && file_info.get_size() > limits[0] && file_send_overlay != null) {
-                    file_send_overlay.set_file_too_large();
-                }
-            }
-        });
-
-        file_send_overlay.closed.connect(() => {
-            // We don't want drag'n'drop to be active while the overlay is active
-            update_file_upload_status.begin();
-        });
-
-        file_send_overlay.present(view);
-
-        update_file_upload_status.begin();
     }
 
     private void send_file(File file) {

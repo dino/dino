@@ -65,7 +65,6 @@ sources = files(
     'src/ui/conversation_titlebar/search_entry.vala',
     'src/ui/conversation_view.vala',
     'src/ui/conversation_view_controller.vala',
-    'src/ui/file_send_overlay.vala',
     'src/ui/global_search.vala',
     'src/ui/main_window.vala',
     'src/ui/main_window_controller.vala',

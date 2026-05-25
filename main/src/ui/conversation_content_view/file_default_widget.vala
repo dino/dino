@@ -138,7 +138,7 @@ public class FileDefaultWidget : Box {
         file_menu.opacity = 0;
     }
 
-    private static string get_file_icon_name(Xmpp.FileContentType? content_type) {
+    public static string get_file_icon_name(Xmpp.FileContentType? content_type) {
         if (content_type == null) return "dino-file-symbolic";
 
         string generic_icon_name = content_type.get_generic_icon_name() ?? "";

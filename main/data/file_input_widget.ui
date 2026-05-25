@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="DinoUiFileInputWidget">
+    <property name="halign">start</property>
+    <style>
+      <class name="file-box-outer"/>
+    </style>
+    <child>
+      <object class="DinoUiSizingBin">
+        <property name="target-width">200</property>
+        <property name="max-width">200</property>
+        <property name="width-request">200</property>
+        <property name="target-height">64</property>
+        <property name="max-height">64</property>
+        <property name="height-request">64</property>
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">True</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkImage" id="content_type_image">
+                <property name="valign">center</property>
+                <property name="pixel-size">40</property>
+                <property name="opacity">0.7</property>
+                <property name="margin-start">8</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="margin-end">8</property>
+                <property name="hexpand">True</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <child>
+                  <object class="GtkLabel" id="name_label">
+                    <property name="ellipsize">middle</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="mime_label">
+                    <property name="ellipsize">end</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">1</property>
+                    <attributes>
+                      <attribute name="scale" value="0.8"></attribute>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

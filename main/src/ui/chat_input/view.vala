@@ -10,6 +10,8 @@ namespace Dino.Ui.ChatInput {
 [GtkTemplate (ui = "/im/dino/Dino/chat_input.ui")]
 public class View : Box {
 
+    public signal void file_removed(File file);
+
     public string text {
         owned get { return chat_text_view.text_view.buffer.text; }
         set { chat_text_view.text_view.buffer.text = value; }
@@ -17,13 +19,16 @@ public class View : Box {
 
     private StreamInteractor stream_interactor;
     private Conversation? conversation;
-    private HashMap<Conversation, string> entry_cache = new HashMap<Conversation, string>(Conversation.hash_func, Conversation.equals_func);
+
+    private HashMap<File, Widget> file_widgets = new HashMap<File, Widget>();
 
     [GtkChild] public unowned Box quote_box;
+    [GtkChild] public unowned Box file_box;
     [GtkChild] public unowned ChatTextView chat_text_view;
     [GtkChild] public unowned Button file_button;
     [GtkChild] public unowned MenuButton emoji_button;
     [GtkChild] public unowned MenuButton encryption_button;
+    [GtkChild] public unowned Button send_button;
     [GtkChild] public unowned Separator file_separator;
     [GtkChild] public unowned Label chat_input_status;
     [GtkChild] public unowned Box unavailable_box;
@@ -54,19 +59,77 @@ public class View : Box {
         return this;
     }
 
+    public void add_file(File file) {
+        FileInfo file_info;
+        try {
+            file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+        } catch (Error e) {
+            warning("Failed querying info for file %s", file.get_path());
+            return;
+        }
+        var content_type = new Xmpp.FileContentType.from_file_info(file_info);
+
+        bool is_image = Dino.Util.is_pixbuf_supported_content_type(content_type);
+
+        Widget? widget = null;
+        if (is_image) {
+            var picture = new FixedRatioPicture() {
+                file = file,
+                height_request = 64,
+                width_request = 64,
+                content_fit = ContentFit.COVER,
+                halign = Align.START,
+                margin_top = 8,
+                margin_end = 8,
+                margin_bottom = 4
+            };
+            picture.add_css_class("image-round-corners");
+
+            widget = picture;
+        } else {
+            FileInputWidget file_widget = new FileInputWidget() { margin_top = 8, margin_end = 8, margin_bottom = 4 };
+            file_widget.set_info(file_info, content_type);
+            widget = file_widget;
+        }
+
+        Button remove_button = new Button.from_icon_name("dino-window-close-symbolic") { halign=Align.END, valign=Align.START };
+        remove_button.add_css_class("file-remove-button");
+        remove_button.add_css_class("circular");
+        remove_button.add_css_class("opaque");
+
+        remove_button.clicked.connect(() => {
+            this.file_removed(file);
+        });
+
+        Overlay overlay = new Overlay() { margin_end = 2, halign = Align.START, valign = Align.CENTER };
+        overlay.add_css_class("file-share-wrap");
+        overlay.add_overlay(remove_button);
+        overlay.set_child(widget);
+
+        file_box.append(overlay);
+
+        file_widgets[file] = overlay;
+    }
+
+    public void remove_file(File file) {
+        Widget? file_widget = file_widgets[file];
+
+        if (file_widget == null) {
+            warning("Trying to remove file that doesn't have a widget");
+            return;
+        }
+
+        file_box.remove(file_widget);
+        file_widgets.unset(file);
+    }
+
     public void set_file_upload_active(bool active) {
         file_button.visible = active;
         file_separator.visible = active;
     }
 
     public void initialize_for_conversation(Conversation conversation) {
-        if (this.conversation != null) entry_cache[this.conversation] = chat_text_view.text_view.buffer.text;
         this.conversation = conversation;
-
-        chat_text_view.text_view.buffer.text = "";
-        if (entry_cache.has_key(conversation)) {
-            chat_text_view.text_view.buffer.text = entry_cache[conversation];
-        }
 
         update_unavailable_message();
 
@@ -203,9 +266,29 @@ public class View : Box {
         quote_box.visible = false;
     }
 
+    public void clear_files() {
+        Widget? file_child = file_box.get_first_child();
+        while (file_child != null) {
+            file_box.remove(file_child);
+            file_child = file_box.get_first_child();
+        }
+    }
+
     public void do_focus() {
         chat_text_view.text_view.grab_focus();
     }
 }
+}
 
+[GtkTemplate (ui = "/im/dino/Dino/file_input_widget.ui")]
+public class Dino.Ui.FileInputWidget : Box {
+    [GtkChild] public unowned Label name_label;
+    [GtkChild] public unowned Label mime_label;
+    [GtkChild] public unowned Image content_type_image;
+
+    public void set_info(FileInfo file_info, Xmpp.FileContentType? content_type) {
+        name_label.label = file_info.get_name();
+        content_type_image.icon_name = Dino.Ui.FileDefaultWidget.get_file_icon_name(content_type);
+        mime_label.label = content_type != null ? content_type.get_description() : null;
+    }
 }
