@@ -165,7 +165,7 @@ namespace Xmpp.Xep.Jingle {
             string? muji_room_str = iq.stanza.get_deep_attribute(NS_URI + ":jingle", Xep.Muji.NS_URI + ":muji", "room");
             if (muji_room_str != null) {
                 try {
-                    session.muji_room = new Jid(muji_room_str);
+                    session.muji_room = Jid.from_string(muji_room_str);
                 } catch (InvalidJidError e) {
                     // Ignore
                 }

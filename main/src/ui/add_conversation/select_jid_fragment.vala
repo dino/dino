@@ -61,7 +61,7 @@ public class SelectJidFragment : Gtk.Box {
         list.invalidate_filter();
 
         try {
-            Jid parsed_jid = new Jid(str);
+            Jid parsed_jid = Jid.from_string(str);
             if (parsed_jid != null && parsed_jid.localpart != null) {
                 foreach (Account account in accounts) {
                     var list_row = new Gtk.ListBoxRow();

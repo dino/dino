@@ -23,7 +23,7 @@ namespace Xmpp.Xep.DirectMucInvitations {
             if (room_str == null) return;
             Jid? room_jid = null;
             try {
-                room_jid = new Jid(room_str);
+                room_jid = Jid.from_string(room_str);
             } catch (Error e) {
                 return;
             }

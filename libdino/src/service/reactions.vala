@@ -210,7 +210,7 @@ public class Dino.Reactions : StreamInteractionModule, Object {
 
             Jid jid = null;
             if (!db.jid.bare_jid.is_null(row)) {
-                jid = new Jid(row[db.jid.bare_jid]);
+                jid = Jid.from_string(row[db.jid.bare_jid]);
             } else if (!db.occupantid.occupant_id.is_null(row)) {
                 if (row[db.occupantid.occupant_id] == own_occupant_id) {
                     jid = account.bare_jid;

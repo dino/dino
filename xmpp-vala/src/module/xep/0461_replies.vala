@@ -27,7 +27,7 @@ namespace Xmpp.Xep.Replies {
         string? to_str = reply_node.get_attribute("to");
         if (to_str == null) return null;
         try {
-            Jid to_jid = new Jid(to_str);
+            Jid to_jid = Jid.from_string(to_str);
 
             string? id = reply_node.get_attribute("id");
             if (id == null) return null;

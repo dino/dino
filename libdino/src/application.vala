@@ -94,7 +94,7 @@ public interface Application : GLib.Application {
             }
             jid = Uri.unescape_string(jid);
             try {
-                jid = new Xmpp.Jid(jid).to_string();
+                jid = Xmpp.Jid.from_string(jid).to_string();
             } catch (Xmpp.InvalidJidError e) {
                 warning("Received invalid jid in xmpp:-URI: %s", e.message);
             }

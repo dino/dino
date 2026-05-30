@@ -118,7 +118,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             }
             Jid? inner_from = null;
             try {
-                inner_from = new Jid(message_node.get_attribute("from"));
+                inner_from = Jid.from_string(message_node.get_attribute("from"));
             } catch (InvalidJidError e) {
                 warning("Received MAM message with invalid from attribute in forwarded message from %s, ignoring", message.from.to_string());
                 return true;

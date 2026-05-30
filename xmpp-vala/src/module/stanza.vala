@@ -13,44 +13,59 @@ public class Stanza : Object {
     private Jid? from_;
     private Jid? to_;
 
-    public virtual Jid? from {
-        owned get {
-            string? from_attribute = stanza.get_attribute(ATTRIBUTE_FROM);
-            // "when a client receives a stanza that does not include a 'from' attribute, it MUST assume that the stanza
-            // is from the user's account on the server." (RFC6120 8.1.2.1)
-            if (from_attribute != null) {
-                try {
-                    return from_ = new Jid(from_attribute);
-                } catch (InvalidJidError e) {
-                    warning("Ignoring invalid from Jid: %s", e.message);
+    public Jid? from {
+        get {
+            if (from_ == null) {
+                string? from_attribute = stanza.get_attribute(ATTRIBUTE_FROM);
+                if (from_attribute != null) {
+                    try {
+                        from_ = Jid.from_string(from_attribute);
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring invalid from Jid: %s", e.message);
+                    }
+                }
+                // "when a client receives a stanza that does not include a 'from' attribute, it MUST assume that the stanza
+                // is from the user's account on the server." (RFC6120 8.1.2.1)
+                if (from_ == null && my_jid != null) {
+                    from_ = my_jid.bare_jid;
                 }
             }
-            if (my_jid != null) {
-                return my_jid.bare_jid;
-            }
-            return null;
+            return from_;
         }
-        set { stanza.set_attribute(ATTRIBUTE_FROM, value.to_string()); }
+        set {
+            from_ = value;
+            stanza.set_attribute(ATTRIBUTE_FROM, value.to_string());
+        }
     }
 
-    public virtual string? id {
+    public string? id {
         get { return stanza.get_attribute(ATTRIBUTE_ID); }
         set { stanza.set_attribute(ATTRIBUTE_ID, value); }
     }
 
-    public virtual Jid? to {
-        owned get {
-            string? to_attribute = stanza.get_attribute(ATTRIBUTE_TO);
-            // "if the stanza does not include a 'to' address then the client MUST treat it as if the 'to' address were
-            // included with a value of the client's full JID." (RFC6120 8.1.1.1)
-            try {
-                return to_attribute == null ? my_jid : to_ = new Jid(to_attribute);
-            } catch (InvalidJidError e) {
-                warning("Ignoring invalid to Jid: %s", e.message);
+    public Jid? to {
+        get {
+            if (to_ == null) {
+                string? to_attribute = stanza.get_attribute(ATTRIBUTE_TO);
+                if (to_attribute != null) {
+                    try {
+                        to_ = Jid.from_string(to_attribute);
+                    } catch (InvalidJidError e) {
+                        warning("Ignoring invalid to Jid: %s", e.message);
+                    }
+                }
+                // "if the stanza does not include a 'to' address then the client MUST treat it as if the 'to' address were
+                // included with a value of the client's full JID." (RFC6120 8.1.1.1)
+                if (to_ == null) {
+                    to_ = my_jid;
+                }
             }
-            return my_jid;
+            return to_;
         }
-        set { stanza.set_attribute(ATTRIBUTE_TO, value.to_string()); }
+        set {
+            to_ = value;
+            stanza.set_attribute(ATTRIBUTE_TO, value.to_string());
+        }
     }
 
     public virtual string? type_ {
@@ -58,7 +73,16 @@ public class Stanza : Object {
         set { stanza.set_attribute(ATTRIBUTE_TYPE, value); }
     }
 
-    public StanzaNode stanza;
+    private StanzaNode stanza_;
+    public StanzaNode stanza {
+        get { return stanza_; }
+        set {
+            stanza_ = value;
+            // Invalidate caches
+            from_ = null;
+            to_ = null;
+        }
+    }
 
     public Stanza.incoming(StanzaNode stanza, Jid? my_jid) {
         this.stanza = stanza;

@@ -257,7 +257,7 @@ public class Xmpp.Xep.Jingle.Session : Object {
         Jid responder = iq.from;
         if (responder_str != null) {
             try {
-                responder = new Jid(responder_str);
+                responder = Jid.from_string(responder_str);
             } catch (InvalidJidError e) {
                 warning("Received invalid session accept: %s", e.message);
             }

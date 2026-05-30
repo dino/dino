@@ -74,7 +74,7 @@ public class BadMessagesPopulator : Plugins.ConversationItemPopulator, Plugins.C
         }
 
         foreach (Row row in qry) {
-            Jid jid = new Jid(row[db.identity_meta.address_name]);
+            Jid jid = Jid.from_string(row[db.identity_meta.address_name]);
             if (!db.identity_meta.last_message_untrusted.is_null(row)) {
                 DateTime time = new DateTime.from_unix_utc(row[db.identity_meta.last_message_untrusted]);
                 var item = new BadMessageItem(plugin, current_conversation, jid, time, BadnessType.UNTRUSTED);

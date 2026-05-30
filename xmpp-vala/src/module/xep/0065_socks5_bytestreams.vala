@@ -69,7 +69,7 @@ public class Module : XmppStreamModule, Iq.Handler {
             string? jid_str = stream_host.get_attribute("jid");
             Jid? jid = null;
             try {
-                jid = jid_str != null ? new Jid(jid_str) : null;
+                jid = jid_str != null ? Jid.from_string(jid_str) : null;
             } catch (InvalidJidError ignored) { }
             int port = stream_host.get_attribute_int("port");
             if (host == null || jid == null || port <= 0 || port > 65535) {

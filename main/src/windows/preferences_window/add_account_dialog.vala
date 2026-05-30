@@ -91,7 +91,7 @@ public class AddAccountDialog : Adw.Dialog {
         // Select Server
         server_entry.changed.connect(() => {
             try {
-                Jid jid = new Jid(server_entry.text);
+                Jid jid = Jid.from_string(server_entry.text);
                 select_server_continue.sensitive = jid != null && jid.localpart == null && jid.resourcepart == null;
             } catch (InvalidJidError e) {
                 select_server_continue.sensitive = false;
@@ -182,7 +182,7 @@ public class AddAccountDialog : Adw.Dialog {
 
     private void on_jid_entry_changed() {
         try {
-            login_jid = new Jid(jid_entry.text);
+            login_jid = Jid.from_string(jid_entry.text);
             if (login_jid.localpart != null && login_jid.resourcepart == null) {
                 sign_in_continue_button.sensitive = true;
             } else {
@@ -195,7 +195,7 @@ public class AddAccountDialog : Adw.Dialog {
 
     private async void on_sign_in_continue_button_clicked() {
         try {
-            login_jid = new Jid(jid_entry.text);
+            login_jid = Jid.from_string(jid_entry.text);
             sign_in_tls_label.label = "";
             sign_in_error_label.visible = false;
             sign_in_continue_button.sensitive = false;
@@ -258,7 +258,7 @@ public class AddAccountDialog : Adw.Dialog {
 
     private void on_select_server_continue() {
         try {
-            server_jid = new Jid(server_entry.text);
+            server_jid = Jid.from_string(server_entry.text);
             request_show_register_form.begin(server_jid);
         } catch (InvalidJidError e) {
             warning("Invalid address from interface allowed server: %s", e.message);
@@ -268,7 +268,7 @@ public class AddAccountDialog : Adw.Dialog {
 
     private void on_server_list_row_activated(ListBox box, ListBoxRow row) {
         try {
-            server_jid = new Jid(list_box_jids[row]);
+            server_jid = Jid.from_string(list_box_jids[row]);
             request_show_register_form.begin(server_jid);
         } catch (InvalidJidError e) {
             warning("Invalid address from selected server: %s", e.message);
@@ -351,7 +351,7 @@ public class AddAccountDialog : Adw.Dialog {
                 }
             }
             try {
-                Account account = new Account(new Jid.components(username, server_jid.domainpart, null), password);
+                Account account = new Account(Jid.from_components(username, server_jid.domainpart, null), password);
                 add_activate_account(account);
                 show_success(account);
             } catch (InvalidJidError e) {

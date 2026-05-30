@@ -10,7 +10,7 @@ public class Account : Object {
     public string domainpart { get { return full_jid.domainpart; } }
     public string resourcepart {
         get { return full_jid.resourcepart; }
-        private set { full_jid.resourcepart = value; }
+        private set { full_jid = full_jid.with_resource(value); }
     }
     public Jid bare_jid { owned get { return full_jid.bare_jid; } }
     public Jid full_jid { get; private set; }
@@ -37,7 +37,7 @@ public class Account : Object {
     public Account.from_row(Database db, Qlite.Row row) throws InvalidJidError {
         this.db = db;
         id = row[db.account.id];
-        full_jid = new Jid(row[db.account.bare_jid]).with_resource(row[db.account.resourcepart]);
+        full_jid = Jid.from_string(row[db.account.bare_jid]).with_resource(row[db.account.resourcepart]);
         password = row[db.account.password];
         alias = row[db.account.alias];
         enabled = row[db.account.enabled];
@@ -82,7 +82,7 @@ public class Account : Object {
     }
 
     public static bool equals_func(Account acc1, Account acc2) {
-        return acc1.bare_jid.to_string() == acc2.bare_jid.to_string();
+        return acc1.bare_jid.equals(acc2.bare_jid);
     }
 
     public static uint hash_func(Account acc) {

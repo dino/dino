@@ -134,9 +134,9 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 foreach(Row chat in chats) {
                     try {
                         if (suggestions.size == 0) {
-                            suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                            suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), Jid.from_string(chat[db.jid.bare_jid]), "from:"+chat[db.jid.bare_jid], after_prev_space, next_space));
                         }
-                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), Jid.from_string(chat[db.account.bare_jid]), "from:"+chat[db.account.bare_jid], after_prev_space, next_space));
                     } catch (InvalidJidError e) {
                         warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                     }
@@ -160,7 +160,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .limit(5);
                 foreach(Row msg in msgs) {
                     try {
-                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, msg), new Jid(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, msg), Jid.from_string(current_in).with_resource(msg[db.message.counterpart_resource]), "from:"+msg[db.message.counterpart_resource], after_prev_space, next_space));
                     } catch (InvalidJidError e) {
                         warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                     }
@@ -190,7 +190,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .limit(limit);
             foreach(Row chat in chats) {
                 try {
-                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), Jid.from_string(chat[db.jid.bare_jid]), "with:"+chat[db.jid.bare_jid], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
                 } catch (InvalidJidError e) {
                     warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                 }
@@ -208,7 +208,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
                     .limit(limit - suggestions.size);
                 foreach(Row chat in chats) {
                     try {
-                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
+                        suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), Jid.from_string(chat[db.jid.bare_jid]).with_resource(chat[db.conversation.resource]), "with:"+chat[db.jid.bare_jid]+"/"+chat[db.conversation.resource], after_prev_space, next_space) { order = chat[db.conversation.last_active]});
                     } catch (InvalidJidError e) {
                         warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                     }
@@ -235,7 +235,7 @@ public class SearchProcessor : StreamInteractionModule, Object {
                 .limit(limit);
             foreach(Row chat in groupchats) {
                 try {
-                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), new Jid(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
+                    suggestions.add(new SearchSuggestion(new Conversation.from_row(db, chat), Jid.from_string(chat[db.jid.bare_jid]), "in:"+chat[db.jid.bare_jid], after_prev_space, next_space));
                 } catch (InvalidJidError e) {
                     warning("Ignoring search suggestion with invalid Jid: %s", e.message);
                 }

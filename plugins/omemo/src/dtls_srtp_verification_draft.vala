@@ -99,7 +99,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
             if (muji_node != null) {
                 string muji_room = muji_node.get_attribute("room");
                 try {
-                    Jid muji_jid = new Jid(muji_room);
+                    Jid muji_jid = Jid.from_string(muji_room);
                     if (device_id_by_muji_member.has_key(@"$(muji_jid.bare_jid)/$(iq.to)")) {
                         device_id = device_id_by_muji_member[@"$(muji_jid.bare_jid)/$(iq.to)"];
                     }
@@ -203,7 +203,7 @@ namespace Dino.Plugins.Omemo.DtlsSrtpVerificationDraft {
             try {
                 string jid_attribute = item_node.get_attribute("jid");
                 if (jid_attribute == null) return;
-                real_jid = new Jid(jid_attribute);
+                real_jid = Jid.from_string(jid_attribute);
             } catch (InvalidJidError e) {
                 // Ignore
                 return;

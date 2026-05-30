@@ -12,7 +12,7 @@ class JidTest : Gee.TestCase {
     }
 
     private void test_parse() {
-        Jid jid = new Jid("user@example.com/res");
+        Jid jid = Jid.from_string("user@example.com/res");
         fail_if(jid.localpart != "user");
         fail_if(jid.domainpart != "example.com");
         fail_if(jid.resourcepart != "res");

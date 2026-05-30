@@ -89,7 +89,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
                 Jid parsed_jid = null;
                 try {
-                    parsed_jid = new Jid(jid);
+                    parsed_jid = Jid.from_string(jid);
                 } catch (InvalidJidError ignored) {
                     // Ignored
                 }

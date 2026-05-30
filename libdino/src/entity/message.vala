@@ -109,7 +109,7 @@ public class Message : Object {
         encryption = (Encryption) row[db.message.encryption];
 
         string? real_jid_str = row[db.real_jid.real_jid];
-        if (real_jid_str != null) real_jid = new Jid(real_jid_str);
+        if (real_jid_str != null) real_jid = Jid.from_string(real_jid_str);
 
         occupant_db_id = row[db.message_occupant_id.occupant_id];
 

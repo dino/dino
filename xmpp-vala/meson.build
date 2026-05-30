@@ -138,6 +138,7 @@ sources = files(
     'src/module/xep/0482_call_invites.vala',
     'src/file_content_type.vala',
     'src/util.vala',
+    'src/weak_map.vala',
 )
 c_args = [
     '-DG_LOG_DOMAIN="xmpp-vala"',

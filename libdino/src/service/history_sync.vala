@@ -505,7 +505,7 @@ public class Dino.HistorySync {
         foreach (Row row in db.mam_catchup.select().with(db.mam_catchup.account_id, "=", account.id)) {
             var mam_range = new MamRange();
             mam_range.id = row[db.mam_catchup.id];
-            mam_range.server_jid = new Jid(row[db.mam_catchup.server_jid]);
+            mam_range.server_jid = Jid.from_string(row[db.mam_catchup.server_jid]);
             mam_range.from_time = row[db.mam_catchup.from_time];
             mam_range.from_id = row[db.mam_catchup.from_id];
             mam_range.from_end = row[db.mam_catchup.from_end];

@@ -40,7 +40,7 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
 
                     var authorisation_identifier = node.get_subnode("authorization-identifier", NS_URI);
                     string jid_string = authorisation_identifier.get_string_content();
-                    Jid jid = new Jid(jid_string);
+                    Jid jid = Jid.from_string(jid_string);
 
                     foreach (var inline_provider in inline_activation_providers.values) {
                         inline_provider.on_bound(stream, jid, node);

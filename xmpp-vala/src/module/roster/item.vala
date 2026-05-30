@@ -18,7 +18,7 @@ public class Item {
     public Jid? jid {
         get {
             try {
-                return jid_ ?? (jid_ = new Jid(stanza_node.get_attribute("jid")));
+                return jid_ ?? (jid_ = Jid.from_string(stanza_node.get_attribute("jid")));
             } catch (InvalidJidError e) {
                 warning("Ignoring invalid Jid in roster entry: %s", e.message);
                 return null;

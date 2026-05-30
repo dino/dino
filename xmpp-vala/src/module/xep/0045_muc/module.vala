@@ -377,7 +377,7 @@ public class Module : XmppStreamModule {
                 string? jid_ = x_node.get_deep_attribute("item", "jid");
                 if (jid_ != null) {
                     try {
-                        Jid real_jid = new Jid(jid_);
+                        Jid real_jid = Jid.from_string(jid_);
                         flag.set_real_jid(presence.from, real_jid);
                         if (affiliation != null) {
                             stream.get_flag(Flag.IDENTITY).set_offline_member(presence.from, real_jid, affiliation);
@@ -496,7 +496,7 @@ public class Module : XmppStreamModule {
             string? affiliation_ = item.get_attribute("affiliation");
             if (jid__ != null && affiliation_ != null) {
                 try {
-                    Jid jid_ = new Jid(jid__);
+                    Jid jid_ = Jid.from_string(jid__);
                     stream.get_flag(Flag.IDENTITY).set_offline_member(iq_result.from, jid_, parse_affiliation(affiliation_));
                     ret_jids.add(jid_);
                 } catch (InvalidJidError e) {
@@ -574,7 +574,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                     Jid? from_jid = null;
                     try {
                         string from = invite_node.get_attribute("from");
-                        if (from != null) from_jid = new Jid(from);
+                        if (from != null) from_jid = Jid.from_string(from);
                     } catch (InvalidJidError e) {
                         warning("Received invite from invalid jid: %s", e.message);
                     }
@@ -594,7 +594,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                     var affiliations = new HashMap<Jid, Affiliation>();
                     foreach (StanzaNode item_node in item_nodes) {
                         string jid_str = item_node.get_attribute("jid", Muc.NS_URI_USER);
-                        Jid real_jid = new Jid(jid_str);
+                        Jid real_jid = Jid.from_string(jid_str);
                         string affiliation_str = item_node.get_attribute("affiliation", Muc.NS_URI_USER);
                         Muc.Affiliation affiliation = Muc.Module.parse_affiliation(affiliation_str);
 
@@ -622,7 +622,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                         if (var_ == "muc#jid"){
                             StanzaNode? value_node = field_node.get_subnode("value", DataForms.NS_URI);
                             try {
-                                if (value_node != null) from_jid = new Jid(value_node.get_string_content());
+                                if (value_node != null) from_jid = Jid.from_string(value_node.get_string_content());
                             } catch (InvalidJidError e) {
                                 return false;
                             }

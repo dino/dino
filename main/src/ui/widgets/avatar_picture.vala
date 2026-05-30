@@ -34,7 +34,7 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
                 secondary_avatar_jid = primary_avatar_jid;
                 primary_avatar_jid = real_jid.bare_jid;
                 color_id = primary_avatar_jid.to_string();
-            } else {
+            } else if (jid.resourcepart != null) {
                 color_id = jid.resourcepart.to_string();
             }
         } else if (conversation.type_ == Conversation.Type.CHAT) {

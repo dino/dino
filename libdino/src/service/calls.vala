@@ -425,7 +425,7 @@ namespace Dino {
 
                         string? room_jid_str = join_method_node.get_attribute("room");
                         if (room_jid_str == null) return;
-                        Jid room_jid = new Jid(room_jid_str);
+                        Jid room_jid = Jid.from_string(room_jid_str);
                         call_state = create_recv_muji_call(account, call_id, from_jid, room_jid, message_stanza.type_);
 
                         multiparty = true;

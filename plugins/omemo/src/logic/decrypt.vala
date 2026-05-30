@@ -95,7 +95,7 @@ namespace Dino.Plugins.Omemo {
                     string identity_key = Base64.encode(msg.identity_key.serialize());
                     foreach (Row row in db.identity_meta.get_with_device_id(identity_id, data.sid).with(db.identity_meta.identity_key_public_base64, "=", identity_key)) {
                         try {
-                            possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                            possible_jids.add(Jid.from_string(row[db.identity_meta.address_name]));
                         } catch (InvalidJidError e) {
                             warning("Ignoring invalid jid from database: %s", e.message);
                         }
@@ -104,7 +104,7 @@ namespace Dino.Plugins.Omemo {
                     // If we don't know the device name (MUC history w/o MAM), test decryption with all keys with fitting device id
                     foreach (Row row in db.identity_meta.get_with_device_id(identity_id, data.sid)) {
                         try {
-                            possible_jids.add(new Jid(row[db.identity_meta.address_name]));
+                            possible_jids.add(Jid.from_string(row[db.identity_meta.address_name]));
                         } catch (InvalidJidError e) {
                             warning("Ignoring invalid jid from database: %s", e.message);
                         }

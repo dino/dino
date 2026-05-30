@@ -23,7 +23,7 @@ public class Bookmarks1Conference : Conference {
     public override Jid? jid {
     get {
         try {
-            return jid_ ?? (jid_ = new Jid(stanza_node.get_attribute(ATTRIBUTE_JID)));
+            return jid_ ?? (jid_ = Jid.from_string(stanza_node.get_attribute(ATTRIBUTE_JID)));
         } catch (InvalidJidError e) {
             return null;
         }

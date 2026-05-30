@@ -19,7 +19,7 @@ namespace Xmpp.Bind {
 
             if (iq.type_ == Iq.Stanza.TYPE_RESULT) {
                 try {
-                    flag.my_jid = new Jid(iq.stanza.get_subnode("jid", NS_URI, true).get_string_content());
+                    flag.my_jid = Jid.from_string(iq.stanza.get_subnode("jid", NS_URI, true).get_string_content());
                     flag.finished = true;
                     bound_to_resource(stream, flag.my_jid);
                 } catch (InvalidJidError e) {

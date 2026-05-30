@@ -42,7 +42,7 @@ class JidTest : Gee.TestCase {
 
     private void test_jid_valid(string jid) {
         try {
-            new Jid(jid);
+            Jid.from_string(jid);
         } catch (Error e) {
             fail_if_reached(@"Throws $(e.message)");
         }
@@ -50,7 +50,7 @@ class JidTest : Gee.TestCase {
 
     private void test_jid_invalid(string jid) {
         try {
-            new Jid(jid);
+            Jid.from_string(jid);
             fail_if_reached();
         } catch (Error e) {
 //            try {
@@ -63,8 +63,8 @@ class JidTest : Gee.TestCase {
 
     private void test_jids_equal(string jid1, string jid2) {
         try {
-            var t1 = new Jid(jid1);
-            var t2 = new Jid(jid2);
+            var t1 = Jid.from_string(jid1);
+            var t2 = Jid.from_string(jid2);
             fail_if_not_eq_str(t1.to_string(), t2.to_string());
         } catch (Error e) {
             fail_if_reached(@"Throws $(e.message)");
@@ -73,7 +73,7 @@ class JidTest : Gee.TestCase {
 
     private void test_jid_to_string(string jid1, string jid2) {
         try {
-            var t1 = new Jid(jid1);
+            var t1 = Jid.from_string(jid1);
             fail_if_not_eq_str(t1.to_string(), jid2);
         } catch (Error e) {
             fail_if_reached(@"Throws $(e.message)");
@@ -82,8 +82,8 @@ class JidTest : Gee.TestCase {
 
     private void test_jids_unequal(string jid1, string jid2) {
         try {
-            var t1 = new Jid(jid1);
-            var t2 = new Jid(jid2);
+            var t1 = Jid.from_string(jid1);
+            var t2 = Jid.from_string(jid2);
             fail_if_eq_str(t1.to_string(), t2.to_string());
         } catch (Error e) {
             fail_if_reached(@"Throws $(e.message)");

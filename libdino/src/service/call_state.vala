@@ -354,7 +354,7 @@ public class Dino.CallState : Object {
         }
 
         if (cim_call_id == null) cim_call_id = Xmpp.random_uuid();
-        muc_jid = new Jid("%08x@".printf(Random.next_int()) + muc_jid.to_string()); // TODO longer?
+        muc_jid = Jid.from_string("%08x@".printf(Random.next_int()) + muc_jid.to_string()); // TODO longer?
 
         debug("[%s] Converting call to groupcall %s", call.account.bare_jid.to_string(), muc_jid.to_string());
         yield join_group_call(muc_jid);

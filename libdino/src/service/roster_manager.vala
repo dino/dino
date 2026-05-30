@@ -93,7 +93,7 @@ public class RosterStoreImpl : Roster.Storage, Object {
         foreach (Qlite.Row row in db.roster.select().with(db.roster.account_id, "=", account.id)) {
             try {
                 Roster.Item item = new Roster.Item();
-                item.jid = new Jid(row[db.roster.jid]);
+                item.jid = Jid.from_string(row[db.roster.jid]);
                 item.name = row[db.roster.handle];
                 item.subscription = row[db.roster.subscription];
                 items[item.jid] = item;

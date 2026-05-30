@@ -88,7 +88,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         }
 
         try {
-            Jid jid_parsed = new Jid(id);
+            Jid jid_parsed = Jid.from_string(id);
             Flag? flag = stream.get_flag(Flag.IDENTITY);
             if (flag != null) {
                 flag.conferences.unset(jid_parsed);
@@ -102,7 +102,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
     private Conference? parse_item_node(StanzaNode conference_node, string id) {
         Conference conference = new Conference();
         try {
-            Jid jid_parsed = new Jid(id);
+            Jid jid_parsed = Jid.from_string(id);
             if (jid_parsed.resourcepart != null) return null;
             conference.jid = jid_parsed;
         } catch (InvalidJidError e) {

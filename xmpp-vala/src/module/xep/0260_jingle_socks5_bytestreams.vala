@@ -162,7 +162,7 @@ public class Candidate : Socks5Bytestreams.Proxy {
         string? jid_str = candidate.get_attribute("jid");
         Jid? jid = null;
         try {
-            jid = new Jid(jid_str);
+            jid = Jid.from_string(jid_str);
         } catch (InvalidJidError ignored) {
         }
         int port = candidate.get_attribute("port") != null ? candidate.get_attribute_int("port") : 1080;

@@ -40,7 +40,7 @@ protected class AddContactDialog : Gtk.Dialog {
     private void on_ok_button_clicked() {
         string? alias = alias_entry.text == "" ? null : alias_entry.text;
         try {
-            Jid jid = new Jid(jid_entry.text);
+            Jid jid = Jid.from_string(jid_entry.text);
             stream_interactor.get_module(RosterManager.IDENTITY).add_jid(account, jid, alias);
             stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(account, jid);
             close();
@@ -51,7 +51,7 @@ protected class AddContactDialog : Gtk.Dialog {
 
     private void on_jid_entry_changed() {
         try {
-            Jid parsed_jid = new Jid(jid_entry.text);
+            Jid parsed_jid = Jid.from_string(jid_entry.text);
             ok_button. sensitive = parsed_jid != null && parsed_jid.resourcepart == null &&
                     stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(account, parsed_jid) == null;
         } catch (InvalidJidError e) {

@@ -145,7 +145,7 @@ protected class ConferenceDetailsFragment : Box {
 
         string label_text = "";
         try {
-            Jid parsed_jid = new Jid(jid);
+            Jid parsed_jid = Jid.from_string(jid);
             Muc.JoinResult? join_result = yield stream_interactor.get_module(MucManager.IDENTITY).join(account, parsed_jid, nick, password);
 
             ok_button.label = _("Join");
@@ -180,7 +180,7 @@ protected class ConferenceDetailsFragment : Box {
                         label_text = _("Too many occupants in room"); break;
                 }
             } else if (join_result.stanza_error != null) {
-                label_text = _("Could not connect to %s").printf((new Jid(jid)).domainpart);
+                label_text = _("Could not connect to %s").printf((Jid.from_string(jid)).domainpart);
             }
         } catch (InvalidJidError e) {
             label_text = _("Invalid address");
@@ -191,7 +191,7 @@ protected class ConferenceDetailsFragment : Box {
 
     private void check_if_done() {
         try {
-            Jid parsed_jid = new Jid(jid);
+            Jid parsed_jid = Jid.from_string(jid);
             done = parsed_jid.localpart != null && parsed_jid.resourcepart == null && nick != null;
         } catch (InvalidJidError e) {
             done = false;
