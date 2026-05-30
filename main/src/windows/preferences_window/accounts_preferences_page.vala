@@ -85,5 +85,8 @@ public class Dino.Ui.PreferencesWindowAccounts : Adw.PreferencesPage {
         if (!enabled_account_added) {
             active_accounts.add(new Adw.ActionRow() { title=_("No active accounts") });
         }
+
+        this.active_accounts = active_accounts;
+        this.disabled_accounts = disabled_accounts;
     }
 }
