@@ -8,6 +8,7 @@ class StanzaTest : Gee.TestCase {
         add_async_test("typical_stream", (cb) => { test_typical_stream.begin(cb); });
         add_async_test("ack_stream", (cb) => { test_ack_stream.begin(cb); });
         add_test("get_attribute_(u)int", test_get_attribute_int);
+        add_test("test_encoded_val", test_encoded_val);
     }
 
     private async void test_node_one(Gee.TestFinishedCallback cb) {
@@ -111,6 +112,16 @@ class StanzaTest : Gee.TestCase {
         yield reader.read_node();
         yield fail_if_not_end_of_stream(reader);
         cb();
+    }
+
+    private void test_encoded_val() {
+        var attr = new StanzaAttribute.build("ns", "foo", "b\"a<'>r&me");
+        fail_if_not_eq_str(attr.val, "b\"a<'>r&me");
+        fail_if_not_eq_str(attr.encoded_val, "b&quot;a&lt;&apos;&gt;r&amp;me");
+
+        attr.encoded_val = "b&quot;a&lt;&apos;&gt;r&amp;me";
+        fail_if_not_eq_str(attr.val, "b\"a<'>r&me");
+        fail_if_not_eq_str(attr.encoded_val, "b&quot;a&lt;&apos;&gt;r&amp;me");
     }
 
     private void test_get_attribute_int() {

@@ -8,6 +8,9 @@ public abstract class StanzaEntry {
     protected const string ANSI_COLOR_YELLOW = "\x1b[33m";
     protected const string ANSI_COLOR_GRAY = "\x1b[37m";
 
+    private static Regex ENCODABLE_VALUE_CHARS = /[&"'<>]/;
+    private static Regex DECODABLE_VALUE_SEQUENCES = /&(gt|lt|apos|quot|amp|#(x[0-9a-fA-F]+|[0-9]+));/;
+
     public string? ns_uri;
     public string name;
     public string? val;
@@ -15,27 +18,54 @@ public abstract class StanzaEntry {
     public string? encoded_val {
         owned get {
             if (val == null) return null;
-            return ((!)val).replace("&", "&amp;").replace("\"", "&quot;").replace("'", "&apos;").replace("<", "&lt;").replace(">", "&gt;");
+            return ENCODABLE_VALUE_CHARS.replace_eval(val, -1, 0, 0, (match_info, result_builder) => {
+                int start;
+                match_info.fetch_pos(0, out start, null);
+                unowned string src = match_info.get_string();
+                switch (src[start]) {
+                    case '&': result_builder.append("&amp;"); break;
+                    case '"': result_builder.append("&quot;"); break;
+                    case '\'': result_builder.append("&apos;"); break;
+                    case '<': result_builder.append("&lt;"); break;
+                    case '>': result_builder.append("&gt;"); break;
+                    default: error("Unreachable"); break;
+                }
+                return false;
+            });
         }
         set {
             if (value == null) {
                 val = null;
                 return;
             }
-            string tmp = ((!)value).replace("&gt;", ">").replace("&lt;", "<").replace("&apos;","'").replace("&quot;","\"");
-            while (tmp.contains("&#")) {
-                int start = tmp.index_of("&#");
-                int end = tmp.index_of(";", start);
-                if (end < start) break;
-                unichar num = -1;
-                if (tmp[start+2]=='x') {
-                    tmp.substring(start+3, start-end-3).scanf("%x", &num);
-                } else {
-                    num = int.parse(tmp.substring(start+2, start-end-2));
+            val = DECODABLE_VALUE_SEQUENCES.replace_eval(value, -1, 0, 0, (match_info, result_builder) => {
+                int start, end;
+                match_info.fetch_pos(0, out start, out end);
+                unowned string src = match_info.get_string();
+                switch (src[start+1]) {
+                    case 'g': result_builder.append_c('>'); break;
+                    case 'l': result_builder.append_c('<'); break;
+                    case 'q': result_builder.append_c('"'); break;
+                    case 'a':
+                        switch (src[start+2]) {
+                            case 'p': result_builder.append_c('\''); break;
+                            case 'm': result_builder.append_c('&'); break;
+                            default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
+                        }
+                        break;
+                    case '#':
+                        unichar num = -1;
+                        if (src[start+2] == 'x') {
+                            src.substring(start+3, start-end-3).scanf("%x", &num);
+                        } else {
+                            num = int.parse(src.substring(start+2, start-end-2));
+                        }
+                        result_builder.append_unichar(num);
+                        break;
+                    default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
                 }
-                tmp = tmp.splice(start, end, num.to_string());
-            }
-            val = tmp.replace("&amp;", "&");
+                return false;
+            });
         }
     }
 
