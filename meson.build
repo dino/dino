@@ -37,6 +37,22 @@ dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
 dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
 dep_libomemo_c = dependency('libomemo-c', disabler: true, required: get_option('plugin-omemo'))
+# Homebrew's libomemo-c.pc has two bugs:
+# 1. Cflags is -I${includedir}/omemo but headers are included as <omemo/...>
+# 2. Libs has -lprotobuf-c without a Requires on libprotobuf-c
+if dep_libomemo_c.found() and not meson.get_compiler('c').has_header('omemo/curve.h', dependencies: dep_libomemo_c)
+    _libomemo_c_incdir = dep_libomemo_c.get_variable(pkgconfig: 'includedir')
+    dep_libomemo_c = declare_dependency(
+        dependencies: dep_libomemo_c,
+        include_directories: include_directories(_libomemo_c_incdir, is_system: true),
+    )
+endif
+if dep_libomemo_c.found() and not meson.get_compiler('c').find_library('protobuf-c', required: false).found()
+    dep_libomemo_c = declare_dependency(
+        dependencies: dep_libomemo_c,
+        link_args: ['-L' + dependency('libprotobuf-c').get_variable(pkgconfig: 'libdir')],
+    )
+endif
 dep_libsoup = dependency('libsoup-3.0', disabler: true, required: get_option('plugin-http-files'))
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
 dep_m = meson.get_compiler('c').find_library('m', required: false)
