@@ -20,7 +20,10 @@ public class FileImageWidget : Widget {
 
     private bool show_image_overlay_toolbar = false;
     private Gtk.Box image_overlay_toolbar = new Gtk.Box(Orientation.VERTICAL, 0) { halign=Align.END, valign=Align.START, margin_top=10, margin_start=10, margin_end=10, margin_bottom=10, vexpand=false, visible=false };
+    private MenuButton file_menu_button = new MenuButton() { icon_name = "dino-view-more" };
     private Label file_size_label = new Label(null) { halign=Align.START, valign=Align.END, margin_bottom=4, margin_start=4, visible=false };
+    private Widget? image_widget;
+    private string? displayed_path;
 
     private FileTransfer file_transfer;
 
@@ -37,14 +40,8 @@ public class FileImageWidget : Widget {
         this.add_css_class("file-image-widget");
 
         // Setup menu button overlay
-        MenuButton button = new MenuButton();
-        button.icon_name = "dino-view-more";
-        Menu menu_model = new Menu();
-        menu_model.append(_("Open"), "file.open");
-        menu_model.append(_("Save as…"), "file.save_as");
-        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
-        button.popover = popover_menu;
-        image_overlay_toolbar.append(button);
+        update_menu();
+        image_overlay_toolbar.append(file_menu_button);
         image_overlay_toolbar.add_css_class("card");
         image_overlay_toolbar.add_css_class("toolbar");
         image_overlay_toolbar.add_css_class("compact-card-toolbar");
@@ -71,7 +68,15 @@ public class FileImageWidget : Widget {
         this_motion_events.enter.connect((controller, x, y) => {
             (controller.widget as FileImageWidget).on_motion_event_enter();
         });
-        attach_on_motion_event_leave(this_motion_events, button);
+        attach_on_motion_event_leave(this_motion_events, file_menu_button);
+    }
+
+    private void update_menu() {
+        Menu menu_model = new Menu();
+        menu_model.append(_("Open"), "file.open");
+        menu_model.append(_("Save as…"), "file.save_as");
+        if (file_transfer != null && FileWidget.can_refetch(file_transfer)) menu_model.append(_("Refetch"), "file.refetch");
+        file_menu_button.popover = new Gtk.PopoverMenu.from_model(menu_model);
     }
 
     private static void attach_on_motion_event_leave(EventControllerMotion this_motion_events, MenuButton button) {
@@ -96,6 +101,7 @@ public class FileImageWidget : Widget {
         this.file_transfer.bind_property("transferred-bytes", transmission_progress, "transferred-size");
 
         file_transfer.notify["state"].connect(refresh_state);
+        file_transfer.notify["path"].connect(refresh_state);
         file_transfer.sources_changed.connect(refresh_state);
         refresh_state();
     }
@@ -106,8 +112,10 @@ public class FileImageWidget : Widget {
     }
 
     private void refresh_state() {
-        if ((state == EMPTY || state == PREVIEW) && file_transfer.path != null) {
-            load_from_file.begin(file_transfer.get_file(), file_transfer.file_name);
+        update_menu();
+
+        if (file_transfer.path != null && file_transfer.path != displayed_path) {
+            load_from_file.begin(file_transfer.get_file(), file_transfer.file_name, file_transfer.path);
             show_image_overlay_toolbar = true;
             this.set_cursor_from_name("zoom-in");
 
@@ -152,7 +160,7 @@ public class FileImageWidget : Widget {
         }
     }
 
-    public async void load_from_file(File file, string file_name) throws GLib.Error {
+    public async void load_from_file(File file, string file_name, string path) throws GLib.Error {
         FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
 
         FileInputStream file_stream = null;
@@ -169,6 +177,14 @@ public class FileImageWidget : Widget {
                 // Ignore
             }
         }
+
+        if (file_transfer.path != path) return;
+
+        if (image_widget != null) {
+            stack.remove(image_widget);
+        }
+        image_widget = image;
+        displayed_path = path;
 
         stack.add_child(image);
         stack.set_visible_child(image);

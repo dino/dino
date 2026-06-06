@@ -61,12 +61,14 @@ public class FileWidget : SizeRequestBin {
     public signal void save_file_as();
     public signal void start_download();
     public signal void cancel_download();
+    public signal void refetch_file();
 
     class construct {
         install_action("file.open", null, (widget, action_name) => { ((FileWidget) widget).open_file(); });
         install_action("file.save_as", null, (widget, action_name) => { ((FileWidget) widget).save_file_as(); });
         install_action("file.download", null, (widget, action_name) => { ((FileWidget) widget).start_download(); });
         install_action("file.cancel", null, (widget, action_name) => { ((FileWidget) widget).cancel_download(); });
+        install_action("file.refetch", null, (widget, action_name) => { ((FileWidget) widget).refetch_file(); });
     }
 
     construct {
@@ -90,6 +92,15 @@ public class FileWidget : SizeRequestBin {
 
         this.notify["file-transfer-state"].connect(update_widget);
         this.notify["file-transfer-content-type"].connect(update_widget);
+    }
+
+    public static bool can_refetch(FileTransfer file_transfer) {
+        if (file_transfer.state != FileTransfer.State.COMPLETE) return false;
+
+        if (file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
+            return !file_transfer.sfs_sources.is_empty;
+        }
+        return file_transfer.provider == FileManager.HTTP_PROVIDER_ID && file_transfer.info != null;
     }
 
     private async void update_widget() {
@@ -157,6 +168,7 @@ public class FileWidgetController : Object {
         widget.save_file_as.connect(save_file);
         widget.start_download.connect(start_download);
         widget.cancel_download.connect(cancel_download);
+        widget.refetch_file.connect(refetch_file);
     }
 
     private void open_file() {
@@ -197,6 +209,13 @@ public class FileWidgetController : Object {
     private void cancel_download() {
         file_transfer.cancellable.cancel();
     }
+
+    private void refetch_file() {
+        if (stream_interactor != null && FileWidget.can_refetch(file_transfer)) {
+            file_transfer.transferred_bytes = 0;
+            stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
+        }
+    }
 }
 
 public class FileDefaultWidgetController : Object {
@@ -234,7 +253,7 @@ public class FileDefaultWidgetController : Object {
 
     private void update_file_info() {
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.content_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes);
+        widget.update_file_info(file_transfer.content_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes, FileWidget.can_refetch(file_transfer));
     }
 
     private void on_clicked() {
