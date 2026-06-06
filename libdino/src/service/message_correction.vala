@@ -230,7 +230,7 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
         if (message.occupant_db_id != -1) {
             qry.outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .with(db.message_occupant_id.occupant_id, "=", message.occupant_db_id);
-        } else if (message.counterpart.resourcepart != null) {
+        } else if (message.type_ != Message.Type.CHAT && message.counterpart.resourcepart != null) {
             qry.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
         }
         RowOption row = qry.single().row();
