@@ -44,8 +44,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
         Gee.TreeSet<ContentItem> items = new Gee.TreeSet<ContentItem>(ContentItem.compare_func);
 
         foreach (var row in select) {
-            ContentItem content_item = get_item_from_row(row, conversation);
-            items.add(content_item);
+            ContentItem? content_item = get_item_from_row(row, conversation);
+            if (content_item != null) items.add(content_item);
         }
 
         Gee.List<ContentItem> ret = new ArrayList<ContentItem>();
@@ -55,7 +55,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return ret;
     }
 
-    private ContentItem get_item_from_row(Row row, Conversation conversation) throws Error {
+    private ContentItem? get_item_from_row(Row row, Conversation conversation) {
         int id = row[db.content_item.id];
         int content_type = row[db.content_item.content_type];
         int foreign_id = row[db.content_item.foreign_id];
@@ -63,7 +63,7 @@ public class ContentItemStore : StreamInteractionModule, Object {
         return get_item(conversation, id, content_type, foreign_id, time);
     }
 
-    private ContentItem get_item(Conversation conversation, int id, int content_type, int foreign_id, DateTime time) throws Error {
+    private ContentItem? get_item(Conversation conversation, int id, int content_type, int foreign_id, DateTime time) {
         switch (content_type) {
             case 1:
                 Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(foreign_id, conversation);
@@ -95,7 +95,8 @@ public class ContentItemStore : StreamInteractionModule, Object {
                 warning("Unknown content item type: %i", content_type);
                 break;
         }
-        throw new Error(-1, 0, "Bad content type %i or non existing content item %i", content_type, foreign_id);
+        warning("Bad content type %i or non existing content item %i", content_type, foreign_id);
+        return null;
     }
 
     public ContentItem? get_item_by_foreign(Conversation conversation, int type, int foreign_id) {
