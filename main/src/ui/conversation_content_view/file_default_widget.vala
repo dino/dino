@@ -51,7 +51,7 @@ public class FileDefaultWidget : Box {
         mime_label.label = content_type != null ? content_type.get_description() : null;
     }
 
-    public void update_file_info(Xmpp.FileContentType? content_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
+    public void update_file_info(Xmpp.FileContentType? content_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes, bool can_refetch) {
         this.state = state;
 
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
@@ -68,6 +68,7 @@ public class FileDefaultWidget : Box {
                 Menu menu_model = new Menu();
                 menu_model.append(_("Open"), "file.open");
                 menu_model.append(_("Save as…"), "file.save_as");
+                if (can_refetch) menu_model.append(_("Refetch"), "file.refetch");
                 Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
                 popover_menu.closed.connect(on_pointer_left);
@@ -89,7 +90,7 @@ public class FileDefaultWidget : Box {
 
                 // Create a menu
                 Menu menu_model = new Menu();
-                menu_model.append(_("Cancel"), "file.cancel_download");
+                menu_model.append(_("Cancel"), "file.cancel");
                 Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
                 popover_menu.closed.connect(on_pointer_left);
