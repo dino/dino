@@ -127,6 +127,7 @@ public class Database : Qlite.Database {
         internal BodyMeta(Database db) {
             base(db, "body_meta");
             init({id, message_id, from_char, to_char, info_type, info});
+            index("body_meta_message_id_idx", {message_id});
         }
     }
 
