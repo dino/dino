@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 33;
+    private const int VERSION = 32;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -689,16 +689,6 @@ public class Database : Qlite.Database {
                 exec(@"UPDATE conversation SET active_last_changed=$active_last_updated WHERE active_last_changed=0");
             } catch (Error e) {
                 error("Failed to upgrade to database version 23 (conversation): %s", e.message);
-            }
-        }
-        if (oldVersion < 33) {
-            try {
-                exec("""
-                delete from content_item
-                where content_type=1
-                    and foreign_id not in (select id from message)""");
-            } catch (Error e) {
-                error("Failed to upgrade to database version 33: %s", e.message);
             }
         }
     }
