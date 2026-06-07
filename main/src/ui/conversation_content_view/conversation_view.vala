@@ -2,6 +2,7 @@ using Gee;
 using Gtk;
 using Gdk;
 using Pango;
+using Xmpp;
 
 using Dino.Entities;
 
@@ -10,6 +11,7 @@ namespace Dino.Ui.ConversationSummary {
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
 public class ConversationView : Widget, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
     private const int MESSAGE_MENU_BOX_OFFSET = -20;
+    private const double SELECTION_DRAG_THRESHOLD = 4;
 
     public Conversation? conversation { get; private set; }
 
@@ -25,6 +27,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     private StreamInteractor stream_interactor;
     private Gee.TreeSet<ContentMetaItem> content_items = new Gee.TreeSet<ContentMetaItem>(compare_content_meta_items);
+    private Gee.TreeSet<ContentMetaItem> selected_content_items = new Gee.TreeSet<ContentMetaItem>(compare_content_meta_items);
     private Gee.TreeSet<Plugins.MetaConversationItem> meta_items = new TreeSet<Plugins.MetaConversationItem>(compare_meta_items);
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
@@ -42,6 +45,11 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private bool reload_messages = true;
     Widget currently_highlighted = null;
     ContentMetaItem? current_meta_item = null;
+    ContentMetaItem? selection_anchor_item = null;
+    ContentMetaItem? selection_drag_anchor_item = null;
+    bool selection_drag_active = false;
+    double selection_drag_start_x = 0;
+    double selection_drag_start_y = 0;
     double last_y = -1;
 
     private Button create_action_button(string action_name) {
@@ -54,6 +62,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     construct {
         this.layout_manager = new BinLayout();
+        this.focusable = true;
         main_wrap_box.layout_manager = new BinLayout();
 
         // Setup all message menu buttons
@@ -114,8 +123,15 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         // This ensures that the currently highlighted item remains unchanged when the pointer
         // reaches the overlapping part of a button.
         EventControllerMotion main_motion_events = new EventControllerMotion();
+        main_motion_events.propagation_phase = Gtk.PropagationPhase.CAPTURE;
         main.add_controller(main_motion_events);
-        main_motion_events.motion.connect(update_highlight);
+        main_motion_events.motion.connect((x, y) => {
+            if ((main_motion_events.get_current_event_state() & ModifierType.BUTTON1_MASK) > 0 && selection_drag_anchor_item != null) {
+                update_selection_drag(x, y);
+            } else {
+                update_highlight(x, y);
+            }
+        });
 
         // Process touch events and capture phase to allow highlighting a message without cursor
         GestureClick click_controller = new GestureClick();
@@ -125,6 +141,22 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         click_controller.pressed.connect_after((n, x, y) => {
             update_highlight(x, y);
         });
+
+        GestureClick selection_click_controller = new GestureClick();
+        selection_click_controller.button = 1;
+        selection_click_controller.propagation_phase = Gtk.PropagationPhase.CAPTURE;
+        main.add_controller(selection_click_controller);
+        selection_click_controller.pressed.connect((n_press, x, y) => {
+            on_selection_pressed(selection_click_controller, n_press, x, y);
+        });
+        selection_click_controller.released.connect((n_press, x, y) => {
+            on_selection_released(x, y);
+        });
+
+        EventControllerKey key_controller = new EventControllerKey();
+        key_controller.propagation_phase = Gtk.PropagationPhase.CAPTURE;
+        add_controller(key_controller);
+        key_controller.key_pressed.connect(on_key_pressed);
 
         return this;
     }
@@ -228,11 +260,10 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             return;
         }
 
-        var current_message_actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK4);
-
         message_actions = current_meta_item.get_item_actions(Plugins.WidgetType.GTK4);
+        bool has_selection_action = is_selectable_content_item(current_meta_item);
 
-        if (message_actions != null) {
+        if (message_actions != null || has_selection_action) {
             message_menu_box.visible = true;
 
             Menu menu_model = new Menu();
@@ -243,28 +274,38 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             }
 
             // Configure as many buttons as we need with the actions for the current meta item
-            foreach (var message_action in current_message_actions) {
-                if (message_action.shortcut_action) {
-                    Widget button_widget = action_buttons[message_action.name];
-                    button_widget.visible = true;
+            if (message_actions != null) {
+                foreach (var message_action in message_actions) {
+                    if (message_action.shortcut_action) {
+                        Widget button_widget = action_buttons[message_action.name];
+                        button_widget.visible = true;
 
-                    if (message_action.name == "reaction") {
-                        MenuButton button = (MenuButton) button_widget;
-                        button.sensitive = message_action.sensitive;
-                        button.icon_name = message_action.icon_name;
-                        button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
-                    } else if (message_action.callback != null) {
-                        Button button = (Button) button_widget;
-                        button.sensitive = message_action.sensitive;
-                        button.icon_name = message_action.icon_name;
-                        button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                        if (message_action.name == "reaction") {
+                            MenuButton button = (MenuButton) button_widget;
+                            button.sensitive = message_action.sensitive;
+                            button.icon_name = message_action.icon_name;
+                            button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                        } else if (message_action.callback != null) {
+                            Button button = (Button) button_widget;
+                            button.sensitive = message_action.sensitive;
+                            button.icon_name = message_action.icon_name;
+                            button.tooltip_text = Util.string_if_tooltips_active(message_action.tooltip);
+                        }
+                    } else {
+                        MenuItem item = new MenuItem(message_action.tooltip, null);
+                        item.set_action_and_target_value("action.action", new GLib.Variant.string(message_action.name));
+                        menu_model.append_item(item);
+                        action_buttons["menu"].visible = true;
                     }
-                } else {
-                    MenuItem item = new MenuItem(message_action.tooltip, null);
-                    item.set_action_and_target_value("action.action", new GLib.Variant.string(message_action.name));
-                    menu_model.append_item(item);
-                    action_buttons["menu"].visible = true;
                 }
+            }
+
+            if (has_selection_action) {
+                string selection_label = selected_content_items.contains(current_meta_item) ? _("Unselect message") : _("Select message");
+                MenuItem item = new MenuItem(selection_label, null);
+                item.set_action_and_target_value("action.action", new GLib.Variant.string("toggle-selection"));
+                menu_model.append_item(item);
+                action_buttons["menu"].visible = true;
             }
         } else {
             message_menu_box.visible = false;
@@ -439,7 +480,11 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             item_item_skeletons.unset(item);
 
             if (item is ContentMetaItem) {
+                if (selection_anchor_item == item) selection_anchor_item = null;
+                if (selection_drag_anchor_item == item) selection_drag_anchor_item = null;
+                selected_content_items.remove((ContentMetaItem)item);
                 content_items.remove((ContentMetaItem)item);
+                update_primary_selection();
             }
             meta_items.remove(item);
             skeleton.dispose();
@@ -547,6 +592,9 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             case "delete":
                 on_delete_action_selected();
                 break;
+            case "toggle-selection":
+                toggle_current_selection();
+                break;
             default:
                 invoke_message_action(action_name);
                 break;
@@ -614,6 +662,8 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void invoke_message_action(string action_name, GLib.Variant? variant = null) {
+        if (message_actions == null) return;
+
         foreach (var action in message_actions) {
             if (action.name == action_name) {
                 action.callback(variant);
@@ -621,6 +671,260 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             }
         }
         warning("Unknown action invoked: %s", action_name);
+    }
+
+    private void on_selection_pressed(GestureClick gesture, int n_press, double x, double y) {
+        ContentMetaItem? item = get_selectable_content_item_at_y(y);
+        if (item == null) return;
+
+        ModifierType state = gesture.get_current_event_state();
+        bool ctrl_pressed = (state & ModifierType.CONTROL_MASK) > 0;
+        bool shift_pressed = (state & ModifierType.SHIFT_MASK) > 0;
+
+        message_menu_box.visible = false;
+        grab_focus();
+
+        if (shift_pressed && selection_anchor_item != null) {
+            if (ctrl_pressed) {
+                set_range_selection(selection_anchor_item, item, !selected_content_items.contains(item));
+            } else {
+                select_range(selection_anchor_item, item);
+            }
+            selection_drag_anchor_item = null;
+            selection_drag_active = false;
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED);
+        } else if (ctrl_pressed) {
+            selection_anchor_item = item;
+            selection_drag_anchor_item = null;
+            selection_drag_active = false;
+            toggle_content_item_selection(item);
+            gesture.set_state(Gtk.EventSequenceState.CLAIMED);
+        } else {
+            selection_anchor_item = item;
+            selection_drag_anchor_item = item;
+            selection_drag_active = false;
+            selection_drag_start_x = x;
+            selection_drag_start_y = y;
+        }
+    }
+
+    private void update_selection_drag(double x, double y) {
+        if (selection_drag_anchor_item == null) return;
+
+        if (!selection_drag_active) {
+            double dx = x - selection_drag_start_x;
+            double dy = y - selection_drag_start_y;
+            if (dx * dx + dy * dy < SELECTION_DRAG_THRESHOLD * SELECTION_DRAG_THRESHOLD) return;
+            selection_drag_active = true;
+        }
+
+        ContentMetaItem? item = get_selectable_content_item_at_y(y);
+        if (item == null) return;
+
+        select_range(selection_drag_anchor_item, item);
+    }
+
+    private void on_selection_released(double x, double y) {
+        if (selection_drag_anchor_item != null && selection_drag_active) {
+            update_selection_drag(x, y);
+        }
+        selection_drag_anchor_item = null;
+        selection_drag_active = false;
+    }
+
+    private bool on_key_pressed(EventControllerKey controller, uint keyval, uint keycode, ModifierType state) {
+        if (selected_content_items.size == 0) return false;
+
+        if (keyval == Gdk.Key.Escape) {
+            clear_selected_content_items();
+            return true;
+        }
+
+        bool ctrl_pressed = (state & ModifierType.CONTROL_MASK) > 0;
+        bool other_modifier_pressed = (state & (ModifierType.ALT_MASK | ModifierType.META_MASK | ModifierType.SUPER_MASK)) > 0;
+        if (ctrl_pressed && !other_modifier_pressed && (keyval == Gdk.Key.c || keyval == Gdk.Key.C)) {
+            copy_selected_content_items();
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool is_selectable_content_item(ContentMetaItem? item) {
+        return item != null && (item.content_item.type_ == MessageItem.TYPE || item.content_item.type_ == FileItem.TYPE);
+    }
+
+    private ContentMetaItem? get_selectable_content_item_at_y(double y) {
+        int h = 0;
+        ContentMetaItem? first_selectable_item = null;
+        ContentMetaItem? last_selectable_item = null;
+
+        foreach (Plugins.MetaConversationItem item in meta_items) {
+            Widget widget = widgets[item];
+            h += widget.get_allocated_height() + widget.margin_top + widget.margin_bottom;
+
+            ContentMetaItem? content_meta_item = item as ContentMetaItem;
+            if (is_selectable_content_item(content_meta_item)) {
+                if (first_selectable_item == null) first_selectable_item = content_meta_item;
+                last_selectable_item = content_meta_item;
+                if (h >= y) return content_meta_item;
+            }
+        };
+
+        if (y < 0) return first_selectable_item;
+        return last_selectable_item;
+    }
+
+    private void select_range(ContentMetaItem start_item, ContentMetaItem end_item) {
+        selected_content_items.clear();
+        set_range_selection(start_item, end_item, true);
+    }
+
+    private void set_range_selection(ContentMetaItem start_item, ContentMetaItem end_item, bool selected, bool update = true) {
+
+        bool in_range = false;
+        foreach (Plugins.MetaConversationItem item in meta_items) {
+            ContentMetaItem? content_meta_item = item as ContentMetaItem;
+            if (!is_selectable_content_item(content_meta_item)) continue;
+
+            if (content_meta_item == start_item || content_meta_item == end_item) {
+                if (selected) {
+                    selected_content_items.add(content_meta_item);
+                } else {
+                    selected_content_items.remove(content_meta_item);
+                }
+                if (start_item == end_item) break;
+                if (in_range) break;
+                in_range = true;
+                continue;
+            }
+
+            if (in_range) {
+                if (selected) {
+                    selected_content_items.add(content_meta_item);
+                } else {
+                    selected_content_items.remove(content_meta_item);
+                }
+            }
+        }
+
+        if (update) update_selected_content_items();
+    }
+
+    private void toggle_content_item_selection(ContentMetaItem item) {
+        if (selected_content_items.contains(item)) {
+            selected_content_items.remove(item);
+        } else {
+            selected_content_items.add(item);
+        }
+
+        update_selected_content_items();
+    }
+
+    private void toggle_current_selection() {
+        if (!is_selectable_content_item(current_meta_item)) return;
+
+        selection_anchor_item = current_meta_item;
+        toggle_content_item_selection(current_meta_item);
+
+        update_message_menu();
+    }
+
+    private void update_selected_content_items() {
+        foreach (ContentMetaItem item in content_items) {
+            Widget? widget = widgets[item];
+            if (widget == null) continue;
+
+            if (selected_content_items.contains(item)) {
+                widget.add_css_class("message-selected");
+            } else {
+                widget.remove_css_class("message-selected");
+            }
+        }
+
+        update_primary_selection();
+    }
+
+    private void clear_selected_content_items() {
+        selection_anchor_item = null;
+        selection_drag_anchor_item = null;
+        selection_drag_active = false;
+        selected_content_items.clear();
+        update_selected_content_items();
+    }
+
+    private void copy_selected_content_items() {
+        string text = get_selected_content_items_text();
+        if (text != "") get_clipboard().set_text(text);
+    }
+
+    private void update_primary_selection() {
+        string text = get_selected_content_items_text();
+        if (text == "" && selected_content_items.size == 0) return;
+
+        get_display().get_primary_clipboard().set_text(text);
+    }
+
+    private string get_selected_content_items_text() {
+        StringBuilder builder = new StringBuilder();
+        bool first = true;
+
+        foreach (ContentMetaItem item in selected_content_items) {
+            string? text = get_content_item_text(item.content_item);
+            if (text == null || text == "") continue;
+
+            if (!first) builder.append("\n\n");
+            builder.append(text);
+            first = false;
+        }
+
+        return builder.str;
+    }
+
+    private string? get_content_item_text(ContentItem content_item) {
+        string sender = Util.get_participant_display_name(stream_interactor, conversation, content_item.jid, true);
+        string time = content_item.time.to_local().format("%Y-%m-%d %H:%M");
+        string? text = null;
+
+        if (content_item.type_ == MessageItem.TYPE) {
+            Message message = ((MessageItem)content_item).message;
+            FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_message_id(message.id, ((MessageItem)content_item).conversation);
+            if (file_transfer != null) {
+                text = get_file_transfer_text(file_transfer, ((MessageItem)content_item).conversation);
+            } else {
+                text = Dino.message_body_without_reply_fallback(message);
+            }
+        } else if (content_item.type_ == FileItem.TYPE) {
+            FileItem file_item = (FileItem)content_item;
+            text = get_file_transfer_text(file_item.file_transfer, file_item.conversation);
+        }
+
+        if (text == null) return null;
+
+        return @"$sender - $time\n$text";
+    }
+
+    private string get_file_transfer_text(FileTransfer file_transfer, Conversation file_conversation) {
+        string text = _("File") + ": " + file_transfer.file_name;
+        string? url = get_file_transfer_url(file_transfer, file_conversation);
+        if (url != null && url != "") {
+            text += "\n" + url;
+        }
+        return text;
+    }
+
+    private string? get_file_transfer_url(FileTransfer file_transfer, Conversation file_conversation) {
+        foreach (Xep.StatelessFileSharing.Source source in file_transfer.sfs_sources) {
+            Xep.StatelessFileSharing.HttpSource? http_source = source as Xep.StatelessFileSharing.HttpSource;
+            if (http_source != null) return http_source.url;
+        }
+
+        if (file_transfer.provider == FileManager.HTTP_PROVIDER_ID && file_transfer.info != null) {
+            Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), file_conversation);
+            if (message != null) return message.body;
+        }
+
+        return null;
     }
 
     private void on_upper_notify() {
@@ -692,6 +996,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private void clear() {
         was_upper = null;
         was_page_size = null;
+        clear_selected_content_items();
         foreach (var item in content_items) {
             item.dispose();
         }

@@ -96,12 +96,30 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
+window.dino-main .dino-conversation .message-box.message-selected {
+    background: alpha(@theme_selected_bg_color, 0.16);
+}
+
+window.dino-main .dino-conversation .message-box.message-selected.highlight:not(.highlight-once),
+window.dino-main .dino-conversation .message-box.message-selected:hover {
+    background: alpha(@theme_selected_bg_color, 0.22);
+}
+
 window.dino-main .dino-conversation .message-box.error {
     background: alpha(@error_color, 0.1);
 }
 
 window.dino-main .dino-conversation .message-box.error:hover {
     background: alpha(@error_color, 0.12);
+}
+
+window.dino-main .dino-conversation .message-box.message-selected.error {
+    background: alpha(@theme_selected_bg_color, 0.16);
+}
+
+window.dino-main .dino-conversation .message-box.message-selected.error.highlight:not(.highlight-once),
+window.dino-main .dino-conversation .message-box.message-selected.error:hover {
+    background: alpha(@theme_selected_bg_color, 0.22);
 }
 
 window.dino-main .dino-quote {
