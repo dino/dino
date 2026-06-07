@@ -14,7 +14,6 @@ public class Manager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private HashMap<Jid, string> pgp_key_ids = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
     private ReceivedMessageListener received_message_listener = new ReceivedMessageListener();
 
     public static void start(StreamInteractor stream_interactor, Database db) {
@@ -81,23 +80,29 @@ public class Manager : StreamInteractionModule, Object {
 
     public string? get_key_id(Account account, Jid jid) {
         Jid search_jid = stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account) ? jid : jid.bare_jid;
-        return db.get_contact_key(search_jid);
+        Qlite.RowOption key_row = db.get_contact_key_row(search_jid);
+        if (!key_row.is_present()) return null;
+        string? key_id = key_row.get(db.contact_key_table.key);
+        if (key_id != null) return key_id;
+        string? sig = key_row.get(db.contact_key_table.sig);
+        string? signed_data = key_row.get(db.contact_key_table.signed_data);
+        if (sig == null || signed_data == null) return null;
+        key_id = get_sign_key(sig, signed_data);
+        if (key_id != null) {
+            db.set_contact_key(search_jid, key_id);
+        }
+        return key_id;
     }
 
     private void on_account_added(Account account) {
-        stream_interactor.module_manager.get_module(account, Module.IDENTITY).received_jid_key_id.connect((stream, jid, key_id) => {
-            on_jid_key_received(account, jid, key_id);
+        stream_interactor.module_manager.get_module(account, Module.IDENTITY).received_jid_presence_signature.connect((stream, jid, sig, signed_data) => {
+            on_jid_signature_received(account, jid, sig, signed_data);
         });
     }
 
-    private void on_jid_key_received(Account account, Jid jid, string key_id) {
-        lock (pgp_key_ids) {
-            if (!pgp_key_ids.has_key(jid) || pgp_key_ids[jid] != key_id) {
-                Jid set_jid = stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account) ? jid : jid.bare_jid;
-                db.set_contact_key(set_jid, key_id);
-            }
-            pgp_key_ids[jid] = key_id;
-        }
+    private void on_jid_signature_received(Account account, Jid jid, string sig, string signed_data) {
+        Jid set_jid = stream_interactor.get_module(MucManager.IDENTITY).is_groupchat_occupant(jid, account) ? jid : jid.bare_jid;
+        db.set_contact_signature(set_jid, sig, signed_data);
     }
 
     private class ReceivedMessageListener : MessageListener {

@@ -10,26 +10,28 @@ namespace Dino.Plugins.OpenPgp {
     public class Module : XmppStreamModule {
         public static Xmpp.ModuleIdentity<Module> IDENTITY = new Xmpp.ModuleIdentity<Module>(NS_URI, "0027_current_pgp_usage");
 
-        public signal void received_jid_key_id(XmppStream stream, Jid jid, string key_id);
+        public signal void received_jid_presence_signature(XmppStream stream, Jid jid, string sig, string signed_data);
 
         private string? signed_status = null;
         private Key? own_key = null;
         private ReceivedPipelineDecryptListener received_pipeline_decrypt_listener = new ReceivedPipelineDecryptListener();
 
-        public Module(string? own_key_id = null) {
-            set_private_key_id(own_key_id);
+        public Module(string? own_key_id = null, ref string? signed_data, ref string? sig) {
+            set_private_key_id(own_key_id, ref signed_data, ref sig);
         }
 
-        public void set_private_key_id(string? own_key_id) {
-            if (own_key_id != null) {
+        public void set_private_key_id(string? own_key_id, ref string? signed_data, ref string? sig) {
+            if (own_key_id != null && sig == null) {
                 try {
                     own_key = GPGHelper.get_private_key(own_key_id);
                     if (own_key == null) warning("Can't get PGP private key");
                 } catch (Error e) { }
                 if (own_key != null) {
-                    signed_status = gpg_sign("", own_key);
+                    if (signed_data == null) signed_data = "";
+                    sig = gpg_sign(signed_data, own_key);
                 }
             }
+            signed_status = own_key_id != null ? sig : null;
         }
 
         public bool encrypt(MessageStanza message, GPG.Key[] keys) {
@@ -47,17 +49,12 @@ namespace Dino.Plugins.OpenPgp {
             stream.get_module(Presence.Module.IDENTITY).received_presence.connect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.connect(on_pre_send_presence_stanza);
             stream.get_module(MessageModule.IDENTITY).received_pipeline.connect(received_pipeline_decrypt_listener);
-            stream.add_flag(new Flag());
         }
 
         public override void detach(XmppStream stream) {
             stream.get_module(Presence.Module.IDENTITY).received_presence.disconnect(on_received_presence);
             stream.get_module(Presence.Module.IDENTITY).pre_send_presence_stanza.disconnect(on_pre_send_presence_stanza);
             stream.get_module(MessageModule.IDENTITY).received_pipeline.disconnect(received_pipeline_decrypt_listener);
-        }
-
-        public static void require(XmppStream stream) {
-            if (stream.get_module(IDENTITY) == null) stream.add_module(new Module());
         }
 
         public override string get_ns() { return NS_URI; }
@@ -68,18 +65,8 @@ namespace Dino.Plugins.OpenPgp {
             if (x_node == null) return;
             string? sig = x_node.get_string_content();
             if (sig == null) return;
-            new Thread<void*> (null, () => {
-                string signed_data = presence.status == null ? "" : presence.status;
-                string? key_id = get_sign_key(sig, signed_data);
-                if (key_id != null) {
-                    stream.get_flag(Flag.IDENTITY).set_key_id(presence.from, key_id);
-                    Idle.add(() => {
-                        received_jid_key_id(stream, presence.from, key_id);
-                        return false;
-                    });
-                }
-                return null;
-            });
+            string signed_data = presence.status == null ? "" : presence.status;
+            received_jid_presence_signature(stream, presence.from, sig, signed_data);
         }
 
         private void on_pre_send_presence_stanza(XmppStream stream, Presence.Stanza presence) {
@@ -97,15 +84,6 @@ namespace Dino.Plugins.OpenPgp {
             }
             int encryption_start = encr.index_of("\n\n") + 2;
             return encr.substring(encryption_start, encr.length - "\n-----END PGP MESSAGE-----".length - encryption_start);
-        }
-
-        private static string? get_sign_key(string sig, string signed_text) {
-            string armor = "-----BEGIN PGP MESSAGE-----\n\n" + sig + "\n-----END PGP MESSAGE-----";
-            string? sign_key = null;
-            try {
-                sign_key = GPGHelper.get_sign_key(armor, signed_text);
-            } catch (Error e) { }
-            return sign_key;
         }
 
         private static string? gpg_sign(string str, Key key) {

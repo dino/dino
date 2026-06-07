@@ -22,7 +22,6 @@ sources = files(
     'src/manager.vala',
     'src/plugin.vala',
     'src/register_plugin.vala',
-    'src/stream_flag.vala',
     'src/stream_module.vala',
     'src/util.vala',
     'vapi/gpg-error.vapi',

@@ -17,4 +17,13 @@ public static string markup_id(string s, bool is_fingerprint) {
     return "<span font_family='monospace' font='9'>" + markup + "</span>";
 }
 
+private static string? get_sign_key(string sig, string signed_text) {
+    string armor = "-----BEGIN PGP MESSAGE-----\n\n" + sig + "\n-----END PGP MESSAGE-----";
+    string? sign_key = null;
+    try {
+        sign_key = GPGHelper.get_sign_key(armor, signed_text);
+    } catch (Error e) { }
+    return sign_key;
+}
+
 }

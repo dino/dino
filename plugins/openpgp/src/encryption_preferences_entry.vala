@@ -52,10 +52,14 @@ namespace Dino.Plugins.OpenPgp {
 
             drop_down.notify["selected"].connect(() => {
                 var key_id = drop_down.selected == 0 ? "" : keys[(int)drop_down.selected - 1].fpr;
+                string? signed_data = null, sig = null;
                 if (plugin.modules.has_key(account)) {
-                    plugin.modules[account].set_private_key_id(key_id);
+                    plugin.modules[account].set_private_key_id(key_id, ref signed_data, ref sig);
                 }
                 plugin.db.set_account_key(account, key_id);
+                if (signed_data != null && sig != null) {
+                    plugin.db.set_account_signature(account, signed_data, sig);
+                }
             });
         }
 
