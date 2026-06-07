@@ -195,7 +195,9 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
                 .perform();
 
         int current_correction_message_id = get_latest_correction_message_id(conversation, original_message);
-        if (content_item != null) {
+        if (current_correction_message_id == -1) warning("Stored correction but got no latest correction %i -> %i", correction_message.id, original_message.id);
+
+        if (content_item != null && current_correction_message_id != -1) {
             db.content_item.update()
                     .with(db.content_item.id, "=", content_item.id)
                     .with(db.content_item.content_type, "=", 1)
@@ -227,12 +229,15 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
                 .with(db.message_correction.to_stanza_id, "=", message.edit_to ?? message.stanza_id)
                 .order_by(db.message.time, "DESC");
 
-        if (message.occupant_db_id != -1) {
-            qry.outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
-                .with(db.message_occupant_id.occupant_id, "=", message.occupant_db_id);
-        } else if (message.counterpart.resourcepart != null) {
-            qry.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
+        if (message.type_.is_muc_semantic()) {
+            if (message.occupant_db_id != -1) {
+                qry.outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
+                    .with(db.message_occupant_id.occupant_id, "=", message.occupant_db_id);
+            } else if (message.counterpart.resourcepart != null) {
+                qry.with(db.message.counterpart_resource, "=", message.counterpart.resourcepart);
+            }
         }
+
         RowOption row = qry.single().row();
         if (row.is_present()) {
             return row[db.message.id];
