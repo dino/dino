@@ -31,6 +31,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private Gee.List<Widget> widget_order = new Gee.ArrayList<Widget>();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
+    private HistorySyncNotification history_sync_notification;
 
     private double? was_value;
     private double? was_upper;
@@ -92,6 +93,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
         content_populator = new ContentProvider(stream_interactor);
         subscription_notification = new SubscriptionNotitication(stream_interactor);
+        history_sync_notification = new HistorySyncNotification(stream_interactor);
 
         add_meta_notification.connect(on_add_meta_notification);
         remove_meta_notification.connect(on_remove_meta_notification);
@@ -390,6 +392,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
         content_populator.init(this, conversation, Plugins.WidgetType.GTK4);
         subscription_notification.init(conversation, this);
+        history_sync_notification.init(conversation, this);
     }
 
     private void display_latest() {

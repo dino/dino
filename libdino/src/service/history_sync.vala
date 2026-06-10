@@ -7,8 +7,13 @@ using Qlite;
 
 public class Dino.HistorySync {
 
+    public signal void conversation_resync_started(Conversation conversation, Cancellable cancellable);
+    public signal void conversation_resync_progress(Conversation conversation, int messages, int total_messages);
+    public signal void conversation_resync_finished(Conversation conversation);
+
     private StreamInteractor stream_interactor;
     private Database db;
+    private HashMap<Conversation, ConversationResyncState> conversation_resyncs = new HashMap<Conversation, ConversationResyncState>(Conversation.hash_func, Conversation.equals_func);
 
     public HashMap<Account, HashMap<Jid, int>> current_catchup_id = new HashMap<Account, HashMap<Jid, int>>(Account.hash_func, Account.equals_func);
     public WeakMap<Account, XmppStream> sync_streams = new WeakMap<Account, XmppStream>(Account.hash_func, Account.equals_func);
@@ -311,6 +316,76 @@ public class Dino.HistorySync {
         return null;
     }
 
+    public bool get_conversation_resync_state(Conversation conversation, out Cancellable? cancellable, out int messages, out int total_messages) {
+        ConversationResyncState? state = conversation_resyncs[conversation];
+        if (state == null) {
+            cancellable = null;
+            messages = 0;
+            total_messages = -1;
+            return false;
+        }
+
+        cancellable = state.cancellable;
+        messages = state.messages;
+        total_messages = state.total_messages;
+        return true;
+    }
+
+    public void cancel_conversation_resync(Conversation conversation) {
+        ConversationResyncState? state = conversation_resyncs[conversation];
+        if (state == null) return;
+
+        if (!state.cancellable.is_cancelled()) state.cancellable.cancel();
+        if (!state.finished) {
+            state.finished = true;
+            conversation_resync_finished(conversation);
+        }
+    }
+
+    public async void resync_conversation(Conversation conversation, Cancellable? cancellable = null) {
+        if (stream_interactor.get_stream(conversation.account) == null) return;
+        if (conversation_resyncs.has_key(conversation)) return;
+
+        Cancellable resync_cancellable = cancellable ?? new Cancellable();
+        ConversationResyncState state = new ConversationResyncState(resync_cancellable);
+        conversation_resyncs[conversation] = state;
+        Jid mam_server = conversation.type_ == Conversation.Type.GROUPCHAT ? conversation.counterpart.bare_jid : conversation.account.bare_jid;
+        var query_params = new Xmpp.MessageArchiveManagement.V2.MamQueryParams.query_before(mam_server, null, null);
+
+        if (conversation.type_ == Conversation.Type.CHAT) {
+            query_params.with = conversation.counterpart.bare_jid;
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            query_params.with = conversation.counterpart;
+        }
+
+        PageRequestResult? page_result = null;
+        conversation_resync_started(conversation, resync_cancellable);
+        try {
+            do {
+                if (resync_cancellable.is_cancelled()) break;
+                page_result = yield get_mam_page(conversation.account, query_params, page_result, resync_cancellable, false);
+                if (resync_cancellable.is_cancelled() || page_result.page_result == PageResult.Cancelled) break;
+                state.messages += page_result.stanzas != null ? page_result.stanzas.size : 0;
+                if (page_result.query_result.count >= 0) {
+                    state.total_messages = int.max(state.messages, page_result.query_result.count);
+                }
+                conversation_resync_progress(conversation, state.messages, state.total_messages);
+                debug("[%s | %s] Resync page result %s", conversation.account.bare_jid.to_string(), mam_server.to_string(), page_result.page_result.to_string());
+                if (page_result.page_result == PageResult.Error) break;
+                Idle.add(resync_conversation.callback, Priority.LOW);
+                yield;
+                if (resync_cancellable.is_cancelled()) break;
+            } while (page_result.page_result == PageResult.MorePagesAvailable);
+        } catch (Error e) {
+            debug("[%s | %s] Resync stopped: %s", conversation.account.bare_jid.to_string(), mam_server.to_string(), e.message);
+        }
+        conversation_resyncs.unset(conversation);
+        if (!state.finished) {
+            state.finished = true;
+            conversation_resync_finished(conversation);
+        }
+    }
+
     private async void fetch_before_range(Account account, Jid mam_server, Row range, DateTime? until_earliest_time, Cancellable? cancellable = null) {
         DateTime latest_time = new DateTime.from_unix_utc(range[db.mam_catchup.from_time]);
         string latest_id = range[db.mam_catchup.from_id];
@@ -382,18 +457,27 @@ public class Dino.HistorySync {
     /**
      * prev_page_result: null if this is the first page request
      **/
-    private async PageRequestResult get_mam_page(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result, Cancellable? cancellable = null) {
+    private async PageRequestResult get_mam_page(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, PageRequestResult? prev_page_result, Cancellable? cancellable = null, bool announce_messages = true) {
         XmppStream stream = stream_interactor.get_stream(account);
-        Xmpp.MessageArchiveManagement.QueryResult query_result = null;
+        Xmpp.MessageArchiveManagement.QueryResult? query_result = null;
         if (prev_page_result == null) {
             query_result = yield Xmpp.MessageArchiveManagement.V2.query_archive(stream, query_params, cancellable);
         } else {
             query_result = yield Xmpp.MessageArchiveManagement.V2.page_through_results(stream, query_params, prev_page_result.query_result, cancellable);
         }
-        return yield process_query_result(account, query_params, query_result, cancellable);
+        if (query_result == null) {
+            stanzas.unset(query_params.query_id);
+            var empty_result = new Xmpp.MessageArchiveManagement.QueryResult();
+            if (cancellable != null && cancellable.is_cancelled()) {
+                return new PageRequestResult(PageResult.Cancelled, empty_result, null);
+            }
+            empty_result.error = true;
+            return new PageRequestResult(PageResult.Error, empty_result, null);
+        }
+        return yield process_query_result(account, query_params, (!)query_result, cancellable, announce_messages);
     }
 
-    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result, Cancellable? cancellable = null) {
+    private async PageRequestResult process_query_result(Account account, Xmpp.MessageArchiveManagement.V2.MamQueryParams query_params, Xmpp.MessageArchiveManagement.QueryResult query_result, Cancellable? cancellable = null, bool announce_messages = true) {
         PageResult page_result = PageResult.MorePagesAvailable;
 
         if (query_result.malformed || query_result.error) {
@@ -421,7 +505,7 @@ public class Dino.HistorySync {
                 if (mam_message_flag != null && mam_message_flag.mam_id != null) {
                     if (after_id != null && mam_message_flag.mam_id == after_id) {
                         // Successfully fetched the whole range
-                        yield send_messages_back_into_pipeline(account, query_id, cancellable);
+                        yield send_messages_back_into_pipeline(account, query_id, cancellable, announce_messages);
                         if (cancellable != null && cancellable.is_cancelled()) {
                             return new PageRequestResult(PageResult.Cancelled, query_result, stanzas_for_query);
                         }
@@ -431,7 +515,7 @@ public class Dino.HistorySync {
             }
             if (after_id != null && hitted_range.has_key(query_id) && hitted_range[query_id] == -2) {
                 // Message got filtered out by xmpp-vala, but succesful range fetch nevertheless
-                yield send_messages_back_into_pipeline(account, query_id);
+                yield send_messages_back_into_pipeline(account, query_id, cancellable, announce_messages);
                 if (cancellable != null && cancellable.is_cancelled()) {
                     return new PageRequestResult(PageResult.Cancelled, query_result, stanzas_for_query);
                 }
@@ -439,11 +523,10 @@ public class Dino.HistorySync {
             }
         }
 
-        yield send_messages_back_into_pipeline(account, query_id);
+        yield send_messages_back_into_pipeline(account, query_id, cancellable, announce_messages);
         if (cancellable != null && cancellable.is_cancelled()) {
             page_result = PageResult.Cancelled;
-        }
-        else if (page_result != PageResult.Error && query_result.complete) {
+        } else if (page_result != PageResult.Error && query_result.complete) {
             page_result = after_id == null ? PageResult.NoMoreMessages : PageResult.TargetNotReached;
         }
         return new PageRequestResult(page_result, query_result, stanzas_for_query);
@@ -453,12 +536,15 @@ public class Dino.HistorySync {
         return time == null || time.to_unix() == 0;
     }
 
-    private async void send_messages_back_into_pipeline(Account account, string query_id, Cancellable? cancellable = null) {
+    private async void send_messages_back_into_pipeline(Account account, string query_id, Cancellable? cancellable = null, bool announce_messages = true) {
         if (!stanzas.has_key(query_id)) return;
 
         foreach (Xmpp.MessageStanza message in stanzas[query_id]) {
             if (cancellable != null && cancellable.is_cancelled()) break;
-            yield stream_interactor.get_module(MessageProcessor.IDENTITY).run_pipeline_announce(account, message);
+            Idle.add(send_messages_back_into_pipeline.callback, Priority.LOW);
+            yield;
+            if (cancellable != null && cancellable.is_cancelled()) break;
+            yield stream_interactor.get_module(MessageProcessor.IDENTITY).run_pipeline_announce(account, message, announce_messages);
         }
         stanzas.unset(query_id);
     }
@@ -581,6 +667,17 @@ public class Dino.HistorySync {
             this.page_result = page_result;
             this.query_result = query_result;
             this.stanzas = stanzas;
+        }
+    }
+
+    class ConversationResyncState {
+        public Cancellable cancellable;
+        public bool finished = false;
+        public int messages = 0;
+        public int total_messages = -1;
+
+        public ConversationResyncState(Cancellable cancellable) {
+            this.cancellable = cancellable;
         }
     }
 }
