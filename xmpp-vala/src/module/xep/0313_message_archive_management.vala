@@ -4,11 +4,13 @@ using Xmpp.Xep;
 namespace Xmpp.MessageArchiveManagement {
 
 public const string NS_URI = "urn:xmpp:mam:2";
+private const uint CLOSED_QUERY_ID_TTL = 60;
 
 public class QueryResult {
     public bool error { get; set; default=false; }
     public bool malformed { get; set; default=false; }
     public bool complete { get; set; default=false; }
+    public int count { get; set; default=-1; }
     public string? first { get; set; }
     public string? last { get; set; }
 }
@@ -64,26 +66,44 @@ public class Module : XmppStreamModule {
         string? query_id = query_node.get_attribute("queryid");
         if (flag == null || query_id == null) { res.error = true; return res; }
         flag.active_query_ids.add(query_id);
+        flag.closed_query_ids.remove(query_id);
 
         // Build and send query
         Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=mam_server };
 
-        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
+        Iq.Stanza? result_iq = null;
+        try {
+            result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
+        } catch (IOError e) {
+            flag.close_query_id(query_id);
+            res.error = true;
+            return res;
+        }
+        if (result_iq == null) {
+            flag.close_query_id(query_id);
+            res.error = true;
+            return res;
+        }
 
         // Parse the response IQ into a QueryResult.
-        StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", NS_URI);
-        if (fin_node == null) { res.malformed = true; return res; }
+        StanzaNode? fin_node = ((!)result_iq).stanza.get_subnode("fin", NS_URI);
+        if (fin_node == null) { flag.close_query_id(query_id); res.malformed = true; return res; }
 
         StanzaNode? rsm_node = fin_node.get_subnode("set", Xmpp.ResultSetManagement.NS_URI);
-        if (rsm_node == null) { res.malformed = true; return res; }
+        if (rsm_node == null) { flag.close_query_id(query_id); res.malformed = true; return res; }
 
         res.first = rsm_node.get_deep_string_content("first");
         res.last = rsm_node.get_deep_string_content("last");
-        if ((res.first == null) != (res.last == null)) { res.malformed = true; return res; }
+        if ((res.first == null) != (res.last == null)) { flag.close_query_id(query_id); res.malformed = true; return res; }
+        string? count_str = rsm_node.get_deep_string_content("count");
+        if (count_str != null) {
+            int count;
+            if (int.try_parse(count_str, out count, null, 10)) res.count = count;
+        }
         res.complete = fin_node.get_attribute_bool("complete", false, NS_URI);
 
         Idle.add(() => {
-            flag.active_query_ids.remove(query_id);
+            flag.close_query_id(query_id);
             return Source.REMOVE;
         }, Priority.LOW);
 
@@ -113,6 +133,7 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             }
 
             if (!flag.active_query_ids.contains(query_id)) {
+                if (flag.closed_query_ids.contains(query_id)) return true;
                 warning("Received MAM message from %s with unknown query id %s, ignoring", message.from.to_string(), query_id ?? "<none>");
                 return true;
             }
@@ -141,6 +162,16 @@ public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "message_archive_management");
     public bool cought_up { get; set; default=false; }
     public Gee.Set<string> active_query_ids { get; set; default = new HashSet<string>(); }
+    public Gee.Set<string> closed_query_ids { get; set; default = new HashSet<string>(); }
+
+    public void close_query_id(string query_id) {
+        active_query_ids.remove(query_id);
+        closed_query_ids.add(query_id);
+        Timeout.add_seconds(CLOSED_QUERY_ID_TTL, () => {
+            closed_query_ids.remove(query_id);
+            return Source.REMOVE;
+        });
+    }
 
     public static Flag get_flag(XmppStream stream) {
         Flag? flag = stream.get_flag(Flag.IDENTITY);

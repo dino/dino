@@ -84,4 +84,98 @@ public class SubscriptionNotitication : Object {
     }
 }
 
+public class HistorySyncNotification : Object {
+
+    private Conversation? conversation;
+    private ConversationView? conversation_view;
+    private Box? box;
+    private Label? label;
+    private HistorySync history_sync;
+
+    public HistorySyncNotification(StreamInteractor stream_interactor) {
+        history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
+        history_sync.conversation_resync_started.connect(on_resync_started);
+        history_sync.conversation_resync_progress.connect(on_resync_progress);
+        history_sync.conversation_resync_finished.connect(on_resync_finished);
+    }
+
+    public void init(Conversation conversation, ConversationView conversation_view) {
+        close();
+        this.conversation = conversation;
+        this.conversation_view = conversation_view;
+
+        Cancellable? active_cancellable;
+        int messages;
+        int total_messages;
+        if (history_sync.get_conversation_resync_state(conversation, out active_cancellable, out messages, out total_messages) &&
+                active_cancellable != null && !((!)active_cancellable).is_cancelled()) {
+            on_resync_started(conversation, (!)active_cancellable);
+            on_resync_progress(conversation, messages, total_messages);
+        }
+    }
+
+    private void on_resync_started(Conversation conversation, Cancellable _cancellable) {
+        ConversationView? view = conversation_view;
+        if (!matches(conversation) || view == null) return;
+
+        close();
+        Box notification_box = new Box(Orientation.HORIZONTAL, 5);
+        Label notification_label = new Label(_("Resyncing history (0 messages)")) { margin_end=10 };
+        Button cancel_button = new Button.with_label(_("Cancel")) { can_focus=false };
+        cancel_button.clicked.connect(() => {
+            ConversationView? active_view = conversation_view;
+            double value = active_view != null ? ((!)active_view).scrolled.vadjustment.value : 0;
+            if (this.conversation != null) history_sync.cancel_conversation_resync((!)this.conversation);
+            if (active_view != null) {
+                Idle.add(() => {
+                    Adjustment adjustment = ((!)active_view).scrolled.vadjustment;
+                    double max_value = adjustment.upper - adjustment.page_size;
+                    if (max_value < 0) max_value = 0;
+                    double restored_value = value;
+                    if (restored_value < 0) restored_value = 0;
+                    if (restored_value > max_value) restored_value = max_value;
+                    adjustment.value = restored_value;
+                    return Source.REMOVE;
+                });
+            }
+        });
+        notification_box.append(notification_label);
+        notification_box.append(cancel_button);
+        box = notification_box;
+        label = notification_label;
+        view.add_notification(notification_box);
+    }
+
+    private void on_resync_progress(Conversation conversation, int messages, int total_messages) {
+        Label? progress_label = label;
+        if (!matches(conversation) || progress_label == null) return;
+
+        if (total_messages > 0) {
+            progress_label.label = _("Resyncing history (%i of %i messages)").printf(messages, total_messages);
+        } else {
+            progress_label.label = _("Resyncing history (%i messages)").printf(messages);
+        }
+    }
+
+    private void on_resync_finished(Conversation conversation) {
+        if (!matches(conversation)) return;
+
+        close();
+    }
+
+    private bool matches(Conversation other) {
+        return conversation != null && conversation.equals(other);
+    }
+
+    private void close() {
+        Box? notification_box = box;
+        ConversationView? view = conversation_view;
+        if (notification_box != null && view != null) {
+            view.remove_notification(notification_box);
+        }
+        box = null;
+        label = null;
+    }
+}
+
 }

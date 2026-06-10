@@ -119,7 +119,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         run_pipeline_announce.begin(account, message_stanza);
     }
 
-    public async void run_pipeline_announce(Account account, Xmpp.MessageStanza message_stanza) {
+    public async void run_pipeline_announce(Account account, Xmpp.MessageStanza message_stanza, bool announce = true) {
         Entities.Message message = yield parse_message_stanza(account, message_stanza);
 
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation_for_message(message);
@@ -127,6 +127,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         bool abort = yield received_pipeline.run(message, message_stanza, conversation);
         if (abort) return;
+
+        if (!announce) return;
 
         if (message.direction == Entities.Message.DIRECTION_RECEIVED) {
             message_received(message, conversation);
