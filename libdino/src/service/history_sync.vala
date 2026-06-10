@@ -225,7 +225,8 @@ public class Dino.HistorySync {
 
         // Catchup finished within first page. Update latest db entry.
         if (latest_row_id != -1 &&
-                page_result.page_result in new PageResult[] { PageResult.TargetReached, PageResult.NoMoreMessages }) {
+                (page_result.page_result == PageResult.TargetReached ||
+                (latest_message_id == null && page_result.page_result == PageResult.NoMoreMessages))) {
 
             if (page_result.stanzas == null) return null;
 
@@ -237,7 +238,7 @@ public class Dino.HistorySync {
                     .set(db.mam_catchup.to_time, latest_mam_time)
                     .set(db.mam_catchup.to_id, latest_mam_id);
 
-            if (page_result.page_result == PageResult.NoMoreMessages) {
+            if (page_result.page_result == PageResult.NoMoreMessages && starts_at_archive_beginning(query_params.start)) {
                 // If the server doesn't have more messages, store that this range is at its end.
                 query.set(db.mam_catchup.from_end, true);
             }
@@ -268,7 +269,7 @@ public class Dino.HistorySync {
                 .value(db.mam_catchup.server_jid, mam_server.to_string())
                 .value(db.mam_catchup.from_id, from_id)
                 .value(db.mam_catchup.from_time, from_time)
-                .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages)
+                .value(db.mam_catchup.from_end, page_result.page_result == PageResult.NoMoreMessages && starts_at_archive_beginning(query_params.start))
                 .value(db.mam_catchup.to_id, to_id)
                 .value(db.mam_catchup.to_time, to_time)
                 .perform();
@@ -291,7 +292,7 @@ public class Dino.HistorySync {
 
         PageRequestResult page_result = yield fetch_query(account, query_params, later_range_id, cancellable);
 
-        if (page_result.page_result == PageResult.TargetReached || page_result.page_result == PageResult.NoMoreMessages) {
+        if (page_result.page_result == PageResult.TargetReached) {
             debug("[%s | %s] Merging range %i into %i", account.bare_jid.to_string(), mam_server.to_string(), earlier_range[db.mam_catchup.id], later_range_id);
             // Merge earlier range into later one.
             db.mam_catchup.update()
@@ -349,7 +350,7 @@ public class Dino.HistorySync {
             if (earliest_mam_id != null) {
                 debug("[%s | %s] Updating to %s, %s", account.bare_jid.to_string(), query_params.mam_server.to_string(), earliest_mam_time.to_string(), earliest_mam_id);
                 query.set(db.mam_catchup.from_id, earliest_mam_id);
-                if (page_result.page_result != PageResult.NoMoreMessages || query_params.start != null || earliest_mam_time < query_params.start.to_unix()) {
+                if (page_result.page_result != PageResult.NoMoreMessages || query_params.start == null || earliest_mam_time < query_params.start.to_unix()) {
                     query.set(db.mam_catchup.from_time, earliest_mam_time);
                 }
             }
@@ -372,6 +373,7 @@ public class Dino.HistorySync {
     enum PageResult {
         MorePagesAvailable,
         TargetReached,
+        TargetNotReached,
         NoMoreMessages,
         Error,
         Cancelled
@@ -402,12 +404,6 @@ public class Dino.HistorySync {
         Idle.add(process_query_result.callback, Priority.LOW);
         yield;
 
-        // We might have successfully reached the target or the server doesn't have all messages stored anymore
-        // If it's the former, we'll overwrite the value with PageResult.MorePagesAvailable below.
-        if (query_result.complete) {
-            page_result = PageResult.NoMoreMessages;
-        }
-
         string query_id = query_params.query_id;
         string? after_id = query_params.start_id;
 
@@ -433,7 +429,7 @@ public class Dino.HistorySync {
                     }
                 }
             }
-            if (hitted_range.has_key(query_id) && hitted_range[query_id] == -2) {
+            if (after_id != null && hitted_range.has_key(query_id) && hitted_range[query_id] == -2) {
                 // Message got filtered out by xmpp-vala, but succesful range fetch nevertheless
                 yield send_messages_back_into_pipeline(account, query_id);
                 if (cancellable != null && cancellable.is_cancelled()) {
@@ -447,7 +443,14 @@ public class Dino.HistorySync {
         if (cancellable != null && cancellable.is_cancelled()) {
             page_result = PageResult.Cancelled;
         }
+        else if (page_result != PageResult.Error && query_result.complete) {
+            page_result = after_id == null ? PageResult.NoMoreMessages : PageResult.TargetNotReached;
+        }
         return new PageRequestResult(page_result, query_result, stanzas_for_query);
+    }
+
+    private bool starts_at_archive_beginning(DateTime? time) {
+        return time == null || time.to_unix() == 0;
     }
 
     private async void send_messages_back_into_pipeline(Account account, string query_id, Cancellable? cancellable = null) {
