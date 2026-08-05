@@ -309,7 +309,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             }
         }
         start_load_new_conversation();
-        Idle.add_once(() => {
+        Idle.add(() => {
             initialize_for_conversation_(conversation);
             ContentItem? content_item = null;
             if (!go_to_end && conversation.read_up_to_item > 0) {
@@ -324,7 +324,12 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                 // Scroll to end
                 ensure_scroll_to_end(false);
             }
-            Idle.add_once(finish_load_new_conversation);
+            Idle.add(() => {
+		finish_load_new_conversation();
+		return Source.REMOVE;
+	    });
+
+	    return Source.REMOVE;
         });
     }
 
