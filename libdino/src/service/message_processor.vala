@@ -223,8 +223,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                         if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
                             return Entities.Message.Type.GROUPCHAT_PM;
-                        } else {
-                            return Entities.Message.Type.CHAT;
                         }
                     }
                 }
