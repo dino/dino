@@ -416,6 +416,11 @@ namespace Dino {
             call_invites_module.call_proposed.connect((from_jid, to_jid, call_id, video_requested, join_methods, message_stanza) => {
                 if (from_jid.equals_bare(account.bare_jid)) return;
                 if (stream_interactor.get_module(MucManager.IDENTITY).is_own_muc_jid(from_jid, account)) return;
+                if (message_stanza.type_ != MessageStanza.TYPE_GROUPCHAT) {
+                    if (!from_jid.is_full()) return;
+                    if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(from_jid.bare_jid, account)) return;
+                    if (stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(from_jid.bare_jid, account, Conversation.Type.CHAT) == null) return;
+                }
 
                 bool multiparty = false;
                 CallState? call_state = null;
