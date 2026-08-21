@@ -71,6 +71,7 @@ sources = files(
     'src/ui/main_window_controller.vala',
     'src/ui/notifier_freedesktop.vala',
     'src/ui/notifier_gnotifications.vala',
+    'src/ui/tray_freedesktop.vala',
     'src/ui/occupant_menu/list.vala',
     'src/ui/occupant_menu/list_row.vala',
     'src/ui/occupant_menu/view.vala',
@@ -144,8 +145,10 @@ if meson.get_compiler('vala').version().version_compare('=0.56.12')
 endif
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_rpath: default_install_rpath)
 
-install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
 install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino.Attention.svg', install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
+install_data('data/icons/scalable/apps/im.dino.Dino.Attention-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
 install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')

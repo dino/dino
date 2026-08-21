@@ -22,12 +22,13 @@ dependencies = [
     dep_gmodule,
     dep_libsoup,
     dep_qlite,
-    dep_xmpp_vala
+    dep_xmpp_vala,
 ]
 sources = files(
     'src/application.vala',
     'src/dbus/login1.vala',
     'src/dbus/notifications.vala',
+    'src/dbus/status_notifier_item.vala',
     'src/dbus/upower.vala',
     'src/entity/account.vala',
     'src/entity/call.vala',
