@@ -8,6 +8,7 @@ dependencies = [
     dep_glib,
     dep_gmodule,
     dep_libsoup,
+    dep_libsrtp2,
     dep_qlite,
     dep_xmpp_vala
 ]
@@ -16,6 +17,10 @@ sources = files(
     'src/dbus/login1.vala',
     'src/dbus/notifications.vala',
     'src/dbus/upower.vala',
+    'src/crypto/cipher.vala',
+    'src/crypto/cipher_converter.vala',
+    'src/crypto/error.vala',
+    'src/crypto/srtp.vala',
     'src/entity/account.vala',
     'src/entity/call.vala',
     'src/entity/conversation.vala',
@@ -73,13 +78,31 @@ sources = files(
     'src/util/util.vala',
     'src/util/weak_timeout.vala',
 )
+
 sources += [version_c]
+
+if crypto_backend == 'gnu'
+    dependencies += [ dep_libgcrypt ]
+    sources += files(
+        'src/crypto/gnu/cipher.vala',
+        'src/crypto/gnu/utils.vala',
+    )
+elif crypto_backend == 'openssl'
+    dependencies += [ dep_openssl ]
+    sources += files(
+        'src/crypto/openssl/cipher.vala',
+        'src/crypto/openssl/utils.vala',
+    )
+endif
+
 c_args = vala_c_args + [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
-vala_args = []
+vala_args = [
+    '--vapidir', meson.current_source_dir() / 'vapi',
+]
 if meson.get_compiler('vala').version().version_compare('=0.56.11')
     vala_args += ['-D', 'VALA_0_56_11']
 endif

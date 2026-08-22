@@ -1,7 +1,6 @@
 subdir('po')
 dependencies = [
     dep_libadwaita,
-    dep_crypto_vala,
     dep_dino,
     dep_gee,
     dep_glib,
@@ -61,10 +60,10 @@ c_args = vala_c_args + [
     '-DGETTEXT_PACKAGE="dino-omemo"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),
 ]
-if crypto_backend == 'gnutls'
+if crypto_backend == 'gnu'
     dependencies += [ dep_libgcrypt ]
     sources += files('src/native/helper_gcrypt.c')
-else
+elif crypto_backend == 'openssl'
     dependencies += [ dep_openssl ]
     sources += files('src/native/helper_openssl.c')
 endif

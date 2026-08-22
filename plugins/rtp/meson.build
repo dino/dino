@@ -1,5 +1,4 @@
 dependencies = [
-    dep_crypto_vala,
     dep_dino,
     dep_gee,
     dep_glib,

@@ -1,7 +1,7 @@
 using Gee;
 using Gtk;
 
-using Crypto;
+using Dino.Crypto;
 using Dino.Entities;
 using Xmpp;
 using Omemo;

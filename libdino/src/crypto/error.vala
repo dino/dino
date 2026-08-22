@@ -1,4 +1,4 @@
-namespace Crypto {
+namespace Dino.Crypto {
 
 public errordomain Error {
     ILLEGAL_ARGUMENTS,

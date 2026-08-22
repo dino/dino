@@ -1,6 +1,6 @@
 using Dino.Entities;
 
-using Crypto;
+using Dino.Crypto;
 using Omemo;
 
 namespace Dino.Plugins.Omemo {

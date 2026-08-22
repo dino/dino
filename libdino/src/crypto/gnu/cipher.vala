@@ -1,4 +1,4 @@
-namespace Crypto {
+namespace Dino.Crypto {
 
 internal class SymmetricCipherGcrypt : SymmetricCipher, SymmetricCipherEncryption, SymmetricCipherDecryption, Object {
     private GCrypt.Cipher.Cipher cipher;

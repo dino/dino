@@ -1,5 +1,4 @@
 dependencies = [
-    dep_crypto_vala,
     dep_dino,
     dep_gee,
     dep_gio,
@@ -23,12 +22,12 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if crypto_backend == 'gnutls'
+if crypto_backend == 'gnu'
     dependencies += [ dep_gnutls ]
     sources += files(
         'src/dtls_srtp_gnutls.vala'
     )
-else # openssl
+elif crypto_backend == 'openssl'
     dependencies += [ dep_openssl ]
     sources += files(
         'src/dtls_srtp_openssl.vala',

@@ -1,6 +1,6 @@
 using GLib;
 
-namespace Crypto {
+namespace Dino.Crypto {
 
 public class SymmetricCipherEncrypter : Converter, Object {
     private SymmetricCipherEncryption cipher;

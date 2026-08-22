@@ -1,6 +1,6 @@
 using Srtp;
 
-namespace Crypto.Srtp {
+namespace Dino.Crypto.Srtp {
 public const string AES_CM_128_HMAC_SHA1_80 = "AES_CM_128_HMAC_SHA1_80";
 public const string AES_CM_128_HMAC_SHA1_32 = "AES_CM_128_HMAC_SHA1_32";
 public const string F8_128_HMAC_SHA1_80 = "F8_128_HMAC_SHA1_80";

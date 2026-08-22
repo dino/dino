@@ -47,33 +47,28 @@ vala_c_args = cc.get_supported_arguments([
     '-Wno-unused-variable',
 ])
 
-plugin_crypto = get_option('plugin-ice')
-foreach plugin : ['plugin-ice', 'plugin-omemo', 'plugin-rtp']
-    if get_option(plugin).enabled() and not plugin_crypto.enabled()
-        plugin_crypto = get_option(plugin)
-    elif get_option(plugin).allowed() and not plugin_crypto.allowed()
-        plugin_crypto = get_option(plugin)
-    endif
-endforeach
-
 if get_option('crypto-backend') == 'auto'
     # Prefer libgcrypt/gnutls over openssl because glib-networking is usually
     # built with gnutls anyway.
     dep_libgcrypt = dependency('libgcrypt', required: false)
     dep_gnutls = dependency('gnutls', required: false)
     if dep_libgcrypt.found() and dep_gnutls.found()
-        crypto_backend = 'gnutls'
+        crypto_backend = 'gnu'
     else
-        dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
-        crypto_backend = 'openssl'
+        dep_openssl = dependency('openssl', required: false)
+        if dep_openssl.found()
+            crypto_backend = 'openssl'
+        else
+            error('Could not find crypto backend automatically. Specify explicitly via crypto-backend option.')
+        endif
     endif
 elif get_option('crypto-backend') == 'openssl'
-    dep_openssl = dependency('openssl', disabler: true, required: plugin_crypto)
+    dep_openssl = dependency('openssl', required: true)
     crypto_backend = 'openssl'
-elif get_option('crypto-backend') == 'gnutls'
-    dep_libgcrypt = dependency('libgcrypt', disabler: true, required: plugin_crypto)
-    dep_gnutls = dependency('gnutls', disabler: true, required: get_option('plugin-ice'))
-    crypto_backend = 'gnutls'
+elif get_option('crypto-backend') == 'gnu'
+    dep_libgcrypt = dependency('libgcrypt', required: true)
+    dep_gnutls = dependency('gnutls', required: get_option('plugin-ice'))
+    crypto_backend = 'gnu'
 endif
 
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
@@ -92,7 +87,7 @@ dep_icu_uc = dependency('icu-uc')
 dep_libadwaita = dependency('libadwaita-1', version: '>=1.5')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
-dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: plugin_crypto)
+dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: true)
 dep_libomemo_c = dependency('libomemo-c', disabler: true, required: get_option('plugin-omemo'))
 dep_libsoup = dependency('libsoup-3.0')
 dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
@@ -119,5 +114,4 @@ subdir('qlite')
 subdir('xmpp-vala')
 subdir('libdino')
 subdir('main')
-subdir('crypto-vala')
 subdir('plugins')

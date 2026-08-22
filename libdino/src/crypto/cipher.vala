@@ -1,4 +1,4 @@
-namespace Crypto {
+namespace Dino.Crypto {
 
 public interface SymmetricCipher {
     public abstract void set_key(uint8[] key) throws Error;

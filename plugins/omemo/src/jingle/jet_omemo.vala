@@ -1,4 +1,4 @@
-using Crypto;
+using Dino.Crypto;
 using Dino;
 using Dino.Entities;
 using Gee;

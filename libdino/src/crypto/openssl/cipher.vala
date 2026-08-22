@@ -1,4 +1,4 @@
-namespace Crypto {
+namespace Dino.Crypto {
 
 internal class SymmetricCipherEncryptionOpenssl : SymmetricCipher, SymmetricCipherEncryption, Object {
     private OpenSSL.EVP.CipherContext? cipher;
