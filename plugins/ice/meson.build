@@ -18,7 +18,7 @@ sources = files(
     'src/util.vala',
     'src/register_plugin.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="ice"',
 ]
 vala_args = [

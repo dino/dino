@@ -31,7 +31,7 @@ sources += gnome.compile_resources(
     'data/gresource.xml',
     source_dir: 'data',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="OpenPGP"',
     '-DGETTEXT_PACKAGE="dino-openpgp"',
     '-DLOCALE_INSTALL_DIR="@0@"'.format(get_option('prefix') / get_option('localedir')),

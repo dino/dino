@@ -15,6 +15,7 @@ project(
 
 gnome = import('gnome')
 i18n = import('i18n')
+cc = meson.get_compiler('c')
 
 # Trigger recomnfiguration on version change
 version_stamp = configure_file(
@@ -32,6 +33,19 @@ version_stamp = configure_file(
     output: 'version.stamp',
     depfile: 'version.d'
 )
+
+# Reduce build time noise
+vala_c_args = cc.get_supported_arguments([
+    '-Wno-address',
+    '-Wno-deprecated-declarations',
+    '-Wno-discarded-qualifiers',
+    '-Wno-duplicate-decl-specifier',
+    '-Wno-unused-but-set-variable',
+    '-Wno-unused-function',
+    '-Wno-unused-label',
+    '-Wno-unused-value',
+    '-Wno-unused-variable',
+])
 
 # plugin_crypto is enabled if any of the crypto plugins is enabled, auto if
 # none of them are explicitly enabled but at least one is set to auto, or

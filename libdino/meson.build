@@ -74,7 +74,7 @@ sources = files(
     'src/util/weak_timeout.vala',
 )
 sources += [version_c]
-c_args = [
+c_args = vala_c_args + [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',

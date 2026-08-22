@@ -24,7 +24,7 @@ sources = files(
     'src/stream.vala',
     'src/video_widget.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="rtp"',
 ]
 vala_args = []

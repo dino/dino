@@ -141,7 +141,7 @@ sources = files(
     'src/util.vala',
     'src/weak_map.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="xmpp-vala"',
 ]
 vala_args = [

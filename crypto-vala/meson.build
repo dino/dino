@@ -11,7 +11,7 @@ sources = files(
     'src/random.vala',
     'src/srtp.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="crypto-vala"',
 ]
 vala_args = [

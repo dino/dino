@@ -15,7 +15,7 @@ sources = files(
     'src/update_builder.vala',
     'src/upsert_builder.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="qlite"',
 ]
 vala_args = [
