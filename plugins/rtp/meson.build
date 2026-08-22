@@ -54,15 +54,6 @@ if dep_webrtc_audio_processing.found() and get_option('plugin-rtp-webrtc-audio-p
 elif get_option('plugin-rtp-webrtc-audio-processing').enabled()
     error('No compatible webrtc-audio-processing found, but plugin-rtp-webrtc-audio-processing option set.')
 endif
-if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.16')
-    vala_args += ['-D', 'GST_1_16']
-endif
-if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.18')
-    vala_args += ['-D', 'GST_1_18']
-endif
-if dep_gstreamer_rtp.version() == 'unknown' or dep_gstreamer_rtp.version().version_compare('>=1.20')
-    vala_args += ['-D', 'GST_1_20']
-endif
 if meson.get_compiler('vala').version().version_compare('<0.56.1')
     vala_args += ['--vapidir', meson.current_source_dir() / 'vapi']
 endif
