@@ -85,6 +85,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             case "join":
                 show_join_muc_dialog(null, jid);
                 break;
+            case "roster":
             case "message":
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
                 Jid parsed_jid = null;
