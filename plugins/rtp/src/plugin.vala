@@ -311,7 +311,6 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
     public void shutdown() {
         stop_device_monitor();
         destroy_call_pipe();
-        Gst.deinit();
     }
 
     public bool supported() {
