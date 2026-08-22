@@ -472,12 +472,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         // Set an origin ID if a MUC doen't guarantee to keep IDs
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag == null) {
-                message.marked = Entities.Message.Marked.UNSENT;
-                return;
-            }
-            if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
+            var supports_stable_ids = stream_interactor.get_module(EntityInfo.IDENTITY).has_feature_cached(conversation.account, conversation.counterpart, Xep.Muc.FEATURE_STABLE_ID);
+            if(!supports_stable_ids) {
                 UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
             }
         }

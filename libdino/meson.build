@@ -55,7 +55,6 @@ sources = files(
     'src/service/conversation_manager.vala',
     'src/service/counterpart_interaction_manager.vala',
     'src/service/database.vala',
-    'src/service/entity_capabilities_storage.vala',
     'src/service/entity_info.vala',
     'src/service/fallback_body.vala',
     'src/service/file_manager.vala',

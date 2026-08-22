@@ -8,6 +8,12 @@ private const string NS_URI_OWNER = NS_URI + "#owner";
 public const string NS_URI_USER = NS_URI + "#user";
 private const string NS_URI_REQUEST = NS_URI + "#request";
 
+public const string FEATURE_STABLE_ID = "http://jabber.org/protocol/muc#stable_id";
+public const string FEATURE_MEMBERS_ONLY = "muc_membersonly";
+public const string FEATURE_MODERATED = "muc_moderated";
+public const string FEATURE_NON_ANONYMOUS = "muc_nonanonymous";
+public const string FEATURE_PASSWORD_PROTECTED = "muc_passwordprotected";
+
 public enum MucEnterError {
     PASSWORD_REQUIRED,
     BANNED,
@@ -34,26 +40,6 @@ public enum Role {
     VISITOR
 }
 
-public enum Feature {
-    REGISTER,
-    ROOMCONFIG,
-    ROOMINFO,
-    HIDDEN,
-    MEMBERS_ONLY,
-    MODERATED,
-    NON_ANONYMOUS,
-    OPEN,
-    PASSWORD_PROTECTED,
-    PERSISTENT,
-    PUBLIC,
-    ROOMS,
-    SEMI_ANONYMOUS,
-    STABLE_ID,
-    TEMPORARY,
-    UNMODERATED,
-    UNSECURED
-}
-
 public static void add_muc_pm_message_stanza_x_node(MessageStanza message_stanza) {
     StanzaNode x_node = new StanzaNode.build("x", "http://jabber.org/protocol/muc#user").add_self_xmlns();
     message_stanza.stanza.put_node(x_node);        
@@ -74,6 +60,7 @@ public class Module : XmppStreamModule {
     public signal void subject_set(XmppStream stream, string? subject, Jid jid);
     public signal void invite_received(XmppStream stream, Jid room_jid, Jid from_jid, string? password, string? reason);
     public signal void voice_request_received(XmppStream stream, Jid room_jid, Jid from_jid, string nick);
+    public signal void room_info_changed(XmppStream stream, Jid muc_jid);
     public signal void room_info_updated(XmppStream stream, Jid muc_jid);
 
     public signal void self_removed_from_room(XmppStream stream, Jid jid, StatusCode code);
@@ -299,7 +286,7 @@ public class Module : XmppStreamModule {
                     if (status_codes.contains(StatusCode.CONFIG_CHANGE_NON_PRIVACY) ||
                             status_codes.contains(StatusCode.NON_ANONYMOUS) ||
                             status_codes.contains(StatusCode.SEMI_ANONYMOUS)) {
-                        query_room_info.begin(stream, message.from.bare_jid);
+                        room_info_changed(stream, message.from.bare_jid);
                     }
                 }
             }
@@ -358,9 +345,6 @@ public class Module : XmppStreamModule {
                 if (status_codes.contains(StatusCode.SELF_PRESENCE)) {
                     Jid bare_jid = presence.from.bare_jid;
                     if (flag.get_enter_id(bare_jid) != null) {
-
-                        query_room_info.begin(stream, bare_jid);
-
                         flag.finish_muc_enter(bare_jid);
                         var join_result = new JoinResult() { nick=presence.from.resourcepart, newly_created=status_codes.contains(StatusCode.NEW_ROOM_CREATED) };
                         flag.enter_futures[bare_jid].set_value(join_result);
@@ -428,45 +412,6 @@ public class Module : XmppStreamModule {
                 }
             }
         }
-    }
-
-    private async void query_room_info(XmppStream stream, Jid jid) {
-        ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid);
-        if (info_result == null) return;
-
-        Gee.List<Feature> features = new ArrayList<Feature>();
-
-        foreach (ServiceDiscovery.Identity identity in info_result.identities) {
-            if (identity.category == "conference" && identity.name != null) {
-                stream.get_flag(Flag.IDENTITY).set_room_name(jid, identity.name);
-            }
-        }
-
-        foreach (string feature in info_result.features) {
-            Feature? parsed = null;
-            switch (feature) {
-                case "http://jabber.org/protocol/muc#register": parsed = Feature.REGISTER; break;
-                case "http://jabber.org/protocol/muc#roomconfig": parsed = Feature.ROOMCONFIG; break;
-                case "http://jabber.org/protocol/muc#roominfo": parsed = Feature.ROOMINFO; break;
-                case "http://jabber.org/protocol/muc#stable_id": parsed = Feature.STABLE_ID; break;
-                case "muc_hidden": parsed = Feature.HIDDEN; break;
-                case "muc_membersonly": parsed = Feature.MEMBERS_ONLY; break;
-                case "muc_moderated": parsed = Feature.MODERATED; break;
-                case "muc_nonanonymous": parsed = Feature.NON_ANONYMOUS; break;
-                case "muc_open": parsed = Feature.OPEN; break;
-                case "muc_passwordprotected": parsed = Feature.PASSWORD_PROTECTED; break;
-                case "muc_persistent": parsed = Feature.PERSISTENT; break;
-                case "muc_public": parsed = Feature.PUBLIC; break;
-                case "muc_rooms": parsed = Feature.ROOMS; break;
-                case "muc_semianonymous": parsed = Feature.SEMI_ANONYMOUS; break;
-                case "muc_temporary": parsed = Feature.TEMPORARY; break;
-                case "muc_unmoderated": parsed = Feature.UNMODERATED; break;
-                case "muc_unsecured": parsed = Feature.UNSECURED; break;
-            }
-            if (parsed != null) features.add(parsed);
-        }
-        stream.get_flag(Flag.IDENTITY).set_room_features(jid, features);
-        room_info_updated(stream, jid);
     }
 
     public async void fetch_affiliations(XmppStream stream, Jid muc_jid) {

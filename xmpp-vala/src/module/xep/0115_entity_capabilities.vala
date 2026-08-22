@@ -35,11 +35,6 @@ namespace Xmpp.Xep.EntityCapabilities {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0115_entity_capabilities");
 
         private string own_ver_hash;
-        private Storage storage;
-
-        public Module(Storage storage) {
-            this.storage = storage;
-        }
 
         private string get_own_hash(XmppStream stream) {
             if (own_ver_hash == null) {

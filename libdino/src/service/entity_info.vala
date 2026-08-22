@@ -12,7 +12,6 @@ public class EntityInfo : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private EntityCapabilitiesStorage entity_capabilities_storage;
     private Dino.Entities.Settings settings;
 
     private HashMap<Jid, string> entity_caps_hashes = new HashMap<Jid, string>(Jid.hash_func, Jid.equals_func);
@@ -40,7 +39,6 @@ public class EntityInfo : StreamInteractionModule, Object {
     private EntityInfo(StreamInteractor stream_interactor, Database db, Dino.Entities.Settings settings) {
         this.stream_interactor = stream_interactor;
         this.db = db;
-        this.entity_capabilities_storage = new EntityCapabilitiesStorage(db);
         this.settings = settings;
 
         stream_interactor.account_added.connect(on_account_added);
@@ -58,18 +56,32 @@ public class EntityInfo : StreamInteractionModule, Object {
         Timeout.add_seconds(60 * 60, () => { remove_old_entities(); return true; });
     }
 
-    public async Gee.Set<Identity>? get_identities(Account account, Jid jid) {
+    public Gee.Set<Identity>? get_identities_offline(Account account, Jid jid) {
         if (jid_identity.has_key(jid)) {
             return jid_identity[jid];
         }
 
-        string? hash = entity_caps_hashes[jid];
-        if (hash != null) {
-            Gee.Set<Identity>? identities = get_stored_identities(hash);
-            if (identities != null) return identities;
+        var qry = db.entity.select()
+                .with(db.entity.account_id, "=", account.id)
+                .with(db.entity.jid_id, "=", db.get_jid_id(jid))
+                .with(db.entity.resource, "=", jid.resourcepart ?? "")
+                .join_with(db.entity_identity, db.entity.caps_hash, db.entity_identity.entity);
+
+        HashSet<Identity> identities = new HashSet<Identity>(Identity.hash_func, Identity.equals_func);
+
+        foreach (Row row in qry) {
+            var identity = new Identity(row[db.entity_identity.category], row[db.entity_identity.type], row[db.entity_identity.entity_name]);
+            identities.add(identity);
         }
 
-        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, hash);
+        return identities;
+    }
+
+    public async Gee.Set<Identity>? get_identities(Account account, Jid jid) {
+        var identities = get_identities_offline(account, jid);
+        if (identities != null) return identities;
+
+        ServiceDiscovery.InfoResult? info_result = yield get_info_result(account, jid, entity_caps_hashes[jid]);
         if (info_result != null) {
             return info_result.identities;
         }
@@ -261,7 +273,7 @@ public class EntityInfo : StreamInteractionModule, Object {
         return identities;
     }
 
-    private async ServiceDiscovery.InfoResult? get_info_result(Account account, Jid jid, string? hash = null) {
+    public async ServiceDiscovery.InfoResult? get_info_result(Account account, Jid jid, string? hash = null) {
         XmppStream? stream = stream_interactor.get_stream(account);
         if (stream == null) return null;
 
@@ -298,7 +310,6 @@ public class EntityInfo : StreamInteractionModule, Object {
     }
 
     private void initialize_modules(Account account, ArrayList<XmppStreamModule> modules) {
-        modules.add(new Xep.EntityCapabilities.Module(entity_capabilities_storage));
         var entity_time_module = modules.first_match((it) => it is EntityTime.Module) as EntityTime.Module;
         if (entity_time_module != null) {
             settings.bind_property("share-time", entity_time_module, "enabled", BindingFlags.SYNC_CREATE);
