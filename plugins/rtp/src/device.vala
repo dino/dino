@@ -367,7 +367,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 unowned Gst.Structure? that = device.caps.get_structure(i);
                 unowned Gst.CapsFeatures? features = device.caps.get_features(i);
                 Value? best_fraction_now = null;
-                if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
+                if (!that.has_name("video/x-raw") ||
+                        features == null ||
+                        (!features.is_any() && features.get_size() > 0 && !features.contains("memory:SystemMemory"))) continue;
                 int num = 0, den = 0, width = 0, height = 0;
                 if (!that.has_field("framerate")) continue;
                 Value framerate = that.get_value("framerate");
@@ -411,7 +413,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                 for (int i = 0; i < device.caps.get_size(); i++) {
                     unowned Gst.Structure? that = device.caps.get_structure(i);
                     unowned Gst.CapsFeatures? features = device.caps.get_features(i);
-                    if (!that.has_name("video/x-raw") || !features.contains("memory:SystemMemory")) continue;
+                    if (!that.has_name("video/x-raw") ||
+                            features == null ||
+                            (!features.is_any() && features.get_size() > 0 && !features.contains("memory:SystemMemory"))) continue;
                     int width = 0, height = 0;
                     if (!that.has_field("width") || !that.get_int("width", out width) || width == 0) continue;
                     if (!that.has_field("height") || !that.get_int("height", out height) || height == 0) continue;
@@ -446,6 +450,10 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
                         best_diversion_factor = diversion_factor;
                     }
                 }
+            }
+            if (best_index == -1) {
+                warning("No usable raw video caps for device %s", display_name);
+                return new Gst.Caps.any();
             }
             Gst.Caps res = caps_copy_nth(device.caps, best_index);
             unowned Gst.Structure? that = res.get_structure(0);
