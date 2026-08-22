@@ -1,0 +1,4 @@
+const char* dino_get_version ()
+{
+    return "@VERSION@";
+}

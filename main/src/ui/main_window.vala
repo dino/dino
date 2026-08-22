@@ -52,6 +52,9 @@ public class MainWindow : Adw.ApplicationWindow {
         this.title = "Dino";
 
         this.add_css_class("dino-main");
+        if (Dino.get_version().contains("~git")) {
+            this.add_css_class("devel");
+        }
 
         ((Widget)this).realize.connect(restore_window_size);
 

@@ -1,17 +1,4 @@
-# version_vala
-version_py = files('version.py')[0]
-if meson.version().version_compare('>=1.4.0')
-    version_py_path = version_py.full_path()
-else
-    version_py_path = meson.current_source_dir() / 'version.py'
-endif
-command = [prog_python, version_py_path, version_file_path, '--git-repo', meson.current_source_dir()]
-if prog_git.found()
-    command += ['--git', prog_git]
-endif
-# We add those dummy args to ensure meson sees the dependency
-command += [version_py, version_file]
-version_vala = vcs_tag(command: command, input: 'src/version.vala.in', output: 'version.vala', replace_string: '%VERSION%')
+version_c = configure_file(input: 'src/version.c.in', output: 'version.c', configuration: {'VERSION': meson.project_version()})
 
 # libdino
 dependencies = [
@@ -86,7 +73,7 @@ sources = files(
     'src/util/util.vala',
     'src/util/weak_timeout.vala',
 )
-sources += [version_vala]
+sources += [version_c]
 c_args = [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),

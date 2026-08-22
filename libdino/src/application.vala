@@ -2,10 +2,12 @@ using Dino.Entities;
 
 namespace Dino {
 
-public string get_version() { return VERSION; }
+public extern unowned string get_version();
+
 public string get_short_version() {
-    if (!VERSION.contains("~")) return VERSION;
-    return VERSION.split("~")[0] + "+";
+    string version = get_version();
+    if (!version.contains("~")) return version;
+    return version.split("~")[0] + "+";
 }
 
 public interface Application : GLib.Application {

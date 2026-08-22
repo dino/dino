@@ -1,9 +1,37 @@
-project('Dino', 'c', 'cpp', 'vala', license: 'GPL-3.0', meson_version: '>=1.3.0')
+project(
+    'Dino',
+    'c', 'cpp', 'vala',
+    license: 'GPL-3.0',
+    meson_version: '>=1.3.0',
+    version: run_command(
+        find_program('python3', required: true), # Can't use import('python').find_installation() here
+        meson.current_source_dir() / 'build-aux' / 'version.py',
+        meson.current_source_dir() / 'VERSION',
+        '--git-repo', meson.current_source_dir(),
+        '--git', find_program('git', required: false),
+        check: true
+    ).stdout().strip()
+)
 
-fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')
-python = import('python')
+
+# Trigger recomnfiguration on version change
+version_stamp = configure_file(
+    command: [
+        # Keep in sync with above
+        find_program('python3', required: true),
+        meson.current_source_dir() / 'build-aux' / 'version.py',
+        meson.current_source_dir() / 'VERSION',
+        '--git-repo', meson.current_source_dir(),
+        '--git', find_program('git', required: false),
+        # Trigger depfile generation
+        '--depfile', '@DEPFILE@'
+    ],
+    input: 'build-aux' / 'version.py',
+    output: 'version.stamp',
+    depfile: 'version.d'
+)
 
 # plugin_crypto is enabled if any of the crypto plugins is enabled, auto if
 # none of them are explicitly enabled but at least one is set to auto, or
@@ -51,17 +79,6 @@ if not dep_webrtc_audio_processing.found()
 endif
 if not dep_webrtc_audio_processing.found()
     dep_webrtc_audio_processing = disabler()
-endif
-
-prog_git = find_program('git', required: false)
-prog_python = python.find_installation()
-
-if import('fs').is_file('VERSION') and meson.version().version_compare('>=1.4.0')
-    version_file = files('VERSION')[0]
-    version_file_path = version_file.full_path()
-else
-    version_file = 'invalid'
-    version_file_path = meson.current_source_dir() / 'VERSION'
 endif
 
 default_install_rpath = ''

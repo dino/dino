@@ -54,11 +54,26 @@ def main():
     p = argparse.ArgumentParser(description="Compute the Dino version")
     p.add_argument("--git-repo", help="Path to checked out git repository")
     p.add_argument("--git", help="Path to git executable", default="git")
+    p.add_argument("--depfile", help="Create depfile")
+    p.add_argument("--deptarget", help="Target in depfile")
     p.add_argument("version_file", metavar="VERSION_FILE",
                    help="Use this file's contents as version if the file exists")
     args, unknown = p.parse_known_args()
-    version = compute_version(args.version_file, args.git_repo, args.git)
-    print(version)
+    if args.depfile:
+        with open(args.depfile, mode='w') as f:
+            f.write("version.stamp: ")
+            f.write(args.git_repo + "/VERSION ")
+            f.write(args.git_repo + "/.git/HEAD ")
+            try:
+                with open(args.git_repo + "/.git/HEAD") as f2:
+                    head = f2.read().strip()
+                    if head.startswith("ref:"):
+                        f.write(args.git_repo + "/.git/" + head[4:].strip())
+            except FileNotFoundError:
+                pass
+    else:
+        version = compute_version(args.version_file, args.git_repo, args.git)
+        print(version)
 
 
 if __name__ == "__main__":
