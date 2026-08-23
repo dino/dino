@@ -163,9 +163,6 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
     private Gst.Element? connected_device_element;
     private Stream? connected_stream;
     private Gst.Element prepare;
-    private Gst.Caps last_input_caps;
-    private Gst.Caps last_caps;
-    private int recaps_since_change;
     private Sink sink;
     private Gtk.Picture widget;
 
@@ -214,7 +211,6 @@ public class Dino.Plugins.Rtp.VideoWidget : Gtk.Widget, Dino.Plugins.VideoCallWi
             resolution_changed(width, height);
             return Source.REMOVE;
         });
-        last_input_caps = caps;
     }
 
     public void display_stream(Xmpp.Xep.JingleRtp.Stream? stream, Xmpp.Jid jid) {
