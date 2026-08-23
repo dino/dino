@@ -1,6 +1,6 @@
 using Gee;
 using Dino.Entities;
-using Qlite;
+using Dino.Qlite;
 using Xmpp;
 using Xmpp.Xep;
 using Xmpp.Xep.ServiceDiscovery;

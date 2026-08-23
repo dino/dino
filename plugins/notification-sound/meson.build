@@ -4,7 +4,6 @@ dependencies = [
     dep_glib,
     dep_gmodule,
     dep_libcanberra,
-    dep_qlite,
     dep_xmpp_vala,
     dep_gio,
 ]

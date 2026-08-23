@@ -1,9 +1,9 @@
 using Gdk;
 using Gee;
-using Qlite;
 
-using Xmpp;
 using Dino.Entities;
+using Dino.Qlite;
+using Xmpp;
 
 namespace Dino {
 

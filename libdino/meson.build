@@ -9,7 +9,7 @@ dependencies = [
     dep_gmodule,
     dep_libsoup,
     dep_libsrtp2,
-    dep_qlite,
+    dep_sqlite3,
     dep_xmpp_vala
 ]
 sources = files(
@@ -34,6 +34,16 @@ sources = files(
     'src/plugin/interfaces.vala',
     'src/plugin/loader.vala',
     'src/plugin/registry.vala',
+    'src/qlite/column.vala',
+    'src/qlite/database.vala',
+    'src/qlite/delete_builder.vala',
+    'src/qlite/insert_builder.vala',
+    'src/qlite/query_builder.vala',
+    'src/qlite/row.vala',
+    'src/qlite/statement_builder.vala',
+    'src/qlite/table.vala',
+    'src/qlite/update_builder.vala',
+    'src/qlite/upsert_builder.vala',
     'src/service/avatar_manager.vala',
     'src/service/blocking_manager.vala',
     'src/service/call_store.vala',

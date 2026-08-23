@@ -9,7 +9,6 @@ dependencies = [
     dep_libqrencode,
     dep_libomemo_c,
     dep_m,
-    dep_qlite,
     dep_xmpp_vala,
 ]
 sources = files(

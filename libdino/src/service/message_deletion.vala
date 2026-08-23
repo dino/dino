@@ -3,7 +3,6 @@ using Gee;
 using Xmpp;
 using Xmpp.Xep;
 using Dino.Entities;
-using Qlite;
 
 namespace Dino {
 

@@ -1,6 +1,6 @@
 using Sqlite;
 
-namespace Qlite {
+namespace Dino.Qlite {
 
 public class Database {
     private string file_name;

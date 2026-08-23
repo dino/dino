@@ -1,6 +1,5 @@
 using Gtk;
 using Gee;
-using Qlite;
 using Dino.Entities;
 
 namespace Dino.Plugins.Omemo {

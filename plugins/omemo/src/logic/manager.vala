@@ -1,8 +1,9 @@
-using Dino.Entities;
-using Omemo;
-using Qlite;
-using Xmpp;
 using Gee;
+
+using Dino.Entities;
+using Dino.Qlite;
+using Omemo;
+using Xmpp;
 
 namespace Dino.Plugins.Omemo {
 

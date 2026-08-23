@@ -1,10 +1,11 @@
-using Qlite;
-using Qrencode;
 using Gee;
-using Xmpp;
-using Dino.Entities;
 using Gtk;
+using Qrencode;
+
+using Dino.Entities;
+using Dino.Qlite;
 using Omemo;
+using Xmpp;
 
 namespace Dino.Plugins.Omemo {
 

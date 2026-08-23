@@ -10,7 +10,6 @@ dependencies = [
     dep_gstreamer_video,
     dep_gtk4,
     dep_m,
-    dep_qlite,
     dep_xmpp_vala,
 ]
 sources = files(

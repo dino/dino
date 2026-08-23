@@ -1,6 +1,7 @@
-using Dino.Entities;
-using Qlite;
 using Gee;
+
+using Dino.Entities;
+using Dino.Qlite;
 using Omemo;
 using Xmpp;
 

@@ -1,5 +1,6 @@
 using Gtk;
-using Qlite;
+
+using Dino.Qlite;
 
 namespace Dino.Plugins.Omemo {
 

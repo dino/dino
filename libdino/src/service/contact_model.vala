@@ -1,6 +1,5 @@
 using Xmpp;
 using Gee;
-using Qlite;
 
 using Dino.Entities;
 

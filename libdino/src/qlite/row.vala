@@ -1,7 +1,7 @@
 using Gee;
 using Sqlite;
 
-namespace Qlite {
+namespace Dino.Qlite {
 
 public class Row {
     private Map<string, string?> text_map = new HashMap<string, string?>();

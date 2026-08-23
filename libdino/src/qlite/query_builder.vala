@@ -1,6 +1,6 @@
 using Sqlite;
 
-namespace Qlite {
+namespace Dino.Qlite {
 
 public class QueryBuilder : StatementBuilder {
     private bool single_result;

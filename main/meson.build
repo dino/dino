@@ -8,7 +8,6 @@ dependencies = [
     dep_icu_uc,
     dep_libadwaita,
     dep_m,
-    dep_qlite,
     dep_xmpp_vala,
     meson.get_compiler('vala').find_library('posix'),
 ]

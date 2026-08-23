@@ -110,7 +110,6 @@ if get_option('set-install-rpath')
     default_install_rpath = get_option('prefix') / get_option('libdir')
 endif
 
-subdir('qlite')
 subdir('xmpp-vala')
 subdir('libdino')
 subdir('main')

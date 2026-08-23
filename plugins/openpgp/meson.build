@@ -7,7 +7,6 @@ dependencies = [
     dep_gmodule,
     dep_gpgme,
     dep_gtk4,
-    dep_qlite,
     dep_xmpp_vala,
 ]
 sources = files(

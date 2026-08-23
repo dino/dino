@@ -1,6 +1,6 @@
 using Sqlite;
 
-namespace Qlite {
+namespace Dino.Qlite {
 
 public abstract class Column<T> {
     public const string DEFAULT_TABLE_NAME = "";

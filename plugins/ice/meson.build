@@ -5,7 +5,6 @@ dependencies = [
     dep_glib,
     dep_gmodule,
     dep_nice,
-    dep_qlite,
     dep_xmpp_vala,
 ]
 sources = files(

@@ -1,8 +1,8 @@
 using Gee;
-using Qlite;
 using Xmpp;
 
 using Dino.Entities;
+using Dino.Qlite;
 
 namespace Dino {
 

@@ -1,5 +1,4 @@
 using Gee;
-using Qlite;
 
 using Xmpp;
 using Xmpp.Xep;

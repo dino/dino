@@ -1,4 +1,4 @@
-using Qlite;
+using Dino.Qlite;
 using Omemo;
 
 namespace Dino.Plugins.Omemo {
