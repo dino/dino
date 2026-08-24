@@ -665,6 +665,9 @@ namespace GPG {
     [CCode (cname = "gpgme_strerror")]
     public unowned string strerror(GPGError.Error err);
 
+    [CCode (cname = "gpgme_set_global_flag")]
+    public int set_global_flag(string name, string value);
+
     private void throw_if_error(GPGError.Error error) throws GLib.Error {
         if (error.code != GPGError.ErrorCode.NO_ERROR) {
             throw new GLib.Error(-1, error.code, "%s", error.to_string());

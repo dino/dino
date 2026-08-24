@@ -1,5 +1,6 @@
 *.o
 build/
+dist/
 Makefile
 .vscode/
 *.iml

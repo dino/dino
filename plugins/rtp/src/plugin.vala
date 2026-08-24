@@ -46,6 +46,7 @@ public class Dino.Plugins.Rtp.Plugin : RootInterface, VideoCallPlugin, Object {
         var new_devices = new ArrayList<Device>();
         foreach (Gst.Device device in device_monitor.get_devices()) {
             if (device.properties == null) continue;
+            if (device.properties.get_string("device.api") == "wasapi") continue;
             if (device.properties.has_name("pipewire-proplist") && device.has_classes("Audio")) continue;
             if (device.properties.get_string("device.class") == "monitor") continue;
             var pre_device = devices.first_match((it) => it.matches(device));

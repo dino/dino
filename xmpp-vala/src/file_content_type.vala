@@ -6,6 +6,23 @@ namespace Xmpp {
         string content_type = null;
 
         public FileContentType.from_file_info(FileInfo file_info) {
+#if _WIN32
+            {
+                string file_name = file_info.get_name();
+                int file_name_length = file_name.length;
+                int ext_index = file_name.last_index_of(".");
+                if (ext_index < file_name_length)
+                {
+                    string extension = file_name.substring(ext_index, file_name_length - ext_index);
+                    string mime_type = ContentType.get_mime_type(extension);
+                    if (mime_type != null && mime_type.length != 0)
+                    {
+                        content_type = ContentType.from_mime_type(mime_type);
+                        return;
+                    }
+                }   
+            }
+#endif
             content_type = file_info.get_content_type();
         }
 
