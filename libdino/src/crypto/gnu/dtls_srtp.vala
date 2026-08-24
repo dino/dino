@@ -1,10 +1,10 @@
 using GnuTLS;
 
-namespace Dino.Plugins.Ice.DtlsSrtp {
+namespace Dino.Crypto.DtlsSrtp {
 
 public class CredentialsCapsuleGnuTLS : CredentialsCapsule {
-    public X509.Certificate[] own_cert;
-    public X509.PrivateKey private_key;
+    internal X509.Certificate[] own_cert;
+    internal X509.PrivateKey private_key;
 }
 
 private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm digest_algo) {
@@ -19,7 +19,7 @@ private uint8[] get_fingerprint(X509.Certificate certificate, DigestAlgorithm di
     return ret;
 }
 
-internal CredentialsCapsule generate_credentials () throws GLib.Error {
+public CredentialsCapsule generate_credentials () throws GLib.Error {
     int err = 0;
 
     X509.PrivateKey private_key = X509.PrivateKey.create ();

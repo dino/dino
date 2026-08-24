@@ -1,4 +1,4 @@
-namespace Dino.Plugins.Ice.DtlsSrtp {
+namespace Dino.Crypto.DtlsSrtp {
 
 public abstract class CredentialsCapsule : Object {
     public uint8[] own_fingerprint;

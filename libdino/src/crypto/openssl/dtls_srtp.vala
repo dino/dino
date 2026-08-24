@@ -1,13 +1,13 @@
 using OpenSSL;
 
-namespace Dino.Plugins.Ice.DtlsSrtp {
+namespace Dino.Crypto.DtlsSrtp {
 
 public class CredentialsCapsuleOpenSSL : CredentialsCapsule {
-    public X509.Certificate own_cert;
-    public EVP.Key private_key;
+    internal X509.Certificate own_cert;
+    internal EVP.Key private_key;
 }
 
-internal CredentialsCapsule generate_credentials () throws GLib.Error {
+public CredentialsCapsule generate_credentials () throws GLib.Error {
     EVP.Key key = new EVP.Key.generate_ecdsa ("prime256v1");
 
     var start_time = new DateTime.now_local().add_days(-1);

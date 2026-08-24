@@ -86,7 +86,7 @@ namespace OpenSSL {
         [CCode (cname = "EVP_PKEY", lower_case_cprefix = "EVP_PKEY_", cprefix = "EVP_PKEY_", ref_function = "EVP_PKEY_up_ref", ref_function_void = true, unref_function = "EVP_PKEY_free")]
         public class Key {
             public Key ();
-            [CCode (cheader_filename = "openssl_utils.h")]
+            [CCode (cheader_filename = "crypto/openssl/utils.h")]
             public Key.generate_ecdsa (string curve);
         }
         [Compact]

@@ -19,6 +19,7 @@ sources = files(
     'src/dbus/upower.vala',
     'src/crypto/cipher.vala',
     'src/crypto/cipher_converter.vala',
+    'src/crypto/dtls_srtp.vala',
     'src/crypto/error.vala',
     'src/crypto/srtp.vala',
     'src/entity/account.vala',
@@ -92,15 +93,18 @@ sources = files(
 sources += [version_c]
 
 if crypto_backend == 'gnu'
-    dependencies += [ dep_libgcrypt ]
+    dependencies += [ dep_libgcrypt, dep_gnutls ]
     sources += files(
         'src/crypto/gnu/cipher.vala',
+        'src/crypto/gnu/dtls_srtp.vala',
         'src/crypto/gnu/utils.vala',
     )
 elif crypto_backend == 'openssl'
     dependencies += [ dep_openssl ]
     sources += files(
         'src/crypto/openssl/cipher.vala',
+        'src/crypto/openssl/dtls_srtp.vala',
+        'src/crypto/openssl/utils.c',
         'src/crypto/openssl/utils.vala',
     )
 endif

@@ -1,4 +1,6 @@
 using Gee;
+
+using Dino.Crypto;
 using Xmpp;
 using Xmpp.Xep;
 
