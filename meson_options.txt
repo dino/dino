@@ -14,3 +14,5 @@ option('plugin-rtp-msdk', type: 'feature', value: 'disabled', description: 'Inte
 option('plugin-rtp-vaapi', type: 'feature', value: 'disabled', description: 'Video Acceleration API')
 option('plugin-rtp-vp9', type: 'feature', value: 'disabled', description: 'VP9 codec')
 option('plugin-rtp-webrtc-audio-processing', value: 'auto', type: 'feature', description: 'Voice preprocessing')
+
+option('libportal', type: 'feature', value: 'auto', description: 'Autostart and running in background support')

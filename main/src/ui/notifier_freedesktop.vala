@@ -101,6 +101,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
             content_notifications[conversation] = notification_id;
 
             add_action_listener(notification_id, "default", () => {
+                GLib.Application.get_default().activate();
                 GLib.Application.get_default().activate_action("open-conversation", new Variant.int32(conversation.id));
             });
         } catch (Error e) {
