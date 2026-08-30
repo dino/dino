@@ -162,7 +162,7 @@ public class ChatTextView : Box {
 
         // Style text section bold (CTRL + b) or italic (CTRL + i)
         if ((state & ModifierType.CONTROL_MASK) > 0) {
-            if (keyval in new uint[]{ Key.i, Key.b }) {
+            if (keyval in new uint[]{ Key.i, Key.b, Key.s }) {
                 TextIter start_selection, end_selection;
                 text_view.buffer.get_selection_bounds(out start_selection, out end_selection);
 
@@ -193,11 +193,6 @@ public class ChatTextView : Box {
     }
 
     public Gee.List<Xep.MessageMarkup.Span> get_markups() {
-        var markups = new HashMap<Xep.MessageMarkup.SpanType, Xep.MessageMarkup.SpanType>();
-        markups[Xep.MessageMarkup.SpanType.EMPHASIS] = Xep.MessageMarkup.SpanType.EMPHASIS;
-        markups[Xep.MessageMarkup.SpanType.STRONG_EMPHASIS] = Xep.MessageMarkup.SpanType.STRONG_EMPHASIS;
-        markups[Xep.MessageMarkup.SpanType.DELETED] = Xep.MessageMarkup.SpanType.DELETED;
-
         var ended_groups = new ArrayList<Xep.MessageMarkup.Span>();
         Xep.MessageMarkup.Span current_span = null;
 
