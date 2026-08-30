@@ -7,21 +7,19 @@ using Dino.Entities;
 
 namespace Dino.Ui {
 
+[GtkTemplate (ui = "/im/dino/Dino/conversation_selector.ui")]
 public class ConversationSelector : Widget {
 
     public signal void conversation_selected(Conversation conversation);
 
-    ListBox list_box = new ListBox() { hexpand=true };
+    [GtkChild] private unowned ScrolledWindow scrolled;
+    [GtkChild] private unowned ListBox list_box;
 
     private StreamInteractor stream_interactor;
     private HashMap<Conversation, ConversationSelectorRow> rows = new HashMap<Conversation, ConversationSelectorRow>(Conversation.hash_func, Conversation.equals_func);
 
     public ConversationSelector init(StreamInteractor stream_interactor) {
         this.stream_interactor = stream_interactor;
-        list_box.set_parent(this);
-        list_box.add_css_class("navigation-sidebar");
-        this.layout_manager = new BinLayout();
-
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
         stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_content_item_received);
@@ -37,6 +35,7 @@ public class ConversationSelector : Widget {
     }
 
     construct {
+        this.layout_manager = new BinLayout();
         list_box.set_sort_func(sort);
 
         realize.connect(() => {
@@ -64,7 +63,29 @@ public class ConversationSelector : Widget {
             add_conversation(conversation);
         }
         list_box.select_row(rows[conversation]);
+        ConversationSelectorRow row = rows[conversation];
+        Idle.add(() => { scroll_to_row(row); return false; });
     }
+
+    private void scroll_to_row(ConversationSelectorRow row) {
+        double row_x, row_y;
+        if (!row.translate_coordinates(list_box, 0, 0, out row_x, out row_y)) return;
+
+        double row_bottom = row_y + row.get_allocated_height();
+        double vadj_bottom = scrolled.vadjustment.value + scrolled.vadjustment.page_size;
+
+        // don't scroll if any part of the row is visible
+        if (row_bottom > scrolled.vadjustment.value && row_y < vadj_bottom) return;
+
+        // scroll to vertically center the row, if possible
+        double target = row_y + row.get_allocated_height() / 2.0 - scrolled.vadjustment.page_size / 2.0;
+        target = target.clamp(0, scrolled.vadjustment.upper - scrolled.vadjustment.page_size);
+
+        new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 900,
+            new Adw.PropertyAnimationTarget(scrolled.vadjustment, "value")
+        ).play();
+    }
+
 
     private void on_content_item_received(ContentItem item, Conversation conversation) {
         if (rows.has_key(conversation)) {

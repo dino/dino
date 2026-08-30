@@ -61,13 +61,7 @@
                                                             <object class="GtkStackPage">
                                                                 <property name="name">content</property>
                                                                 <property name="child">
-                                                                    <object class="GtkScrolledWindow">
-                                                                        <property name="hscrollbar_policy">never</property>
-                                                                        <property name="vexpand">1</property>
-                                                                        <child>
-                                                                            <object class="DinoUiConversationSelector" id="conversation_selector">
-                                                                            </object>
-                                                                        </child>
+                                                                    <object class="DinoUiConversationSelector" id="conversation_selector">
                                                                     </object>
                                                                 </property>
                                                             </object>
