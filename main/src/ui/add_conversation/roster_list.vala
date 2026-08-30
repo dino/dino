@@ -56,8 +56,22 @@ protected class RosterList {
 
     private void fetch_roster_items(Account account) {
         rows[account] = new HashMap<Jid, ListBoxRow>(Jid.hash_func, Jid.equals_func);
+        bool has_self = false;
         foreach (Roster.Item roster_item in stream_interactor.get_module(RosterManager.IDENTITY).get_roster(account)) {
+            if (roster_item.jid == account.bare_jid) { has_self = true; }
             update_row(account, roster_item.jid);
+        }
+
+        if (!has_self) {
+            // Inject a virtual "Note to Self" contact.
+            // XMPP technically allows people to be on their own contact lists but
+            // in practice it's rarely allowed, in fact there's an embarrassed mention of this in:
+            // https://www.rfc-editor.org/rfc/rfc6121.html#section-2.3.3:
+            // >  Interoperability Note: Some servers return a <not-allowed/> stanza
+            // > error to the client if the value of the <item/> element's 'jid'
+            // > attribute matches the bare JID <localpart@domainpart> of the
+            // > user's account.
+            update_row(account, account.bare_jid);
         }
     }
 
