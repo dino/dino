@@ -22,6 +22,7 @@ public class FileMetaItem : ConversationSummary.ContentMetaItem {
     }
 
     public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
+        stream_interactor.get_module(FileTransferStorage.IDENTITY).recover_incomplete_file(file_transfer);
         FileWidget widget = new FileWidget(file_transfer);
         FileWidgetController widget_controller = new FileWidgetController(widget, file_transfer, stream_interactor);
         return widget;
@@ -182,10 +183,11 @@ public class FileDefaultWidgetController : Object {
                 Dino.Application.get_default().activate_action("file_open_externally", new GLib.Variant.int32(file_transfer.id));
                 break;
             case FileTransfer.State.NOT_STARTED:
+            case FileTransfer.State.FAILED:
                 Dino.Application.get_default().activate_action("file_start_download", new GLib.Variant.int32(file_transfer.id));
                 break;
             default:
-                // Clicking doesn't do anything in FAILED and IN_PROGRESS states
+                // Clicking doesn't do anything in IN_PROGRESS state
                 break;
         }
     }

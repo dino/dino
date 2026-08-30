@@ -72,6 +72,10 @@ namespace Dino {
             string transfer_host = Uri.parse(receive_data.url, UriFlags.NONE).get_host();
             get_message.accept_certificate.connect((peer_cert, errors) => { return ConnectionManager.on_invalid_certificate(transfer_host, peer_cert, errors); });
             InputStream stream = yield session.send_async(get_message, GLib.Priority.LOW, file_transfer.cancellable);
+            if (get_message.status_code != 200) {
+                try { stream.close(); } catch (Error e) {}
+                throw new IOError.FAILED("HTTP status code %u".printf(get_message.status_code));
+            }
 
             if (file_size != -1) {
                 return new LimitInputStream(stream, file_size);

@@ -66,9 +66,10 @@ namespace Dino {
             // If it's a file transfer, remove the file
             if (content_item.type_ == FileItem.TYPE) {
                 FileItem file_item = (FileItem) content_item;
-                if (file_item.file_transfer.path != null) {
-                    FileUtils.remove(file_item.file_transfer.path);
-                }
+                File? file = file_item.file_transfer.get_file();
+                File? partial_file = file_item.file_transfer.get_partial_file();
+                if (file != null) FileUtils.remove(file.get_path());
+                if (partial_file != null) FileUtils.remove(partial_file.get_path());
             }
 
             // Mark the (underlying) message as removed and clear the body

@@ -176,9 +176,19 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     public async void download_file(FileTransfer file_transfer) {
-        Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
+        if (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.state == FileTransfer.State.IN_PROGRESS) return;
+
+        Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(file_transfer.counterpart.bare_jid, file_transfer.account);
+        if (conversation == null) {
+            fail_download(file_transfer);
+            return;
+        }
 
         FileProvider? file_provider = this.select_file_provider(file_transfer);
+        if (file_provider == null) {
+            fail_download(file_transfer);
+            return;
+        }
 
         yield download_file_internal(file_provider, file_transfer, conversation);
     }
@@ -217,6 +227,17 @@ public class FileManager : StreamInteractionModule, Object {
         file_decryptors.add(decryptor);
     }
 
+    public int64 get_expected_file_size(FileTransfer file_transfer) {
+        if (file_transfer.encryption == Encryption.NONE) return file_transfer.size;
+
+        foreach (FileDecryptor file_decryptor in file_decryptors) {
+            if (file_decryptor.get_encryption() == file_transfer.encryption) {
+                return file_decryptor.get_expected_file_size(file_transfer, file_transfer.size);
+            }
+        }
+        return -1;
+    }
+
     public void add_metadata_provider(FileMetadataProvider file_metadata_provider) {
         file_metadata_providers.add(file_metadata_provider);
     }
@@ -243,104 +264,164 @@ public class FileManager : StreamInteractionModule, Object {
     }
 
     private async void download_file_internal(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation) {
-        try {
-            // Get meta info
-            FileReceiveData? receive_data = file_provider.get_file_receive_data(file_transfer);
-            if (receive_data == null) {
-                warning("Don't have download data (yet)");
+        file_transfer.cancellable.reset();
+        if (file_transfer.state == FileTransfer.State.FAILED) file_transfer.state = FileTransfer.State.NOT_STARTED;
+        file_transfer.state = FileTransfer.State.IN_PROGRESS;
+
+        Gee.List<FileReceiveData> receive_data_candidates = get_file_receive_data_candidates(file_provider, file_transfer);
+        foreach (FileReceiveData receive_data in receive_data_candidates) {
+            file_transfer.transferred_bytes = 0;
+            try {
+                yield download_file_attempt(file_provider, file_transfer, conversation, receive_data);
+                file_transfer.state = FileTransfer.State.COMPLETE;
                 return;
+            } catch (IOError.CANCELLED e) {
+                cancel_download(file_transfer);
+                return;
+            } catch (Error e) {
+                warning("Error downloading file: %s", e.message);
             }
-            FileDecryptor? file_decryptor = null;
-            foreach (FileDecryptor decryptor in file_decryptors) {
-                if (decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
-                    file_decryptor = decryptor;
-                    break;
-                }
+        }
+
+        fail_download(file_transfer);
+    }
+
+    private Gee.List<FileReceiveData> get_file_receive_data_candidates(FileProvider file_provider, FileTransfer file_transfer) {
+        var receive_data_candidates = new ArrayList<FileReceiveData>();
+
+        if (file_transfer.provider == SFS_PROVIDER_ID) {
+            var urls = new HashSet<string>();
+            foreach (var source in file_transfer.sfs_sources) {
+                var http_source = source as Xep.StatelessFileSharing.HttpSource;
+                if (http_source == null || !urls.add(http_source.url)) continue;
+                receive_data_candidates.add(new HttpFileReceiveData() { url=http_source.url });
             }
+        } else {
+            FileReceiveData? receive_data = file_provider.get_file_receive_data(file_transfer);
+            if (receive_data != null) receive_data_candidates.add(receive_data);
+        }
 
-            if (file_decryptor != null) {
-                receive_data = file_decryptor.prepare_get_meta_info(conversation, file_transfer, receive_data);
+        return receive_data_candidates;
+    }
+
+    private async void download_file_attempt(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws Error {
+        // Get meta info
+        FileReceiveData receive_data = receive_data_;
+        FileDecryptor? file_decryptor = null;
+        foreach (FileDecryptor decryptor in file_decryptors) {
+            if (decryptor.can_decrypt_file(conversation, file_transfer, receive_data)) {
+                file_decryptor = decryptor;
+                break;
             }
+        }
 
-            FileMeta file_meta = yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
+        if (file_decryptor != null) {
+            receive_data = file_decryptor.prepare_get_meta_info(conversation, file_transfer, receive_data);
+        }
 
-            // Download and decrypt file
-            file_transfer.state = FileTransfer.State.IN_PROGRESS;
+        FileMeta file_meta = yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
 
-            if (file_decryptor != null) {
-                file_meta = file_decryptor.prepare_download_file(conversation, file_transfer, receive_data, file_meta);
-            }
+        // Download and decrypt file
+        if (file_decryptor != null) {
+            file_meta = file_decryptor.prepare_download_file(conversation, file_transfer, receive_data, file_meta);
+        }
 
-            InputStream download_input_stream = yield file_provider.download(file_transfer, receive_data, file_meta);
-            InputStream input_stream = download_input_stream;
-            if (file_decryptor != null) {
-                input_stream = yield file_decryptor.decrypt_file(input_stream, conversation, file_transfer, receive_data);
-            }
+        InputStream download_input_stream = yield file_provider.download(file_transfer, receive_data, file_meta);
+        InputStream input_stream = download_input_stream;
+        if (file_decryptor != null) {
+            input_stream = yield file_decryptor.decrypt_file(input_stream, conversation, file_transfer, receive_data);
+        }
 
-            // Update current download progress in the FileTransfer
-            LimitInputStream? limit_stream = download_input_stream as LimitInputStream;
-            if (limit_stream != null) {
-                limit_stream.bind_property("retrieved-bytes", file_transfer, "transferred-bytes", BindingFlags.SYNC_CREATE);
-            }
+        // Update current download progress in the FileTransfer
+        LimitInputStream? limit_stream = download_input_stream as LimitInputStream;
+        if (limit_stream != null) {
+            limit_stream.bind_property("retrieved-bytes", file_transfer, "transferred-bytes", BindingFlags.SYNC_CREATE);
+        }
 
-            // Save file
-            string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
-            File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
+        // Save file
+        string filename = file_transfer.path ?? Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
+        file_transfer.path = filename;
+        File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
+        File partial_file = File.new_for_path(file.get_path() + ".part");
 
-            // libsoup doesn't properly support splicing
-            OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            uint8[] buffer = new uint8[1024];
-            ssize_t read;
-            while ((read = yield input_stream.read_async(buffer, Priority.LOW, file_transfer.cancellable)) > 0) {
-                buffer.length = (int) read;
-                yield os.write_async(buffer, Priority.LOW, file_transfer.cancellable);
-                buffer.length = 1024;
-            }
-            yield input_stream.close_async(Priority.LOW, file_transfer.cancellable);
-            yield os.close_async(Priority.LOW, file_transfer.cancellable);
+        // libsoup doesn't properly support splicing
+        OutputStream output_stream = partial_file.create(FileCreateFlags.REPLACE_DESTINATION);
 
-            // Verify the hash of the downloaded file, if it is known
-            var supported_hashes = Xep.CryptographicHashes.get_supported_hashes(file_transfer.hashes);
-            if (!supported_hashes.is_empty) {
-                var checksum_types = new ArrayList<ChecksumType>();
-                var hashes = new HashMap<ChecksumType, string>();
-                foreach (var hash in supported_hashes) {
-                    var checksum_type = Xep.CryptographicHashes.hash_string_to_type(hash.algo);
-                    checksum_types.add(checksum_type);
-                    hashes[checksum_type] = hash.val;
-                }
+        uint8[] buffer = new uint8[1024];
+        ssize_t read;
+        while ((read = yield input_stream.read_async(buffer, Priority.LOW, file_transfer.cancellable)) > 0) {
+            buffer.length = (int) read;
+            yield output_stream.write_all_async(buffer, Priority.LOW, file_transfer.cancellable, null);
+            buffer.length = 1024;
+        }
+        yield input_stream.close_async(Priority.LOW, file_transfer.cancellable);
+        yield output_stream.close_async(Priority.LOW, file_transfer.cancellable);
 
-                var computed_hashes = yield compute_file_hashes(file, checksum_types);
-                foreach (var checksum_type in hashes.keys) {
-                    if (hashes[checksum_type] != computed_hashes[checksum_type]) {
-                        warning("Hash of downloaded file does not equal advertised hash, discarding: %s. %s should be %s, was %s",
-                                file_transfer.file_name, checksum_type.to_string(), hashes[checksum_type], computed_hashes[checksum_type]);
-                        FileUtils.remove(file.get_path());
-                        file_transfer.state = FileTransfer.State.FAILED;
-                        return;
-                    }
-                }
-            }
+        if (limit_stream != null && limit_stream.remaining_bytes != 0) {
+            throw new IOError.FAILED("File download ended before the advertised size");
+        }
 
-            file_transfer.path = file.get_basename();
+        FileInfo file_info = partial_file.query_info(FileAttribute.STANDARD_SIZE, FileQueryInfoFlags.NONE);
+        int64 downloaded_size = file_info.get_size();
+        if (downloaded_size == 0 && file_transfer.size != 0) {
+            throw new IOError.FAILED("File download returned an empty body");
+        }
+        int64 expected_size = file_decryptor == null
+                ? file_meta.size
+                : file_decryptor.get_expected_file_size(file_transfer, file_meta.size);
+        if (expected_size >= 0 && downloaded_size != expected_size) {
+            throw new IOError.FAILED("Downloaded file size does not match the advertised size");
+        }
 
-            FileInfo file_info = file_transfer.get_file().query_info("*", FileQueryInfoFlags.NONE);
+        // Verify the hash of the downloaded file, if it is known
+        yield verify_file_hashes(partial_file, file_transfer);
+        partial_file.move(file, FileCopyFlags.OVERWRITE, file_transfer.cancellable, null);
+
+        try {
+            file_info = file.query_info("*", FileQueryInfoFlags.NONE);
             if (file_info.get_content_type() != "application/octet-stream" || file_transfer.content_type == null) {
                 // Only overwrite mime_type if it's better than what we had before.
                 file_transfer.content_type = new FileContentType.from_file_info(file_info);
             }
-
-            file_transfer.state = FileTransfer.State.COMPLETE;
-        } catch (IOError.CANCELLED e) {
-            print("cancelled\n");
         } catch (Error e) {
-            warning("Error downloading file: %s", e.message);
-            if (file_transfer.provider == 0 || file_transfer.provider == FileManager.SFS_PROVIDER_ID) {
-                file_transfer.state = FileTransfer.State.NOT_STARTED;
-            } else {
-                file_transfer.state = FileTransfer.State.FAILED;
+            warning("Error determining downloaded file type: %s", e.message);
+        }
+    }
+
+    private async void verify_file_hashes(File file, FileTransfer file_transfer) throws Error {
+        var supported_hashes = Xep.CryptographicHashes.get_supported_hashes(file_transfer.hashes);
+        if (supported_hashes.is_empty) return;
+
+        var checksum_types = new ArrayList<ChecksumType>();
+        var hashes = new HashMap<ChecksumType, string>();
+        foreach (var hash in supported_hashes) {
+            var checksum_type = Xep.CryptographicHashes.hash_string_to_type(hash.algo);
+            checksum_types.add(checksum_type);
+            hashes[checksum_type] = hash.val;
+        }
+
+        var computed_hashes = yield compute_file_hashes(file, checksum_types);
+        foreach (var checksum_type in hashes.keys) {
+            if (hashes[checksum_type] != computed_hashes[checksum_type]) {
+                throw new IOError.FAILED("Downloaded file hash does not match the advertised hash");
             }
         }
+    }
+
+    private void cancel_download(FileTransfer file_transfer) {
+        remove_partial_file(file_transfer);
+        file_transfer.path = null;
+        file_transfer.state = FileTransfer.State.NOT_STARTED;
+    }
+
+    private void fail_download(FileTransfer file_transfer) {
+        remove_partial_file(file_transfer);
+        file_transfer.state = FileTransfer.State.FAILED;
+    }
+
+    private void remove_partial_file(FileTransfer file_transfer) {
+        File? partial_file = file_transfer.get_partial_file();
+        if (partial_file != null) FileUtils.remove(partial_file.get_path());
     }
 
     public FileTransfer create_file_transfer_from_provider_incoming(FileProvider file_provider, string info, Jid from, DateTime time, DateTime local_time, Conversation conversation, FileReceiveData receive_data, FileMeta file_meta) {
@@ -382,6 +463,9 @@ public class FileManager : StreamInteractionModule, Object {
         FileTransfer file_transfer = create_file_transfer_from_provider_incoming(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
         stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
 
+        conversation.last_active = file_transfer.time;
+        received_file(file_transfer, conversation);
+
         if (fm2.is_sender_trustworthy(file_transfer, conversation)) {
             try {
                 yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
@@ -395,9 +479,6 @@ public class FileManager : StreamInteractionModule, Object {
                 });
             }
         }
-
-        conversation.last_active = file_transfer.time;
-        received_file(file_transfer, conversation);
     }
 
     public Message? get_message_for_file_transfer(FileTransfer file_transfer, Conversation conversation) {
@@ -482,6 +563,7 @@ public interface FileEncryptor : Object {
 
 public interface FileDecryptor : Object {
     public abstract Encryption get_encryption();
+    public abstract int64 get_expected_file_size(FileTransfer file_transfer, int64 download_size);
     public abstract FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);
     public abstract FileMeta prepare_download_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data, FileMeta file_meta);
     public abstract bool can_decrypt_file(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data);

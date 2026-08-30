@@ -160,11 +160,14 @@ public class Dino.StatelessFileSharing : StreamInteractionModule, Object {
             return;
         }
 
+        int source_count = file_transfer.sfs_sources.size;
         foreach (var source in sources) {
             file_transfer.add_sfs_source(source);
         }
 
-        if (fm2.is_sender_trustworthy(file_transfer, conversation) && file_transfer.state == FileTransfer.State.NOT_STARTED && file_transfer.size >= 0 && file_transfer.size < 5000000) {
+        if (file_transfer.sfs_sources.size > source_count && fm2.is_sender_trustworthy(file_transfer, conversation) &&
+                (file_transfer.state == FileTransfer.State.NOT_STARTED || file_transfer.state == FileTransfer.State.FAILED) &&
+                file_transfer.size >= 0 && file_transfer.size < 5000000) {
             fm.download_file(file_transfer);
         }
     }

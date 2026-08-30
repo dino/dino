@@ -260,6 +260,12 @@ public class FileTransfer : Object {
         return File.new_for_path(Path.build_filename(Dino.get_storage_dir(), "files", path));
     }
 
+    public File? get_partial_file() {
+        File? file = get_file();
+        if (file == null) return null;
+        return File.new_for_path(file.get_path() + ".part");
+    }
+
     private void on_update(Object o, ParamSpec sp) {
         Qlite.UpdateBuilder update_builder = db.file_transfer.update().with(db.file_transfer.id, "=", id);
         switch (sp.name) {

@@ -78,7 +78,7 @@ public class FileImageWidget : Widget {
             Dino.Application.get_default().activate_action("file_start_download", new Variant.int32(file_transfer_id));
         });
         transmission_progress.cancel_transfer.connect(() => {
-            Dino.Application.get_default().activate_action("file_cancel_transfer", new Variant.int32(file_transfer_id));
+            Dino.Application.get_default().activate_action("file_cancel_download", new Variant.int32(file_transfer_id));
         });
     }
 
@@ -133,7 +133,7 @@ public class FileImageWidget : Widget {
     }
 
     private void refresh_state() {
-        if ((state == EMPTY || state == PREVIEW) && file_transfer.path != null) {
+        if ((state == EMPTY || state == PREVIEW) && file_transfer.state == COMPLETE && file_transfer.path != null) {
             load_from_file.begin(file_transfer.get_file(), file_transfer.file_name);
             show_image_overlay_toolbar = true;
             this.set_cursor_from_name("zoom-in");

@@ -21,6 +21,9 @@ namespace Dino.Ui {
 
         public override Object? get_widget(Plugins.ConversationItemWidgetInterface outer, Plugins.WidgetType type) {
             var file_transfers = file_group_item.file_group.file_transfers;
+            foreach (FileTransfer file_transfer in file_transfers) {
+                stream_interactor.get_module(FileTransferStorage.IDENTITY).recover_incomplete_file(file_transfer);
+            }
 
             if (file_transfers.size > 1 && all_files_images(file_transfers)) {
                 return new ImageGroupWidget(file_transfers);

@@ -11,10 +11,16 @@ public class OmemoHttpFileReceiveData : HttpFileReceiveData {
 
 public class OmemoFileDecryptor : FileDecryptor, Object {
 
+    private const int AUTH_TAG_SIZE = 16;
     private Regex url_regex = /^aesgcm:\/\/(.*)#(([A-Fa-f0-9]{2}){48}|([A-Fa-f0-9]{2}){44})$/;
 
     public Encryption get_encryption() {
         return Encryption.OMEMO;
+    }
+
+    public int64 get_expected_file_size(FileTransfer file_transfer, int64 download_size) {
+        if (file_transfer.provider != FileManager.HTTP_PROVIDER_ID) return file_transfer.size;
+        return download_size >= AUTH_TAG_SIZE ? download_size - AUTH_TAG_SIZE : -1;
     }
 
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
@@ -62,7 +68,7 @@ public class OmemoFileDecryptor : FileDecryptor, Object {
             SymmetricCipher cipher = new SymmetricCipher("AES-GCM");
             cipher.set_key(key);
             cipher.set_iv(iv);
-            return new ConverterInputStream(encrypted_stream, new SymmetricCipherDecrypter((owned) cipher, 16));
+            return new ConverterInputStream(encrypted_stream, new SymmetricCipherDecrypter((owned) cipher, AUTH_TAG_SIZE));
 
         } catch (Crypto.Error e) {
             throw new FileReceiveError.DECRYPTION_FAILED("OMEMO file decryption error: %s".printf(e.message));

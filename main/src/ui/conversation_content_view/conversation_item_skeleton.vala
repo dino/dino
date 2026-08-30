@@ -192,6 +192,11 @@ public class ConversationItemSkeleton : Plugins.ConversationItemWidgetInterface,
     }
 
     private void update_received_mark() {
+        received_image.remove_css_class("error");
+        time_label.remove_css_class("error");
+        received_image.tooltip_text = null;
+        time_label.tooltip_text = null;
+
         switch (content_meta_item.mark) {
             case Message.Marked.RECEIVED: 
                 received_image.icon_name = "dino-tick-symbolic";
