@@ -13,9 +13,12 @@ public class PresenceManager : StreamInteractionModule, Object {
     public signal void received_subscription_request(Jid jid, Account account);
     public signal void received_subscription_approval(Jid jid, Account account);
 
+    private static Gee.List<Xmpp.Xep.Hats.Hat> NO_HATS = new Gee.ArrayList<Xmpp.Xep.Hats.Hat>();
+
     private StreamInteractor stream_interactor;
     private HashMap<Jid, ArrayList<Jid>> resources = new HashMap<Jid, ArrayList<Jid>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private Gee.List<Jid> subscription_requests = new ArrayList<Jid>(Jid.equals_func);
+    private HashMap<Jid, Gee.List<Xmpp.Xep.Hats.Hat>> hats = new HashMap<Jid, Gee.List<Xmpp.Xep.Hats.Hat>>(Jid.hash_func, Jid.equals_func);
 
     public static void start(StreamInteractor stream_interactor) {
         PresenceManager m = new PresenceManager(stream_interactor);
@@ -77,6 +80,13 @@ public class PresenceManager : StreamInteractionModule, Object {
         if (stream != null) stream.get_module(Xmpp.Presence.Module.IDENTITY).cancel_subscription(stream, jid.bare_jid);
     }
 
+    public Gee.List<Xmpp.Xep.Hats.Hat> get_hats(Jid jid) {
+        var result = hats[jid];
+
+        if (result == null) return NO_HATS;
+        else return result;
+    }
+
     private void on_account_added(Account account) {
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_available_show.connect((stream, jid, show) =>
             on_received_available_show(account, jid, show)
@@ -93,6 +103,7 @@ public class PresenceManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Presence.Module.IDENTITY).received_subscription_approval.connect((stream, jid) => {
             received_subscription_approval(jid, account);
         });
+        stream_interactor.module_manager.get_module(account, Xmpp.Xep.Hats.Module.IDENTITY).hats_received.connect(on_received_hats);
     }
 
     private void on_received_available_show(Account account, Jid jid, string show) {
@@ -117,6 +128,10 @@ public class PresenceManager : StreamInteractionModule, Object {
             }
         }
         received_offline_presence(jid, account);
+    }
+
+    private void on_received_hats(XmppStream stream, Jid jid, unowned Gee.List<Xmpp.Xep.Hats.Hat> hats) {
+        this.hats[jid] = hats;
     }
 }
 }
