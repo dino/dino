@@ -15,6 +15,9 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         public DateTime? end { get; set; }
         public string? start_id { get; set; }
         public string? end_id { get; set; }
+        public string? rsm_after_id { get; set; }
+        public bool page_forward { get; set; default=false; }
+        public int max_results { get; set; default=ResultSetManagement.MAX_RESULTS; }
 
         public MamQueryParams.query_latest(Jid mam_server, DateTime? latest_known_time, string? latest_known_id) {
             this.mam_server = mam_server;
@@ -36,6 +39,13 @@ namespace Xmpp.MessageArchiveManagement.V2 {
             this.mam_server = mam_server;
             this.end = earliest_time;
             this.end_id = earliest_id;
+        }
+
+        public MamQueryParams.query_after(Jid mam_server, string? after_id, string? target_id = null) {
+            this.mam_server = mam_server;
+            this.rsm_after_id = after_id;
+            this.start_id = target_id;
+            this.page_forward = true;
         }
     }
 
@@ -64,7 +74,11 @@ namespace Xmpp.MessageArchiveManagement.V2 {
     public async QueryResult query_archive(XmppStream stream, MamQueryParams mam_params, Cancellable? cancellable = null) {
         var query_node = create_base_query(stream, mam_params);
         if (!mam_params.use_ns2_extended) {
-            query_node.put_node(ResultSetManagement.create_set_rsm_node_before(mam_params.end_id));
+            if (mam_params.page_forward) {
+                query_node.put_node(ResultSetManagement.create_set_rsm_node_after(mam_params.rsm_after_id, mam_params.max_results));
+            } else {
+                query_node.put_node(ResultSetManagement.create_set_rsm_node_before(mam_params.end_id, mam_params.max_results));
+            }
         }
 
         return yield MessageArchiveManagement.query_archive(stream, mam_params.mam_server, query_node, cancellable);
@@ -72,9 +86,12 @@ namespace Xmpp.MessageArchiveManagement.V2 {
 
     public async QueryResult page_through_results(XmppStream stream, MamQueryParams mam_params, QueryResult prev_result, Cancellable? cancellable = null) {
         var query_node = create_base_query(stream, mam_params);
-        query_node.put_node(ResultSetManagement.create_set_rsm_node_before(prev_result.first));
+        if (mam_params.page_forward) {
+            query_node.put_node(ResultSetManagement.create_set_rsm_node_after(prev_result.last, mam_params.max_results));
+        } else {
+            query_node.put_node(ResultSetManagement.create_set_rsm_node_before(prev_result.first, mam_params.max_results));
+        }
 
         return yield MessageArchiveManagement.query_archive(stream, mam_params.mam_server, query_node, cancellable);
     }
 }
-

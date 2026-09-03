@@ -7,7 +7,7 @@ using Dino.Entities;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 34;
+    private const int VERSION = 35;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -717,6 +717,17 @@ public class Database : Qlite.Database {
                 exec(@"UPDATE conversation SET active_last_changed=$active_last_updated WHERE active_last_changed=0");
             } catch (Error e) {
                 error("Failed to upgrade to database version 23 (conversation): %s", e.message);
+            }
+        }
+        if (oldVersion < 35) {
+            try {
+                exec("""
+                INSERT OR IGNORE INTO account_settings (account_id, key, value)
+                SELECT DISTINCT mam_catchup.account_id, 'mam-retained-replay-v1', 'pending'
+                FROM mam_catchup JOIN account ON mam_catchup.account_id=account.id
+                WHERE mam_catchup.server_jid=account.bare_jid""");
+            } catch (Error e) {
+                error("Failed to schedule MAM retained archive replay: %s", e.message);
             }
         }
     }

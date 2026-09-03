@@ -9,6 +9,8 @@ public class QueryResult {
     public bool error { get; set; default=false; }
     public bool malformed { get; set; default=false; }
     public bool complete { get; set; default=false; }
+    public bool stable { get; set; default=true; }
+    public string? error_condition { get; set; }
     public string? first { get; set; }
     public string? last { get; set; }
 }
@@ -68,19 +70,39 @@ public class Module : XmppStreamModule {
         // Build and send query
         Iq.Stanza iq = new Iq.Stanza.set(query_node) { to=mam_server };
 
-        Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
+        Iq.Stanza? result_iq = null;
+        try {
+            result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq, Priority.LOW, cancellable);
+        } catch (IOError e) {
+            flag.active_query_ids.remove(query_id);
+            res.error = true;
+            return res;
+        }
+        if (result_iq == null) {
+            flag.active_query_ids.remove(query_id);
+            res.error = true;
+            return res;
+        }
+        if (((!)result_iq).is_error()) {
+            ErrorStanza? error_stanza = ((!)result_iq).get_error();
+            flag.active_query_ids.remove(query_id);
+            res.error = true;
+            if (error_stanza != null) res.error_condition = error_stanza.condition;
+            return res;
+        }
 
         // Parse the response IQ into a QueryResult.
-        StanzaNode? fin_node = result_iq.stanza.get_subnode("fin", NS_URI);
-        if (fin_node == null) { res.malformed = true; return res; }
+        StanzaNode? fin_node = ((!)result_iq).stanza.get_subnode("fin", NS_URI);
+        if (fin_node == null) { flag.active_query_ids.remove(query_id); res.malformed = true; return res; }
 
         StanzaNode? rsm_node = fin_node.get_subnode("set", Xmpp.ResultSetManagement.NS_URI);
-        if (rsm_node == null) { res.malformed = true; return res; }
+        if (rsm_node == null) { flag.active_query_ids.remove(query_id); res.malformed = true; return res; }
 
         res.first = rsm_node.get_deep_string_content("first");
         res.last = rsm_node.get_deep_string_content("last");
-        if ((res.first == null) != (res.last == null)) { res.malformed = true; return res; }
+        if ((res.first == null) != (res.last == null)) { flag.active_query_ids.remove(query_id); res.malformed = true; return res; }
         res.complete = fin_node.get_attribute_bool("complete", false, NS_URI);
+        res.stable = fin_node.get_attribute_bool("stable", true, NS_URI);
 
         Idle.add(() => {
             flag.active_query_ids.remove(query_id);
@@ -113,7 +135,6 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
             }
 
             if (!flag.active_query_ids.contains(query_id)) {
-                warning("Received MAM message from %s with unknown query id %s, ignoring", message.from.to_string(), query_id ?? "<none>");
                 return true;
             }
             Jid? inner_from = null;
