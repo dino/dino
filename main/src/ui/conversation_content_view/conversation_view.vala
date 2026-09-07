@@ -31,6 +31,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton> item_item_skeletons = new Gee.HashMap<Plugins.MetaConversationItem, ConversationItemSkeleton>();
     private Gee.HashMap<Plugins.MetaConversationItem, Widget> widgets = new Gee.HashMap<Plugins.MetaConversationItem, Widget>();
     private Gee.List<Widget> widget_order = new Gee.ArrayList<Widget>();
+    private ScrollAnchor scroll_anchor = new ScrollAnchor();
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
 
@@ -535,6 +536,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             main.remove(skeleton.get_widget());
             widgets.unset(item);
             widget_order.remove(skeleton.get_widget());
+            scroll_anchor.forget(skeleton.get_widget());
             item_item_skeletons.unset(item);
 
             if (item is ContentMetaItem) {
@@ -724,12 +726,15 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
 
     private void on_upper_notify() {
         if (scroll_active) {
+            // Keep the snapshot current while explicit navigation owns the viewport.
+            remember_scroll_position();
             // Still scrolling, ignore
             Idle.add_once(apply_scroll);
             return;
         }
+        double previous_value = was_value ?? scrolled.vadjustment.value;
         if (was_upper != null) {
-            if (scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
+            if (previous_value > was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
                 if (at_current_content) {
                     Idle.add(() => {
                         // If we do this directly without Idle.add, scrolling down doesn't work properly
@@ -739,17 +744,22 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
                         return false;
                     });
                 }
-            } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
+            } else {
                 programmatic_scrolling = true;
-                scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
+                scroll_anchor.restore(scrolled.vadjustment, main_wrap_box, widget_order, previous_value);
                 programmatic_scrolling = false;
             }
         }
+        remember_scroll_position();
+        reloading_mutex.trylock();
+        reloading_mutex.unlock();
+    }
+
+    private void remember_scroll_position() {
+        scroll_anchor.capture(main_wrap_box, widget_order);
         was_upper = scrolled.vadjustment.upper;
         was_page_size = scrolled.vadjustment.page_size;
         was_value = scrolled.vadjustment.value;
-        reloading_mutex.trylock();
-        reloading_mutex.unlock();
     }
 
     private void start_mark_visible_messages_read() {
@@ -801,6 +811,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void on_value_notify() {
+        was_value = scrolled.vadjustment.value;
         if (!programmatic_scrolling) {
             scroll_active = false;
             start_mark_visible_messages_read();
@@ -868,6 +879,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             Source.remove(mark_lowest_message_read_timeout);
             mark_lowest_message_read_timeout = 0;
         }
+        was_value = null;
         was_upper = null;
         was_page_size = null;
         foreach (var item in content_items) {
@@ -876,6 +888,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         content_items.clear();
         meta_items.clear();
         widget_order.clear();
+        scroll_anchor.clear();
         foreach (var skeleton in item_item_skeletons.values) {
             skeleton.dispose();
         }

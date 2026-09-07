@@ -45,6 +45,7 @@ sources = files(
     'src/ui/conversation_content_view/content_populator.vala',
     'src/ui/conversation_content_view/conversation_item_skeleton.vala',
     'src/ui/conversation_content_view/conversation_view.vala',
+    'src/ui/conversation_content_view/scroll_anchor.vala',
     'src/ui/conversation_content_view/date_separator_populator.vala',
     'src/ui/conversation_content_view/file_default_widget.vala',
     'src/ui/conversation_content_view/file_image_widget.vala',
@@ -149,3 +150,13 @@ install_data('data/icons/scalable/apps/im.dino.Dino.svg', install_dir: get_optio
 install_data('data/im.dino.Dino.appdata.xml', install_dir: get_option('datadir') / 'metainfo')
 install_data('data/im.dino.Dino.desktop', install_dir: get_option('datadir') / 'applications')
 install_data('data/im.dino.Dino.service', install_dir: get_option('datadir') / 'dbus-1/services')
+
+scroll_anchor_test = executable('scroll-anchor-test',
+    'tests/scroll_anchor.vala',
+    'src/ui/conversation_content_view/scroll_anchor.vala',
+    dependencies: [dep_gtk4, dep_gee, dep_m],
+    install: false,
+)
+test('conversation-scroll-anchor', scroll_anchor_test, suite: 'ui',
+    env: ['GTK_A11Y=none'],
+)
