@@ -6,6 +6,7 @@ public class Dino.Ui.ViewModel.GeneralPreferencesPage : Object {
     public bool share_time { get; set; }
     public bool notifications { get; set; }
     public bool convert_emojis { get; set; }
+    public bool dark_mode { get; set; }
 }
 
 [GtkTemplate (ui = "/im/dino/Dino/preferences_window/general_preferences_page.ui")]
@@ -15,6 +16,7 @@ public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
     [GtkChild] private unowned Adw.SwitchRow time_row;
     [GtkChild] private unowned Adw.SwitchRow notification_row;
     [GtkChild] private unowned Adw.SwitchRow emoji_row;
+    [GtkChild] private unowned Adw.SwitchRow dark_mode_row;
 
     public ViewModel.GeneralPreferencesPage model { get; set; default = new ViewModel.GeneralPreferencesPage(); }
     private Binding[] model_bindings = new Binding[0];
@@ -33,7 +35,8 @@ public class Dino.Ui.GeneralPreferencesPage : Adw.PreferencesPage {
                 model.bind_property("send-marker", marker_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
                 model.bind_property("share-time", time_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
                 model.bind_property("notifications", notification_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
-                model.bind_property("convert-emojis", emoji_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL)
+                model.bind_property("convert-emojis", emoji_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL),
+                model.bind_property("dark-mode", dark_mode_row, "active", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL)
             };
         } else {
             model_bindings = new Binding[0];

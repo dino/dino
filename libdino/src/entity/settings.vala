@@ -13,6 +13,7 @@ public class Settings : Object {
         notifications_ = col_to_bool_or_default("notifications", true);
         convert_utf8_smileys_ = col_to_bool_or_default("convert_utf8_smileys", true);
         check_spelling = col_to_bool_or_default("check_spelling", true);
+        dark_mode_ = col_to_bool_or_default("dark_mode", false);
     }
 
     private bool col_to_bool_or_default(string key, bool def) {
@@ -90,6 +91,18 @@ public class Settings : Object {
                 .value(db.settings.value, value.to_string())
                 .perform();
             check_spelling_ = value;
+        }
+    }
+
+    private bool dark_mode_;
+    public bool dark_mode {
+        get { return dark_mode_; }
+        set {
+            db.settings.upsert()
+                .value(db.settings.key, "dark_mode", true)
+                .value(db.settings.value, value.to_string())
+                .perform();
+            dark_mode_ = value;
         }
     }
 

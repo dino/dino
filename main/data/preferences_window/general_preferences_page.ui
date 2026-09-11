@@ -46,5 +46,15 @@
         </child>
       </object>
     </child>
+    <child>
+      <object class="AdwPreferencesGroup">
+        <child>
+          <object class="AdwSwitchRow" id="dark_mode_row">
+            <property name="title" translatable="yes">_Dark Mode</property>
+            <property name="use-underline">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
   </template>
 </interface>

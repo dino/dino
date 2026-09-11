@@ -38,6 +38,13 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_main_option_entries(options);
 
         startup.connect(() => {
+            var style_manager = Adw.StyleManager.get_default();
+            if (settings != null) {
+                style_manager.color_scheme = settings.dark_mode ? Adw.ColorScheme.FORCE_DARK : Adw.ColorScheme.DEFAULT;
+                settings.notify["dark-mode"].connect(() => {
+                    style_manager.color_scheme = settings.dark_mode ? Adw.ColorScheme.FORCE_DARK : Adw.ColorScheme.DEFAULT;
+                });
+            }
             if (print_version) {
                 print(@"Dino $(Dino.get_version())\n");
                 Process.exit(0);
