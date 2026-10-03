@@ -119,9 +119,6 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if meson.get_compiler('vala').version().version_compare('=0.56.11')
-    vala_args += ['-D', 'VALA_0_56_11']
-endif
 lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 

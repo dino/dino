@@ -19,9 +19,7 @@ public class Xmpp.DirectTlsXmppStream : TlsXmppStream {
             debug("Connecting to %s:%i (tls)", host, port);
             IOStream? io_stream = yield client.connect_to_host_async(host, port, cancellable);
             TlsConnection tls_connection = TlsClientConnection.new(io_stream, new NetworkAddress(remote_name.to_string(), port));
-#if GLIB_2_60
             tls_connection.set_advertised_protocols(ADVERTISED_PROTOCOLS);
-#endif
             tls_connection.accept_certificate.connect(on_invalid_certificate);
             tls_connection.accept_certificate.connect((cert, flags) => on_invalid_cert.func(cert, flags));
             reset_stream(tls_connection);

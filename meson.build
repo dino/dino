@@ -17,6 +17,12 @@ gnome = import('gnome')
 i18n = import('i18n')
 cc = meson.get_compiler('c')
 
+vala_version_required = '0.56.14'
+vala = meson.get_compiler('vala')
+if not vala.version().version_compare('>= @0@'.format(vala_version_required))
+    error('valac >= @0@ required!'.format(vala_version_required))
+endif
+
 # Trigger recomnfiguration on version change
 version_stamp = configure_file(
     command: [
@@ -74,23 +80,23 @@ endif
 dep_gdk_pixbuf = dependency('gdk-pixbuf-2.0')
 dep_gee = dependency('gee-0.8')
 dep_gio = dependency('gio-2.0')
-dep_glib = dependency('glib-2.0')
+dep_glib = dependency('glib-2.0', version: '>=2.66')
 dep_gmodule = dependency('gmodule-2.0')
 dep_gpgme = dependency('gpgme', disabler: true, required: get_option('plugin-openpgp'))
-dep_gstreamer = dependency('gstreamer-1.0', disabler: true, required: get_option('plugin-rtp'))
-dep_gstreamer_app = dependency('gstreamer-app-1.0', disabler: true, required: get_option('plugin-rtp'))
-dep_gstreamer_audio = dependency('gstreamer-audio-1.0', disabler: true, required: get_option('plugin-rtp'))
-dep_gstreamer_rtp = dependency('gstreamer-rtp-1.0', disabler: true, required: get_option('plugin-rtp'))
-dep_gstreamer_video = dependency('gstreamer-video-1.0', disabler: true, required: get_option('plugin-rtp'))
-dep_gtk4 = dependency('gtk4')
+dep_gstreamer = dependency('gstreamer-1.0', version: '>=1.20')
+dep_gstreamer_app = dependency('gstreamer-app-1.0', version: '>=1.20')
+dep_gstreamer_audio = dependency('gstreamer-audio-1.0', version: '>=1.20')
+dep_gstreamer_rtp = dependency('gstreamer-rtp-1.0', version: '>=1.20')
+dep_gstreamer_video = dependency('gstreamer-video-1.0', version: '>=1.20')
+dep_gtk4 = dependency('gtk4', version: '>=4.14')
 dep_icu_uc = dependency('icu-uc')
 dep_libadwaita = dependency('libadwaita-1', version: '>=1.5')
 dep_libcanberra = dependency('libcanberra', disabler: true, required: get_option('plugin-notification-sound'))
 dep_libqrencode = dependency('libqrencode', disabler: true, required: get_option('plugin-omemo'))
-dep_libsrtp2 = dependency('libsrtp2', disabler: true, required: true)
+dep_libsrtp2 = dependency('libsrtp2')
 dep_libomemo_c = dependency('libomemo-c', disabler: true, required: get_option('plugin-omemo'))
 dep_libsoup = dependency('libsoup-3.0')
-dep_nice = dependency('nice', version: '>=0.1.15', disabler: true, required: get_option('plugin-ice'))
+dep_nice = dependency('nice', version: '>=0.1.15')
 dep_m = meson.get_compiler('c').find_library('m', required: false)
 dep_sqlite3 = dependency('sqlite3', version: '>=3.24')
 
@@ -99,10 +105,7 @@ if not dep_webrtc_audio_processing.found()
     dep_webrtc_audio_processing = dependency('webrtc-audio-processing', version: ['>=0.2'], required: false)
 endif
 if not dep_webrtc_audio_processing.found()
-    dep_webrtc_audio_processing = dependency('webrtc-audio-processing-2', required: false)
-endif
-if not dep_webrtc_audio_processing.found()
-    dep_webrtc_audio_processing = disabler()
+    dep_webrtc_audio_processing = dependency('webrtc-audio-processing-2', required: false, disabler: true)
 endif
 
 default_install_rpath = ''

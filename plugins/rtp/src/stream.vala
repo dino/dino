@@ -102,9 +102,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         send_rtp.drop = true;
         send_rtp.wait_on_eos = false;
         send_rtp.new_sample.connect(on_new_sample);
-#if GST_1_20
         send_rtp.new_serialized_event.connect(on_new_event);
-#endif
         send_rtp.connect("signal::eos", on_eos_static, this);
         pipe.add(send_rtp);
 
@@ -299,7 +297,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
 
     bool flip = false;
     uint8 rotation = 0;
-#if GST_1_20
+
     private bool on_new_event(Gst.App.Sink sink) {
         if (sink == null || sink != send_rtp) {
             return false;
@@ -349,7 +347,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
         }
         return false;
     }
-#endif
+
 
     private Gst.FlowReturn on_new_sample(Gst.App.Sink sink) {
         if (sink == null) {
@@ -373,14 +371,11 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 next_timestamp_offset_stamp = get_monotonic_time();
                 rtp_buffer.unmap();
             }
-#if GLIB_2_64
             if (our_ssrc != buffer_ssrc) {
                 warning_once("Sending RTP %s buffer seq %u with SSRC %u when our ssrc is %u", media, buffer_seq, buffer_ssrc, our_ssrc);
             }
-#endif
         }
 
-#if GST_1_20
         if (sink == send_rtp) {
             Xmpp.Xep.JingleRtp.HeaderExtension? ext = header_extensions.first_match((it) => it.uri == "urn:3gpp:video-orientation");
             if (ext != null) {
@@ -396,7 +391,6 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 }
             }
         }
-#endif
 
         prepare_local_crypto();
 
@@ -574,18 +568,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
             on_recv_rtcp_data(bytes);
             return;
         }
-#if GST_1_16
-        {
-            Gst.Buffer buffer = new Gst.Buffer.wrapped_bytes(bytes);
-            Gst.RTP.Buffer rtp_buffer;
-            uint buffer_ssrc = 0, buffer_seq = 0;
-            if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
-                buffer_ssrc = rtp_buffer.get_ssrc();
-                buffer_seq = rtp_buffer.get_seq();
-                rtp_buffer.unmap();
-            }
-        }
-#endif
+
         if (push_recv_data) {
             prepare_remote_crypto();
 
@@ -598,15 +581,13 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                     return;
                 }
             } else {
-#if GST_1_16
                 buffer = new Gst.Buffer.wrapped_bytes(bytes);
-#else
-                buffer = new Gst.Buffer.wrapped(bytes.get_data());
-#endif
             }
 
             Gst.RTP.Buffer rtp_buffer;
             if (Gst.RTP.Buffer.map(buffer, Gst.MapFlags.READ, out rtp_buffer)) {
+                uint buffer_ssrc = rtp_buffer.get_ssrc();
+                uint buffer_seq = rtp_buffer.get_seq();
                 if (rtp_buffer.get_extension()) {
                     Xmpp.Xep.JingleRtp.HeaderExtension? ext = header_extensions.first_match((it) => it.uri == "urn:3gpp:video-orientation");
                     if (ext != null) {
@@ -632,12 +613,7 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                 rtp_buffer.unmap();
             }
 
-#if VALA_0_50
             recv_rtp.push_buffer((owned) buffer);
-#else
-            Gst.FlowReturn ret;
-            GLib.Signal.emit_by_name(recv_rtp, "push-buffer", buffer, out ret);
-#endif
         }
     }
 
@@ -654,19 +630,10 @@ public class Dino.Plugins.Rtp.Stream : Xmpp.Xep.JingleRtp.Stream {
                     return;
                 }
             } else {
-#if GST_1_16
                 buffer = new Gst.Buffer.wrapped_bytes(bytes);
-#else
-                buffer = new Gst.Buffer.wrapped(bytes.get_data());
-#endif
             }
 
-#if VALA_0_50
             recv_rtcp.push_buffer((owned) buffer);
-#else
-            Gst.FlowReturn ret;
-            GLib.Signal.emit_by_name(recv_rtcp, "push-buffer", buffer, out ret);
-#endif
         }
     }
 

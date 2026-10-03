@@ -47,6 +47,7 @@ sources = files(
     'src/ui/conversation_content_view/date_separator_populator.vala',
     'src/ui/conversation_content_view/file_default_widget.vala',
     'src/ui/conversation_content_view/file_image_widget.vala',
+    'src/ui/conversation_content_view/file_transmission_progress.c',
     'src/ui/conversation_content_view/file_transmission_progress.vala',
     'src/ui/conversation_content_view/file_group_widget.vala',
     'src/ui/conversation_content_view/file_widget.vala',
@@ -113,34 +114,6 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.6')
-    vala_args += ['-D', 'GTK_4_6']
-endif
-if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.8')
-    vala_args += ['-D', 'GTK_4_8']
-endif
-if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.12')
-    vala_args += ['-D', 'GTK_4_12']
-endif
-if dep_gtk4.version() == 'unknown' or dep_gtk4.version().version_compare('>=4.14')
-    vala_args += ['-D', 'GTK_4_14']
-    sources += files('src/ui/conversation_content_view/file_transmission_progress.c')
-endif
-if dep_libadwaita.version() == 'unknown' or dep_libadwaita.version().version_compare('>=1.4')
-    vala_args += ['-D', 'Adw_1_4']
-endif
-if meson.get_compiler('vala').version().version_compare('>=0.56.5') and meson.get_compiler('vala').version().version_compare('<0.58')
-    vala_args += ['-D', 'VALA_0_56_GREATER_5']
-endif
-if meson.get_compiler('vala').version().version_compare('>=0.56.11') and meson.get_compiler('vala').version().version_compare('<0.58')
-    vala_args += ['-D', 'VALA_0_56_GREATER_11']
-endif
-if meson.get_compiler('vala').version().version_compare('=0.56.11')
-    vala_args += ['-D', 'VALA_0_56_11']
-endif
-if meson.get_compiler('vala').version().version_compare('=0.56.12')
-    vala_args += ['-D', 'VALA_0_56_12']
-endif
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_rpath: default_install_rpath)
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')

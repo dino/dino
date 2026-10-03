@@ -280,9 +280,7 @@ public class Dino.Plugins.Rtp.CodecUtil {
     }
 
     public static string? get_depay_args(string media, string codec, string encode, JingleRtp.PayloadType? payload_type) {
-#if GST_1_18
         if (codec == "vp8") return " wait-for-keyframe=true";
-#endif
         return null;
     }
 
