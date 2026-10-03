@@ -25,6 +25,10 @@ public class Module : XmppStreamModule, Iq.Handler {
 
     private GetLocalIpAddresses? get_local_ip_addresses_impl = null;
 
+    public Module.with_local_ip_address_handler(owned GetLocalIpAddresses get_local_ip_addresses) {
+        set_local_ip_address_handler((owned) get_local_ip_addresses);
+    }
+
     public override void attach(XmppStream stream) {
         stream.add_flag(new Flag());
         query_availability.begin(stream);

@@ -85,7 +85,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.InBandRegistration.Module());
             module_map[account].add(new Xep.HttpFileUpload.Module());
             module_map[account].add(new Xep.Reactions.Module());
-            module_map[account].add(new Xep.Socks5Bytestreams.Module());
+            module_map[account].add(new Xep.Socks5Bytestreams.Module.with_local_ip_address_handler(Util.get_local_ip_addresses));
             module_map[account].add(new Xep.InBandBytestreams.Module());
             module_map[account].add(new Xep.Jingle.Module());
             module_map[account].add(new Xep.JingleSocks5Bytestreams.Module());
@@ -97,11 +97,12 @@ public class ModuleManager {
             module_map[account].add(new Xep.JingleMessageInitiation.Module());
             module_map[account].add(new Xep.OccupantIds.Module());
             module_map[account].add(new Xep.MessageRetraction.Module());
-            module_map[account].add(new Xep.JingleRawUdp.Module());
+            module_map[account].add(new Xep.JingleRawUdp.Module.with_local_ip_address_handler(Util.get_local_ip_addresses));
             module_map[account].add(new Xep.Muji.Module());
             module_map[account].add(new Xep.CallInvites.Module());
             module_map[account].add(new Xep.Coin.Module());
             module_map[account].add(new Xep.MessageDisplayedSynchronization.Module());
+            module_map[account].add(new IceUdpModule());
             initialize_account_modules(account, module_map[account]);
         }
     }

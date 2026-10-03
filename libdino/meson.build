@@ -9,6 +9,7 @@ dependencies = [
     dep_gmodule,
     dep_libsoup,
     dep_libsrtp2,
+    dep_nice,
     dep_sqlite3,
     dep_xmpp_vala
 ]
@@ -63,6 +64,7 @@ sources = files(
     'src/service/file_manager.vala',
     'src/service/file_transfer_storage.vala',
     'src/service/history_sync.vala',
+    'src/service/ice.vala',
     'src/service/jingle_file_transfers.vala',
     'src/service/message_correction.vala',
     'src/service/message_deletion.vala',

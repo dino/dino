@@ -1,4 +1,3 @@
-subdir('ice')
 subdir('notification-sound')
 subdir('omemo')
 subdir('openpgp')

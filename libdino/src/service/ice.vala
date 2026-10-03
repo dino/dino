@@ -4,8 +4,150 @@ using Dino.Crypto;
 using Xmpp;
 using Xmpp.Xep;
 
+private extern const size_t NICE_ADDRESS_STRING_LEN;
 
-public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransportParameters {
+public class Dino.IceUdpModule : Xmpp.Xep.JingleIceUdp.Module {
+
+    public string? stun_ip = null;
+    public uint stun_port = 0;
+    public string? turn_ip = null;
+    public Xep.ExternalServiceDiscovery.Service? turn_service = null;
+
+    private static weak Nice.Agent? agent;
+    private HashMap<string, DtlsSrtp.CredentialsCapsule> cerds = new HashMap<string, DtlsSrtp.CredentialsCapsule>();
+
+    private uint timeout = 0;
+
+    public override void attach(XmppStream stream) {
+        base.attach(stream);
+        external_discovery_refresh_services.begin(stream);
+    }
+    public override void detach(XmppStream stream) {
+        base.detach(stream);
+        stop_external_discovery_refresh_services();
+    }
+
+    private Nice.Agent get_agent() {
+        Nice.Agent? agent = this.agent;
+        if (agent == null) {
+            Nice.debug_enable(true);
+            agent = new Nice.Agent(MainContext.@default(), Nice.Compatibility.RFC5245);
+            if (stun_ip != null) {
+                agent.stun_server = stun_ip;
+                agent.stun_server_port = stun_port;
+            }
+            agent.ice_tcp = false;
+            agent.set_software("Dino");
+            agent.weak_ref(agent_unweak);
+            this.agent = agent;
+            debug("STUN server for libnice %s %u", agent.stun_server, agent.stun_server_port);
+        }
+        return agent;
+    }
+
+    private void agent_unweak() {
+        this.agent = null;
+    }
+
+    public override Jingle.TransportParameters create_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid) {
+        DtlsSrtp.CredentialsCapsule? cred = get_create_credentials(local_full_jid, peer_full_jid);
+        return new IceUdpTransportParameters(get_agent(), cred, turn_service, turn_ip, components, local_full_jid, peer_full_jid);
+    }
+
+    public override Jingle.TransportParameters parse_transport_parameters(XmppStream stream, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode transport) throws Jingle.IqError {
+        DtlsSrtp.CredentialsCapsule? cred = get_create_credentials(local_full_jid, peer_full_jid);
+        return new IceUdpTransportParameters(get_agent(), cred, turn_service, turn_ip, components, local_full_jid, peer_full_jid, transport);
+    }
+
+    private DtlsSrtp.CredentialsCapsule? get_create_credentials(Jid local_full_jid, Jid peer_full_jid) {
+        string from_to_id = local_full_jid.to_string() + peer_full_jid.to_string();
+        try {
+            if (!cerds.has_key(from_to_id)) cerds[from_to_id] = DtlsSrtp.generate_credentials();
+        } catch (GLib.Error e) {
+            warning("Error creating dtls credentials: %s", e.message);
+        }
+        return cerds[from_to_id];
+    }
+
+    private void stop_external_discovery_refresh_services() {
+        if (timeout != 0) {
+            Source.remove(timeout);
+            timeout = 0;
+        }
+    }
+
+    private async void external_discovery_refresh_services(XmppStream stream) {
+        stop_external_discovery_refresh_services();
+        Gee.List<Xep.ExternalServiceDiscovery.Service> services = yield ExternalServiceDiscovery.request_services(stream);
+        foreach (Xep.ExternalServiceDiscovery.Service service in services) {
+            if (service.transport == "udp" && (service.ty == "stun" || service.ty == "turn")) {
+                InetAddress? ip = yield lookup_ipv4_addess(service.host);
+                if (ip == null) continue;
+
+                if (ip.is_any || ip.is_link_local || ip.is_loopback || ip.is_multicast || ip.is_site_local) {
+                    warning("Ignoring STUN/TURN server at %s", service.host);
+                    continue;
+                }
+
+                if (service.ty == "stun") {
+                    debug("Server offers STUN server: %s:%u, resolved to %s", service.host, service.port, ip.to_string());
+                    stun_ip = ip.to_string();
+                    stun_port = service.port;
+                } else if (service.ty == "turn") {
+                    debug("Server offers TURN server: %s:%u, resolved to %s", service.host, service.port, ip.to_string());
+                    turn_ip = ip.to_string();
+                    turn_service = service;
+                }
+            }
+        }
+        if (stun_ip == null) {
+            InetAddress ip = yield lookup_ipv4_addess("stun.dino.im");
+            if (ip == null) return;
+
+            debug("Using fallback STUN server: stun.dino.im:7886, resolved to %s", ip.to_string());
+
+            stun_ip = ip.to_string();
+            stun_port = 7886;
+        }
+
+        // Refresh TURN credentials before they expire
+        if (turn_service != null) {
+            DateTime? expires = turn_service.expires;
+            if (expires != null) {
+                uint refresh_delay = (uint) (expires.to_unix() - new DateTime.now_utc().to_unix()) / 2;
+
+                if (refresh_delay >= 300 && refresh_delay <= (int64) uint.MAX) { // 5 min < refetch < max
+                    debug("Re-fetching TURN credentials in %u sec", refresh_delay);
+
+                    stop_external_discovery_refresh_services();
+                    timeout = Timeout.add_seconds((uint) refresh_delay, () => {
+                        timeout = 0;
+                        external_discovery_refresh_services.begin(stream);
+                        return false;
+                    });
+                } else {
+                    warning("TURN credentials' expiry time = %u, *not* re-fetching", refresh_delay);
+                }
+            }
+        }
+    }
+
+    private async InetAddress? lookup_ipv4_addess(string host) {
+        try {
+            Resolver resolver = Resolver.get_default();
+            GLib.List<GLib.InetAddress>? ips = yield resolver.lookup_by_name_async(host);
+            foreach (GLib.InetAddress ina in ips) {
+                if (ina.get_family() != SocketFamily.IPV4) continue;
+                return ina;
+            }
+        } catch (GLib.Error e) {
+            warning("Failed looking up IP address of %s", host);
+        }
+        return null;
+    }
+}
+
+public class Dino.IceUdpTransportParameters : JingleIceUdp.IceUdpTransportParameters {
     private Nice.Agent agent;
     private uint stream_id;
     private bool we_want_connection;
@@ -15,6 +157,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
     private MainContext thread_context;
     private MainLoop thread_loop;
 
+    private static bool is_component_ready(Nice.Agent agent, uint stream_id, uint component_id) {
+        var state = agent.get_component_state(stream_id, component_id);
+        return state == Nice.ComponentState.CONNECTED || state == Nice.ComponentState.READY;
+    }
+
     private class DatagramConnection : Jingle.DatagramConnection {
         private Nice.Agent agent;
         private DtlsSrtp.Handler? dtls_srtp_handler;
@@ -22,7 +169,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         private string? error;
         private ulong datagram_received_id;
 
-        public DatagramConnection(Nice.Agent agent, DtlsSrtp.Handler? dtls_srtp_handler, uint stream_id, uint8 component_id) {
+        internal DatagramConnection(Nice.Agent agent, DtlsSrtp.Handler? dtls_srtp_handler, uint stream_id, uint8 component_id) {
             this.agent = agent;
             this.dtls_srtp_handler = dtls_srtp_handler;
             this.stream_id = stream_id;
@@ -65,7 +212,7 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         }
     }
 
-    public TransportParameters(Nice.Agent agent, DtlsSrtp.CredentialsCapsule? credentials, Xep.ExternalServiceDiscovery.Service? turn_service, string? turn_ip, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
+    internal IceUdpTransportParameters(Nice.Agent agent, DtlsSrtp.CredentialsCapsule? credentials, Xep.ExternalServiceDiscovery.Service? turn_service, string? turn_ip, uint8 components, Jid local_full_jid, Jid peer_full_jid, StanzaNode? node = null) {
         base(components, local_full_jid, peer_full_jid, node);
         this.we_want_connection = (node == null);
         this.agent = agent;
@@ -126,11 +273,11 @@ public class Dino.Plugins.Ice.TransportParameters : JingleIceUdp.IceUdpTransport
         agent.gather_candidates(stream_id);
     }
 
-    private static DtlsSrtp.Handler setup_dtls(TransportParameters tp, DtlsSrtp.CredentialsCapsule credentials) {
+    private static DtlsSrtp.Handler setup_dtls(IceUdpTransportParameters tp, DtlsSrtp.CredentialsCapsule credentials) {
         var weak_self = WeakRef(tp);
         DtlsSrtp.Handler dtls_srtp = new DtlsSrtp.Handler.with_cert(credentials);
         dtls_srtp.send_data.connect((data) => {
-            TransportParameters self = (TransportParameters) weak_self.get();
+            IceUdpTransportParameters self = (IceUdpTransportParameters) weak_self.get();
             if (self != null) self.agent.send(self.stream_id, 1, data);
         });
         return dtls_srtp;
