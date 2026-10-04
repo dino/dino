@@ -26,6 +26,7 @@ jobs:
       - name: "Test"
         run: meson test -C build
   build-minimal:
+    needs: build
     name: "Build with minimal features"
     runs-on: ubuntu-24.04
     steps:
@@ -50,6 +51,7 @@ jobs:
       - name: "Test"
         run: meson test -C build
   build-openssl:
+    needs: build
     name: "Build with OpenSSL"
     runs-on: ubuntu-24.04
     steps:
@@ -74,6 +76,7 @@ jobs:
       - name: "Test"
         run: meson test -C build
   build-vala-nightly:
+    needs: build
     name: "Build with Vala Nightly"
     runs-on: ubuntu-24.04
     steps:
