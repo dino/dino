@@ -49,6 +49,30 @@ jobs:
         run: meson compile -C build
       - name: "Test"
         run: meson test -C build
+  build-openssl:
+    name: "Build with OpenSSL"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: "Setup dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get remove libunwind-14-dev
+          sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libssl-dev libgee-0.8-dev libgpgme-dev libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev libgtk-4-dev libnice-dev libnotify-dev libqrencode-dev libomemo-c-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev libwebrtc-audio-processing-dev meson valac
+      - name: "Checkout sources"
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: "Setup matchers"
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Configure"
+        run: meson setup -Dcrypto-backend=openssl build
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Test"
+        run: meson test -C build
   build-vala-nightly:
     name: "Build with Vala Nightly"
     runs-on: ubuntu-24.04
