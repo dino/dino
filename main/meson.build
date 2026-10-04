@@ -170,6 +170,7 @@ if get_option('rtp').allowed() and dep_gstreamer.found() and dep_gstreamer_app.f
     if get_option('rtp-vp9')
         vala_args += ['-D', 'ENABLE_VP9']
     endif
+    vala_args += ['-D', 'WITH_RTP']
 
     summary('Voice/video calls (rtp)', true, bool_yn: true, section: 'Plugins')
     summary('H264 codec', get_option('rtp-h264'), bool_yn: true, section: 'RTP configuration')
@@ -215,6 +216,7 @@ if get_option('omemo').allowed() and dep_libomemo_c.found() and dep_libqrencode.
         'src/plugins/omemo/ui/own_notifications.vala',
         'src/plugins/omemo/ui/util.vala',
     )
+    vala_args += ['-D', 'WITH_OMEMO']
 
     summary('End-to-end encryption using OMEMO (omemo)', true, bool_yn: true, section: 'Plugins')
 else
@@ -240,6 +242,7 @@ if get_option('openpgp').allowed() and dep_gpgme.found()
         'src/plugins/openpgp/util.vala',
         'vapi/gpg-error.vapi',
     )
+    vala_args += ['-D', 'WITH_OPENPGP']
 
     summary('End-to-end encryption using PGP (openpgp)', true, bool_yn: true, section: 'Plugins')
 else

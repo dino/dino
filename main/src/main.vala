@@ -20,9 +20,15 @@ void main(string[] args) {
         if (Environment.get_variable("DINO_PLUGINS_LOAD_ALL") == "1") {
             loader.load_all();
         }
+#if WITH_RTP
         loader.load_type(typeof(Plugins.Rtp.Plugin));
+#endif
+#if WITH_OPENPGP
         loader.load_type(typeof(Plugins.OpenPgp.Plugin));
+#endif
+#if WITH_OMEMO
         loader.load_type(typeof(Plugins.Omemo.Plugin));
+#endif
 
         app.run(args);
         loader.shutdown();
