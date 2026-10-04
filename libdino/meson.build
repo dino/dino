@@ -149,13 +149,15 @@ dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_
 install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi', install_tag: 'devel') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
 install_headers('src/dino_i18n.h')
 
-test_sources = [
-    'tests/common.vala',
-    'tests/testcase.vala',
+if get_option('omemo').allowed() and dep_libomemo_c.found()
+    test_sources = [
+        'tests/common.vala',
+        'tests/testcase.vala',
 
-    'tests/curve25519.vala',
-    'tests/hkdf.vala',
-    'tests/session_builder.vala',
-]
-exe_lib_dino_test = executable('libdino-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_dino, install: false)
-test('Tests for libdino', exe_lib_dino_test)
+        'tests/curve25519.vala',
+        'tests/hkdf.vala',
+        'tests/session_builder.vala',
+    ]
+    exe_lib_dino_test = executable('libdino-omemo-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_dino, install: false)
+    test('Tests for libdino OMEMO', exe_lib_dino_test)
+endif
