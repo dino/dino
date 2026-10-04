@@ -50,7 +50,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         return get_local_ip_addresses_impl();
     }
 
-    private async void query_availability(XmppStream stream) {
+    private async void query_availability(XmppStream stream) throws IOError {
         ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
         if (items_result == null) return;
 

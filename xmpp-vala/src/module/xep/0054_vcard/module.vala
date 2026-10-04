@@ -2,7 +2,7 @@ namespace Xmpp.Xep.VCard {
 private const string NS_URI = "vcard-temp";
 private const string NS_URI_UPDATE = NS_URI + ":x:update";
 
-public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) {
+public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) throws IOError {
     Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("vCard", NS_URI).add_self_xmlns()) { to=jid };
     Iq.Stanza iq_res = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
 

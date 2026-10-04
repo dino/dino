@@ -4,7 +4,7 @@ namespace Xmpp.Xep.ExternalServiceDiscovery {
 
     private const string NS_URI = "urn:xmpp:extdisco:2";
 
-    public static async Gee.List<Service> request_services(XmppStream stream) {
+    public static async Gee.List<Service> request_services(XmppStream stream) throws IOError {
         Iq.Stanza request_iq = new Iq.Stanza.get((new StanzaNode.build("services", NS_URI)).add_self_xmlns()) { to=stream.remote_name };
         Iq.Stanza response_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, request_iq);
 

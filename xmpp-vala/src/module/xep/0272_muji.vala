@@ -86,7 +86,12 @@ namespace Xmpp.Xep.Muji {
             GroupCall group_call = stream.get_flag(Flag.IDENTITY).calls[muc_jid];
             group_call.waiting_for_finish_prepares[promise] = preparing_peers;
 
-            return yield promise.future.wait_async();
+            try {
+                return yield promise.future.wait_async();
+            } catch (FutureError e) {
+                warning("Failed waiting for preparing peers: %s", e.message);
+                return new ArrayList<Presence.Stanza>();
+            }
         }
 
         private async void compute_payload_intersection(XmppStream stream, GroupCall group_call, string media) {

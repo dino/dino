@@ -24,7 +24,12 @@ public class Xmpp.Xep.Jingle.Flag : XmppStreamFlag {
 
     public async Session? get_session(string sid) {
         if (promises.has_key(sid)) {
-            return yield promises[sid].future.wait_async();
+            try {
+                return yield promises[sid].future.wait_async();
+            } catch (FutureError e) {
+                warning("Failed waiting for session: %s", e.message);
+                return null;
+            }
         }
         return sessions[sid];
     }

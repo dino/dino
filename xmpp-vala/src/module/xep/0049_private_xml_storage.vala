@@ -6,13 +6,13 @@ namespace Xmpp.Xep.PrivateXmlStorage {
     public class Module : XmppStreamModule {
         public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0049_private_xml_storage");
 
-        public async void store(XmppStream stream, StanzaNode node) {
+        public async void store(XmppStream stream, StanzaNode node) throws IOError {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.set(queryNode);
             yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
         }
 
-        public async StanzaNode? retrieve(XmppStream stream, StanzaNode node) {
+        public async StanzaNode? retrieve(XmppStream stream, StanzaNode node) throws IOError {
             StanzaNode queryNode = new StanzaNode.build("query", NS_URI).add_self_xmlns().put_node(node);
             Iq.Stanza iq = new Iq.Stanza.get(queryNode);
             Iq.Stanza iq_result = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);

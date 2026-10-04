@@ -28,9 +28,13 @@ public class Module : XmppStreamNegotiationModule {
             stream.add_flag(new Flag());
             Iq.Stanza iq = new Iq.Stanza.set(new StanzaNode.build("session", NS_URI).add_self_xmlns()) { to=stream.remote_name };
 
-            Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
-            if (!result_iq.is_error()) {
-                stream.get_flag(Flag.IDENTITY).finished = true;
+            try {
+                Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+                if (!result_iq.is_error()) {
+                    stream.get_flag(Flag.IDENTITY).finished = true;
+                }
+            } catch (IOError e) {
+                warning("Error establishing legacy session: %s", e.message);
             }
         }
     }

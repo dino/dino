@@ -15,8 +15,8 @@ public TimeZone? parse_tzd(string tzd) {
      } else {
           return null;
      }
-     int h_offset = unprefixed.substring(0, 2).to_int();
-     int m_offset = unprefixed.substring(3, 2).to_int();
+     int h_offset = int.parse(unprefixed.substring(0, 2));
+     int m_offset = int.parse(unprefixed.substring(3, 2));
      int offset = h_offset * 60 * 60 + m_offset * 60;
      if (tzd.has_prefix("-")) {
           offset = -offset;

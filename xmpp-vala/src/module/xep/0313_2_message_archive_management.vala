@@ -61,7 +61,7 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         return MessageArchiveManagement.create_base_query(stream, mam_params.query_id, fields);
     }
 
-    public async QueryResult query_archive(XmppStream stream, MamQueryParams mam_params, Cancellable? cancellable = null) {
+    public async QueryResult query_archive(XmppStream stream, MamQueryParams mam_params, Cancellable? cancellable = null) throws IOError {
         var query_node = create_base_query(stream, mam_params);
         if (!mam_params.use_ns2_extended) {
             query_node.put_node(ResultSetManagement.create_set_rsm_node_before(mam_params.end_id));
@@ -70,7 +70,7 @@ namespace Xmpp.MessageArchiveManagement.V2 {
         return yield MessageArchiveManagement.query_archive(stream, mam_params.mam_server, query_node, cancellable);
     }
 
-    public async QueryResult page_through_results(XmppStream stream, MamQueryParams mam_params, QueryResult prev_result, Cancellable? cancellable = null) {
+    public async QueryResult page_through_results(XmppStream stream, MamQueryParams mam_params, QueryResult prev_result, Cancellable? cancellable = null) throws IOError {
         var query_node = create_base_query(stream, mam_params);
         query_node.put_node(ResultSetManagement.create_set_rsm_node_before(prev_result.first));
 

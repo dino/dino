@@ -8,7 +8,7 @@ public const string NS_URI_COMPAT = NS_URI + "#compat";
 public class Module : BookmarksProvider, XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0402_bookmarks2");
 
-    public async Set<Conference>? get_conferences(XmppStream stream) {
+    public async Set<Conference>? get_conferences(XmppStream stream) throws IOError {
         HashMap<Jid, Conference>? hm = null;
 
         Flag? flag = stream.get_flag(Flag.IDENTITY);
@@ -35,7 +35,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         return ret;
     }
 
-    public async void add_conference(XmppStream stream, Conference conference) {
+    public async void add_conference(XmppStream stream, Conference conference) throws IOError {
         StanzaNode conference_node = new StanzaNode.build("conference", NS_URI).add_self_xmlns()
             .put_attribute("autojoin", conference.autojoin.to_string());
         if (conference.name != null) {
@@ -56,7 +56,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         yield stream.get_module(Pubsub.Module.IDENTITY).publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conference.jid.to_string(), conference_node, publish_options);
     }
 
-    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) {
+    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) throws IOError {
         yield add_conference(stream, modified_conference);
     }
 

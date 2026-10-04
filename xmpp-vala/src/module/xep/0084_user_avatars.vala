@@ -25,7 +25,7 @@ namespace Xmpp.Xep.UserAvatars {
         stream.get_module(Pubsub.Module.IDENTITY).delete_node(stream, null, NS_URI_METADATA);
     }
 
-    public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) {
+    public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) throws IOError {
         Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, jid, NS_URI_DATA);
         if (items == null || items.size == 0 || items[0].sub_nodes.size == 0) return null;
 

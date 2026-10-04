@@ -18,7 +18,7 @@ namespace Dino.Ui.Util {
     }
 
 public static ViewModel.PreferencesRow.Any? get_data_form_field_view_model(DataForms.DataForm.Field field) {
-    if (field.type_ == null) return null;
+    if (field.type_ == DataForms.DataForm.Type.UNKNOWN) return null;
 
     ViewModel.PreferencesRow.Any? view_model = null;
 

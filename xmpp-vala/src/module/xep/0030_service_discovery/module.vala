@@ -45,7 +45,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         return yield this.cache.get_entity_identities(jid);
     }
 
-    public async InfoResult? request_info(XmppStream stream, Jid jid) {
+    public async InfoResult? request_info(XmppStream stream, Jid jid) throws IOError {
         var future = active_info_requests[jid];
         if (future == null) {
             var promise = new Promise<InfoResult?>();
@@ -69,7 +69,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
     }
 
-    public async ItemsResult? request_items(XmppStream stream, Jid jid) {
+    public async ItemsResult? request_items(XmppStream stream, Jid jid) throws IOError {
         StanzaNode query_node = new StanzaNode.build("query", NS_URI_ITEMS).add_self_xmlns();
         Iq.Stanza iq = new Iq.Stanza.get(query_node) { to=jid };
 

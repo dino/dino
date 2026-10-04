@@ -224,6 +224,10 @@ public class OmemoPreferencesWidget : Adw.PreferencesGroup {
                 case TrustLevel.VERIFIED:
                     trust_str = _("Verified");
                     break;
+                case TrustLevel.TRUSTED:
+                case TrustLevel.UNKNOWN:
+                default:
+                    break;
             }
 
             action_row.add_suffix(new Label(trust_str));

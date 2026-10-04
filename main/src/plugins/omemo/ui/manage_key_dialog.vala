@@ -141,6 +141,9 @@ public class ManageKeyDialog : Gtk.Dialog {
                 main_desc_label.set_markup(_("This key is currently %s.").printf("<span color='#D91900'>"+_("rejected")+"</span>")+" "+_("This means it cannot be used by %s to decipher your messages, and you won't see messages encrypted with it.").printf(@"<b>$(device[db.identity_meta.address_name])</b>"));
                 main_action_list.append(accept_row);
                 break;
+            case TrustLevel.UNKNOWN:
+            default:
+                break;
         }
 
         //Row clicked - go to appropriate screen

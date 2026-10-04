@@ -73,10 +73,14 @@ namespace Xmpp.Sasl {
                 } else if (node.name == "challenge" && stream.has_flag(Flag.IDENTITY)) {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
                     if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
-                        var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
-                        flag.server_signature = challenge_response.expected_server_signature;
-                        stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
-                                .put_node(new StanzaNode.text(Base64.encode((uchar[]) (challenge_response.response).to_utf8()))));
+                        try {
+                            var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
+                            flag.server_signature = challenge_response.expected_server_signature;
+                            stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
+                                    .put_node(new StanzaNode.text(Base64.encode((uchar[]) (challenge_response.response).to_utf8()))));
+                        } catch (Error e) {
+                            warning("Failed processing challenge: %s", e.message);
+                        }
                     }
                 }
             }
@@ -165,7 +169,7 @@ namespace Xmpp.Sasl {
         public string response { get; set; }
     }
 
-    public static ChallengeResponse compute_challenge_response(string challenge, string password, string client_nonce, string name) {
+    public static ChallengeResponse compute_challenge_response(string challenge, string password, string client_nonce, string name) throws Error {
         string challenge_base64 = (string) Base64.decode(challenge);
         string? server_nonce = null;
         uint8[] salt = null;

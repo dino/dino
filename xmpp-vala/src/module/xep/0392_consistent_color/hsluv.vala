@@ -340,9 +340,9 @@ internal string rgb_to_hex(double[] tuple) {
 
 internal double[] hex_to_tgb(string hex) {
     return new double[]    {
-        hex.substring(1, 2).to_long(null, 16) / 255.0,
-        hex.substring(3, 2).to_long(null, 16) / 255.0,
-        hex.substring(5, 2).to_long(null, 16) / 255.0
+        long.parse(hex.substring(1, 2), 16) / 255.0,
+        long.parse(hex.substring(3, 2), 16) / 255.0,
+        long.parse(hex.substring(5, 2), 16) / 255.0
     };
 }
 

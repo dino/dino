@@ -67,7 +67,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
                                      ContentType content_type, ContentParameters content_params,
                                      Transport transport, TransportParameters? transport_params,
                                      SecurityPrecondition? security_precondition, SecurityParameters? security_params,
-                                     Jid local_full_jid, Jid peer_full_jid) throws Error {
+                                     Jid local_full_jid, Jid peer_full_jid) {
         this.content_name = content_name;
         this.senders = senders;
         this.role = Role.RESPONDER;
@@ -142,7 +142,7 @@ public class Xmpp.Xep.Jingle.Content : Object {
         this.content_params.accept(stream, session, this);
     }
 
-    internal void handle_accept(XmppStream stream, ContentNode content_node) {
+    internal void handle_accept(XmppStream stream, ContentNode content_node) throws IqError {
         this.transport_params.handle_transport_accept(content_node.transport);
         this.transport_params.create_transport_connection(stream, this);
         this.content_params.handle_accept(stream, this.session, this, content_node.description);
@@ -157,7 +157,13 @@ public class Xmpp.Xep.Jingle.Content : Object {
             return;
         }
         tried_transport_methods.add(new_transport.ns_uri);
-        transport_params = new_transport.create_transport_parameters(stream, transport_params.components, local_full_jid, peer_full_jid);
+        try {
+            transport_params = new_transport.create_transport_parameters(stream, transport_params.components, local_full_jid, peer_full_jid);
+        } catch (Error e) {
+            session.terminate(ReasonElement.FAILED_TRANSPORT, null, e.message);
+            // TODO should we only terminate this content or really the whole session?
+            return;
+        }
         set_transport_params(transport_params);
         session.send_transport_replace(this, transport_params);
         state = State.REPLACING_TRANSPORT;

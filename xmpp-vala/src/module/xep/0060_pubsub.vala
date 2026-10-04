@@ -41,7 +41,7 @@ namespace Xmpp.Xep.Pubsub {
             retract_listeners.unset(node);
         }
 
-        public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid? jid, string node) { // TODO multiple nodes gehen auch
+        public async Gee.List<StanzaNode>? request_all(XmppStream stream, Jid? jid, string node) throws IOError { // TODO multiple nodes gehen auch
             Iq.Stanza request_iq = new Iq.Stanza.get(new StanzaNode.build("pubsub", NS_URI).add_self_xmlns().put_node(new StanzaNode.build("items", NS_URI).put_attribute("node", node)));
             if (jid != null) request_iq.to = jid;
 
@@ -72,7 +72,7 @@ namespace Xmpp.Xep.Pubsub {
                 XmppStream stream, Jid? jid, string node_id, string? item_id, StanzaNode content,
                 PublishOptions? publish_options = null,
                 bool try_reconfiguring = true
-        ) {
+        ) throws IOError {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("publish", NS_URI).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -142,7 +142,7 @@ namespace Xmpp.Xep.Pubsub {
             stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq, null);
         }
 
-        public async DataForms.DataForm? request_node_config(XmppStream stream, Jid? jid, string node_id) {
+        public async DataForms.DataForm? request_node_config(XmppStream stream, Jid? jid, string node_id) throws IOError {
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", NS_URI_OWNER).add_self_xmlns();
             StanzaNode publish_node = new StanzaNode.build("configure", NS_URI_OWNER).put_attribute("node", node_id);
             pubsub_node.put_node(publish_node);
@@ -154,7 +154,7 @@ namespace Xmpp.Xep.Pubsub {
             return DataForms.DataForm.create_from_node(data_form_node);
         }
 
-        public async bool submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) {
+        public async bool submit_node_config(XmppStream stream, DataForms.DataForm data_form, string node_id) throws IOError {
             StanzaNode submit_node = data_form.get_submit_node();
 
             StanzaNode pubsub_node = new StanzaNode.build("pubsub", Pubsub.NS_URI_OWNER).add_self_xmlns();
@@ -222,7 +222,7 @@ namespace Xmpp.Xep.Pubsub {
             }
         }
 
-        private async bool change_node_config(XmppStream stream, Jid jid, string node, PublishOptions publish_options) {
+        private async bool change_node_config(XmppStream stream, Jid jid, string node, PublishOptions publish_options) throws IOError {
             DataForms.DataForm? data_form = yield stream.get_module(Pubsub.Module.IDENTITY).request_node_config(stream, jid, node);
             if (data_form == null) return false;
 

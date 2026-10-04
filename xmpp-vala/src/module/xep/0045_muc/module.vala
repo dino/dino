@@ -215,7 +215,7 @@ public class Module : XmppStreamModule {
         stream.get_module(Iq.Module.IDENTITY).send_iq(stream, iq);
     }
 
-    public async void change_affiliation(XmppStream stream, Jid muc_jid, Jid? user_jid, string? nick, string new_affiliation) {
+    public async void change_affiliation(XmppStream stream, Jid muc_jid, Jid? user_jid, string? nick, string new_affiliation) throws IOError {
         StanzaNode item_node = new StanzaNode.build("item", NS_URI_ADMIN)
                 .put_attribute("affiliation", new_affiliation, NS_URI_ADMIN);
         if (user_jid != null) {
@@ -229,7 +229,7 @@ public class Module : XmppStreamModule {
         yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
     }
 
-    public async DataForms.DataForm? get_config_form(XmppStream stream, Jid jid) {
+    public async DataForms.DataForm? get_config_form(XmppStream stream, Jid jid) throws IOError {
         Iq.Stanza get_iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_OWNER).add_self_xmlns()) { to=jid };
         Iq.Stanza result_iq = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, get_iq);
 
@@ -241,7 +241,7 @@ public class Module : XmppStreamModule {
         return null;
     }
 
-    public async void set_config_form(XmppStream stream, Jid jid, DataForms.DataForm data_form) {
+    public async void set_config_form(XmppStream stream, Jid jid, DataForms.DataForm data_form) throws IOError {
         StanzaNode stanza_node = new StanzaNode.build("query", NS_URI_OWNER);
         stanza_node.add_self_xmlns().put_node(data_form.get_submit_node());
         Iq.Stanza set_iq = new Iq.Stanza.set(stanza_node) { to=jid };
@@ -420,7 +420,7 @@ public class Module : XmppStreamModule {
         yield query_affiliation(stream, muc_jid, "owner");
     }
 
-    private async Gee.List<Jid>? query_affiliation(XmppStream stream, Jid jid, string affiliation) {
+    private async Gee.List<Jid>? query_affiliation(XmppStream stream, Jid jid, string affiliation) throws IOError {
         Iq.Stanza iq = new Iq.Stanza.get(
             new StanzaNode.build("query", NS_URI_ADMIN)
                 .add_self_xmlns()
@@ -538,14 +538,18 @@ public class ReceivedPipelineListener : StanzaListener<MessageStanza> {
                 if (item_nodes.size > 0) {
                     var affiliations = new HashMap<Jid, Affiliation>();
                     foreach (StanzaNode item_node in item_nodes) {
-                        string jid_str = item_node.get_attribute("jid", Muc.NS_URI_USER);
-                        Jid real_jid = Jid.from_string(jid_str);
-                        string affiliation_str = item_node.get_attribute("affiliation", Muc.NS_URI_USER);
-                        Muc.Affiliation affiliation = Muc.Module.parse_affiliation(affiliation_str);
+                        try {
+                            string jid_str = item_node.get_attribute("jid", Muc.NS_URI_USER);
+                            Jid real_jid = Jid.from_string(jid_str);
+                            string affiliation_str = item_node.get_attribute("affiliation", Muc.NS_URI_USER);
+                            Muc.Affiliation affiliation = Muc.Module.parse_affiliation(affiliation_str);
 
-                        affiliations[real_jid] = affiliation;
+                            affiliations[real_jid] = affiliation;
 
-                        stream.get_flag(Flag.IDENTITY).set_offline_member(message.from, real_jid, affiliation);
+                            stream.get_flag(Flag.IDENTITY).set_offline_member(message.from, real_jid, affiliation);
+                        } catch (InvalidJidError e) {
+                            warning("Received invalid affiliation update: %s", e.message);
+                        }
                     }
 
                     string? mav_since = MucAffiliationsVersioning.get_mav_since(x_node);

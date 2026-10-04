@@ -18,6 +18,7 @@ public class DataForm {
     }
 
     public enum Type {
+        UNKNOWN,
         BOOLEAN,
         FIXED,
         HIDDEN,
@@ -44,7 +45,7 @@ public class DataForm {
             get { return node.get_attribute("label", NS_URI); }
             set { node.set_attribute("label", value); }
         }
-        public virtual Type? type_ { get; internal set; default=null; }
+        public virtual Type type_ { get; internal set; default=Type.UNKNOWN; }
         public string? var {
             get { return node.get_attribute("var", NS_URI); }
             set { node.set_attribute("var", value); }

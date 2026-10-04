@@ -57,7 +57,7 @@ public class Module : XmppStreamModule {
         return query_node;
     }
 
-    internal async QueryResult query_archive(XmppStream stream, Jid? mam_server, StanzaNode query_node, Cancellable? cancellable = null) {
+    internal async QueryResult query_archive(XmppStream stream, Jid? mam_server, StanzaNode query_node, Cancellable? cancellable = null) throws IOError {
 
         var res = new QueryResult();
         Flag flag = Flag.get_flag(stream);

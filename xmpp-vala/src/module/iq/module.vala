@@ -23,7 +23,7 @@ namespace Xmpp.Iq {
                     Idle.add(send_iq_async.callback);
                 }
             });
-            stream.write_async(iq.stanza, io_priority, cancellable);
+            yield stream.write_async(iq.stanza, io_priority, cancellable);
             ulong cancelled_handler_id = 0;
             if (cancellable != null) {
                 cancelled_handler_id = cancellable.cancelled.connect(() => Idle.add(send_iq_async.callback));

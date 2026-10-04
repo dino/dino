@@ -15,7 +15,7 @@ namespace Xmpp {
 
     public async XmppStreamResult establish_stream(Jid bare_jid, Gee.List<XmppStreamModule> modules, string? log_options, owned TlsXmppStream.OnInvalidCert on_invalid_cert) {
         Jid remote = bare_jid.domain_jid;
-        TlsXmppStream.OnInvalidCertWrapper on_invalid_cert_wrapper = new TlsXmppStream.OnInvalidCertWrapper(on_invalid_cert);
+        TlsXmppStream.OnInvalidCertWrapper on_invalid_cert_wrapper = new TlsXmppStream.OnInvalidCertWrapper((owned) on_invalid_cert);
 
         //Lookup xmpp-client and xmpps-client SRV records
         GLib.List<SrvTargetInfo>? targets = new GLib.List<SrvTargetInfo>();
@@ -72,7 +72,13 @@ namespace Xmpp {
 
                 connection_timeout_id = Timeout.add_seconds(30, () => {
                     warning("Connection attempt timed out");
-                    stream.disconnect();
+                    stream.disconnect.begin((_, res) => {
+                        try {
+                            stream.disconnect.end(res);
+                        } catch (IOError e) {
+                            debug("Error while disconnecting: %s", e.message);
+                        }
+                    });
                     connection_timeout_id = 0;
                     return Source.REMOVE;
                 });
