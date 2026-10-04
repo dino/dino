@@ -114,6 +114,138 @@ c_args = vala_c_args + [
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
+
+if get_option('rtp').allowed() and dep_gstreamer.found() and dep_gstreamer_app.found() and dep_gstreamer_audio.found() and dep_gstreamer_rtp.found() and dep_gstreamer_video.found()
+    dependencies += [
+        dep_gstreamer,
+        dep_gstreamer_app,
+        dep_gstreamer_audio,
+        dep_gstreamer_rtp,
+        dep_gstreamer_video,
+    ]
+
+    sources += files(
+        'src/plugins/rtp/codec_util.vala',
+        'src/plugins/rtp/device.vala',
+        'src/plugins/rtp/gst_fixes.c',
+        'src/plugins/rtp/module.vala',
+        'src/plugins/rtp/plugin.vala',
+        'src/plugins/rtp/stream.vala',
+        'src/plugins/rtp/video_widget.vala',
+    )
+
+    if dep_webrtc_audio_processing.found() and get_option('voice-processing').allowed()
+        voice_dependencies = [
+            dep_gstreamer_audio,
+            dep_webrtc_audio_processing,
+        ]
+        voice_sources = files(
+            'src/plugins/rtp/voice_processor_native.cpp',
+        )
+        voice_c_args = c_args
+        if dep_webrtc_audio_processing.version().version_compare('>=2.0')
+            voice_c_args += ['-DWEBRTC2']
+        elif dep_webrtc_audio_processing.version().version_compare('>=1.0')
+            voice_c_args += ['-DWEBRTC1']
+        else
+            voice_c_args += ['-DWEBRTC0']
+        endif
+        lib_rtp_voice_processor = static_library('rtp-voice-processor', voice_sources, c_args: voice_c_args, cpp_args: voice_c_args, dependencies: voice_dependencies, install: false)
+        dep_rtp_voice_processor = declare_dependency(link_with: lib_rtp_voice_processor)
+        vala_args += ['-D', 'WITH_VOICE_PROCESSOR']
+        dependencies += [dep_rtp_voice_processor]
+        sources += files(
+            'src/plugins/rtp/voice_processor.vala',
+        )
+    endif
+    if get_option('rtp-h264')
+        vala_args += ['-D', 'ENABLE_H264']
+    endif
+    if get_option('rtp-msdk')
+        vala_args += ['-D', 'ENABLE_MSDK']
+    endif
+    if get_option('rtp-vaapi')
+        vala_args += ['-D', 'ENABLE_VAAPI']
+    endif
+    if get_option('rtp-vp9')
+        vala_args += ['-D', 'ENABLE_VP9']
+    endif
+
+    summary('Voice/video calls (rtp)', true, bool_yn: true, section: 'Plugins')
+    summary('H264 codec', get_option('rtp-h264'), bool_yn: true, section: 'RTP configuration')
+    summary('VP9 codec', get_option('rtp-vp9'), bool_yn: true, section: 'RTP configuration')
+    summary('Intel MediaSDK', get_option('rtp-msdk'), bool_yn: true, section: 'RTP configuration')
+    summary('Video Acceleration API', get_option('rtp-vaapi'), bool_yn: true, section: 'RTP configuration')
+    summary('Voice preprocessing', dep_webrtc_audio_processing.found() and get_option('voice-processing').allowed(), bool_yn: true, section: 'RTP configuration')
+else
+    summary('Voice/video calls (rtp)', false, bool_yn: true, section: 'Plugins')
+endif
+
+if get_option('omemo').allowed() and dep_libomemo_c.found() and dep_libqrencode.found()
+    dependencies += [
+        dep_libomemo_c,
+        dep_libqrencode,
+    ]
+    sources += files(
+        'src/plugins/omemo/dtls_srtp_verification_draft.vala',
+        'src/plugins/omemo/file_transfer/file_decryptor.vala',
+        'src/plugins/omemo/file_transfer/file_encryptor.vala',
+        'src/plugins/omemo/jingle/jet_omemo.vala',
+        'src/plugins/omemo/jingle/jingle_helper.vala',
+        'src/plugins/omemo/logic/database.vala',
+        'src/plugins/omemo/logic/decrypt.vala',
+        'src/plugins/omemo/logic/encrypt.vala',
+        'src/plugins/omemo/logic/manager.vala',
+        'src/plugins/omemo/logic/pre_key_store.vala',
+        'src/plugins/omemo/logic/session_store.vala',
+        'src/plugins/omemo/logic/signed_pre_key_store.vala',
+        'src/plugins/omemo/logic/trust_manager.vala',
+        'src/plugins/omemo/plugin.vala',
+        'src/plugins/omemo/protocol/bundle.vala',
+        'src/plugins/omemo/protocol/message_flag.vala',
+        'src/plugins/omemo/protocol/stream_module.vala',
+        'src/plugins/omemo/trust_level.vala',
+        'src/plugins/omemo/ui/bad_messages_populator.vala',
+        'src/plugins/omemo/ui/call_encryption_entry.vala',
+        'src/plugins/omemo/ui/contact_details_provider.vala',
+        'src/plugins/omemo/ui/device_notification_populator.vala',
+        'src/plugins/omemo/ui/encryption_list_entry.vala',
+        'src/plugins/omemo/ui/encryption_preferences_entry.vala',
+        'src/plugins/omemo/ui/manage_key_dialog.vala',
+        'src/plugins/omemo/ui/own_notifications.vala',
+        'src/plugins/omemo/ui/util.vala',
+    )
+
+    summary('End-to-end encryption using OMEMO (omemo)', true, bool_yn: true, section: 'Plugins')
+else
+    summary('End-to-end encryption using OMEMO (omemo)', false, bool_yn: true, section: 'Plugins')
+endif
+
+if get_option('openpgp').allowed() and dep_gpgme.found()
+    dependencies += [
+        dep_gpgme,
+    ]
+    sources += files(
+        'src/plugins/openpgp/contact_details_provider.vala',
+        'src/plugins/openpgp/database.vala',
+        'src/plugins/openpgp/encryption_list_entry.vala',
+        'src/plugins/openpgp/encryption_preferences_entry.vala',
+        'src/plugins/openpgp/file_transfer/file_decryptor.vala',
+        'src/plugins/openpgp/file_transfer/file_encryptor.vala',
+        'src/plugins/openpgp/gpgme_fix.c',
+        'src/plugins/openpgp/gpgme_helper.vala',
+        'src/plugins/openpgp/manager.vala',
+        'src/plugins/openpgp/plugin.vala',
+        'src/plugins/openpgp/stream_module.vala',
+        'src/plugins/openpgp/util.vala',
+        'vapi/gpg-error.vapi',
+    )
+
+    summary('End-to-end encryption using PGP (openpgp)', true, bool_yn: true, section: 'Plugins')
+else
+    summary('End-to-end encryption using PGP (openpgp)', false, bool_yn: true, section: 'Plugins')
+endif
+
 exe_dino = executable('dino', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, install: true, install_rpath: default_install_rpath)
 
 install_data('data/icons/scalable/apps/im.dino.Dino-symbolic.svg', install_dir: get_option('datadir') / 'icons/hicolor/symbolic/apps')

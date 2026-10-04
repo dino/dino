@@ -17,6 +17,48 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
 "X-Generator: Weblate 4.14-dev\n"
 
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "Að spyrja GnuPG"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Villa hjá GnuPG"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Engir lyklar í boði. Búðu einn til!"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Lykill ekki í lyklakippu"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Deiling lykla óvirkt"
+
+#~ msgid "Select key"
+#~ msgstr "Veldu lykil"
+
+#~ msgid "Loading…"
+#~ msgstr "Hleður…"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1094,7 +1136,7 @@ msgstr ""
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
 msgstr "Mistókst að skapa örugga tengingu"
-
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "Til baka"

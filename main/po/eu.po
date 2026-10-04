@@ -18,6 +18,417 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.15-dev\n"
 
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s erabiltzaileak fidagarritasun gutxiko gailu bat erabiltzen egon da. Ez "
+"duzu mezurik ikusiko konfiantza ematen ez dizuten gailuengandik."
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Gailuak kudeatu"
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s erabiltzailea ez da gailu honetaz fidatzen. Honek mezu batzuk gal "
+"ditzakezula esan nahi du."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Gakoa kudeatu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Hatz marka konparatu, hizkiz hizki, zure kontaktuaren gailuan ageri "
+"denarekin."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Hatz markak ez datoz bat"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Hatz markak bat datoz"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "Baieztatu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Gakoa egiaztatu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"%s erabiltzaileak etorkizunean gako hau erabiltzen duen gailutik bidalitako "
+"mezuak nabarmenduko dira txat leihoan."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Hatz markak ez datoz bat"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Mesedez egiaztatu ezazu hatz marka egokia konparatzen ari zarela. Hatz "
+"markak bat ez badatoz baliteke %s(e)ren kontua arriskuan egotea eta gako hau "
+"ez onartzea kontuan hartu beharko zenuke."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "Gakoaren hatz marka egiaztatu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Konpara ezazu gako honen hatz marka kontaktuaren gailuan agertzen den hatz "
+"markarekin."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:151
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:288
+msgid "Reject key"
+msgstr "Gakoa ukatu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Enkriptatutako komunikazioa blokeatu gako hau erabiltzen duen kontaktuaren "
+"gailuarekin."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:159
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:283
+msgid "Accept key"
+msgstr "Gakoa onartu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Enkriptatutako komunikazioa baimendu gako hau erabiltzen duen kontaktuaren "
+"gailuarekin."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "Gako hau %s dago une honetan."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "onartuta"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Horrek esan nahi du %s-ek erabil dezakeela mezu zifratuak jasotzeko eta "
+"bidaltzeko."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "egiaztatuta"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr ""
+"Gainera zure kontaktuaren gailuan ageri den gakoarekin bat datorrela "
+"egiaztatu da."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "ukatuta"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Honek esan nahi du %s erabiltzaileak ezin duela erabili zure mezuak "
+"deszifratzeko, eta zuk ez dituzula gako honekin enkriptatutako mezuak "
+"ikusiko."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Ez dituzu ikusiko gako hau erabiltzen duen %s kontaktuaren gailutik "
+"igorritako mezuak. Era berean, hemendik aurrera gailu horrek ez da zure "
+"mezuak deszifratzeko gai izango."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Gako hau erabiltzen duen %s kontaktuaren gailuarekin enkriptatutako mezuak "
+"elkar-trukatzeko gai izango zara."
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Kudeatu"
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "Kontaktu honek gailu berriak ditu"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "OMEMO konfiantza erabakia behar da"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Gailu berri gehitu duzu %s konturako?"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:56
+msgid "New keys"
+msgstr "Gako berriak"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:100
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Zure beste gailuen enkriptatze gako berriak onartuak izango dira "
+"automatikoki."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:222
+msgid "Accepted"
+msgstr "Onartuta"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:225
+msgid "Rejected"
+msgstr "Ukatuta"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:228
+msgid "Verified"
+msgstr "Egiaztatuta"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr ""
+
+#: main/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO gakoen kudeaketa"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "OMEMO gailu %d"
+#~ msgstr[1] "%d OMEMO gailu"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Gako berriak automatikoki onartu"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Kontaktu honen enkriptatze gako berriak onartuak izango dira automatikoki."
+
+#~ msgid "Own key"
+#~ msgstr "Norberaren gakoa"
+
+#~ msgid "Associated keys"
+#~ msgstr "Lotutako gakoak"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Gako ez aktiboak"
+
+#~ msgid "Unused"
+#~ msgstr "Ez erabilita"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Norberaren hatz marka"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Lehen konexioan sortuko da"
+
+#~ msgid "Not matching"
+#~ msgstr "Ez datoz bat"
+
+#~ msgid "Matching"
+#~ msgstr "Bat datoz"
+
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Egiaztatu ondoren, %s(e)k gako honekin etorkizunean bidalitako mezu "
+#~ "guztiak behar bezala nabarmenduko dira txat leihoan."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Utzi gako hau onartzeari lotuta dagoen kontaktuarekin hitz egiten duzun "
+#~ "bitartean."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr ""
+#~ "Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz egiten duzun "
+#~ "bitartean"
+
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Honek esan nahi du %s(e)k ezin duela gakoa mezuak jasotzeko erabili, eta "
+#~ "berak bidalitako edozein mezu alde batera utziko da."
+
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Egiaztatu ondoren, etorkizunean %s(e)k gako hau erabiliz bidalitako "
+#~ "edozein mezu alde batera utziko da eta zure mezuetako bat ere ez da "
+#~ "irakurgarria izango gako hau erabiliz."
+
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Egiaztatu ondoren %s(e)k gako hau mezuak jaso eta bidaltzeko erabili ahal "
+#~ "izango du."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Kontaktu honek enkriptatzeko gako berriak bere kontura gehitzen "
+#~ "dituenean, automatikoki onartu."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Zure kontura enkriptazio gako berriak gehitzen dituzunean, automatikoki "
+#~ "onartu."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "Hasi gako hau onartzen lotuta dagoen kontaktuarekin hitz giten duzun "
+#~ "bitartean."
+
+#~ msgid "Reject Key"
+#~ msgstr "Gakoa baztertu"
+
+#~ msgid "Accept Key"
+#~ msgstr "Gakoa onartu"
+
+#~ msgid "Unknown device (0x%.8x)"
+#~ msgstr "Gailu ezezaguna (0x%.8x)"
+
+#~ msgid "Other devices"
+#~ msgstr "Beste gailuak"
+
+#~ msgid "- None -"
+#~ msgstr "- Bat ere ez -"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "GnuPGri galdetzen"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG akatsa"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Ez dago gakorik eskuragarri. Sortu ezazu bat!"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Gakorik ez giltzatakoan"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Gakoa argitaratzea ezgaituta"
+
+#~ msgid "Select key"
+#~ msgstr "Gakoa hautatu"
+
+#~ msgid "Loading…"
+#~ msgstr "Kargatzen…"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1095,7 +1506,7 @@ msgstr ""
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
 msgstr "Ezin izan da konexio seguru bat ezarri"
-
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "Atzera"

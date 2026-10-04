@@ -17,6 +17,337 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.18-dev\n"
 
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s χρησιμοποιεί μια μη αξιόπιστη συσκευή. Δεν θα βλέπετε μηνύματα από "
+"συσκευές που δεν εμπιστεύεστε."
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Διαχείριση συσκευών"
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s δεν εμπιστεύεται αυτήν τη συσκευή. Αυτό σημαίνει ότι μπορεί να χάσετε "
+"μηνύματα."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Διαχείριση Κλειδιού"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Συγκρίνετε το δακτυλικό αποτύπωμα (fingerprint), χαρακτήρα προς χαρακτήρα, "
+"με αυτό που εμφανίζεται στη συσκευή της επαφής σας."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) διαφέρουν"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) ταιριάζουν"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "Επιβεβαίωση"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Επαλήθευση κλειδιού"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Μελλοντικά μηνύματα που αποστέλλονται από %s από τη συσκευή που χρησιμοποιεί "
+"αυτό το κλειδί θα επισημαίνονται ανάλογα στο παράθυρο συνομιλίας."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Τα δακτυλικά αποτυπώματα (fingerprints) δεν ταιριάζουν"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Επαληθεύστε ότι συγκρίνετε το σωστό δακτυλικό αποτύπωμα (fingerprint). Εάν "
+"τα δακτυλικά αποτυπώματα (fingerprints) δεν ταιριάζουν, ο λογαριασμός του %s "
+"μπορεί να παραβιαστεί και θα πρέπει να σκεφτείτε να απορρίψετε αυτό το "
+"κλειδί."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "Επαλήθευση δακτυλικού αποτυπώματος (fingerprint) κλειδιού"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Συγκρίνετε το δακτυλικό αποτύπωμα (fingerprint) αυτού του κλειδιού με το "
+"δακτυλικό αποτύπωμα που εμφανίζεται στη συσκευή της επαφής."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:151
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:288
+msgid "Reject key"
+msgstr "Απόρριψη κλειδιού"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Αποκλεισμός κρυπτογραφημένης επικοινωνίας με τη συσκευή της επαφής που "
+"χρησιμοποιεί αυτό το κλειδί."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:159
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:283
+msgid "Accept key"
+msgstr "Αποδοχή κλειδιού"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Να επιτρέπεται η κρυπτογραφημένη επικοινωνία με τη συσκευή της επαφής που "
+"χρησιμοποιεί αυτό το κλειδί."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "Αυτό το κλειδί είναι αυτή τη στιγμή %s."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "δεκτό"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Αυτό σημαίνει ότι μπορεί να χρησιμοποιηθεί από το %s για λήψη και αποστολή "
+"κρυπτογραφημένων μηνυμάτων."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "επαληθευμένο"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr ""
+"Επιπλέον, έχει επαληθευτεί ότι ταιριάζει με το κλειδί στη συσκευή της επαφής."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "απορριφθέν"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Αυτό σημαίνει ότι δεν μπορεί να χρησιμοποιηθεί από %s για την "
+"αποκρυπτογράφηση των μηνυμάτων σας και δεν θα βλέπετε μηνύματα "
+"κρυπτογραφημένα με αυτό."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Δεν θα βλέπετε κρυπτογραφημένα μηνύματα από τη συσκευή των %s που "
+"χρησιμοποιούν αυτό το κλειδί. Αντίθετα, αυτή η συσκευή δεν θα μπορεί πλέον "
+"να αποκρυπτογραφήσει τα μηνύματά σας."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Θα μπορείτε να ανταλλάσσετε κρυπτογραφημένα μηνύματα με τη συσκευή των %s "
+"που χρησιμοποιούν αυτό το κλειδί."
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Διαχείρηση"
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "Αυτή η επαφή έχει νέες συσκευές"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "Απαιτείται απόφαση εμπιστοσύνης OMEMO"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Προσθέσατε νέα συσκευή για τον λογαριασμό %s;"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:56
+msgid "New keys"
+msgstr "Νέα κλειδιά"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:100
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Τα νέα κλειδιά κρυπτογράφησης από τις άλλες συσκευές σας θα γίνονται δεκτά "
+"αυτόματα."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr ""
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:222
+msgid "Accepted"
+msgstr "Αποδεκτά"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:225
+msgid "Rejected"
+msgstr "Απορριφθέντα"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:228
+msgid "Verified"
+msgstr "Επαληθευμένα"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr ""
+
+#: main/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "Διαχείριση κλειδιών OMEMO"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO συσκευή"
+#~ msgstr[1] "%d OMEMO συσκευές"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Αυτόματη αποδοχή νέων κλειδιών"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Τα νέα κλειδιά κρυπτογράφησης από αυτήν την επαφή θα γίνονται δεκτά "
+#~ "αυτόματα."
+
+#~ msgid "Own key"
+#~ msgstr "Το κλειδί μου"
+
+#~ msgid "Associated keys"
+#~ msgstr "Συσχετισμένα κλειδιά"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Ανενεργά κλειδιά"
+
+#~ msgid "Unused"
+#~ msgstr "Αχρησιμοποίητα"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Το δακτυλικό μου αποτύπωμα (fingerprint)"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Θα δημιουργηθεί με την πρώτη σύνδεση"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "Αναζήτηση στο GnuPG"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr ""
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Σφάλμα στο GnuPG"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Δεν υπάρχουν διαθέσιμα κλειδιά. Δημιουργήστε ένα!"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr ""
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Το κλειδί δεν είναι στο keychain"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr ""
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Η δημοσίευση του κλειδιού είναι απενεργοποιημένη"
+
+#~ msgid "Select key"
+#~ msgstr "Επιλέξτε κλειδί"
+
+#~ msgid "Loading…"
+#~ msgstr "Φόρτωση…"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1095,7 +1426,7 @@ msgstr ""
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
 msgstr "Δεν ήταν δυνατή η δημιουργία ασφαλούς σύνδεσης"
-
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "Πίσω"

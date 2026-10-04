@@ -3,8 +3,33 @@ namespace Dino.Test {
 int main(string[] args) {
     GLib.Test.init(ref args);
     GLib.Test.set_nonfatal_assertions();
-    TestSuite.get_root().add_suite(new WeakMapTest().get_suite());
+    TestSuite.get_root().add_suite(new Curve25519().get_suite());
+    TestSuite.get_root().add_suite(new SessionBuilderTest().get_suite());
+    TestSuite.get_root().add_suite(new HKDF().get_suite());
     return GLib.Test.run();
+}
+
+Dino.Crypto.Omemo.Store setup_test_store_context(Dino.Crypto.Omemo.Context global_context) {
+    Dino.Crypto.Omemo.Store store = global_context.create_store();
+    try {
+        store.identity_key_store.local_registration_id = (Random.next_int() % 16380) + 1;
+
+        Omemo.ECKeyPair key_pair = global_context.generate_key_pair();
+        store.identity_key_store.identity_key_private = new Bytes(key_pair.private.serialize());
+        store.identity_key_store.identity_key_public = new Bytes(key_pair.public.serialize());
+    } catch (Error e) {
+        fail_if_reached();
+    }
+    return store;
+}
+
+Omemo.ECPublicKey? create_test_ec_public_key(Dino.Crypto.Omemo.Context context) {
+    try {
+        return context.generate_key_pair().public;
+    } catch (Error e) {
+        fail_if_reached();
+        return null;
+    }
 }
 
 bool fail_if(bool exp, string? reason = null) {
@@ -27,7 +52,7 @@ void fail_if_not_error_code(ErrorFunc func, int expectedCode, string? reason = n
         func();
         fail_if_reached(@"$(reason + ": " ?? "")no error thrown");
     } catch (Error e) {
-        fail_if_not_eq_int(e.code, expectedCode, @"$(reason + ": " ?? "")catched unexpected error");
+        fail_if_not_eq_int(e.code, expectedCode, @"$(reason + ": " ?? "")caught unexpected error");
     }
 }
 

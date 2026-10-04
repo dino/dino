@@ -111,6 +111,30 @@ elif crypto_backend == 'openssl'
     )
 endif
 
+if get_option('omemo').allowed() and dep_libomemo_c.found()
+    dependencies += [dep_libomemo_c]
+    sources += files(
+        'src/crypto/omemo/context.vala',
+        'src/crypto/omemo/helper.c',
+        'src/crypto/omemo/simple_iks.vala',
+        'src/crypto/omemo/simple_pks.vala',
+        'src/crypto/omemo/simple_spks.vala',
+        'src/crypto/omemo/simple_ss.vala',
+        'src/crypto/omemo/store.vala',
+        'src/crypto/omemo/util.vala',
+    )
+
+    if crypto_backend == 'gnu'
+        sources += files(
+            'src/crypto/gnu/omemo.c',
+        )
+    elif crypto_backend == 'openssl'
+        sources += files(
+            'src/crypto/openssl/omemo.c',
+        )
+    endif
+endif
+
 c_args = vala_c_args + [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
@@ -124,3 +148,14 @@ dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_
 
 install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi', install_tag: 'devel') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
 install_headers('src/dino_i18n.h')
+
+test_sources = [
+    'tests/common.vala',
+    'tests/testcase.vala',
+
+    'tests/curve25519.vala',
+    'tests/hkdf.vala',
+    'tests/session_builder.vala',
+]
+exe_lib_dino_test = executable('libdino-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_dino, install: false)
+test('Tests for libdino', exe_lib_dino_test)

@@ -17,6 +17,390 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s güvenilmeyen bir cihaz kullanıyor. Güvenmediğiniz cihazlardan gelen "
+"mesajları görmezsiniz."
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Cihazları yönet"
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s bu cihaza güvenmiyor. Bu, eksik mesajlarınız olabileceği anlamına gelir."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Anahtarı Yönet"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Parmak izinin her bir karakterini, kişinizin cihazında gösterilen karakterle "
+"karşılaştırın."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Parmak izleri farklı"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Parmak izleri eşleşiyor"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "Onayla"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Anahtarı doğrula"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Bu anahtarı kullanan cihazdan %s tarafından gönderilen gelecekteki mesajlar, "
+"sohbet penceresinde vurgulanacaktır."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Parmak izleri uyuşmuyor"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Lütfen doğru parmak izini karşılaştırdığınızdan emin olun. Parmak izleri "
+"eşleşmezse, %s hesabının güvenliği ihlal edilmiş olabilir ve bu anahtarı "
+"reddetmenizi öneririz."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "Anahtar parmak izini doğrulayın"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Bu anahtarın parmak izini, kişinin cihazında görüntülenen parmak izi ile "
+"karşılaştırın."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:151
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:288
+msgid "Reject key"
+msgstr "Anahtarı reddet"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr "Bu anahtarı kullanan kişinin cihazıyla şifreli iletişimi engelle."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:159
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:283
+msgid "Accept key"
+msgstr "Kabul"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr "Bu anahtarı kullanan kişinin cihazıyla şifreli iletişime izin ver."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "Bu anahtar şu anda %s."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "kabul ediliyor"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Bu, şifreli mesajlar almak ve göndermek için %s tarafından kullanılabileceği "
+"anlamına gelir."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "onaylı"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr "Ayrıca, kişinin cihazındaki anahtarla eşleştiği doğrulandı."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "reddedildi"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Bu, mesajlarınızın şifresini çözmek için %s tarafından kullanılamayacağı ve "
+"onunla şifrelenmiş mesajları göremeyeceğiniz anlamına gelir."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Bu anahtarı kullanan %s cihazından gelen şifreli mesajları görmeyeceksiniz. "
+"Diğer taraftan, o cihaz artık mesajlarınızın şifresini çözemeyecek."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Bu anahtarı kullanan %s cihazıyla şifreli mesaj alışverişi yapabileceksiniz."
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Yönet"
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "Bu kişinin yeni cihazları var"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "OMEMO güven kararı gerekli"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "%s hesabı için yeni bir cihaz eklediniz mi?"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr "Öntanımlı olarak OMEMO"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Yeni sohbetler için OMEMO şifrelemesini etkinleştir"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Yeni aygıtlara şifrele"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Bu kişiden yeni aygıtlara otomatik olarak şifrele."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:56
+msgid "New keys"
+msgstr "Yeni anahtarlar"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:100
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr ""
+"Diğer cihazlarınızdan gelen yeni şifreleme anahtarları otomatik olarak kabul "
+"edilecek."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr "Bu aygıt"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr "Diğer aygıt"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Aygıt"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:222
+msgid "Accepted"
+msgstr "Kabul edildi"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:225
+msgid "Rejected"
+msgstr "Reddedildi"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:228
+msgid "Verified"
+msgstr "Onaylandı"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr "Yeni aygıt"
+
+#: main/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
+"Her aygıtın kendi OMEMO anahtarı vardır. Mesajlar, yalnızca kendi "
+"anahtarıyla şifrelendiyse bir aygıt tarafından şifresi çözülebilir. Mesajlar "
+"yalnızca kabul edilen aygıtlara şifrelenir."
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO Anahtar Yönetimi"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO aygıtı"
+#~ msgstr[1] "%d OMEMO aygıtı"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Yeni anahtarları otomatik olarak kabul et"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr ""
+#~ "Bu kişiden gelen yeni şifreleme anahtarları otomatik olarak kabul "
+#~ "edilecek."
+
+#~ msgid "Own key"
+#~ msgstr "Kendi anahtarınız"
+
+#~ msgid "Associated keys"
+#~ msgstr "İlişkili anahtarlar"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Etkin olmayan anahtarlar"
+
+#~ msgid "Unused"
+#~ msgstr "Kullanılmamış"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Kendi parmak iziniz"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "İlk bağlantıda oluşturulacak"
+
+#~ msgid "Your contact"
+#~ msgstr "Kişiniz"
+
+#~ msgid "Not matching"
+#~ msgstr "Eşleşmiyor"
+
+#~ msgid "Matching"
+#~ msgstr "Eşleşti"
+
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "highlighted accordingly in the chat window."
+#~ msgstr ""
+#~ "Onaylandıktan sonra, bu anahtarı kullanarak %s tarafından gönderilen "
+#~ "gelecek iletiler sohbet penceresinde buna göre vurgulanır."
+
+#~ msgid ""
+#~ "Stop accepting this key during communication with its associated contact."
+#~ msgstr ""
+#~ "İlişkili kişiyle iletişim kurarken bu anahtarı kabul etmeyi durdurun."
+
+#~ msgid ""
+#~ "Start accepting this key during communication with its associated contact"
+#~ msgstr "İlişkili kişiyle iletişim için bu anahtarı kabul edin"
+
+#~ msgid ""
+#~ "This means it cannot be used by %s to receive messages, and any messages "
+#~ "sent by it will be ignored."
+#~ msgstr ""
+#~ "Bu, %s tarafından ileti almak için kullanılamayacağı ve gönderdiği "
+#~ "iletilerin yok sayılacağı anlamına gelir."
+
+#~ msgid ""
+#~ "Once confirmed, any future messages sent by %s using this key will be "
+#~ "ignored and none of your messages will be readable using this key."
+#~ msgstr ""
+#~ "Onaylandıktan sonra, bu anahtarı kullanarak %s tarafından gönderilen "
+#~ "gelecek iletiler yok sayılır ve iletilerinizden hiçbiri bu anahtar "
+#~ "kullanılarak okunmaz."
+
+#~ msgid ""
+#~ "Once confirmed this key will be usable by %s to receive and send messages."
+#~ msgstr ""
+#~ "Onaylandıktan sonra bu anahtar %s tarafından mesaj almak ve göndermek "
+#~ "için kullanılabilir."
+
+#~ msgid ""
+#~ "When this contact adds new encryption keys to their account, "
+#~ "automatically accept them."
+#~ msgstr ""
+#~ "Bu kişi hesaplarına yeni şifreleme anahtarları eklediğinde, otomatik "
+#~ "olarak kabul edilir."
+
+#~ msgid ""
+#~ "When you add new encryption keys to your account, automatically accept "
+#~ "them."
+#~ msgstr ""
+#~ "Hesabınıza yeni şifreleme anahtarları eklediğinizde, bunları otomatik "
+#~ "olarak kabul edin."
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "GnuPG sorgu"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr "Anahtarı yayınla"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "GnuPG'de Hata"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Anahtar yok. Bir tane oluşturun!"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr "Devre dışı"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Anahtar anahtarlıkta değil"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "Parmak izi"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Anahtar yayınlama devre dışı"
+
+#~ msgid "Select key"
+#~ msgstr "Anahtar seçin"
+
+#~ msgid "Loading…"
+#~ msgstr "Yükleniyor…"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1093,7 +1477,7 @@ msgstr "Oturum aç"
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
 msgstr "Güvenli bir bağlantı oluşturulamadı"
-
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "Geri"

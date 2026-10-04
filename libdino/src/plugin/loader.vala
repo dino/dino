@@ -81,6 +81,10 @@ public class Loader : Object {
         Info info = new Plugins.Info(type, (owned) module);
         infos += info;
 
+        return load_type(type);
+    }
+
+    public RootInterface load_type(Type type) {
         RootInterface plugin = (RootInterface) Object.new (type);
         plugins += plugin;
         plugin.registered(app);
