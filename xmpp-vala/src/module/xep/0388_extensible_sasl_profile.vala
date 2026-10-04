@@ -43,19 +43,27 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
                     stream.expect_further_negotiation_stanzas = true;
 
                     var authorisation_identifier = node.get_subnode("authorization-identifier", NS_URI);
-                    string jid_string = authorisation_identifier.get_string_content();
-                    Jid jid = Jid.from_string(jid_string);
+                    string jid_string = authorisation_identifier != null ? authorisation_identifier.get_string_content() : "";
+                    try {
+                        Jid jid = Jid.from_string(jid_string);
 
-                    foreach (var inline_provider in inline_activation_providers.values) {
-                        inline_provider.on_bound(stream, jid, node);
+                        foreach (var inline_provider in inline_activation_providers.values) {
+                            inline_provider.on_bound(stream, jid, node);
+                        }
+                    } catch (InvalidJidError e) {
+                        warning("Server provided invalid authorization-identifier \"%s\": %s", jid_string, e.message);
                     }
                 } else if (node.name == "challenge" && stream.has_flag(Flag.IDENTITY)) {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
                     if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
-                        var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
-                        flag.server_signature = challenge_response.expected_server_signature;
-                        stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
-                                .put_node(new StanzaNode.text(Base64.encode((uchar[]) (challenge_response.response).to_utf8()))));
+                        try {
+                            var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
+                            flag.server_signature = challenge_response.expected_server_signature;
+                            stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
+                                    .put_node(new StanzaNode.text(Base64.encode((uchar[]) (challenge_response.response).to_utf8()))));
+                        } catch (Error e) {
+                            warning("Error computing challenge response: %s", e.message);
+                        }
                     }
                 } else if (node.name == "failure") {
                     stream.remove_flag(stream.get_flag(Flag.IDENTITY));

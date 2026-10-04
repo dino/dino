@@ -5,7 +5,7 @@ namespace Xmpp.Xep.StatelessFileSharing {
 
     public const string NS_URI = "urn:xmpp:sfs:0";
 
-    public static Gee.List<FileShare> get_file_shares(MessageStanza message) {
+    public static Gee.List<FileShare>? get_file_shares(MessageStanza message) {
         var ret = new ArrayList<FileShare>();
         foreach (StanzaNode file_sharing_node in message.stanza.get_subnodes("file-sharing", NS_URI)) {
             var metadata = Xep.FileMetadataElement.get_file_metadata(file_sharing_node);

@@ -14,8 +14,12 @@ namespace Xmpp {
         }
 
         public FileContentType.from_file(File file) {
-            FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
-            this.from_file_info(file_info);
+            try {
+                FileInfo file_info = file.query_info("*", FileQueryInfoFlags.NONE);
+                this.from_file_info(file_info);
+            } catch (Error e) {
+                warning("Failed reading file content type: %s", e.message);
+            }
         }
 
         public string? get_mime_type() {

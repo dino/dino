@@ -29,7 +29,7 @@ public abstract class StanzaEntry {
                         case '\'': result_builder.append("&apos;"); break;
                         case '<': result_builder.append("&lt;"); break;
                         case '>': result_builder.append("&gt;"); break;
-                        default: error("Unreachable"); break;
+                        default: error("Unreachable");
                     }
                     return false;
                 });

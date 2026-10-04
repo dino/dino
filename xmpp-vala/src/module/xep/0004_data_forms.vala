@@ -83,11 +83,6 @@ public class DataForm {
             value_node.put_node(new StanzaNode.text(val));
         }
 
-        internal void add_value_string(string val) {
-            StanzaNode node = new StanzaNode.build("value");
-            node.put_node(new StanzaNode.text(val));
-        }
-
         internal Gee.List<Option>? get_options() {
             Gee.List<Option> ret = new ArrayList<Option>();
             Gee.List<StanzaNode> option_nodes = node.get_subnodes("option", NS_URI);

@@ -56,9 +56,13 @@ namespace Xmpp.Xep.Muji {
                 muji_node.put_node(content_node);
             }
 
-            Presence.Stanza presence_stanza = new Presence.Stanza() { to=muc_jid.with_resource(group_call.our_nick) };
-            presence_stanza.stanza.put_node(muji_node);
-            stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence_stanza);
+            try {
+                Presence.Stanza presence_stanza = new Presence.Stanza() { to=muc_jid.with_resource(group_call.our_nick) };
+                presence_stanza.stanza.put_node(muji_node);
+                stream.get_module(Presence.Module.IDENTITY).send_presence(stream, presence_stanza);
+            } catch (InvalidJidError e) {
+                error("Group call participant jid was invalid: %s", e.message);
+            }
 
             return group_call;
         }

@@ -142,7 +142,7 @@ public class AvatarManager : StreamInteractionModule, Object {
     public void unset_avatar(Account account) {
         XmppStream stream = stream_interactor.get_stream(account);
         if (stream == null) return;
-        Xmpp.Xep.UserAvatars.unset_avatar(stream);
+        Xmpp.Xep.UserAvatars.unset_avatar(stream, get_avatar_hash(account, account.bare_jid));
     }
 
     private void on_account_added(Account account) {

@@ -53,10 +53,14 @@ public class Module : XmppStreamModule, Iq.Handler {
             active_info_requests[jid] = future;
 
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns()) { to=jid };
-            Iq.Stanza iq_response = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
-            InfoResult? result = InfoResult.create_from_iq(iq_response);
+            try {
+                Iq.Stanza iq_response = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+                InfoResult? result = InfoResult.create_from_iq(iq_response);
 
-            promise.set_value(result);
+                promise.set_value(result);
+            } catch (IOError e) {
+                promise.set_exception(e);
+            }
             active_info_requests.unset(jid);
         }
 
@@ -64,6 +68,11 @@ public class Module : XmppStreamModule, Iq.Handler {
             InfoResult? res = yield future.wait_async();
             return res;
         } catch (FutureError error) {
+            if (error is FutureError.EXCEPTION) {
+                if (future.exception is IOError) {
+                    throw (IOError) future.exception;
+                }
+            }
             warning("Future error when waiting for info request result: %s", error.message);
             return null;
         }

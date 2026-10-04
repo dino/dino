@@ -10,15 +10,19 @@ namespace Xmpp.Xep.MessageDisplayedSynchronization {
 
         private void handle_displayed_node_item(XmppStream stream, string? id, StanzaNode? item) {
             if (id == null || item == null) return;
-            Jid conversation_jid = Jid.from_string(id);
-            StanzaNode? stanza_id_node = item.get_subnode("stanza-id", UniqueStableStanzaIDs.NS_URI);
-            if (stanza_id_node == null || stanza_id_node.get_attribute("by") == null || stanza_id_node.get_attribute("id") == null) return;
-            Jid stanza_id_by_jid = Jid.from_string(stanza_id_node.get_attribute("by"));
-            string stanza_id = stanza_id_node.get_attribute("id");
-            if (stream.has_flag(Flag.IDENTITY)) {
-                stream.get_flag(Flag.IDENTITY).learn_mds(conversation_jid, stanza_id_by_jid, stanza_id);
+            try {
+                Jid conversation_jid = Jid.from_string(id);
+                StanzaNode? stanza_id_node = item.get_subnode("stanza-id", UniqueStableStanzaIDs.NS_URI);
+                if (stanza_id_node == null || stanza_id_node.get_attribute("by") == null || stanza_id_node.get_attribute("id") == null) return;
+                Jid stanza_id_by_jid = Jid.from_string(stanza_id_node.get_attribute("by"));
+                string stanza_id = stanza_id_node.get_attribute("id");
+                if (stream.has_flag(Flag.IDENTITY)) {
+                    stream.get_flag(Flag.IDENTITY).learn_mds(conversation_jid, stanza_id_by_jid, stanza_id);
+                }
+                on_message_displayed(conversation_jid, stanza_id_by_jid, stanza_id);
+            } catch (InvalidJidError e) {
+                warning("Received mds item with invalid jid, ignoring: %s", e.message);
             }
-            on_message_displayed(conversation_jid, stanza_id_by_jid, stanza_id);
         }
 
         private void on_pubsub_item(XmppStream stream, Jid jid, string id, StanzaNode? item) {
@@ -32,9 +36,13 @@ namespace Xmpp.Xep.MessageDisplayedSynchronization {
         private void on_initial_presence_sent(XmppStream stream) {
             var pubsub = stream.get_module(Pubsub.Module.IDENTITY);
             pubsub.request_all.begin(stream, null, NS_URI, (_, res) => {
-                Gee.List<StanzaNode>? items = pubsub.request_all.end(res);
-                foreach (StanzaNode node_item in items) {
-                    handle_displayed_node_item(stream, node_item.get_attribute("id"), node_item.get_subnode("displayed", NS_URI));
+                try {
+                    Gee.List<StanzaNode>? items = pubsub.request_all.end(res);
+                    foreach (StanzaNode node_item in items) {
+                        handle_displayed_node_item(stream, node_item.get_attribute("id"), node_item.get_subnode("displayed", NS_URI));
+                    }
+                } catch (IOError e) {
+                    warning("Failed requesting initial mds set: %s", e.message);
                 }
             });
         }
@@ -50,7 +58,12 @@ namespace Xmpp.Xep.MessageDisplayedSynchronization {
                     .set_max_items("max")
                     .set_send_last_published_item("never")
                     .set_access_model("whitelist");
-            return yield pubsub.publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conversation_jid.to_string(), node, options);
+            try {
+                return yield pubsub.publish(stream, stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid, NS_URI, conversation_jid.to_string(), node, options);
+            } catch (IOError e) {
+                warning("Failed publishing mds item: %s", e.message);
+                return false;
+            }
         }
 
         public override void attach(XmppStream stream) {

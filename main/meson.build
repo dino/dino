@@ -142,7 +142,7 @@ if get_option('rtp').allowed() and dep_gstreamer.found() and dep_gstreamer_app.f
         voice_sources = files(
             'src/plugins/rtp/voice_processor_native.cpp',
         )
-        voice_c_args = c_args
+        voice_c_args = ['-DG_LOG_DOMAIN="dino"']
         if dep_webrtc_audio_processing.version().version_compare('>=2.0')
             voice_c_args += ['-DWEBRTC2']
         elif dep_webrtc_audio_processing.version().version_compare('>=1.0')
