@@ -25,6 +25,30 @@ jobs:
         run: meson compile -C build
       - name: "Test"
         run: meson test -C build
+  build-minimal:
+    name: "Build with minimal features"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: "Setup dependencies"
+        run: |
+          sudo apt-get update
+          sudo apt-get remove libunwind-14-dev
+          sudo apt-get install -y build-essential gettext libadwaita-1-dev libcanberra-dev libgcrypt20-dev libgee-0.8-dev libgtk-4-dev libnice-dev libnotify-dev libsoup-3.0-dev libsqlite3-dev libsrtp2-dev meson valac
+      - name: "Checkout sources"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup matchers"
+        run: |
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/gcc-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/vala-problem-matcher.json'
+          echo '::add-matcher::${{ github.workspace }}/.github/matchers/meson-problem-matcher.json'
+      - name: "Configure"
+        run: meson setup -Domemo=disabled -Drtp=disabled build
+      - name: "Build"
+        run: meson compile -C build
+      - name: "Test"
+        run: meson test -C build
   build-vala-nightly:
     name: "Build with Vala Nightly"
     runs-on: ubuntu-24.04
