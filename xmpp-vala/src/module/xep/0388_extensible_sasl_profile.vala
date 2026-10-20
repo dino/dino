@@ -37,6 +37,15 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
             if (node.ns_uri == NS_URI) {
                 if (node.name == "success") {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
+                    if (Mechanism.is_scram(flag.mechanism)) {
+                        var additional_data = node.get_subnode("additional-data", NS_URI);
+                        try {
+                            verify_server_signature(additional_data == null ? null : additional_data.get_string_content(), flag.server_signature);
+                        } catch (SaslError e) {
+                            fail_authentication(stream);
+                            return;
+                        }
+                    }
                     flag.password = null; // Remove password from memory
                     flag.finished = true;
 
@@ -55,14 +64,15 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
                     }
                 } else if (node.name == "challenge" && stream.has_flag(Flag.IDENTITY)) {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
-                    if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
+                    if (Mechanism.is_scram(flag.mechanism)) {
                         try {
-                            var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
+                            var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name, Mechanism.get_checksum_type(flag.mechanism), flag.channel_binding);
                             flag.server_signature = challenge_response.expected_server_signature;
                             stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
                                     .put_node(new StanzaNode.text(Base64.encode((uchar[]) (challenge_response.response).to_utf8()))));
-                        } catch (Error e) {
-                            warning("Error computing challenge response: %s", e.message);
+                        } catch (SaslError e) {
+                            stream.write(new StanzaNode.build("abort", NS_URI).add_self_xmlns());
+                            fail_authentication(stream);
                         }
                     }
                 } else if (node.name == "failure") {
@@ -87,20 +97,20 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
 
             var authenticate_node = new StanzaNode.build("authenticate", NS_URI).add_self_xmlns();
 
-            if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
-                string normalized_password = password.normalize(-1, NormalizeMode.NFKC);
-                string client_nonce = Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x");
-                string initial_message = @"n=$name,r=$client_nonce";
-                string response = Base64.encode((uchar[]) ("n,,"+initial_message).to_utf8());
+            string client_first_message;
+            Flag? scram_flag;
+            try {
+                scram_flag = start_scram(stream, supported_mechanisms, name, password, out client_first_message);
+            } catch (SaslError e) {
+                fail_authentication(stream);
+                return;
+            }
+            if (scram_flag != null) {
+                string response = Base64.encode((uchar[]) client_first_message.to_utf8());
                 authenticate_node
-                        .put_attribute("mechanism", Mechanism.SCRAM_SHA_1)
+                        .put_attribute("mechanism", scram_flag.mechanism)
                         .put_node(new StanzaNode.build("initial-response", NS_URI).put_node(new StanzaNode.text(response)));
-                var flag = new Flag();
-                flag.mechanism = Mechanism.SCRAM_SHA_1;
-                flag.name = name;
-                flag.password = normalized_password;
-                flag.client_nonce = client_nonce;
-                stream.add_flag(flag);
+                stream.add_flag(scram_flag);
             } else if (Mechanism.PLAIN in supported_mechanisms) {
                 authenticate_node
                         .put_attribute("mechanism", Mechanism.PLAIN)
@@ -135,6 +145,16 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
             authenticate_node.put_node(user_agent_node);
 
             stream.write(authenticate_node);
+        }
+
+        private void fail_authentication(XmppStream stream) {
+            Flag? flag = stream.get_flag(Flag.IDENTITY);
+            if (flag != null) {
+                flag.password = null;
+                stream.remove_flag(flag);
+            }
+            received_auth_failure(stream, new StanzaNode.build("failure", NS_URI)
+                    .put_node(new StanzaNode.build("not-authorized", NS_URI)));
         }
 
         public override bool mandatory_outstanding(XmppStream stream) {

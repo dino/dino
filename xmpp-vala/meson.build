@@ -162,6 +162,7 @@ test_sources = [
     'tests/color.vala',
     'tests/util.vala',
     'tests/weak_map.vala',
+    'tests/sasl.vala',
 ]
 exe_xmpp_vala_test = executable('xmpp-vala-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_xmpp_vala, install: false)
 test('Tests for xmpp-vala', exe_xmpp_vala_test)
