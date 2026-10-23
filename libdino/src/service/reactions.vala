@@ -296,15 +296,6 @@ public class Dino.Reactions : StreamInteractionModule, Object {
         }
     }
 
-    private Message? get_message_for_reaction(Conversation conversation, string message_id) {
-        // Query message from a specific account and counterpart. This also makes sure it's a valid reaction for the message.
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(message_id, conversation);
-        } else {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(message_id, conversation);
-        }
-    }
-
     private void process_reaction_for_message(int content_item_id, ReactionInfo reaction_info) {
         Account account = reaction_info.conversation.account;
         MessageStanza stanza = reaction_info.stanza;

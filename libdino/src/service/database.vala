@@ -767,65 +767,6 @@ public class Database : Qlite.Database {
             .perform();
     }
 
-    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
-        QueryBuilder select = message.select();
-
-        if (before != null) {
-            if (id > 0) {
-                select.where(@"time < ? OR (time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
-            } else {
-                select.with(message.id, "<", id);
-            }
-        }
-        if (after != null) {
-            if (id > 0) {
-                select.where(@"time > ? OR (time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
-            } else {
-                select.with(message.time, ">", (long) after.to_unix());
-            }
-            if (id > 0) {
-                select.with(message.id, ">", id);
-            }
-        } else {
-            select.order_by(message.time, "DESC");
-        }
-
-        select.with(message.counterpart_id, "=", get_jid_id(jid))
-                .with(message.account_id, "=", account.id)
-                .limit(count);
-        if (jid.resourcepart != null) {
-            select.with(message.counterpart_resource, "=", jid.resourcepart);
-        }
-        if (type != null) {
-            select.with(message.type_, "=", (int) type);
-        }
-
-        select.outer_join_with(real_jid, real_jid.message_id, message.id);
-        select.outer_join_with(message_correction, message_correction.message_id, message.id);
-
-        LinkedList<Message> ret = new LinkedList<Message>();
-        foreach (Row row in select) {
-            try {
-                ret.insert(0, new Message.from_row(this, row));
-            } catch (InvalidJidError e) {
-                warning("Ignoring message with invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
-    public Message? get_message_by_id(int id) {
-        Row? row = message.row_with(message.id, id).inner;
-        if (row != null) {
-            try {
-                return new Message.from_row(this, row);
-            } catch (InvalidJidError e) {
-                warning("Ignoring message with invalid Jid: %s", e.message);
-            }
-        }
-        return null;
-    }
-
     public ArrayList<Conversation> get_conversations(Account account) {
         ArrayList<Conversation> ret = new ArrayList<Conversation>();
         foreach (Row row in conversation.select().with(conversation.account_id, "=", account.id)) {
