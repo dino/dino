@@ -159,8 +159,13 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
 
     public bool mark_displayed_up_to_message(Conversation conversation, Message message) {
         // Don't move read marker backwards because we get old info from another client
-        if (conversation.read_up_to != null && conversation.read_up_to.local_time.compare(message.local_time) > 0) return false;
-        conversation.read_up_to = message;
+        if (conversation.read_up_to_message_id != -1) {
+            Message read_up_to_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(conversation.read_up_to_message_id, conversation);
+            if (read_up_to_message.local_time.compare(message.local_time) > 0) {
+                return false;
+            }
+        }
+        conversation.read_up_to_message_id = message.id;
 
         ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_message(conversation, message);
         if (content_item == null) return true;

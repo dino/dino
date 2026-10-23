@@ -152,7 +152,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (conversation == null) return false;
         Entities.Message? message = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message(conversation);
         if (message == null || message.direction == Entities.Message.DIRECTION_SENT) return false;
-        if (message.equals(conversation.read_up_to)) return false;
+        if (message.id == conversation.read_up_to_message_id) return false;
 
         bool sent_marker = yield send_and_mark_message_displayed(conversation, message);
         return sent_marker;
@@ -224,7 +224,7 @@ public class ChatInteraction : StreamInteractionModule, Object {
         if (message.type_ == Message.Type.GROUPCHAT) return false;
         if (message.stanza_id == null) return false;
         if (message.direction == Entities.Message.DIRECTION_SENT) return false;
-        if (message.equals(conversation.read_up_to)) return false;
+        if (message.id == conversation.read_up_to_message_id) return false;
         if (conversation.get_send_marker_setting(stream_interactor) != Conversation.Setting.ON) return false;
 
         XmppStream? stream = stream_interactor.get_stream(conversation.account);

@@ -34,7 +34,7 @@ public class Conversation : Object {
         }
     }
     public Encryption encryption { get; set; default = Encryption.UNKNOWN; }
-    public Message? read_up_to { get; set; }
+    public int read_up_to_message_id { get; set; default=-1; }
     public int read_up_to_item { get; set; default=-1; }
 
     public enum NotifySetting { DEFAULT, ON, OFF, HIGHLIGHT }
@@ -69,9 +69,12 @@ public class Conversation : Object {
         int64? last_active = row[db.conversation.last_active];
         if (last_active != null) this.last_active = new DateTime.from_unix_utc(last_active);
         encryption = (Encryption) row[db.conversation.encryption];
-        int? read_up_to = row[db.conversation.read_up_to];
-        if (read_up_to != null) this.read_up_to = db.get_message_by_id(read_up_to);
-        read_up_to_item = row[db.conversation.read_up_to_item];
+        if (!db.conversation.read_up_to.is_null(row)) {
+            read_up_to_message_id = row[db.conversation.read_up_to];
+        }
+        if (!db.conversation.read_up_to_item.is_null(row)) {
+            read_up_to_item = row[db.conversation.read_up_to_item];
+        }
         notify_setting = (NotifySetting) row[db.conversation.notification];
         send_typing = (Setting) row[db.conversation.send_typing];
         send_marker = (Setting) row[db.conversation.send_marker];
@@ -95,8 +98,8 @@ public class Conversation : Object {
                 .value(db.conversation.send_typing, send_typing)
                 .value(db.conversation.send_marker, send_marker)
                 .value(db.conversation.pinned, pinned);
-        if (read_up_to != null) {
-            insert.value(db.conversation.read_up_to, read_up_to.id);
+        if (read_up_to_message_id != -1) {
+            insert.value(db.conversation.read_up_to, read_up_to_message_id);
         }
         if (read_up_to_item != -1) {
             insert.value(db.conversation.read_up_to_item, read_up_to_item);
@@ -167,20 +170,10 @@ public class Conversation : Object {
                 update.set(db.conversation.type_, type_); break;
             case "encryption":
                 update.set(db.conversation.encryption, encryption); break;
-            case "read-up-to":
-                if (read_up_to != null) {
-                    update.set(db.conversation.read_up_to, read_up_to.id);
-                } else {
-                    update.set_null(db.conversation.read_up_to);
-                }
-                break;
+            case "read-up-to-message-id":
+                update.set(db.conversation.read_up_to, read_up_to_message_id); break;
             case "read-up-to-item":
-                if (read_up_to_item != -1) {
-                    update.set(db.conversation.read_up_to_item, read_up_to_item);
-                } else {
-                    update.set_null(db.conversation.read_up_to_item);
-                }
-                break;
+                update.set(db.conversation.read_up_to_item, read_up_to_item); break;
             case "nickname":
                 update.set(db.conversation.resource, nickname); break;
             case "active":
