@@ -58,6 +58,10 @@ public class Bundle {
         return list;
     }}
 
+    public bool is_valid { get {
+        return signed_pre_key_id != -1 && signed_pre_key != null && signed_pre_key_signature != null && identity_key != null;
+    }}
+
     public class PreKey {
         private StanzaNode node;
 

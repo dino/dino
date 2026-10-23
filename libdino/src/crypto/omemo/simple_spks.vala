@@ -4,7 +4,10 @@ using Omemo;
 namespace Dino.Crypto.Omemo {
 
 public class SimpleSignedPreKeyStore : SignedPreKeyStore {
-    private Map<uint32, SignedPreKeyStore.Key> pre_key_map = new HashMap<uint32, SignedPreKeyStore.Key>();
+    public signal void signed_pre_key_stored(Key key);
+    public signal void signed_pre_key_deleted(Key key);
+
+    private Map<uint32, Key> pre_key_map = new HashMap<uint32, Key>();
 
     public override uint8[]? load_signed_pre_key(uint32 pre_key_id) throws Error {
         if (contains_signed_pre_key(pre_key_id)) {
@@ -14,7 +17,7 @@ public class SimpleSignedPreKeyStore : SignedPreKeyStore {
     }
 
     public override void store_signed_pre_key(uint32 pre_key_id, uint8[] record) throws Error {
-        SignedPreKeyStore.Key key = new Key(pre_key_id, record);
+        Key key = new Key(pre_key_id, record);
         pre_key_map[pre_key_id] = key;
         signed_pre_key_stored(key);
     }
@@ -24,9 +27,19 @@ public class SimpleSignedPreKeyStore : SignedPreKeyStore {
     }
 
     public override void delete_signed_pre_key(uint32 pre_key_id) throws Error {
-        SignedPreKeyStore.Key key;
+        Key key;
         if (pre_key_map.unset(pre_key_id, out key)) {
             signed_pre_key_deleted(key);
+        }
+    }
+
+    public class Key {
+        public uint32 key_id { get; private set; }
+        public uint8[] record { get; private set; }
+
+        public Key(uint32 key_id, uint8[] record) {
+            this.key_id = key_id;
+            this.record = record;
         }
     }
 }

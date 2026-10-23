@@ -7,34 +7,12 @@ public abstract class IdentityKeyStore : Object {
     public abstract Bytes identity_key_public { get; set; }
     public abstract uint32 local_registration_id { get; set; }
 
-    public signal void trusted_identity_added(TrustedIdentity id);
-    public signal void trusted_identity_updated(TrustedIdentity id);
-
     public abstract void save_identity(Address address, uint8[] key) throws Error ;
 
     public abstract bool is_trusted_identity(Address address, uint8[] key) throws Error ;
-
-    public class TrustedIdentity {
-        public uint8[] key { get; set; }
-        public string name { get; private set; }
-        public int device_id { get; private set; }
-
-        public TrustedIdentity(string name, int device_id, uint8[] key) {
-            this.key = key;
-            this.name = name;
-            this.device_id = device_id;
-        }
-
-        public TrustedIdentity.by_address(Address address, uint8[] key) {
-            this(address.name, address.device_id, key);
-        }
-    }
 }
 
 public abstract class SessionStore : Object {
-
-    public signal void session_stored(Session session);
-    public signal void session_removed(Session session);
     public abstract uint8[]? load_session(Address address) throws Error ;
 
     public abstract IntList get_sub_device_sessions(string name) throws Error ;
@@ -46,19 +24,9 @@ public abstract class SessionStore : Object {
     public abstract void delete_session(Address address) throws Error ;
 
     public abstract void delete_all_sessions(string name) throws Error ;
-
-    public class Session {
-        public string name;
-        public int device_id;
-        public uint8[] record;
-    }
 }
 
 public abstract class PreKeyStore : Object {
-
-    public signal void pre_key_stored(Key key);
-    public signal void pre_key_deleted(Key key);
-
     public abstract uint8[]? load_pre_key(uint32 pre_key_id) throws Error ;
 
     public abstract void store_pre_key(uint32 pre_key_id, uint8[] record) throws Error ;
@@ -66,23 +34,9 @@ public abstract class PreKeyStore : Object {
     public abstract bool contains_pre_key(uint32 pre_key_id) throws Error ;
 
     public abstract void delete_pre_key(uint32 pre_key_id) throws Error ;
-
-    public class Key {
-        public uint32 key_id { get; private set; }
-        public uint8[] record { get; private set; }
-
-        public Key(uint32 key_id, uint8[] record) {
-            this.key_id = key_id;
-            this.record = record;
-        }
-    }
 }
 
 public abstract class SignedPreKeyStore : Object {
-
-    public signal void signed_pre_key_stored(Key key);
-    public signal void signed_pre_key_deleted(Key key);
-
     public abstract uint8[]? load_signed_pre_key(uint32 pre_key_id) throws Error ;
 
     public abstract void store_signed_pre_key(uint32 pre_key_id, uint8[] record) throws Error ;
@@ -90,16 +44,6 @@ public abstract class SignedPreKeyStore : Object {
     public abstract bool contains_signed_pre_key(uint32 pre_key_id) throws Error ;
 
     public abstract void delete_signed_pre_key(uint32 pre_key_id) throws Error ;
-
-    public class Key {
-        public uint32 key_id { get; private set; }
-        public uint8[] record { get; private set; }
-
-        public Key(uint32 key_id, uint8[] record) {
-            this.key_id = key_id;
-            this.record = record;
-        }
-    }
 }
 
 public class Store : Object {

@@ -153,15 +153,20 @@ public class StreamModule : XmppStreamModule {
         if (node == null) {
             // Device not registered, shouldn't exist
             if (ignore_if_non_present) {
-                debug("Ignoring device %s/%d: No bundle", jid.bare_jid.to_string(), device_id);
+                warning("Ignoring device %s/%d: No bundle", jid.bare_jid.to_string(), device_id);
                 stream.get_module(IDENTITY).ignore_device(jid, device_id);
             }
             bundle_fetch_failed(jid, device_id);
         } else {
             Bundle bundle = new Bundle(node);
-            stream.get_module(IDENTITY).unignore_device(jid, device_id);
-            debug("Received bundle for %s/%d: %s", jid.bare_jid.to_string(), device_id, Base64.encode(bundle.identity_key.serialize()));
-            bundle_fetched(jid, device_id, bundle);
+            if (bundle.is_valid) {
+                stream.get_module(IDENTITY).unignore_device(jid, device_id);
+                debug("Received bundle for %s/%d: %s", jid.bare_jid.to_string(), device_id, Base64.encode(bundle.identity_key.serialize()));
+                bundle_fetched(jid, device_id, bundle);
+            } else {
+                warning("Ignoring device %s/%d: Invalid bundle", jid.bare_jid.to_string(), device_id);
+                bundle_fetch_failed(jid, device_id);
+            }
         }
         stream.get_module(IDENTITY).active_bundle_requests.remove(jid.bare_jid.to_string() + @":$device_id");
     }

@@ -4,10 +4,13 @@ using Omemo;
 namespace Dino.Crypto.Omemo {
 
 public class SimpleIdentityKeyStore : IdentityKeyStore {
+    public signal void trusted_identity_added(TrustedIdentity id);
+    public signal void trusted_identity_updated(TrustedIdentity id);
+
     public override Bytes identity_key_private { get; set; }
     public override Bytes identity_key_public { get; set; }
     public override uint32 local_registration_id { get; set; }
-    private Map<string, Map<int, IdentityKeyStore.TrustedIdentity>> trusted_identities = new HashMap<string, Map<int, IdentityKeyStore.TrustedIdentity>>();
+    private Map<string, Map<int, TrustedIdentity>> trusted_identities = new HashMap<string, Map<int, TrustedIdentity>>();
 
     public override void save_identity(Address address, uint8[] key) throws Error {
         string name = address.name;
@@ -20,7 +23,7 @@ public class SimpleIdentityKeyStore : IdentityKeyStore {
                 trusted_identity_added(trusted_identities[name][address.device_id]);
             }
         } else {
-            trusted_identities[name] = new HashMap<int, IdentityKeyStore.TrustedIdentity>();
+            trusted_identities[name] = new HashMap<int, TrustedIdentity>();
             trusted_identities[name][address.device_id] = new TrustedIdentity.by_address(address, key);
             trusted_identity_added(trusted_identities[name][address.device_id]);
         }
@@ -35,6 +38,22 @@ public class SimpleIdentityKeyStore : IdentityKeyStore {
             if (other_key[i] != key[i]) return false;
         }
         return true;
+    }
+
+    public class TrustedIdentity {
+        public uint8[] key { get; set; }
+        public string name { get; private set; }
+        public int device_id { get; private set; }
+
+        public TrustedIdentity(string name, int device_id, uint8[] key) {
+            this.key = key;
+            this.name = name;
+            this.device_id = device_id;
+        }
+
+        public TrustedIdentity.by_address(Address address, uint8[] key) {
+            this(address.name, address.device_id, key);
+        }
     }
 }
 

@@ -4,45 +4,64 @@ using Omemo;
 
 namespace Dino.Plugins.Omemo {
 
-private class BackedSessionStore : SimpleSessionStore {
+private class BackedSessionStore : SessionStore {
     private Database db;
     private int identity_id;
 
     public BackedSessionStore(Database db, int identity_id) {
         this.db = db;
         this.identity_id = identity_id;
-        init();
     }
 
-    private void init() {
-        try {
-            foreach (Row row in db.session.select().with(db.session.identity_id, "=", identity_id)) {
-                Address addr = new Address(row[db.session.address_name], row[db.session.device_id]);
-                store_session(addr, Base64.decode(row[db.session.record_base64]));
-                addr.device_id = 0;
-            }
-        } catch (Error e) {
-            print("Error while initializing session store: %s", e.message);
+    public override uint8[]? load_session(Address address) throws Crypto.Error {
+        RowOption row = db.session.select({db.session.record_base64})
+                .with(db.session.identity_id, "=", identity_id)
+                .with(db.session.address_name, "=", address.name)
+                .with(db.session.device_id, "=", address.device_id)
+                .single().row();
+        if (!row.is_present()) return null;
+        return Base64.decode(row[db.session.record_base64]);
+    }
+
+    public override IntList get_sub_device_sessions(string name) throws Crypto.Error {
+        IntList res = new IntList();
+        foreach (Row row in db.session.select({db.session.device_id})
+                .with(db.session.identity_id, "=", identity_id)
+                .with(db.session.address_name, "=", name)) {
+            res.add(row[db.session.device_id]);
         }
-
-        session_stored.connect(on_session_stored);
-        session_removed.connect(on_session_deleted);
+        return res;
     }
 
-    public void on_session_stored(SessionStore.Session session) {
+    public override void store_session(Address address, uint8[] record) throws Crypto.Error {
         db.session.upsert()
                 .value(db.session.identity_id, identity_id, true)
-                .value(db.session.address_name, session.name, true)
-                .value(db.session.device_id, session.device_id, true)
-                .value(db.session.record_base64, Base64.encode(session.record))
+                .value(db.session.address_name, address.name, true)
+                .value(db.session.device_id, address.device_id, true)
+                .value(db.session.record_base64, Base64.encode(record))
                 .perform();
     }
 
-    public void on_session_deleted(SessionStore.Session session) {
+    public override bool contains_session(Address address) throws Crypto.Error {
+        return db.session.select({db.session.device_id})
+                .with(db.session.identity_id, "=", identity_id)
+                .with(db.session.address_name, "=", address.name)
+                .with(db.session.device_id, "=", address.device_id)
+                .count() > 0;
+    }
+
+    public override void delete_session(Address address) throws Crypto.Error {
         db.session.delete()
                 .with(db.session.identity_id, "=", identity_id)
-                .with(db.session.address_name, "=", session.name)
-                .with(db.session.device_id, "=", session.device_id)
+                .with(db.session.address_name, "=", address.name)
+                .with(db.session.device_id, "=", address.device_id)
+                .perform();
+    }
+
+    public override void delete_all_sessions(string name) throws Crypto.Error {
+        db.session.delete()
+                .with(db.session.identity_id, "=", identity_id)
+                .with(db.session.address_name, "=", name)
                 .perform();
     }
 }

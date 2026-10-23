@@ -4,41 +4,43 @@ using Omemo;
 
 namespace Dino.Plugins.Omemo {
 
-private class BackedPreKeyStore : SimplePreKeyStore {
+private class BackedPreKeyStore : PreKeyStore {
     private Database db;
     private int identity_id;
 
     public BackedPreKeyStore(Database db, int identity_id) {
         this.db = db;
         this.identity_id = identity_id;
-        init();
     }
 
-    private void init() {
-        try {
-            foreach (Row row in db.pre_key.select().with(db.pre_key.identity_id, "=", identity_id)) {
-                store_pre_key(row[db.pre_key.pre_key_id], Base64.decode(row[db.pre_key.record_base64]));
-            }
-        } catch (Error e) {
-            warning("Error while initializing pre key store: %s", e.message);
-        }
-
-        pre_key_stored.connect(on_pre_key_stored);
-        pre_key_deleted.connect(on_pre_key_deleted);
+    public override uint8[]? load_pre_key(uint32 pre_key_id) throws Crypto.Error {
+        RowOption row = db.pre_key.select({db.pre_key.record_base64})
+                .with(db.pre_key.identity_id, "=", identity_id)
+                .with(db.pre_key.pre_key_id, "=", (int) pre_key_id)
+                .single().row();
+        if (!row.is_present()) return null;
+        return Base64.decode(row[db.pre_key.record_base64]);
     }
 
-    public void on_pre_key_stored(PreKeyStore.Key key) {
+    public override void store_pre_key(uint32 pre_key_id, uint8[] record) throws Crypto.Error {
         db.pre_key.upsert()
                 .value(db.pre_key.identity_id, identity_id, true)
-                .value(db.pre_key.pre_key_id, (int) key.key_id, true)
-                .value(db.pre_key.record_base64, Base64.encode(key.record))
+                .value(db.pre_key.pre_key_id, (int) pre_key_id, true)
+                .value(db.pre_key.record_base64, Base64.encode(record))
                 .perform();
     }
 
-    public void on_pre_key_deleted(PreKeyStore.Key key) {
+    public override bool contains_pre_key(uint32 pre_key_id) throws Crypto.Error {
+        return db.pre_key.select({db.pre_key.pre_key_id})
+                .with(db.pre_key.identity_id, "=", identity_id)
+                .with(db.pre_key.pre_key_id, "=", (int) pre_key_id)
+                .count() > 0;
+    }
+
+    public override void delete_pre_key(uint32 pre_key_id) throws Crypto.Error {
         db.pre_key.delete()
                 .with(db.pre_key.identity_id, "=", identity_id)
-                .with(db.pre_key.pre_key_id, "=", (int) key.key_id)
+                .with(db.pre_key.pre_key_id, "=", (int) pre_key_id)
                 .perform();
     }
 }
