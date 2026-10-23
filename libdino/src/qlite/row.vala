@@ -11,8 +11,9 @@ public class Row {
     internal Row(Statement stmt) {
         for (int i = 0; i < stmt.column_count(); i++) {
             string column_name;
-            if (stmt.column_origin_name(i) != null) {
-                column_name = @"$(stmt.column_table_name(i)).$(stmt.column_origin_name(i))";
+            string origin_name = stmt.column_origin_name(i);
+            if (origin_name != null) {
+                column_name = field_name(origin_name, stmt.column_table_name(i));
             } else {
                 column_name = stmt.column_name(i);
             }
@@ -34,7 +35,7 @@ public class Row {
         return field[this];
     }
 
-    private string field_name(string field, string? table) {
+    private static string field_name(string field, string? table) {
         if (table != null) {
             return @"$table.$field";
         } else {

@@ -7,7 +7,7 @@ using Dino.Qlite;
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 34;
+    private const int VERSION = 35;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -49,6 +49,7 @@ public class Database : Qlite.Database {
             base(db, "entity");
             init({id, account_id, jid_id, resource, caps_hash, last_seen});
             unique({account_id, jid_id, resource}, "IGNORE");
+            index("entity_account_jid_resource_idx", {account_id, jid_id, resource});
         }
     }
 
@@ -376,6 +377,7 @@ public class Database : Qlite.Database {
             init({entity, feature});
             unique({entity, feature}, "IGNORE");
             index("entity_feature_idx", {entity});
+            index("entity_feature_feature_idx", {entity, feature});
         }
     }
 
