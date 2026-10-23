@@ -157,19 +157,19 @@ public class AvatarManager : StreamInteractionModule, Object {
         );
 
         foreach (var entry in get_avatar_hashes(account, Source.USER_AVATARS).entries) {
-            on_user_avatar_received(account, entry.key, entry.value);
+            on_user_avatar_received(account, entry.key, entry.value, false);
         }
         foreach (var entry in get_avatar_hashes(account, Source.VCARD).entries) {
-            on_vcard_avatar_received(account, entry.key, entry.value);
+            on_vcard_avatar_received(account, entry.key, entry.value, false);
         }
     }
 
-    private void on_user_avatar_received(Account account, Jid jid_, string id) {
+    private void on_user_avatar_received(Account account, Jid jid_, string id, bool is_live = true) {
         Jid jid = jid_.bare_jid;
 
         if (!user_avatars.has_key(jid) || user_avatars[jid] != id) {
             user_avatars[jid] = id;
-            set_avatar_hash(account, jid, id, Source.USER_AVATARS);
+            if (is_live) set_avatar_hash(account, jid, id, Source.USER_AVATARS);
         }
         received_avatar(jid, account);
     }
@@ -181,13 +181,13 @@ public class AvatarManager : StreamInteractionModule, Object {
         received_avatar(jid, account);
     }
 
-    private void on_vcard_avatar_received(Account account, Jid jid_, string id) {
+    private void on_vcard_avatar_received(Account account, Jid jid_, string id, bool is_live = true) {
         bool is_gc = stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(jid_.bare_jid, account);
         Jid jid = is_gc ? jid_ : jid_.bare_jid;
 
         if (!vcard_avatars.has_key(jid) || vcard_avatars[jid] != id) {
             vcard_avatars[jid] = id;
-            if (jid.is_bare()) { // don't save MUC occupant avatars
+            if (is_live && jid.is_bare()) { // don't save MUC occupant avatars
                 set_avatar_hash(account, jid, id, Source.VCARD);
             }
         }

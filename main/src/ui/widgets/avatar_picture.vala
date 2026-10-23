@@ -5,7 +5,20 @@ using Xmpp;
 public class Dino.Ui.ViewModel.AvatarPictureTileModel : Object {
     public string display_text { get; set; }
     public Gdk.RGBA background_color { get; set; }
-    public File? image_file { get; set; }
+
+    private File? _image_file;
+    [CCode (notify = false)]
+    public File? image_file {
+        get {
+            return _image_file;
+        }
+        set {
+            if (_image_file == value) return;
+            if (_image_file != null && value != null && _image_file.equal(value)) return;
+            _image_file = value;
+            notify_property("image-file");
+        }
+    }
 }
 
 public class Dino.Ui.ViewModel.AvatarPictureModel : Object {
@@ -23,8 +36,18 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
 
     public ConversationParticipantAvatarPictureTileModel(StreamInteractor stream_interactor, Conversation conversation, Jid jid) {
         this.stream_interactor = stream_interactor;
+
+        set_conversation_participant(conversation, jid);
+
+        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
+        avatar_manager.received_avatar.connect(on_received_avatar);
+        avatar_manager.fetched_avatar.connect(on_received_avatar);
+    }
+
+    public void set_conversation_participant(Conversation conversation, Jid jid) {
         this.conversation = conversation;
         this.primary_avatar_jid = jid;
+        this.secondary_avatar_jid = null;
         this.display_name_jid = jid;
 
         string color_id = jid.to_string();
@@ -43,14 +66,11 @@ public class Dino.Ui.ViewModel.ConversationParticipantAvatarPictureTileModel : A
         }
         string display = Util.get_participant_display_name(stream_interactor, conversation, display_name_jid);
         display_text = display.get_char(0).toupper().to_string();
-        stream_interactor.get_module(RosterManager.IDENTITY).updated_roster_item.connect(on_roster_updated);
 
         float[] rgbf = color_id != null ? Xep.ConsistentColor.string_to_rgbf(color_id) : new float[] {0.5f, 0.5f, 0.5f};
         background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f};
 
         update_image_file();
-        avatar_manager.received_avatar.connect(on_received_avatar);
-        avatar_manager.fetched_avatar.connect(on_received_avatar);
     }
 
     private void update_image_file() {
@@ -140,17 +160,14 @@ public class Dino.Ui.ViewModel.CompatAvatarPictureModel : AvatarPictureModel {
 
     private void on_room_updated(Account account, Jid room) {
         if (conversation != null && account.equals(conversation.account) && conversation.counterpart.equals_bare(room)) {
-            reset();
-            set_conversation(conversation);
+            update_all();
         }
     }
 
     private void on_received_avatar(Jid jid, Account account) {
+        // Only update group chat avatar when the respective jid avatar is actually used in it
+        if (conversation == null || conversation.type_ == Conversation.Type.GROUPCHAT && !jid.is_bare()) return;
         on_room_updated(account, jid);
-    }
-
-    public void reset() {
-        (tiles as GLib.ListStore).remove_all();
     }
 
     public CompatAvatarPictureModel set_conversation(Conversation conversation) {
@@ -159,36 +176,60 @@ public class Dino.Ui.ViewModel.CompatAvatarPictureModel : AvatarPictureModel {
             return this;
         }
         this.conversation = conversation;
+        update_all();
+        return this;
+    }
+
+    private void update_all() {
+        uint idx = 0;
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             if (avatar_manager.has_avatar(conversation.account, conversation.counterpart)) {
-                add_internal("#", conversation.counterpart.to_string(), avatar_manager.get_avatar_file(conversation.account, conversation.counterpart));
+                set_internal(idx++, "#", conversation.counterpart.to_string(), avatar_manager.get_avatar_file(conversation.account, conversation.counterpart));
             } else {
                 Gee.List<Jid>? occupants = muc_manager.get_other_offline_members(conversation.counterpart, conversation.account);
                 if (occupants != null && !occupants.is_empty && muc_manager.is_private_room(conversation.account, conversation.counterpart)) {
                     int count = occupants.size > 4 ? 3 : occupants.size;
                     for (int i = 0; i < count; i++) {
-                        add_participant(conversation, occupants[i]);
+                        set_participant(idx++, conversation, occupants[i]);
                     }
                     if (occupants.size > 4) {
-                        add_internal("+");
+                        set_internal(idx++, "+");
                     }
                 } else {
-                    add_internal("#", conversation.counterpart.to_string());
+                    set_internal(idx++, "#", conversation.counterpart.to_string());
                 }
             }
         } else {
-            add_participant(conversation, conversation.counterpart);
+            set_participant(idx++, conversation, conversation.counterpart);
         }
-        return this;
+
+        GLib.ListStore store = tiles as GLib.ListStore;
+        if (store.get_n_items() >= idx) {
+            store.splice(idx, store.get_n_items() - idx, {});
+        }
     }
 
     public CompatAvatarPictureModel add_participant(Conversation conversation, Jid jid) {
-        if (stream_interactor == null) {
-            critical("add_participant() used on CompatAvatarPictureModel without stream_interactor");
-            return this;
-        }
-        (tiles as GLib.ListStore).append(new ConversationParticipantAvatarPictureTileModel(stream_interactor, conversation, jid));
+        set_participant(tiles.get_n_items(), conversation, jid);
         return this;
+    }
+
+    public AvatarPictureTileModel set_participant(uint idx, Conversation conversation, Jid jid) {
+        if (stream_interactor == null) {
+            error("set_participant() used on CompatAvatarPictureModel without stream_interactor");
+        }
+        GLib.ListStore store = tiles as GLib.ListStore;
+        while (idx >= store.get_n_items()) {
+            store.append(new ViewModel.AvatarPictureTileModel());
+        }
+        var model = store.get_item(idx) as ConversationParticipantAvatarPictureTileModel;
+        if (model == null) {
+            model = new ConversationParticipantAvatarPictureTileModel(stream_interactor, conversation, jid);
+            store.splice(idx, 1, {model});
+        } else {
+            model.set_conversation_participant(conversation, jid);
+        }
+        return model;
     }
 
     public CompatAvatarPictureModel add(string display, string? color_id = null, File? image_file = null) {
@@ -197,14 +238,28 @@ public class Dino.Ui.ViewModel.CompatAvatarPictureModel : AvatarPictureModel {
     }
 
     private AvatarPictureTileModel add_internal(string display, string? color_id = null, File? image_file = null) {
+        return set_internal(tiles.get_n_items(), display, color_id, image_file);
+    }
+
+    private AvatarPictureTileModel set_internal(uint idx, string display, string? color_id = null, File? image_file = null) {
         GLib.ListStore store = tiles as GLib.ListStore;
         float[] rgbf = color_id != null ? Xep.ConsistentColor.string_to_rgbf(color_id) : new float[] {0.5f, 0.5f, 0.5f};
-        var model = new ViewModel.AvatarPictureTileModel() {
-            display_text = display.get_char(0).toupper().to_string(),
-            background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f},
-            image_file = image_file
-        };
-        store.append(model);
+        while (idx >= store.get_n_items()) {
+            store.append(new ViewModel.AvatarPictureTileModel());
+        }
+        var model = store.get_item(idx) as ViewModel.AvatarPictureTileModel;
+        if (model == null) {
+            model = new ViewModel.AvatarPictureTileModel() {
+                display_text = display.get_char(0).toupper().to_string(),
+                background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f},
+                image_file = image_file
+            };
+            store.splice(idx, 1, {model});
+        } else {
+            model.display_text = display.get_char(0).toupper().to_string();
+            model.background_color = Gdk.RGBA() { red = rgbf[0], green = rgbf[1], blue = rgbf[2], alpha = 1.0f};
+            model.image_file = image_file;
+        }
         return model;
     }
 }
