@@ -55,6 +55,7 @@ public class FileDefaultWidget : Box {
         this.state = file_transfer.state;
 
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
+        mime_label.use_markup = false;
 
         content_type_image.icon_name = get_file_icon_name(file_transfer.content_type);
         string? mime_description = file_transfer.content_type != null ? file_transfer.content_type.get_description() : null;
@@ -97,7 +98,9 @@ public class FileDefaultWidget : Box {
 
                 // Create a menu
                 Menu menu_model = new Menu();
-                menu_model.append(_("Cancel"), "file.cancel_download");
+                MenuItem cancel_item = new MenuItem(_("Cancel"), "app.file_cancel_download");
+                cancel_item.set_action_and_target_value("app.file_cancel_download", new Variant.int32(file_transfer.id));
+                menu_model.append_item(cancel_item);
                 Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
                 popover_menu.closed.connect(on_pointer_left);
@@ -123,7 +126,7 @@ public class FileDefaultWidget : Box {
     private void on_pointer_entered_event() {
         this.set_cursor_from_name("pointer");
         content_type_image.opacity = 0.7;
-        if (state == FileTransfer.State.NOT_STARTED) {
+        if (state == FileTransfer.State.NOT_STARTED || state == FileTransfer.State.FAILED) {
             image_stack.set_visible_child_name("download_image");
         }
         if (state == FileTransfer.State.COMPLETE || state == FileTransfer.State.IN_PROGRESS) {
@@ -140,7 +143,7 @@ public class FileDefaultWidget : Box {
 
     private void on_pointer_left() {
         content_type_image.opacity = 0.5;
-        if (state == FileTransfer.State.NOT_STARTED) {
+        if (state == FileTransfer.State.NOT_STARTED || state == FileTransfer.State.FAILED) {
             image_stack.set_visible_child_name("content_type_image");
         }
         file_menu.opacity = 0;

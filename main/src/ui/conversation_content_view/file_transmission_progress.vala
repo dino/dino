@@ -128,7 +128,6 @@ namespace Dino.Ui {
                 case DOWNLOAD_NOT_STARTED_FAILED_BEFORE:
                 case DOWNLOAD_NOT_STARTED:
                     start_download();
-                    this.activate_action("file.download", null);
                     break;
                 case DOWNLOADING:
                 case UPLOADING:

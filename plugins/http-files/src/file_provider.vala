@@ -120,6 +120,10 @@ public class FileProvider : Dino.FileProvider, Object {
 #else
         InputStream stream = yield session.send_async(get_message, file_transfer.cancellable);
 #endif
+        if (get_message.status_code != 200) {
+            try { stream.close(); } catch (Error e) {}
+            throw new IOError.FAILED("HTTP status code %u".printf(get_message.status_code));
+        }
         if (file_meta.size != -1) {
             return new LimitInputStream(stream, file_meta.size);
         } else {

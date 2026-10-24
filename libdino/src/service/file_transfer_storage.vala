@@ -18,6 +18,7 @@ namespace Dino {
         private WeakMap<int, FileTransferGroup> file_group_by_db_id = new WeakMap<int, FileTransferGroup>();
         private WeakMap<int, FileTransferGroup> file_group_by_message_id = new WeakMap<int, FileTransferGroup>();
         private WeakMap<string, FileTransfer> files_by_message_and_file_id = new WeakMap<string, FileTransfer>();
+        private HashSet<int> automatically_retried_files = new HashSet<int>();
 
         public static void start(StreamInteractor stream_interactor, Database db) {
             FileTransferStorage m = new FileTransferStorage(stream_interactor, db);
@@ -126,6 +127,41 @@ namespace Dino {
                 warning("Got file transfer with invalid Jid: %s", e.message);
             }
             return null;
+        }
+
+        public void recover_incomplete_file(FileTransfer file_transfer) {
+            if (file_transfer.direction != FileTransfer.DIRECTION_RECEIVED) return;
+
+            if (file_transfer.state != FileTransfer.State.IN_PROGRESS) {
+                File? partial_file = file_transfer.get_partial_file();
+                if (partial_file != null) FileUtils.remove(partial_file.get_path());
+            }
+
+            if (file_transfer.state == FileTransfer.State.COMPLETE) {
+                File? file = file_transfer.get_file();
+                bool valid = file != null && file.query_exists();
+                int64 expected_size = stream_interactor.get_module(FileManager.IDENTITY).get_expected_file_size(file_transfer);
+                if (valid && expected_size >= 0) {
+                    try {
+                        FileInfo file_info = file.query_info(FileAttribute.STANDARD_SIZE, FileQueryInfoFlags.NONE);
+                        valid = file_info.get_size() == expected_size;
+                    } catch (Error e) {
+                        valid = false;
+                    }
+                }
+                if (valid) return;
+
+                if (file != null) FileUtils.remove(file.get_path());
+                file_transfer.state = FileTransfer.State.NOT_STARTED;
+            }
+
+            if (file_transfer.state == FileTransfer.State.NOT_STARTED && file_transfer.path != null &&
+                    file_transfer.id != -1 && automatically_retried_files.add(file_transfer.id)) {
+                Idle.add_once(() => {
+                    if (file_transfer.state != FileTransfer.State.NOT_STARTED || file_transfer.path == null) return;
+                    stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
+                });
+            }
         }
 
         private FileTransferGroup? create_file_group_from_row(Row file_transfer_group_row, Conversation conversation) {

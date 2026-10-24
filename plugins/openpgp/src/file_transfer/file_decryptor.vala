@@ -8,6 +8,10 @@ public class PgpFileDecryptor : FileDecryptor, Object {
         return Encryption.PGP;
     }
 
+    public int64 get_expected_file_size(FileTransfer file_transfer, int64 download_size) {
+        return -1;
+    }
+
     public FileReceiveData prepare_get_meta_info(Conversation conversation, FileTransfer file_transfer, FileReceiveData receive_data) {
         return receive_data;
     }
