@@ -88,11 +88,15 @@ public class Module : XmppStreamModule, Iq.Handler {
         bool has_feature = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).has_entity_feature(stream, stream.remote_name, NS_URI);
         if (has_feature) {
             stream.add_flag(new Flag());
-            stream.get_flag(Flag.IDENTITY).blocklist = yield get_blocklist(stream);
+            try {
+                stream.get_flag(Flag.IDENTITY).blocklist = yield get_blocklist(stream);
+            } catch (IOError e) {
+                warning("Failed to retrieve blocklist: %s", e.message);
+            }
         }
     }
 
-    private async Gee.List<string> get_blocklist(XmppStream stream) {
+    private async Gee.List<string> get_blocklist(XmppStream stream) throws IOError {
         StanzaNode blocklist_node = new StanzaNode.build("blocklist", NS_URI).add_self_xmlns();
         Iq.Stanza iq = new Iq.Stanza.get(blocklist_node);
 

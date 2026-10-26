@@ -13,6 +13,10 @@ namespace Xmpp.Xep.JingleRawUdp {
 
         private GetLocalIpAddresses? get_local_ip_addresses_impl = null;
 
+        public Module.with_local_ip_address_handler(owned GetLocalIpAddresses get_local_ip_addresses) {
+            set_local_ip_address_handler((owned) get_local_ip_addresses);
+        }
+
         public override void attach(XmppStream stream) {
             stream.get_module(Jingle.Module.IDENTITY).register_transport(this);
             stream.get_module(ServiceDiscovery.Module.IDENTITY).add_feature(stream, NS_URI);

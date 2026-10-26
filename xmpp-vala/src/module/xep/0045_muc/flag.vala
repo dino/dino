@@ -5,9 +5,6 @@ namespace Xmpp.Xep.Muc {
 public class Flag : XmppStreamFlag {
     public static FlagIdentity<Flag> IDENTITY = new FlagIdentity<Flag>(NS_URI, "muc");
 
-    private HashMap<Jid, Gee.List<Feature>> room_features = new HashMap<Jid, Gee.List<Feature>>(Jid.hash_bare_func, Jid.equals_bare_func);
-    private HashMap<Jid, string> room_names = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
-
     private HashMap<Jid, string> enter_ids = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
     public HashMap<Jid, Promise<JoinResult?>> enter_futures = new HashMap<Jid, Promise<JoinResult?>>(Jid.hash_func, Jid.equals_func);
     private HashMap<Jid, string> own_nicks = new HashMap<Jid, string>(Jid.hash_bare_func, Jid.equals_bare_func);
@@ -17,12 +14,6 @@ public class Flag : XmppStreamFlag {
     private HashMap<Jid, Jid> occupant_real_jids = new HashMap<Jid, Jid>(Jid.hash_func, Jid.equals_bare_func);
     private HashMap<Jid, HashMap<Jid, Affiliation>> affiliations = new HashMap<Jid, HashMap<Jid, Affiliation>>(Jid.hash_bare_func, Jid.equals_bare_func);
     private HashMap<Jid, Role> occupant_role = new HashMap<Jid, Role>(Jid.hash_func, Jid.equals_func);
-
-    public string? get_room_name(Jid muc_jid) { return room_names.has_key(muc_jid.bare_jid) ? room_names[muc_jid.bare_jid] : null; }
-
-    public bool has_room_feature(Jid muc_jid, Feature feature) {
-        return room_features.has_key(muc_jid.bare_jid) && room_features[muc_jid.bare_jid].contains(feature);
-    }
 
     public Jid? get_real_jid(Jid full_jid) { return occupant_real_jids[full_jid]; }
 
@@ -76,14 +67,6 @@ public class Flag : XmppStreamFlag {
     public bool is_muc_enter_outstanding() { return enter_ids.size != 0; }
 
     public string? get_muc_subject(Jid muc_jid) { return subjects[muc_jid.bare_jid]; }
-
-    internal void set_room_name(Jid muc_jid, string name) {
-        room_names[muc_jid.bare_jid] = name;
-    }
-
-    internal void set_room_features(Jid muc_jid, Gee.List<Feature> features) {
-        room_features[muc_jid.bare_jid] = features;
-    }
 
     internal void set_real_jid(Jid full_jid, Jid real_jid) { occupant_real_jids[full_jid] = real_jid; }
 

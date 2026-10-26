@@ -22,7 +22,6 @@ namespace Dino.Ui{
         public ChangePasswordDialog(ViewModel.ChangePasswordDialog model) {
             this.model = model;
 
-            Util.force_error_color(change_password_error_label);
             cancel_button.clicked.connect(() => { close(); });
             current_password_entry.changed.connect(is_form_filled);
             new_password_entry.changed.connect(is_form_filled);

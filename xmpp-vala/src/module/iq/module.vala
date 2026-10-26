@@ -17,22 +17,39 @@ namespace Xmpp.Iq {
 
             preprocess_outgoing_iq_set_get(stream, iq);
             Iq.Stanza? return_stanza = null;
+            IOError? return_error = null;
+            bool yielded = false;
             responseListeners[iq.id] = new ResponseListener((_, result_iq) => {
                 return_stanza = result_iq;
-                if (cancellable == null || !cancellable.is_cancelled()) {
-                    Idle.add(send_iq_async.callback);
+                if (yielded) send_iq_async.callback();
+            });
+            stream.write_async.begin(iq.stanza, io_priority, cancellable, (_, res) => {
+                try {
+                    stream.write_async.end(res);
+                } catch (IOError e) {
+                    return_error = e;
                 }
             });
-            stream.write_async(iq.stanza, io_priority, cancellable);
             ulong cancelled_handler_id = 0;
             if (cancellable != null) {
-                cancelled_handler_id = cancellable.cancelled.connect(() => Idle.add(send_iq_async.callback));
+                cancelled_handler_id = cancellable.connect(() => {
+                    if (yielded) send_iq_async.callback();
+                });
             }
-            yield;
+            if ((cancellable == null || !cancellable.is_cancelled()) && return_error == null) {
+                yielded = true;
+                yield;
+                yielded = false;
+            }
             if (cancellable != null) {
-                cancellable.disconnect(cancelled_handler_id);
-                cancellable.set_error_if_cancelled();
+                if (cancellable.is_cancelled()) {
+                    cancellable.set_error_if_cancelled();
+                } else {
+                    cancellable.disconnect(cancelled_handler_id);
+                }
             }
+            responseListeners.unset(iq.id);
+            if (return_error != null) throw return_error;
             return return_stanza;
         }
 

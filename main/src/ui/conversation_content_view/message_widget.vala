@@ -186,7 +186,8 @@ public class MessageMetaItem : ContentMetaItem {
             }
         } else if (message.direction == Message.DIRECTION_SENT && message.marked == Message.Marked.ERROR) {
             // Append "delivery failed" if there was a server error
-            string error_color = Util.rgba_to_hex(Util.get_label_pango_color(label, "@error_color"));
+            // TODO: Use a dedicated label, not appended text
+            string error_color = Util.rgba_to_hex(Util.get_label_pango_color(label, "error_color"));
             markup_text += "  <span size='small' color='%s'>%s</span>".printf(error_color, _("delivery failed"));
             theme_dependent = true;
             additional_info = AdditionalInfo.DELIVERY_FAILED;
@@ -337,8 +338,6 @@ public class MessageItemEditMode : Box {
     [GtkChild] public unowned Frame frame;
 
     construct {
-        Util.force_css(frame, "* { border-radius: 3px; padding: 0px 7px; }");
-
         EmojiChooser chooser = new EmojiChooser();
         chooser.emoji_picked.connect((emoji) => {
             chat_text_view.text_view.buffer.insert_at_cursor(emoji, emoji.data.length);

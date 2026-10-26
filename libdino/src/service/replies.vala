@@ -1,9 +1,9 @@
 using Gee;
-using Qlite;
 
 using Xmpp;
 using Xmpp.Xep;
 using Dino.Entities;
+using Dino.Qlite;
 
 public class Dino.Replies : StreamInteractionModule, Object {
     public static ModuleIdentity<Replies> IDENTITY = new ModuleIdentity<Replies>("reply");

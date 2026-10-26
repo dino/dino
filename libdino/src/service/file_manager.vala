@@ -16,14 +16,19 @@ public class FileManager : StreamInteractionModule, Object {
 
     private StreamInteractor stream_interactor;
     private Database db;
-    private Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
+    public Gee.List<FileSender> file_senders = new ArrayList<FileSender>();
     private Gee.List<FileEncryptor> file_encryptors = new ArrayList<FileEncryptor>();
-    private Gee.List<FileDecryptor> file_decryptors = new ArrayList<FileDecryptor>();
+    public Gee.List<FileDecryptor> file_decryptors = new ArrayList<FileDecryptor>();
     private Gee.List<FileProvider> file_providers = new ArrayList<FileProvider>();
-    private Gee.List<FileMetadataProvider> file_metadata_providers = new ArrayList<FileMetadataProvider>();
+    public Gee.List<FileMetadataProvider> file_metadata_providers = new ArrayList<FileMetadataProvider>();
 
     public StatelessFileSharing sfs {
         owned get { return stream_interactor.get_module(StatelessFileSharing.IDENTITY); }
+        private set { }
+    }
+
+    public FileManager2 fm2 {
+        owned get { return stream_interactor.get_module(FileManager2.IDENTITY); }
         private set { }
     }
 
@@ -76,9 +81,10 @@ public class FileManager : StreamInteractionModule, Object {
         file_transfer.account = conversation.account;
         file_transfer.counterpart = conversation.counterpart;
         if (conversation.type_.is_muc_semantic()) {
-            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
-        } else {
-            file_transfer.ourpart = conversation.account.full_jid;
+            file_transfer.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+        }
+        if (file_transfer.ourpart == null) {
+            file_transfer.ourpart = stream_interactor.get_account_full_jid(conversation.account);
         }
         file_transfer.direction = FileTransfer.DIRECTION_SENT;
         file_transfer.time = new DateTime.now_utc();
@@ -96,7 +102,7 @@ public class FileManager : StreamInteractionModule, Object {
         try {
             file_transfer.input_stream = yield file.read_async();
 
-            yield save_file(file_transfer);
+            yield fm2.save_file(file_transfer);
 
             stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
             conversation.last_active = file_transfer.time;
@@ -150,7 +156,7 @@ public class FileManager : StreamInteractionModule, Object {
 
             file_transfer.state = FileTransfer.State.IN_PROGRESS;
 
-            // Update current download progress in the FileTransfer
+            // Update current upload progress in the FileTransfer
             LimitInputStream? limit_stream = file_transfer.input_stream as LimitInputStream;
             if (limit_stream == null) {
                 limit_stream = new LimitInputStream(file_transfer.input_stream, file_meta.size);
@@ -213,19 +219,6 @@ public class FileManager : StreamInteractionModule, Object {
 
     public void add_metadata_provider(FileMetadataProvider file_metadata_provider) {
         file_metadata_providers.add(file_metadata_provider);
-    }
-
-    public bool is_sender_trustworthy(FileTransfer file_transfer, Conversation conversation) {
-        if (file_transfer.direction == FileTransfer.DIRECTION_SENT) return true;
-
-        Jid relevant_jid = conversation.counterpart;
-        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            relevant_jid = stream_interactor.get_module(MucManager.IDENTITY).get_real_jid(file_transfer.from, conversation.account);
-        }
-        if (relevant_jid == null) return false;
-
-        bool in_roster = stream_interactor.get_module(RosterManager.IDENTITY).get_roster_item(conversation.account, relevant_jid) != null;
-        return in_roster;
     }
 
     private async FileMeta get_file_meta(FileProvider file_provider, FileTransfer file_transfer, Conversation conversation, FileReceiveData receive_data_) throws FileReceiveError {
@@ -362,7 +355,7 @@ public class FileManager : StreamInteractionModule, Object {
                 file_transfer.ourpart = from;
                 file_transfer.direction = FileTransfer.DIRECTION_SENT;
             } else {
-                file_transfer.ourpart = conversation.account.full_jid;
+                file_transfer.ourpart = stream_interactor.get_account_full_jid(conversation.account);
                 file_transfer.direction = FileTransfer.DIRECTION_RECEIVED;
             }
         }
@@ -389,7 +382,7 @@ public class FileManager : StreamInteractionModule, Object {
         FileTransfer file_transfer = create_file_transfer_from_provider_incoming(file_provider, info, from, time, local_time, conversation, receive_data, file_meta);
         stream_interactor.get_module(FileTransferStorage.IDENTITY).add_file(file_transfer);
 
-        if (is_sender_trustworthy(file_transfer, conversation)) {
+        if (fm2.is_sender_trustworthy(file_transfer, conversation)) {
             try {
                 yield get_file_meta(file_provider, file_transfer, conversation, receive_data);
             } catch (Error e) {
@@ -407,18 +400,11 @@ public class FileManager : StreamInteractionModule, Object {
         received_file(file_transfer, conversation);
     }
 
-    private async void save_file(FileTransfer file_transfer) throws FileSendError {
-        try {
-            string filename = Random.next_int().to_string("%x") + "_" + file_transfer.file_name;
-            File file = File.new_for_path(Path.build_filename(get_storage_dir(), filename));
-            OutputStream os = file.create(FileCreateFlags.REPLACE_DESTINATION);
-            yield os.splice_async(file_transfer.input_stream, OutputStreamSpliceFlags.CLOSE_SOURCE | OutputStreamSpliceFlags.CLOSE_TARGET);
-            file_transfer.state = FileTransfer.State.COMPLETE;
-            file_transfer.path = filename;
-            file_transfer.input_stream = new LimitInputStream(yield file.read_async(), file_transfer.size);
-        } catch (Error e) {
-            throw new FileSendError.SAVE_FAILED("Saving file error: %s".printf(e.message));
+    public Message? get_message_for_file_transfer(FileTransfer file_transfer, Conversation conversation) {
+        if ((file_transfer.provider == 0 || file_transfer.provider == 2) && file_transfer.info != null) {
+            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(int.parse(file_transfer.info), conversation);
         }
+        return null;
     }
 }
 

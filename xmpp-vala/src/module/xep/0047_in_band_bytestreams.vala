@@ -177,7 +177,7 @@ public class Connection : IOStream {
         if (read_callback != null) {
             Idle.add((owned) read_callback, read_callback_priority);
             read_callback = null;
-            if (read_callback_cancellable != null) {
+            if (read_callback_cancellable != null && !read_callback_cancellable.is_cancelled()) {
                 read_callback_cancellable.disconnect(read_callback_cancellable_id);
             }
             read_callback_cancellable = null;
@@ -187,7 +187,7 @@ public class Connection : IOStream {
         if (write_callback != null) {
             Idle.add((owned) write_callback, write_callback_priority);
             write_callback = null;
-            if (write_callback_cancellable != null) {
+            if (write_callback_cancellable != null && !write_callback_cancellable.is_cancelled()) {
                 write_callback_cancellable.disconnect(write_callback_cancellable_id);
             }
             write_callback_cancellable = null;

@@ -108,19 +108,11 @@ public class MucManager : StreamInteractionModule, Object {
             joined_conversation.nickname = nick;
             stream_interactor.get_module(ConversationManager.IDENTITY).start_conversation(joined_conversation);
 
-            bool can_do_affiliation_versioning = yield entity_info.has_feature(account, jid, Xmpp.Xep.MucAffiliationsVersioning.NS_URI);
-            if (!can_do_affiliation_versioning) {
-                stream.get_module(Xep.Muc.Module.IDENTITY).fetch_affiliations.begin(stream, jid.bare_jid, () => {
-                    muc_affiliations.clear_affiliations(account, jid);
-                    persist_muc_affiliations(account, jid.bare_jid);
-                });
-            }
-
             if (can_do_mam) {
                 var history_sync = stream_interactor.get_module(MessageProcessor.IDENTITY).history_sync;
                 if (conversation == null) {
                     // We never joined the conversation before, just fetch the latest MAM page
-                    yield history_sync.fetch_latest_page(account, jid.bare_jid, null, new DateTime.from_unix_utc(0), cancellable);
+                    history_sync.fetch_latest_page.begin(account, jid.bare_jid, null, new DateTime.from_unix_utc(0), cancellable);
                 } else {
                     // Fetch everything up to the last time the user actively joined
                     if (!mucs_sync_cancellables.has_key(account)) {
@@ -137,6 +129,17 @@ public class MucManager : StreamInteractionModule, Object {
                     }
                 }
             }
+
+            bool can_do_affiliation_versioning = yield entity_info.has_feature(account, jid, Xmpp.Xep.MucAffiliationsVersioning.NS_URI);
+            if (!can_do_affiliation_versioning) {
+                stream.get_module(Xep.Muc.Module.IDENTITY).fetch_affiliations.begin(stream, jid.bare_jid, () => {
+                    muc_affiliations.clear_affiliations(account, jid);
+                    persist_muc_affiliations(account, jid.bare_jid);
+                });
+            }
+
+            room_info_updated(account, jid); // EntityInfo.has_feature trigged a disco query
+
         } else if (res.muc_error != null) {
             // Join failed
             enter_errors[jid] = res.muc_error;
@@ -254,19 +257,11 @@ public class MucManager : StreamInteractionModule, Object {
     //the term `private room` is a short hand for members-only+non-anonymous rooms
     public bool is_private_room(Account account, Jid jid) {
         var entity_info = stream_interactor.get_module(EntityInfo.IDENTITY);
-        return entity_info.has_feature_offline(account, jid, "muc_membersonly") && entity_info.has_feature_offline(account, jid, "muc_nonanonymous");
+        return entity_info.has_feature_offline(account, jid, Xep.Muc.FEATURE_MEMBERS_ONLY) && entity_info.has_feature_offline(account, jid, Xep.Muc.FEATURE_NON_ANONYMOUS);
     }
 
     public bool is_moderated_room(Account account, Jid jid) {
-        XmppStream? stream = stream_interactor.get_stream(account);
-        if (stream == null) {
-            return false;
-        }
-        Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-        if (flag == null) {
-            return false;
-        }
-        return flag.has_room_feature(jid, Xep.Muc.Feature.MODERATED);
+        return stream_interactor.get_module(EntityInfo.IDENTITY).has_feature_cached(account, jid, Xep.Muc.FEATURE_MODERATED);
     }
 
     public bool is_public_room(Account account, Jid jid) {
@@ -332,9 +327,13 @@ public class MucManager : StreamInteractionModule, Object {
     }
 
     public string? get_room_name(Account account, Jid jid) {
-        Xep.Muc.Flag? flag = get_muc_flag(account);
-        if (flag != null) {
-            return flag.get_room_name(jid);
+        var identities = stream_interactor.get_module(EntityInfo.IDENTITY).get_identities_offline(account, jid);
+        if (identities == null) return null;
+
+        foreach (var identity in identities) {
+            if (identity.category == "conference") {
+                return identity.name;
+            }
         }
         return null;
     }
@@ -471,8 +470,10 @@ public class MucManager : StreamInteractionModule, Object {
                 private_room_occupants_updated(account, muc_jid);
             }
         });
-        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_info_updated.connect( (stream, muc_jid) => {
-            room_info_updated(account, muc_jid);
+        stream_interactor.module_manager.get_module(account, Xep.Muc.Module.IDENTITY).room_info_changed.connect( (stream, muc_jid) => {
+            stream_interactor.get_module(EntityInfo.IDENTITY).get_info_result.begin(account, muc_jid, null, () => {
+                room_info_updated(account, muc_jid);
+            });
         });
         stream_interactor.module_manager.get_module(account, Xep.OccupantIds.Module.IDENTITY).received_own_occupant_id.connect( (stream, jid, occupant_id) => {
             if (!own_occupant_ids.has_key(account)) {

@@ -245,11 +245,11 @@ public class ChatInputController : Object {
             send_text();
         }
 
-        foreach (File file in files_to_send) {
-            stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(file, conversation);
+        if (!files_to_send.is_empty) {
+            stream_interactor.get_module(FileManager2.IDENTITY).send_files.begin(files_to_send, conversation);
+            files_to_send = new ArrayList<File>();
+            chat_input.clear_files();
         }
-        files_to_send = new ArrayList<File>();
-        chat_input.clear_files();
     }
 
     private void on_text_input_changed() {

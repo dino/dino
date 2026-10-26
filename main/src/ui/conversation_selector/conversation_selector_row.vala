@@ -276,6 +276,25 @@ public class ConversationSelectorRow : ListBoxRow {
                         message_label.label = (file_is_image ? _("Image received") : _("File received") );
                     }
                     break;
+                case FileGroupItem.TYPE:
+                    FileGroupItem file_group_item = last_content_item as FileGroupItem;
+                    FileTransfer first_transfer = file_group_item.file_group.file_transfers.get(0);
+
+                    if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+                        // TODO properly display nick for oneself
+                        nick_label.label = Util.get_participant_display_name(stream_interactor, conversation, first_transfer.from, true) + ": ";
+                    } else {
+                        nick_label.label = first_transfer.direction == Message.DIRECTION_SENT ? _("Me") + ": " : "";
+                    }
+
+                    bool all_files_images = Ui.all_files_images(file_group_item.file_group.file_transfers);
+                    change_label_attribute(message_label, attr_style_new(Pango.Style.ITALIC));
+                    if (first_transfer.direction == Message.DIRECTION_SENT) {
+                        message_label.label = (all_files_images ? _("Images sent") : _("Files sent") );
+                    } else {
+                        message_label.label = (all_files_images ? _("Images received") : _("Files received") );
+                    }
+                    break;
                 case CallItem.TYPE:
                     CallItem call_item = (CallItem) last_content_item;
                     Call call = call_item.call;
@@ -303,9 +322,10 @@ public class ConversationSelectorRow : ListBoxRow {
         if (update_read_pending) return;
         update_read_pending = true;
         Idle.add(() => {
+            bool force = update_read_pending_force;
             update_read_pending = false;
             update_read_pending_force = false;
-            update_read_idle(update_read_pending_force);
+            update_read_idle(force);
             return Source.REMOVE;
         }, Priority.LOW);
     }
@@ -371,12 +391,22 @@ public class ConversationSelectorRow : ListBoxRow {
                     image.set_from_icon_name("dino-device-desktop-symbolic");
                 }
 
-                if (show == Presence.Stanza.SHOW_AWAY) {
-                    Util.force_color(image, "#FF9800");
-                } else if (show == Presence.Stanza.SHOW_XA || show == Presence.Stanza.SHOW_DND) {
-                    Util.force_color(image, "#FF5722");
-                } else {
-                    Util.force_color(image, "#4CAF50");
+                switch (show) {
+                    case Presence.Stanza.SHOW_ONLINE:
+                        image.add_css_class("dino-status-online");
+                        break;
+                    case Presence.Stanza.SHOW_CHAT:
+                        image.add_css_class("dino-status-chat");
+                        break;
+                    case Presence.Stanza.SHOW_AWAY:
+                        image.add_css_class("dino-status-away");
+                        break;
+                    case Presence.Stanza.SHOW_XA:
+                        image.add_css_class("dino-status-xa");
+                        break;
+                    case Presence.Stanza.SHOW_DND:
+                        image.add_css_class("dino-status-dnd");
+                        break;
                 }
 
                 string? status = null;

@@ -1,17 +1,4 @@
-# version_vala
-version_py = files('version.py')[0]
-if meson.version().version_compare('>=1.4.0')
-    version_py_path = version_py.full_path()
-else
-    version_py_path = meson.current_source_dir() / 'version.py'
-endif
-command = [prog_python, version_py_path, version_file_path, '--git-repo', meson.current_source_dir()]
-if prog_git.found()
-    command += ['--git', prog_git]
-endif
-# We add those dummy args to ensure meson sees the dependency
-command += [version_py, version_file]
-version_vala = vcs_tag(command: command, input: 'src/version.vala.in', output: 'version.vala', replace_string: '%VERSION%')
+version_c = configure_file(input: 'src/version.c.in', output: 'version.c', configuration: {'VERSION': meson.project_version()})
 
 # libdino
 dependencies = [
@@ -20,7 +7,10 @@ dependencies = [
     dep_gio,
     dep_glib,
     dep_gmodule,
-    dep_qlite,
+    dep_libsoup,
+    dep_libsrtp2,
+    dep_nice,
+    dep_sqlite3,
     dep_xmpp_vala
 ]
 sources = files(
@@ -28,16 +18,34 @@ sources = files(
     'src/dbus/login1.vala',
     'src/dbus/notifications.vala',
     'src/dbus/upower.vala',
+    'src/crypto/cipher.vala',
+    'src/crypto/cipher_converter.vala',
+    'src/crypto/dtls_srtp.vala',
+    'src/crypto/error.vala',
+    'src/crypto/srtp.vala',
     'src/entity/account.vala',
     'src/entity/call.vala',
     'src/entity/conversation.vala',
     'src/entity/encryption.vala',
     'src/entity/file_transfer.vala',
+    'src/entity/file_transfer_group.vala',
     'src/entity/message.vala',
     'src/entity/settings.vala',
+    'src/file_transfer/file_manager2.vala',
+    'src/file_transfer/http_transfer.vala',
     'src/plugin/interfaces.vala',
     'src/plugin/loader.vala',
     'src/plugin/registry.vala',
+    'src/qlite/column.vala',
+    'src/qlite/database.vala',
+    'src/qlite/delete_builder.vala',
+    'src/qlite/insert_builder.vala',
+    'src/qlite/query_builder.vala',
+    'src/qlite/row.vala',
+    'src/qlite/statement_builder.vala',
+    'src/qlite/table.vala',
+    'src/qlite/update_builder.vala',
+    'src/qlite/upsert_builder.vala',
     'src/service/avatar_manager.vala',
     'src/service/blocking_manager.vala',
     'src/service/call_store.vala',
@@ -51,12 +59,12 @@ sources = files(
     'src/service/conversation_manager.vala',
     'src/service/counterpart_interaction_manager.vala',
     'src/service/database.vala',
-    'src/service/entity_capabilities_storage.vala',
     'src/service/entity_info.vala',
     'src/service/fallback_body.vala',
     'src/service/file_manager.vala',
     'src/service/file_transfer_storage.vala',
     'src/service/history_sync.vala',
+    'src/service/ice.vala',
     'src/service/jingle_file_transfers.vala',
     'src/service/message_correction.vala',
     'src/service/message_deletion.vala',
@@ -83,18 +91,73 @@ sources = files(
     'src/util/util.vala',
     'src/util/weak_timeout.vala',
 )
-sources += [version_vala]
-c_args = [
+
+sources += [version_c]
+
+if crypto_backend == 'gnu'
+    dependencies += [ dep_libgcrypt, dep_gnutls ]
+    sources += files(
+        'src/crypto/gnu/cipher.vala',
+        'src/crypto/gnu/dtls_srtp.vala',
+        'src/crypto/gnu/utils.vala',
+    )
+elif crypto_backend == 'openssl'
+    dependencies += [ dep_openssl ]
+    sources += files(
+        'src/crypto/openssl/cipher.vala',
+        'src/crypto/openssl/dtls_srtp.vala',
+        'src/crypto/openssl/utils.c',
+        'src/crypto/openssl/utils.vala',
+    )
+endif
+
+if get_option('omemo').allowed() and dep_libomemo_c.found()
+    dependencies += [dep_libomemo_c]
+    sources += files(
+        'src/crypto/omemo/context.vala',
+        'src/crypto/omemo/helper.c',
+        'src/crypto/omemo/simple_iks.vala',
+        'src/crypto/omemo/simple_pks.vala',
+        'src/crypto/omemo/simple_spks.vala',
+        'src/crypto/omemo/simple_ss.vala',
+        'src/crypto/omemo/store.vala',
+        'src/crypto/omemo/util.vala',
+    )
+
+    if crypto_backend == 'gnu'
+        sources += files(
+            'src/crypto/gnu/omemo.c',
+        )
+    elif crypto_backend == 'openssl'
+        sources += files(
+            'src/crypto/openssl/omemo.c',
+        )
+    endif
+endif
+
+c_args = vala_c_args + [
     '-DDINO_SYSTEM_LIBDIR_NAME="@0@"'.format(get_option('prefix') / get_option('libdir')),
     '-DDINO_SYSTEM_PLUGIN_DIR="@0@"'.format(get_option('prefix') / get_option('libdir') / get_option('plugindir')),
     '-DG_LOG_DOMAIN="libdino"',
 ]
-vala_args = []
-if meson.get_compiler('vala').version().version_compare('=0.56.11')
-    vala_args += ['-D', 'VALA_0_56_11']
-endif
+vala_args = [
+    '--vapidir', meson.current_source_dir() / 'vapi',
+]
 lib_dino = library('libdino', sources, c_args: c_args, vala_args: vala_args, include_directories: include_directories('src'), dependencies: dependencies, name_prefix: '', version: '0.0', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_dino = declare_dependency(link_with: lib_dino, include_directories: include_directories('.', 'src'))
 
 install_data('dino.deps', install_dir: get_option('datadir') / 'vala/vapi', install_tag: 'devel') # TODO: workaround for https://github.com/mesonbuild/meson/issues/9756
 install_headers('src/dino_i18n.h')
+
+if get_option('omemo').allowed() and dep_libomemo_c.found()
+    test_sources = [
+        'tests/common.vala',
+        'tests/testcase.vala',
+
+        'tests/curve25519.vala',
+        'tests/hkdf.vala',
+        'tests/session_builder.vala',
+    ]
+    exe_lib_dino_test = executable('libdino-omemo-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_dino, install: false)
+    test('Tests for libdino OMEMO', exe_lib_dino_test)
+endif

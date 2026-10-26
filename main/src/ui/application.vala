@@ -85,6 +85,7 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             case "join":
                 show_join_muc_dialog(null, jid);
                 break;
+            case "roster":
             case "message":
                 Gee.List<Account> accounts = stream_interactor.get_accounts();
                 Jid parsed_jid = null;
@@ -244,6 +245,16 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
             call_state.reject();
         });
         add_action(deny_call_action);
+
+        SimpleAction save_file_action = new SimpleAction("file_open_save_dialog", VariantType.INT32);
+        save_file_action.activate.connect((variant) => {
+            print("action open save dialog\n");
+            int file_transfer_id = variant.get_int32();
+            FileTransfer? file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(file_transfer_id, null);
+
+            window.conversation_view.open_save_file_dialog(file_transfer);
+        });
+        add_action(save_file_action);
     }
 
     private void show_preferences_window() {

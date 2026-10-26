@@ -9,6 +9,7 @@
     <file>add_conversation/select_jid_fragment.ui</file>
     <file>call_widget.ui</file>
     <file>chat_input.ui</file>
+    <file>contact_details_dialog.ui</file>
     <file>conversation_content_view/item_metadata_header.ui</file>
     <file>conversation_content_view/view.ui</file>
     <file>conversation_details.css</file>
@@ -17,6 +18,7 @@
     <file>conversation_row.ui</file>
     <file>conversation_view.ui</file>
     <file>dino-conversation-list-placeholder-arrow.svg</file>
+    <file>encryption_preferences_entry.ui</file>
     <file>file_default_widget.ui</file>
     <file>file_input_widget.ui</file>
     <file>file_send_overlay.ui</file>
@@ -98,6 +100,7 @@
     <file>join_room_dialog2.ui</file>
     <file>main_window.ui</file>
     <file>main_window_placeholder.ui</file>
+    <file>manage_key_dialog.ui</file>
     <file>menu_add.ui</file>
     <file>menu_app.ui</file>
     <file>menu_conversation.ui</file>

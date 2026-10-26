@@ -3,7 +3,7 @@ using Gee;
 using Xmpp;
 using Xmpp.Xep;
 using Dino.Entities;
-using Qlite;
+using Dino.Qlite;
 
 public class Dino.HistorySync {
 

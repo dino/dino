@@ -1,9 +1,6 @@
 using Dino.Entities;
-using Qlite;
 
-namespace Dino {
-
-public class Util {
+namespace Dino.Util {
     public static Message.Type get_message_type_for_conversation(Conversation conversation) {
         switch (conversation.type_) {
             case Conversation.Type.CHAT:
@@ -42,6 +39,12 @@ public class Util {
         }
         return false;
     }
-}
 
+    public static Gee.List<string> get_local_ip_addresses() {
+        Gee.List<string> result = new Gee.ArrayList<string>();
+        foreach (string ip_address in Nice.interfaces_get_local_ips(false)) {
+            result.add(ip_address);
+        }
+        return result;
+    }
 }

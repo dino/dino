@@ -222,7 +222,12 @@ public class Xmpp.Xep.Jingle.Session : Object {
                     .put_node(content.transport_params.to_transport_stanza_node("content-add")));
 
         Iq.Stanza iq = new Iq.Stanza.set(content_add_node) { to=peer_full_jid };
-        yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        try {
+            yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
+        } catch (IOError e) {
+            warning("Error adding content: %s", e.message);
+            // FIXME: Probably need to clean up some state
+        }
     }
 
     private void handle_content_accept(ContentNode content_node) throws IqError {

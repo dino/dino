@@ -1,8 +1,8 @@
 using Xmpp;
 using Gee;
-using Qlite;
 
 using Dino.Entities;
+using Dino.Qlite;
 
 namespace Dino {
 
@@ -15,6 +15,8 @@ namespace Dino {
 
         private WeakMap<int, FileTransfer> files_by_db_id = new WeakMap<int, FileTransfer>();
         private WeakMap<int, FileTransfer> files_by_message_id = new WeakMap<int, FileTransfer>();
+        private WeakMap<int, FileTransferGroup> file_group_by_db_id = new WeakMap<int, FileTransferGroup>();
+        private WeakMap<int, FileTransferGroup> file_group_by_message_id = new WeakMap<int, FileTransferGroup>();
         private WeakMap<string, FileTransfer> files_by_message_and_file_id = new WeakMap<string, FileTransfer>();
 
         public static void start(StreamInteractor stream_interactor, Database db) {
@@ -32,7 +34,13 @@ namespace Dino {
             cache_file(file_transfer);
         }
 
-        public FileTransfer? get_file_by_id(int id, Conversation conversation) {
+        public void add_file_group(FileTransferGroup file_group) {
+            file_group.persist(db);
+            cache_file_group(file_group);
+        }
+
+        // `conversation` should be provided, otherwise the FileTransfer.ourpart might be wrong
+        public FileTransfer? get_file_by_id(int id, Conversation? conversation) {
             FileTransfer? file_transfer = files_by_db_id[id];
             if (file_transfer != null) {
                 return file_transfer;
@@ -58,6 +66,29 @@ namespace Dino {
             return create_file_from_row_opt(row_option, conversation);
         }
 
+        public FileTransferGroup? get_file_group_by_id(int id, Conversation conversation) {
+            FileTransferGroup? file_group = file_group_by_db_id[id];
+            if (file_group != null) {
+                return file_group;
+            }
+
+            RowOption row_option = db.file_transfer_group.select().with(db.file_transfer_group.id, "=", id).row();
+            return row_option.is_present() ? create_file_group_from_row(row_option.inner, conversation) : null;
+        }
+
+        public FileTransferGroup get_file_group_by_message_id(int id, Conversation conversation) {
+            FileTransferGroup? file_group = file_group_by_message_id[id];
+            if (file_group != null) {
+                return file_group;
+            }
+
+            foreach (Row row in db.file_transfer_group.select().with(db.file_transfer_group.message_id, "=", id)) {
+                return create_file_group_from_row(row, conversation);
+            }
+
+            return null;
+        }
+
         public FileTransfer get_files_by_message_and_file_id(int message_id, string file_sharing_id, Conversation conversation) {
             string combined_identifier = message_id.to_string() + file_sharing_id;
             FileTransfer? file_transfer = files_by_message_and_file_id[combined_identifier];
@@ -79,13 +110,13 @@ namespace Dino {
             return null;
         }
 
-        private FileTransfer? create_file_from_row_opt(RowOption row_opt, Conversation conversation) {
+        private FileTransfer? create_file_from_row_opt(RowOption row_opt, Conversation? conversation) {
             if (!row_opt.is_present()) return null;
 
             try {
                 FileTransfer file_transfer = new FileTransfer.from_row(db, row_opt.inner, FileManager.get_storage_dir());
 
-                if (conversation.type_.is_muc_semantic()) {
+                if (conversation != null && conversation.type_.is_muc_semantic()) {
                     file_transfer.ourpart = conversation.counterpart.with_resource(file_transfer.ourpart.resourcepart);
                 }
 
@@ -95,6 +126,21 @@ namespace Dino {
                 warning("Got file transfer with invalid Jid: %s", e.message);
             }
             return null;
+        }
+
+        private FileTransferGroup? create_file_group_from_row(Row file_transfer_group_row, Conversation conversation) {
+            QueryBuilder query = db.file_transfer_group_file_transfer.select()
+                    .with(db.file_transfer_group_file_transfer.file_transfer_group_id, "=", file_transfer_group_row[db.file_transfer_group.id]);
+            var file_transfers = new ArrayList<FileTransfer>();
+            foreach (Qlite.Row row in query) {
+                FileTransfer file_transfer = get_file_by_id(row[db.file_transfer_group_file_transfer.file_transfer_id], conversation);
+                file_transfers.add(file_transfer);
+            }
+            if (file_transfers.size == 0) return null;
+
+            FileTransferGroup file_group = new FileTransferGroup.from_row(db, file_transfer_group_row, file_transfers);
+            cache_file_group(file_group);
+            return file_group;
         }
 
         private void cache_file(FileTransfer file_transfer) {
@@ -108,6 +154,11 @@ namespace Dino {
                     files_by_message_and_file_id[combined_identifier] = file_transfer;
                 }
             }
+        }
+
+        private void cache_file_group(FileTransferGroup file_group) {
+            file_group_by_db_id[file_group.id] = file_group;
+//            file_group_by_message_id[file_group.message_id] = file_group;
         }
     }
 }

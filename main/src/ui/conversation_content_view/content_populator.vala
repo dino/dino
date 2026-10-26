@@ -70,6 +70,8 @@ public class ContentProvider : ContentItemCollection, Object {
             return new FileMetaItem(content_item, stream_interactor);
         } else if (content_item.type_ == CallItem.TYPE) {
             return new CallMetaItem(content_item, stream_interactor);
+        } else if (content_item.type_ == FileGroupItem.TYPE) {
+            return new FileGroupMetaItem(content_item, stream_interactor);
         }
         critical("Got unknown content item type %s", content_item.type_);
         return null;

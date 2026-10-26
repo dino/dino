@@ -18,6 +18,331 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.16-dev\n"
 
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:168
+#, c-format
+msgid ""
+"%s has been using an untrusted device. You won't see messages from devices "
+"that you do not trust."
+msgstr ""
+"%s on käyttänyt laitetta, johon ei luoteta. Et näe viestejä laitteilta, "
+"joihin et luota."
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:169
+msgid "Manage devices"
+msgstr "Hallitse laitteita"
+
+#: main/src/plugins/omemo/ui/bad_messages_populator.vala:171
+#, c-format
+msgid ""
+"%s does not trust this device. That means, you might be missing messages."
+msgstr ""
+"%s ei luota tähän laitteeseen. Sen seurauksena viestejä saattaa jäädä "
+"puuttumaan."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:34
+msgid "Manage Key"
+msgstr "Hallitse avainta"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:35
+msgid ""
+"Compare the fingerprint, character by character, with the one shown on your "
+"contact's device."
+msgstr ""
+"Vertaa sormenjälkeä merkki kerrallaan vastapuolen laitteella näkyvään "
+"sormenjälkeen."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:36
+msgid "Fingerprints differ"
+msgstr "Sormenjäljet eroavat"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:37
+msgid "Fingerprints match"
+msgstr "Sormenjäljet vastaavat"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:39
+msgid "Confirm"
+msgstr "Vahvista"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:59
+msgid "Verify key"
+msgstr "Vahvista avain"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:60
+#, c-format
+msgid ""
+"Future messages sent by %s from the device that uses this key will be "
+"highlighted accordingly in the chat window."
+msgstr ""
+"Tulevat viestit käyttäjän %s laitteelta, joka käyttää tätä avainta, "
+"korostetaan asianmukaisesti keskusteluikkunassa."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:70
+msgid "Fingerprints do not match"
+msgstr "Sormenjäljet eivät vastaa toisiaan"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:71
+#, c-format
+msgid ""
+"Please verify that you are comparing the correct fingerprint. If "
+"fingerprints do not match, %s's account may be compromised and you should "
+"consider rejecting this key."
+msgstr ""
+"Varmista, että vertaat oikeita sormenjälkiä. Jos sormenjäljet eivät täsmää, "
+"käyttäjän %s tili saattaa olla vaarantunut, ja sinun tulisi hylätä tämä "
+"avain."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid "Verify key fingerprint"
+msgstr "Vahvista avaimen sormenjälki"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:123
+msgid ""
+"Compare this key's fingerprint with the fingerprint displayed on the "
+"contact's device."
+msgstr ""
+"Vertaa tämän avaimen sormenjälkeä vastapuolen laitteella näkyvään "
+"sormenjälkeen."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:151
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:288
+msgid "Reject key"
+msgstr "Hylkää avain"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:125
+msgid ""
+"Block encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Estä salattu yhteydenpito käyttäjän tätä avainta käyttävän laitteen kanssa."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:159
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:283
+msgid "Accept key"
+msgstr "Hyväksy avain"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:127
+msgid ""
+"Allow encrypted communication with the contact's device that uses this key."
+msgstr ""
+"Salli salattu yhteydenpito käyttäjän tätä avainta käyttävän laitteen kanssa."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid "This key is currently %s."
+msgstr "Tämä avain on tällä hetkellä %s."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+msgid "accepted"
+msgstr "hyväksytty"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:131
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+#, c-format
+msgid "This means it can be used by %s to receive and send encrypted messages."
+msgstr ""
+"Se tarkoittaa, että %s voi käyttää avainta salattujen viestien "
+"vastaanottamiseen ja lähettämiseen."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid "verified"
+msgstr "vahvistettu"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:136
+msgid ""
+"Additionally it has been verified to match the key on the contact's device."
+msgstr "Lisäksi sen on vahvistettu vastaavan vastapuolen laitteen avainta."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+msgid "rejected"
+msgstr "hylätty"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:140
+#, c-format
+msgid ""
+"This means it cannot be used by %s to decipher your messages, and you won't "
+"see messages encrypted with it."
+msgstr ""
+"Se tarkoittaa, ettei %s voi käyttää avainta viestien salauksen purkamiseksi, "
+"etkä sinä näe tällä avaimella salattuja viestejä."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:152
+#, c-format
+msgid ""
+"You won't see encrypted messages from the device of %s that uses this key. "
+"Conversely, that device won't be able to decipher your messages anymore."
+msgstr ""
+"Et näe käyttäjän %s laitteelta, joka käyttää tätä avainta, lähetettyjä "
+"salattuja viestejä. Vastavuoroisesti kyseinen laite ei pysty enää purkamaan "
+"viestiesi salausta."
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:160
+#, c-format
+msgid ""
+"You will be able to exchange encrypted messages with the device of %s that "
+"uses this key."
+msgstr ""
+"Pystyt viestimään salatuilla viesteillä käyttäjän %s tätä avainta käyttävän "
+"laitteen kanssa."
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:73
+msgid "Manage"
+msgstr "Hallitse"
+
+#: main/src/plugins/omemo/ui/device_notification_populator.vala:80
+msgid "This contact has new devices"
+msgstr "Tällä henkilöllä on uusia laitteita"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:29
+msgid "OMEMO trust decision required"
+msgstr "OMEMO-luottamuspäätös vaaditaan"
+
+#: main/src/plugins/omemo/ui/own_notifications.vala:31
+#, c-format
+msgid "Did you add a new device for account %s?"
+msgstr "Lisäsitkö uuden laitteen tilille %s?"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:52
+msgid "OMEMO by default"
+msgstr "OMEMO oletuksena"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:53
+msgid "Enable OMEMO encryption for new conversations"
+msgstr "Käytä OMEMO-salausta uusissa keskusteluissa"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:54
+msgid "Encrypt to new devices"
+msgstr "Salaa uusille laitteille"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:55
+msgid "Automatically encrypt to new devices from this contact."
+msgstr "Salaa automaattisesti tämän henkilön uusille laitteille."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:56
+msgid "New keys"
+msgstr "Uudet avaimet"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:100
+msgid ""
+"New encryption keys from your other devices will be accepted automatically."
+msgstr "Uudet salausavaimet muilta laitteiltasi hyväksytään automaattisesti."
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:160
+msgid "This device"
+msgstr "Tämä laite"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Other device"
+msgstr "Toinen laite"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:220
+msgid "Device"
+msgstr "Laite"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:222
+msgid "Accepted"
+msgstr "Hyväksytty"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:225
+msgid "Rejected"
+msgstr "Hylätty"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:228
+msgid "Verified"
+msgstr "Vahvistettu"
+
+#: main/src/plugins/omemo/ui/encryption_preferences_entry.vala:277
+msgid "New device"
+msgstr "Uusi laite"
+
+#: main/data/encryption_preferences_entry.ui:8
+msgid ""
+"Each device has its own OMEMO key. Messages can only be decrypted by a "
+"device if they are encrypted to its key. Messages are only encrypted to "
+"accepted devices."
+msgstr ""
+"Jokaisella laitteella on oma OMEMO-avain. Viestien salauksen voi purkaa "
+"laitteella vain jos ne käyttävät sen avainta. Viestit salataan vain "
+"hyväksytyille laitteille."
+
+#~ msgid "OMEMO Key Management"
+#~ msgstr "OMEMO-avainhallinta"
+
+#, c-format
+#~ msgid "%d OMEMO device"
+#~ msgid_plural "%d OMEMO devices"
+#~ msgstr[0] "%d OMEMO-laite"
+#~ msgstr[1] "%d OMEMO-laitetta"
+
+#~ msgid "Automatically accept new keys"
+#~ msgstr "Hyväksy uudet avaimet automaattisesti"
+
+#~ msgid ""
+#~ "New encryption keys from this contact will be accepted automatically."
+#~ msgstr "Uudet salausavaimet tältä henkilöltä hyväksytään automaattisesti."
+
+#~ msgid "Own key"
+#~ msgstr "Oma avain"
+
+#~ msgid "Associated keys"
+#~ msgstr "Liittyvät avaimet"
+
+#~ msgid "Inactive keys"
+#~ msgstr "Epäaktiiviset avaimet"
+
+#~ msgid "Unused"
+#~ msgstr "Käyttämätön"
+
+#~ msgid "Own fingerprint"
+#~ msgstr "Oma sormenjälki"
+
+#~ msgid "Will be generated on first connection"
+#~ msgstr "Luodaan ensimmäisellä yhdistyskerralla"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:18
+msgid "Querying GnuPG"
+msgstr "Kysellään GnuPG:tä"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:41
+msgid "Announce key"
+msgstr "Ilmoita avain"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:32
+msgid "Error in GnuPG"
+msgstr "Virhe GnuPG:ssä"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:36
+msgid "No keys available. Generate one!"
+msgstr "Ei avaimia saatavilla. Luo avain!"
+
+#: main/src/plugins/openpgp/encryption_preferences_entry.vala:45
+msgid "Disabled"
+msgstr "Pois käytöstä"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:36
+msgid "Key not in keychain"
+msgstr "Avain ei ole avainnipussa"
+
+#: main/src/plugins/openpgp/contact_details_provider.vala:40
+msgid "Fingerprint"
+msgstr "Sormenjälki"
+
+#~ msgid "Key publishing disabled"
+#~ msgstr "Avaimen julkaiseminen pois käytöstä"
+
+#~ msgid "Select key"
+#~ msgstr "Valitse avain"
+
+#~ msgid "Loading…"
+#~ msgstr "Ladataan…"
+
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1094,7 +1419,7 @@ msgstr "Kirjaudu"
 #: main/data/preferences_window/add_account_dialog.ui:147
 msgid "Could not establish a secure connection"
 msgstr "Salattua yhteyttä ei voitu muodostaa"
-
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "Takaisin"

@@ -74,7 +74,7 @@ public class Register : StreamInteractionModule, Object{
     public async string? change_password(Account account, string new_pw){
         XmppStream stream = stream_interactor.get_stream(account);
         if (stream == null) return null;
-        return (yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).change_password(stream, account.full_jid, new_pw)).condition;
+        return (yield stream.get_module(Xep.InBandRegistration.Module.IDENTITY).change_password(stream, account.bare_jid, new_pw)).condition;
     }
 
     public class ServerAvailabilityReturn {

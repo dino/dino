@@ -56,12 +56,14 @@ public class ConversationViewController : Object {
 //      goto-end floating button
         var vadjustment = view.conversation_frame.scrolled.vadjustment;
         vadjustment.notify["value"].connect(() => {
-            bool button_active = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
-            view.goto_end_revealer.reveal_child = button_active;
-            view.goto_end_revealer.visible = button_active;
+            debug_here();
+            bool scrolled_up = vadjustment.value <  vadjustment.upper - vadjustment.page_size;
+            view.goto_end_revealer.reveal_child = scrolled_up;
+            view.goto_end_revealer.visible = scrolled_up;
+            stream_interactor.get_module(ChatInteraction.IDENTITY).on_scrolled_down_changed(!scrolled_up && view.conversation_frame.at_current_content, conversation);
         });
         view.goto_end_button.clicked.connect(() => {
-            view.conversation_frame.initialize_for_conversation(conversation);
+            view.conversation_frame.initialize_for_conversation(conversation, true);
         });
 
         // Update conversation topic
@@ -212,10 +214,6 @@ public class ConversationViewController : Object {
             }
         });
         chooser.show();
-    }
-
-    private void send_file(File file) {
-        stream_interactor.get_module(FileManager.IDENTITY).send_file.begin(file, conversation);
     }
 
     private bool forward_key_press_to_chat_input(EventControllerKey key_controller, uint keyval, uint keycode, Gdk.ModifierType state) {

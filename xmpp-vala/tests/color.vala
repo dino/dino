@@ -9,7 +9,7 @@ class ColorTest : Gee.TestCase {
 
         add_test("xep-vectors-angle", () => { text_xep_vectors_angle(); });
         add_test("xep-vectors-rgbf", () => { test_xep_vectors_rgbf(); });
-        add_test("rgb-to-angle", () => { test_rgb_to_angle(); });
+//        add_test("rgb-to-angle", () => { test_rgb_to_angle(); });
     }
 
     public void text_xep_vectors_angle() {
@@ -36,15 +36,15 @@ class ColorTest : Gee.TestCase {
         fail_if_not_eq_rgbf(ConsistentColor.string_to_rgbf("Board"), {0.000f,0.527f,0.457f});
     }
 
-    public void test_rgb_to_angle() {
-        string[] colors = {"e57373", "f06292", "ba68c8", "9575cd", "7986cb", "64b5f6", "4fc3f7", "4dd0e1", "4db6ac", "81c784", "aed581", "dce775", "fff176", "ffd54f", "ffb74d", "ff8a65"};
-        foreach(string hex_color in colors) {
-            uint8 r = (uint8) ((double) hex_color.substring(0, 2).to_long(null, 16));
-            uint8 g = (uint8) ((double) hex_color.substring(2, 2).to_long(null, 16));
-            uint8 b = (uint8) ((double) hex_color.substring(4, 2).to_long(null, 16));
-            //print(@"$hex_color, $r, $g, $b, $(ConsistentColor.rgb_to_angle(r, g, b))\n");
-        }
-    }
+//    public void test_rgb_to_angle() {
+//        string[] colors = {"e57373", "f06292", "ba68c8", "9575cd", "7986cb", "64b5f6", "4fc3f7", "4dd0e1", "4db6ac", "81c784", "aed581", "dce775", "fff176", "ffd54f", "ffb74d", "ff8a65"};
+//        foreach(string hex_color in colors) {
+//            uint8 r = (uint8) ((double) long.parse(hex_color.substring(0, 2), 16));
+//            uint8 g = (uint8) ((double) long.parse(hex_color.substring(2, 2), 16));
+//            uint8 b = (uint8) ((double) long.parse(hex_color.substring(4, 2), 16));
+//            print(@"$hex_color, $r, $g, $b, $(ConsistentColor.rgb_to_angle(r, g, b))\n");
+//        }
+//    }
 }
 
 }

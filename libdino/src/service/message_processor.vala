@@ -3,7 +3,7 @@ using Gee;
 using Xmpp;
 using Xmpp.Xep;
 using Dino.Entities;
-using Qlite;
+using Dino.Qlite;
 
 namespace Dino {
 
@@ -39,6 +39,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
         received_pipeline.connect(new StoreMessageListener(this, stream_interactor));
         received_pipeline.connect(new StoreContentItemListener(stream_interactor));
         received_pipeline.connect(new MarkupListener(stream_interactor));
+        received_pipeline.connect(new PreDisplayedHandler(stream_interactor));
 
         stream_interactor.account_added.connect(on_account_added);
 
@@ -379,6 +380,29 @@ public class MessageProcessor : StreamInteractionModule, Object {
         }
     }
 
+    private class PreDisplayedHandler : MessageListener {
+        public string[] after_actions_const = new string[]{ "STORE_CONTENT_ITEM" };
+        public override string action_group { get { return "DISPLAYED_HANDLING"; } }
+        public override string[] after_actions { get { return after_actions_const; } }
+
+        private StreamInteractor stream_interactor;
+
+        public PreDisplayedHandler(StreamInteractor stream_interactor) {
+            this.stream_interactor = stream_interactor;
+        }
+
+        public override async bool run(Entities.Message message, Xmpp.MessageStanza stanza, Conversation conversation) {
+            var flag = stream_interactor.get_stream(conversation.account).get_flag(MessageDisplayedSynchronization.Flag.IDENTITY);
+            if (flag != null && message.server_id != null) {
+                Jid stanza_id_by = message.type_ == Message.Type.GROUPCHAT ? conversation.counterpart.bare_jid : conversation.account.bare_jid;
+                if (flag.is_displayed(conversation.counterpart, stanza_id_by, message.server_id)) {
+                    stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).mark_displayed_up_to_message(conversation, message);
+                }
+            }
+            return false;
+        }
+    }
+
     public Entities.Message create_out_message(string? text, Conversation conversation) {
         Entities.Message message = new Entities.Message(text);
         message.type_ = Util.get_message_type_for_conversation(conversation);
@@ -394,7 +418,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             message.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.bare_jid;
             message.real_jid = conversation.account.bare_jid;
         } else {
-            message.ourpart = conversation.account.full_jid;
+            message.ourpart = stream_interactor.get_account_full_jid(conversation.account);
         }
         message.marked = Entities.Message.Marked.UNSENT;
         message.encryption = conversation.encryption;
@@ -448,12 +472,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
 
         // Set an origin ID if a MUC doen't guarantee to keep IDs
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            Xep.Muc.Flag? flag = stream.get_flag(Xep.Muc.Flag.IDENTITY);
-            if (flag == null) {
-                message.marked = Entities.Message.Marked.UNSENT;
-                return;
-            }
-            if(!flag.has_room_feature(conversation.counterpart, Xep.Muc.Feature.STABLE_ID)) {
+            var supports_stable_ids = stream_interactor.get_module(EntityInfo.IDENTITY).has_feature_cached(conversation.account, conversation.counterpart, Xep.Muc.FEATURE_STABLE_ID);
+            if(!supports_stable_ids) {
                 UniqueStableStanzaIDs.set_origin_id(new_message, message.stanza_id);
             }
         }

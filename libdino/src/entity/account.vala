@@ -6,13 +6,14 @@ namespace Dino.Entities {
 public class Account : Object {
 
     public int id { get; set; }
-    public string localpart { get { return full_jid.localpart; } }
-    public string domainpart { get { return full_jid.domainpart; } }
+    public string localpart { get { return bare_jid.localpart; } }
+    public string domainpart { get { return bare_jid.domainpart; } }
     public string resourcepart {
         get { return full_jid.resourcepart; }
         private set { full_jid = full_jid.with_resource(value); }
     }
     public Jid bare_jid { owned get { return full_jid.bare_jid; } }
+    [Version (deprecated = true)]
     public Jid full_jid { get; private set; }
     public string? password { get; set; }
     public string display_name {
@@ -21,6 +22,7 @@ public class Account : Object {
     public string? alias { get; set; }
     public bool enabled { get; set; default = false; }
     public string? roster_version { get; set; }
+    public string? user_agent_id { get; set; }
 
     private Database? db;
 
@@ -32,6 +34,7 @@ public class Account : Object {
             error("Auto-generated resource was invalid (%s)", e.message);
         }
         this.password = password;
+        this.user_agent_id = random_uuid();
     }
 
     public Account.from_row(Database db, Qlite.Row row) throws InvalidJidError {
@@ -42,8 +45,12 @@ public class Account : Object {
         alias = row[db.account.alias];
         enabled = row[db.account.enabled];
         roster_version = row[db.account.roster_version];
+        user_agent_id = row[db.account.user_agent_id];
 
         notify.connect(on_update);
+
+        // Add user agent id if missing
+        if (user_agent_id == null) user_agent_id = random_uuid();
     }
 
     public void persist(Database db) {
@@ -104,6 +111,8 @@ public class Account : Object {
                 update.set(db.account.enabled, enabled); break;
             case "roster-version":
                 update.set(db.account.roster_version, roster_version); break;
+            case "user-agent-id":
+                update.set(db.account.user_agent_id, user_agent_id); break;
         }
         update.perform();
     }

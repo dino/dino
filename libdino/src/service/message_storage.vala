@@ -1,8 +1,8 @@
 using Xmpp;
 using Gee;
-using Qlite;
 
 using Dino.Entities;
+using Dino.Qlite;
 
 namespace Dino {
 
@@ -35,29 +35,6 @@ public class MessageStorage : StreamInteractionModule, Object {
         cache_message(message, conversation);
     }
 
-    public Gee.List<Message> get_messages(Conversation conversation, int count = 50) {
-        var query = db.message.select()
-                .with(db.message.account_id, "=", conversation.account.id)
-                .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
-                .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
-                .order_by(db.message.time, "DESC")
-                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
-                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
-                .outer_join_with(db.reply, db.reply.message_id, db.message.id)
-                .limit(count);
-
-        Gee.List<Message> ret = new LinkedList<Message>(Message.equals_func);
-        foreach (Row row in query) {
-            Message? message = messages_by_db_id[row[db.message.id]];
-            if (message == null) {
-                message = create_message_from_row(row, conversation);
-            }
-            ret.insert(0, message);
-        }
-
-        return ret;
-    }
-
     public Message? get_last_message(Conversation conversation) {
         Gee.List<Message> messages = get_messages(conversation, 1);
 
@@ -68,8 +45,72 @@ public class MessageStorage : StreamInteractionModule, Object {
         return null;
     }
 
+    public Message? get_last_message_by_sent_resource(Conversation conversation, string resource) {
+        RowOption row = db.message.select({db.message.id})
+                .with(db.message.account_id, "=", conversation.account.id)
+                .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
+                .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
+                .with(db.message.our_resource, "=", resource)
+                .with(db.message.direction, "=", Message.DIRECTION_SENT)
+                .order_by(db.message.time, "DESC")
+                .single().row();
+        return get_message_by_id_row_opt(row, conversation);
+    }
+
+    public Gee.List<Message> get_messages(Conversation conversation, int count = 50, Message.Type? type = null, DateTime? before = null, DateTime? after = null, int id = 0) {
+        QueryBuilder select = db.message.select();
+
+        if (before != null) {
+            if (id > 0) {
+                select.where(@"time < ? OR (time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
+            } else {
+                select.with(db.message.id, "<", id);
+            }
+        }
+        if (after != null) {
+            if (id > 0) {
+                select.where(@"time > ? OR (time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
+            } else {
+                select.with(db.message.time, ">", (long) after.to_unix());
+            }
+            if (id > 0) {
+                select.with(db.message.id, ">", id);
+            }
+        } else {
+            select.order_by(db.message.time, "DESC");
+        }
+
+        select.with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
+                .with(db.message.account_id, "=", conversation.account.id)
+                .limit(count);
+        if (conversation.counterpart.resourcepart != null) {
+            select.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
+        }
+        if (type != null) {
+            select.with(db.message.type_, "=", (int) type);
+        }
+
+        select.outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id);
+        select.outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id);
+        select.outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id);
+        select.outer_join_with(db.reply, db.reply.message_id, db.message.id);
+
+        LinkedList<Message> ret = new LinkedList<Message>();
+        foreach (Row row in select) {
+            try {
+                Message? message = messages_by_db_id[row[db.message.id]];
+                if (message == null) {
+                    message = create_message_from_row(row, conversation);
+                }
+            } catch (InvalidJidError e) {
+                warning("Ignoring message with invalid Jid: %s", e.message);
+            }
+        }
+        return ret;
+    }
+
     public Gee.List<MessageItem> get_messages_before_message(Conversation? conversation, DateTime before, int id, int count = 20) {
-        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, before, null, id);
+        Gee.List<Message> db_messages = get_messages(conversation, count, Util.get_message_type_for_conversation(conversation), before, null, id);
         Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
         foreach (Message message in db_messages) {
             ret.add(new MessageItem(message, conversation, -1));
@@ -78,12 +119,17 @@ public class MessageStorage : StreamInteractionModule, Object {
     }
 
     public Gee.List<MessageItem> get_messages_after_message(Conversation? conversation, DateTime after, int id, int count = 20) {
-        Gee.List<Message> db_messages = db.get_messages(conversation.counterpart, conversation.account, Util.get_message_type_for_conversation(conversation), count, null, after, id);
+        Gee.List<Message> db_messages = get_messages(conversation, count, Util.get_message_type_for_conversation(conversation), null, after, id);
         Gee.List<MessageItem> ret = new ArrayList<MessageItem>();
         foreach (Message message in db_messages) {
             ret.add(new MessageItem(message, conversation, -1));
         }
         return ret;
+    }
+
+    private Message? get_message_by_id_row_opt(RowOption row_option, Conversation conversation) {
+        if (!row_option.is_present()) return null;
+        return get_message_by_id(row_option[db.message.id], conversation);
     }
 
     public Message? get_message_by_id(int id, Conversation conversation) {
@@ -93,9 +139,11 @@ public class MessageStorage : StreamInteractionModule, Object {
         }
 
         RowOption row_option = db.message.select().with(db.message.id, "=", id)
+                .outer_join_with(db.real_jid, db.real_jid.message_id, db.message.id)
                 .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
                 .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
                 .outer_join_with(db.reply, db.reply.message_id, db.message.id)
+                .single()
                 .row();
 
         return create_message_from_row_opt(row_option, conversation);
@@ -103,9 +151,9 @@ public class MessageStorage : StreamInteractionModule, Object {
 
     public Message? get_message_by_referencing_id(string id, Conversation conversation) {
         if (conversation.type_ == Conversation.Type.CHAT) {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(id, conversation);
+            return get_message_by_stanza_id(id, conversation);
         } else {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(id, conversation);
+            return get_message_by_server_id(id, conversation);
         }
     }
 
@@ -117,15 +165,12 @@ public class MessageStorage : StreamInteractionModule, Object {
             }
         }
 
-        var query = db.message.select()
+        var query = db.message.select({db.message.id})
                 .with(db.message.account_id, "=", conversation.account.id)
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.stanza_id, "=", stanza_id)
-                .order_by(db.message.time, "DESC")
-                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
-                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
-                .outer_join_with(db.reply, db.reply.message_id, db.message.id);
+                .order_by(db.message.time, "DESC");
 
         if (conversation.counterpart.resourcepart != null) {
             query.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
@@ -133,7 +178,7 @@ public class MessageStorage : StreamInteractionModule, Object {
 
         RowOption row_option = query.single().row();
 
-        return create_message_from_row_opt(row_option, conversation);
+        return get_message_by_id_row_opt(row_option, conversation);
     }
 
     public Message? get_message_by_server_id(string server_id, Conversation conversation) {
@@ -144,25 +189,20 @@ public class MessageStorage : StreamInteractionModule, Object {
             }
         }
 
-        var query = db.message.select()
+        var query = db.message.select({db.message.id})
                 .with(db.message.account_id, "=", conversation.account.id)
                 .with(db.message.counterpart_id, "=", db.get_jid_id(conversation.counterpart))
                 .with(db.message.type_, "=", (int) Util.get_message_type_for_conversation(conversation))
                 .with(db.message.server_id, "=", server_id)
-                .order_by(db.message.time, "DESC")
-                .outer_join_with(db.message_occupant_id, db.message_occupant_id.message_id, db.message.id)
-                .outer_join_with(db.message_correction, db.message_correction.message_id, db.message.id)
-                .outer_join_with(db.reply, db.reply.message_id, db.message.id);
+                .order_by(db.message.time, "DESC");
 
-        if (conversation.counterpart.resourcepart == null) {
-            query.with_null(db.message.counterpart_resource);
-        } else {
+        if (conversation.counterpart.resourcepart != null) {
             query.with(db.message.counterpart_resource, "=", conversation.counterpart.resourcepart);
         }
 
         RowOption row_option = query.single().row();
 
-        return create_message_from_row_opt(row_option, conversation);
+        return get_message_by_id_row_opt(row_option, conversation);
     }
 
     private Message? create_message_from_row_opt(RowOption row_option, Conversation conversation) {

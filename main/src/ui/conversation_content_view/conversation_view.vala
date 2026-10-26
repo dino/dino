@@ -9,6 +9,8 @@ namespace Dino.Ui.ConversationSummary {
 
 [GtkTemplate (ui = "/im/dino/Dino/conversation_content_view/view.ui")]
 public class ConversationView : Widget, Plugins.ConversationItemCollection, Plugins.NotificationCollection {
+    private const int AROUND_MESSAGE_WINDOW = 40;
+    private const int EXPAND_MESSAGE_WINDOW = 20;
     private const int MESSAGE_MENU_BOX_OFFSET = -20;
 
     public Conversation? conversation { get; private set; }
@@ -32,14 +34,24 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private ContentProvider content_populator;
     private SubscriptionNotitication subscription_notification;
 
+    private bool scroll_active = false;
+    private Plugins.MetaConversationItem scroll_target_item;
+    private bool should_scroll_after_item = false;
+    private bool should_scroll_with_animation = false;
+    private bool should_highlight_after_scroll = false;
+    private bool programmatic_scrolling = false;
+
+    private uint mark_lowest_message_read_timeout = 0;
+
     private double? was_value;
     private double? was_upper;
     private double? was_page_size;
 
     private Mutex reloading_mutex = Mutex();
     private bool firstLoad = true;
-    private bool at_current_content = true;
-    private bool reload_messages = true;
+    public bool at_current_content {
+        get; private set; default = true;
+    }
     Widget currently_highlighted = null;
     ContentMetaItem? current_meta_item = null;
     double last_y = -1;
@@ -271,7 +283,7 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         }
     }
 
-    public void initialize_for_conversation(Conversation? conversation) {
+    public void initialize_for_conversation(Conversation? conversation, bool go_to_end = false) {
         // Workaround for rendering issues
         if (firstLoad) {
             main.visible = false;
@@ -281,65 +293,147 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
             });
             firstLoad = false;
         }
-        if (conversation == this.conversation && at_current_content) {
-            // Just make sure we are scrolled down
-            if (scrolled.vadjustment.value != scrolled.vadjustment.upper) {
-                scroll_animation(scrolled.vadjustment.upper).play();
+        if (conversation == this.conversation) {
+            if (go_to_end) {
+                if (at_current_content) {
+                    ensure_scroll_to_end(true);
+                    return;
+                }
+            } else {
+                // Just make sure we are scrolled to unread line
+                Plugins.MetaConversationItem scroll_target_item = content_items.first_match((it) => it.content_item.id == conversation.read_up_to_item);
+                if (scroll_target_item != null) {
+                    ensure_scroll_to_item(scroll_target_item, true, true, false);
+                    return;
+                }
             }
-            return;
         }
-        clear();
-        initialize_for_conversation_(conversation);
-        display_latest();
-        at_current_content = true;
-        // Scroll to end
-        scrolled.vadjustment.value = scrolled.vadjustment.upper;
-    }
+        start_load_new_conversation();
+        Idle.add(() => {
+            initialize_for_conversation_(conversation);
+            ContentItem? content_item = null;
+            if (!go_to_end && conversation.read_up_to_item > 0) {
+                content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+            }
+            if (content_item != null) {
+                ContentMetaItem meta_item = populate_messages_for(content_item);
+                ensure_scroll_to_item(meta_item, true, false, false);
+            } else {
+                display_latest();
+                at_current_content = true;
+                // Scroll to end
+                ensure_scroll_to_end(false);
+            }
+            Idle.add(() => {
+		finish_load_new_conversation();
+		return Source.REMOVE;
+	    });
 
-    private void scroll_and_highlight_item(Plugins.MetaConversationItem target, uint duration = 500) {
-        Widget widget = null;
-        int h = 0;
-        foreach (Plugins.MetaConversationItem item in meta_items) {
-            widget = widgets[item];
-            if (target == item) {
-                break;
-            }
-            h += widget.get_allocated_height();
-        }
-        if (widget != widgets[target]) {
-            warning("Target item widget not reached");
-            return;
-        }
-        double target_height = h - scrolled.vadjustment.page_size * 1/3;
-        Adw.Animation animation = scroll_animation(target_height);
-        animation.done.connect(() => {
-            widget.remove_css_class("highlight-once");
-            widget.add_css_class("highlight-once");
-            Timeout.add(5000, () => {
-                widget.remove_css_class("highlight-once");
-                return false;
-            });
+	    return Source.REMOVE;
         });
-        animation.play();
     }
 
-    private Adw.Animation scroll_animation(double target) {
-        return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, 500,
+    private void start_load_new_conversation() {
+        if (!reloading_mutex.trylock()) {
+            reloading_mutex.unlock();
+            reloading_mutex.lock();
+        }
+        scrolled.vadjustment.freeze_notify();
+        main.opacity = 0;
+        clear();
+    }
+
+    private void finish_load_new_conversation() {
+        programmatic_scrolling = true;
+        scrolled.vadjustment.thaw_notify();
+        programmatic_scrolling = false;
+        main.opacity = 1;
+        reloading_mutex.trylock();
+        reloading_mutex.unlock();
+        start_mark_visible_messages_read();
+    }
+
+    private void ensure_scroll_to_item(Plugins.MetaConversationItem target, bool after, bool animate, bool highlight) {
+        scroll_active = true;
+        scroll_target_item = target;
+        should_scroll_after_item = after;
+        should_highlight_after_scroll = highlight;
+        should_scroll_with_animation = animate;
+        apply_scroll();
+    }
+
+    private void ensure_scroll_to_end(bool animate) {
+        scroll_active = true;
+        scroll_target_item = null;
+        should_scroll_after_item = true;
+        should_highlight_after_scroll = false;
+        should_scroll_with_animation = animate;
+        apply_scroll();
+    }
+
+    private void apply_scroll() {
+        if (!scroll_active) return;
+        double target_height = scrolled.vadjustment.value;
+        Widget? widget = null;
+        if (scroll_target_item != null) {
+            widget = widgets[scroll_target_item];
+            if (widget == null || !widget.get_realized() || !widget.get_mapped()) {
+                warning("No widget when trying to scroll, or widget not realized/mapped");
+                return;
+            }
+            float h = 0;
+            Graphene.Rect bounds;
+            bool got_bounds = widget.compute_bounds(main, out bounds);
+            if (!got_bounds) {
+                warning("No bounds when trying to scroll");
+                return;
+            }
+            h = bounds.origin.y;
+            if (should_scroll_after_item) h += bounds.size.height;
+            target_height = h - scrolled.vadjustment.page_size * 1 / 3;
+        } else {
+            target_height = scrolled.vadjustment.upper - scrolled.vadjustment.page_size;
+        }
+        programmatic_scrolling = true;
+        if (!should_scroll_with_animation) {
+            scrolled.vadjustment.value = target_height;
+            if (should_highlight_after_scroll && widget != null) {
+                highlight_once(widget);
+            }
+            programmatic_scrolling = false;
+        } else {
+            Adw.Animation animation = scroll_animation(target_height, 500);
+            if (should_highlight_after_scroll && widget != null) {
+                animation.done.connect(() => {
+                    highlight_once(widget);
+                });
+            }
+            animation.done.connect(() => {
+                programmatic_scrolling = false;
+                should_scroll_with_animation = false;
+            });
+            animation.play();
+        }
+    }
+
+    private void highlight_once(Widget widget) {
+        widget.remove_css_class("highlight-once");
+        widget.add_css_class("highlight-once");
+        Timeout.add(5000, () => {
+            widget.remove_css_class("highlight-once");
+            should_highlight_after_scroll = false;
+            return false;
+        });
+    }
+
+    private Adw.Animation scroll_animation(double target, uint duration = 500) {
+        return new Adw.TimedAnimation(scrolled, scrolled.vadjustment.value, target, duration,
                 new Adw.PropertyAnimationTarget(scrolled.vadjustment, "value")
         );
     }
 
-    public void initialize_around_message(Conversation conversation, ContentItem content_item) {
-        if (conversation == this.conversation) {
-            ContentMetaItem? matching_item = content_items.first_match(it => it.content_item.id == content_item.id);
-            if (matching_item != null) {
-                scroll_and_highlight_item(matching_item);
-                return;
-            }
-        }
-        clear();
-        initialize_for_conversation_(conversation);
-        Gee.List<ContentMetaItem> before_items = content_populator.populate_before(conversation, content_item, 40);
+    private ContentMetaItem populate_messages_for(ContentItem content_item) {
+        Gee.List<ContentMetaItem> before_items = content_populator.populate_before(conversation, content_item, AROUND_MESSAGE_WINDOW);
         foreach (ContentMetaItem item in before_items) {
             do_insert_item(item);
         }
@@ -348,20 +442,28 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         content_items.add(meta_item);
         meta_items.add(meta_item);
 
-        Gee.List<ContentMetaItem> after_items = content_populator.populate_after(conversation, content_item, 40);
+        Gee.List<ContentMetaItem> after_items = content_populator.populate_after(conversation, content_item, AROUND_MESSAGE_WINDOW);
         foreach (ContentMetaItem item in after_items) {
             do_insert_item(item);
         }
-        if (after_items.size == 40) {
-            at_current_content = false;
-        }
+        at_current_content = after_items.size < AROUND_MESSAGE_WINDOW;
+        return meta_item;
+    }
 
-        // Compute where to jump to for centered message, jump, highlight.
-        reload_messages = false;
-        Timeout.add(700, () => {
-            scroll_and_highlight_item(meta_item, 300);
-            reload_messages = true;
-            return false;
+    public void initialize_around_message(Conversation conversation, ContentItem content_item) {
+        if (conversation == this.conversation) {
+            ContentMetaItem? matching_item = content_items.first_match(it => it.content_item.id == content_item.id);
+            if (matching_item != null) {
+                ensure_scroll_to_item(matching_item, false, true, true);
+                return;
+            }
+        }
+        start_load_new_conversation();
+        Idle.add_once(() => {
+            initialize_for_conversation_(conversation);
+            ContentMetaItem meta_item = populate_messages_for(content_item);
+            ensure_scroll_to_item(meta_item, false, false, true);
+            Idle.add_once(finish_load_new_conversation);
         });
     }
 
@@ -388,21 +490,18 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         foreach (Plugins.ConversationItemPopulator populator in app.plugin_registry.conversation_addition_populators) {
             populator.init(conversation, this, Plugins.WidgetType.GTK4);
         }
+        foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
+            populator.init(conversation, this, Plugins.WidgetType.GTK4);
+        }
         content_populator.init(this, conversation, Plugins.WidgetType.GTK4);
         subscription_notification.init(conversation, this);
     }
 
     private void display_latest() {
-        Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, 40);
+        Gee.List<ContentMetaItem> items = content_populator.populate_latest(conversation, AROUND_MESSAGE_WINDOW);
         foreach (ContentMetaItem item in items) {
             do_insert_item(item);
         }
-
-        Application app = GLib.Application.get_default() as Application;
-        foreach (Plugins.NotificationPopulator populator in app.plugin_registry.notification_populators) {
-            populator.init(conversation, this, Plugins.WidgetType.GTK4);
-        }
-        Idle.add(() => { on_value_notify(); return false; });
     }
 
     public void insert_item(Plugins.MetaConversationItem item) {
@@ -624,16 +723,27 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void on_upper_notify() {
-        if (was_upper == null || scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
-            if (at_current_content) {
-                Idle.add(() => {
-                    // If we do this directly without Idle.add, scrolling down doesn't work properly
-                    scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
-                    return false;
-                });
+        if (scroll_active) {
+            // Still scrolling, ignore
+            Idle.add_once(apply_scroll);
+            return;
+        }
+        if (was_upper != null) {
+            if (scrolled.vadjustment.value >  was_upper - was_page_size - 1) { // scrolled down or content smaller than page size
+                if (at_current_content) {
+                    Idle.add(() => {
+                        // If we do this directly without Idle.add, scrolling down doesn't work properly
+                        programmatic_scrolling = true;
+                        scrolled.vadjustment.value = scrolled.vadjustment.upper - scrolled.vadjustment.page_size; // scroll down
+                        programmatic_scrolling = false;
+                        return false;
+                    });
+                }
+            } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
+                programmatic_scrolling = true;
+                scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
+                programmatic_scrolling = false;
             }
-        } else if (scrolled.vadjustment.value < scrolled.vadjustment.upper - scrolled.vadjustment.page_size - 1) {
-            scrolled.vadjustment.value = scrolled.vadjustment.upper - was_upper + scrolled.vadjustment.value; // stay at same content
         }
         was_upper = scrolled.vadjustment.upper;
         was_page_size = scrolled.vadjustment.page_size;
@@ -642,21 +752,82 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
         reloading_mutex.unlock();
     }
 
+    private void start_mark_visible_messages_read() {
+        if (mark_lowest_message_read_timeout == 0) {
+            mark_lowest_message_read_timeout = Timeout.add_once(1000, mark_visible_messages_read);
+        }
+    }
+
+    private void mark_visible_messages_read() {
+        double y;
+        scrolled.translate_coordinates(main, 0, scrolled.get_allocated_height(), null, out y);
+
+        // Get last item fully displayed
+        int h = 0;
+        ContentMetaItem? displayed_item = null;
+        foreach (Plugins.MetaConversationItem item in meta_items) {
+            Widget widget = widgets[item];
+            h += widget.get_allocated_height() + widget.margin_top + widget.margin_bottom;
+            if (h >= y) {
+                break;
+            }
+            if (item is ContentMetaItem) {
+                displayed_item = (ContentMetaItem) item;
+            }
+        }
+        if (displayed_item != null && displayed_item.content_item.id != conversation.read_up_to_item) {
+            mark_read.begin(displayed_item, (_, res) => {
+                mark_read.end(res);
+            });
+        }
+        mark_lowest_message_read_timeout = 0;
+    }
+
+    private async void mark_read(ContentMetaItem displayed_item) {
+        if (displayed_item.content_item is MessageItem) {
+            MessageItem message_item = (MessageItem) displayed_item.content_item;
+            yield stream_interactor.get_module(ChatInteraction.IDENTITY).send_and_mark_message_displayed(message_item.conversation, message_item.message);
+        } else if (displayed_item.content_item is FileItem) {
+            FileItem file_item = (FileItem) displayed_item.content_item;
+            Message? message = stream_interactor.get_module(FileManager.IDENTITY).get_message_for_file_transfer(file_item.file_transfer, conversation);
+            if (message != null) {
+                yield stream_interactor.get_module(ChatInteraction.IDENTITY).send_and_mark_message_displayed(file_item.conversation, message);
+            } else {
+                stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).mark_displayed_up_to_content_item(file_item.conversation, file_item);
+            }
+        } else {
+            stream_interactor.get_module(CounterpartInteractionManager.IDENTITY).mark_displayed_up_to_content_item(conversation, displayed_item.content_item);
+        }
+    }
+
     private void on_value_notify() {
+        if (!programmatic_scrolling) {
+            scroll_active = false;
+            start_mark_visible_messages_read();
+        }
         if (scrolled.vadjustment.value < 400) {
             load_earlier_messages();
-        } else if (scrolled.vadjustment.upper - (scrolled.vadjustment.value + scrolled.vadjustment.page_size) < 400) {
+        } else if (scrolled.vadjustment.upper - (scrolled.vadjustment.value + scrolled.vadjustment.page_size) < 400 && !at_current_content) {
             load_later_messages();
         }
+    }
+
+    private void stop_scroll_fling() {
+        Idle.add_once(() => scrolled.vadjustment.value = scrolled.vadjustment.value);
     }
 
     private void load_earlier_messages() {
         was_value = scrolled.vadjustment.value;
         if (!reloading_mutex.trylock()) return;
         if (content_items.size > 0) {
-            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, 20);
-            foreach (ContentMetaItem item in items) {
-                do_insert_item(item);
+            Gee.List<ContentMetaItem> items = content_populator.populate_before(conversation, ((ContentMetaItem) content_items.first()).content_item, EXPAND_MESSAGE_WINDOW);
+            if (items.is_empty) {
+                reloading_mutex.unlock();
+            } else {
+                foreach (ContentMetaItem item in items) {
+                    do_insert_item(item);
+                }
+                stop_scroll_fling();
             }
         } else {
             reloading_mutex.unlock();
@@ -666,12 +837,15 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     private void load_later_messages() {
         if (!reloading_mutex.trylock()) return;
         if (content_items.size > 0 && !at_current_content) {
-            Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, ((ContentMetaItem) content_items.last()).content_item, 20);
-            if (items.size == 0) {
-                at_current_content = true;
-            }
-            foreach (ContentMetaItem item in items) {
-                do_insert_item(item);
+            Gee.List<ContentMetaItem> items = content_populator.populate_after(conversation, ((ContentMetaItem) content_items.last()).content_item, EXPAND_MESSAGE_WINDOW);
+            at_current_content = items.size < EXPAND_MESSAGE_WINDOW;
+            if (items.is_empty) {
+                reloading_mutex.unlock();
+            } else {
+                foreach (ContentMetaItem item in items) {
+                    do_insert_item(item);
+                }
+                stop_scroll_fling();
             }
         } else {
             reloading_mutex.unlock();
@@ -690,6 +864,10 @@ public class ConversationView : Widget, Plugins.ConversationItemCollection, Plug
     }
 
     private void clear() {
+        if (mark_lowest_message_read_timeout != 0) {
+            Source.remove(mark_lowest_message_read_timeout);
+            mark_lowest_message_read_timeout = 0;
+        }
         was_upper = null;
         was_page_size = null;
         foreach (var item in content_items) {

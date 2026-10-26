@@ -22,7 +22,7 @@ public class ConversationSelector : Widget {
         list_box.add_css_class("navigation-sidebar");
         this.layout_manager = new BinLayout();
 
-        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(add_conversation);
+        stream_interactor.get_module(ConversationManager.IDENTITY).conversation_activated.connect(on_conversation_activated);
         stream_interactor.get_module(ConversationManager.IDENTITY).conversation_deactivated.connect(remove_conversation);
         stream_interactor.get_module(ContentItemStore.IDENTITY).new_item.connect(on_content_item_received);
         Timeout.add_seconds(60, () => {
@@ -33,6 +33,7 @@ public class ConversationSelector : Widget {
         foreach (Conversation conversation in stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations()) {
             add_conversation(conversation);
         }
+        list_box.invalidate_sort();
         return this;
     }
 
@@ -62,6 +63,7 @@ public class ConversationSelector : Widget {
     public void on_conversation_selected(Conversation conversation) {
         if (!rows.has_key(conversation)) {
             add_conversation(conversation);
+            list_box.invalidate_sort();
         }
         list_box.select_row(rows[conversation]);
     }
@@ -70,6 +72,11 @@ public class ConversationSelector : Widget {
         if (rows.has_key(conversation)) {
             list_box.invalidate_sort();
         }
+    }
+
+    private void on_conversation_activated(Conversation conversation) {
+        add_conversation(conversation);
+        list_box.invalidate_sort();
     }
 
     private void add_conversation(Conversation conversation) {
@@ -101,7 +108,6 @@ public class ConversationSelector : Widget {
             });
             row.add_controller(drop_motion_controller);
         }
-        list_box.invalidate_sort();
     }
 
     private void select_fallback_conversation(Conversation conversation) {

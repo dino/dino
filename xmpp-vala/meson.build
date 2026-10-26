@@ -136,19 +136,17 @@ sources = files(
     'src/module/xep/0461_replies.vala',
     'src/module/xep/0463_muc_affiliations_versioning.vala',
     'src/module/xep/0482_call_invites.vala',
+    'src/module/xep/0490_message_displayed_synchronization.vala',
     'src/file_content_type.vala',
     'src/util.vala',
     'src/weak_map.vala',
 )
-c_args = [
+c_args = vala_c_args + [
     '-DG_LOG_DOMAIN="xmpp-vala"',
 ]
 vala_args = [
     '--vapidir', meson.current_source_dir() / 'vapi',
 ]
-if meson.get_compiler('vala').version().version_compare('=0.56.11')
-    vala_args += ['-D', 'VALA_0_56_11']
-endif
 
 lib_xmpp_vala = library('xmpp-vala', sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies, version: '0.1', install: true, install_dir: [true, true, true], install_rpath: default_install_rpath)
 dep_xmpp_vala = declare_dependency(link_with: lib_xmpp_vala, include_directories: include_directories('.'))
@@ -163,6 +161,7 @@ test_sources = [
     'tests/stanza.vala',
     'tests/color.vala',
     'tests/util.vala',
+    'tests/weak_map.vala',
 ]
 exe_xmpp_vala_test = executable('xmpp-vala-test', test_sources, c_args: c_args, vala_args: vala_args, dependencies: dependencies + dep_xmpp_vala, install: false)
 test('Tests for xmpp-vala', exe_xmpp_vala_test)

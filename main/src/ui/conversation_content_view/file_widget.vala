@@ -57,18 +57,6 @@ public class FileWidget : SizeRequestBin {
     private FileDefaultWidgetController default_widget_controller;
     private Widget? content = null;
 
-    public signal void open_file();
-    public signal void save_file_as();
-    public signal void start_download();
-    public signal void cancel_download();
-
-    class construct {
-        install_action("file.open", null, (widget, action_name) => { ((FileWidget) widget).open_file(); });
-        install_action("file.save_as", null, (widget, action_name) => { ((FileWidget) widget).save_file_as(); });
-        install_action("file.download", null, (widget, action_name) => { ((FileWidget) widget).start_download(); });
-        install_action("file.cancel", null, (widget, action_name) => { ((FileWidget) widget).cancel_download(); });
-    }
-
     construct {
         margin_top = 4;
         size_request_mode = SizeRequestMode.HEIGHT_FOR_WIDTH;
@@ -79,11 +67,6 @@ public class FileWidget : SizeRequestBin {
         this.file_transfer = file_transfer;
 
         update_widget.begin();
-//        size_allocate.connect((allocation) => {
-//            if (allocation.height > parent.get_allocated_height()) {
-//                Idle.add(() => { parent.queue_resize(); return false; });
-//            }
-//        });
 
         file_transfer.bind_property("state", this, "file-transfer-state");
         file_transfer.bind_property("content-type", this, "file-transfer-content-type");
@@ -100,8 +83,8 @@ public class FileWidget : SizeRequestBin {
 
             FileImageWidget file_image_widget = null;
             try {
-                file_image_widget = new FileImageWidget();
-                yield file_image_widget.set_file_transfer(file_transfer);
+                file_image_widget = new FileImageWidget.from_file_transfer(file_transfer);
+                file_image_widget.add_css_class("file-image-widget");
 
                 // If the widget changed in the meanwhile, stop
                 if (content != content_bak) return;
@@ -152,50 +135,6 @@ public class FileWidgetController : Object {
         });
         this.file_transfer = file_transfer;
         this.stream_interactor = stream_interactor;
-
-        widget.open_file.connect(open_file);
-        widget.save_file_as.connect(save_file);
-        widget.start_download.connect(start_download);
-        widget.cancel_download.connect(cancel_download);
-    }
-
-    private void open_file() {
-        try{
-            AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
-        } catch (Error err) {
-            warning("Failed to open %s - %s", file_transfer.get_file().get_uri(), err.message);
-        }
-    }
-
-    private void save_file() {
-        var save_dialog = new FileChooserNative(_("Save as…"), widget.get_root() as Gtk.Window, FileChooserAction.SAVE, null, null);
-        save_dialog.set_modal(true);
-        save_dialog.set_current_name(file_transfer.file_name);
-
-        save_dialog.response.connect(() => {
-            File? target_file = save_dialog.get_file();
-            if (target_file == null) {
-                warning("No file returned from save dialog.");
-                return;
-            }
-            try {
-                file_transfer.get_file().copy(save_dialog.get_file(), GLib.FileCopyFlags.OVERWRITE, null);
-            } catch (Error err) {
-                warning("Failed copy file %s - %s", file_transfer.get_file().get_uri(), err.message);
-            }
-        });
-
-        save_dialog.show();
-    }
-
-    private void start_download() {
-        if (stream_interactor != null) {
-            stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
-        }
-    }
-
-    private void cancel_download() {
-        file_transfer.cancellable.cancel();
     }
 }
 
@@ -234,16 +173,16 @@ public class FileDefaultWidgetController : Object {
 
     private void update_file_info() {
         state = file_transfer.state;
-        widget.update_file_info(file_transfer.content_type, file_transfer.state, file_transfer.direction, file_transfer.size, file_transfer.transferred_bytes);
+        widget.update_file_info(file_transfer);
     }
 
     private void on_clicked() {
         switch (state) {
             case FileTransfer.State.COMPLETE:
-                widget.activate_action("file.open", null);
+                Dino.Application.get_default().activate_action("file_open_externally", new GLib.Variant.int32(file_transfer.id));
                 break;
             case FileTransfer.State.NOT_STARTED:
-                widget.activate_action("file.download", null);
+                Dino.Application.get_default().activate_action("file_start_download", new GLib.Variant.int32(file_transfer.id));
                 break;
             default:
                 // Clicking doesn't do anything in FAILED and IN_PROGRESS states

@@ -6,7 +6,7 @@ private const string NS_URI = "storage:bookmarks";
 public class Module : BookmarksProvider, XmppStreamModule {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0048_bookmarks_module");
 
-    public async Set<Conference>? get_conferences(XmppStream stream) {
+    public async Set<Conference>? get_conferences(XmppStream stream) throws IOError {
         StanzaNode get_node = new StanzaNode.build("storage", NS_URI).add_self_xmlns();
         StanzaNode? result_node = yield stream.get_module(PrivateXmlStorage.Module.IDENTITY).retrieve(stream, get_node);
         if (result_node == null) return null;
@@ -20,7 +20,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         return ret;
     }
 
-    private async void set_conferences(XmppStream stream, Set<Conference> conferences) {
+    private async void set_conferences(XmppStream stream, Set<Conference> conferences) throws IOError {
         StanzaNode storage_node = (new StanzaNode.build("storage", NS_URI)).add_self_xmlns();
         foreach (Conference conference in conferences) {
             Bookmarks1Conference? bookmarks1conference = conference as Bookmarks1Conference;
@@ -45,13 +45,13 @@ public class Module : BookmarksProvider, XmppStreamModule {
         stream.get_module(Module.IDENTITY).received_conferences(stream, conferences);
     }
 
-    public async void add_conference(XmppStream stream, Conference conference) {
+    public async void add_conference(XmppStream stream, Conference conference) throws IOError {
         Set<Conference>? conferences = yield get_conferences(stream);
         conferences.add(conference);
         yield set_conferences(stream, conferences);
     }
 
-    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) {
+    public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) throws IOError {
         Set<Conference>? conferences = yield get_conferences(stream);
         foreach (Conference conference in conferences) {
             if (conference.jid.equals(muc_jid)) {
@@ -64,7 +64,7 @@ public class Module : BookmarksProvider, XmppStreamModule {
         yield set_conferences(stream, conferences);
     }
 
-    public async void remove_conference(XmppStream stream, Conference conference_remove) {
+    public async void remove_conference(XmppStream stream, Conference conference_remove) throws IOError {
         Set<Conference>? conferences = yield get_conferences(stream);
         conferences.remove(conference_remove);
         yield set_conferences(stream, conferences);

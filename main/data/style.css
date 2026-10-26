@@ -96,6 +96,11 @@ window.dino-main .dino-conversation .message-box.edit-mode:hover {
     background: alpha(@theme_selected_bg_color, 0.12);
 }
 
+window.dino-main .dino-conversation .message-box.edit-mode frame {
+    border-radius: 3px;
+    padding: 0 7px;
+}
+
 window.dino-main .dino-conversation .message-box.error {
     background: alpha(@error_color, 0.1);
 }
@@ -183,6 +188,11 @@ window.dino-main .file-image-widget .file-box-outer button:hover {
     border-radius: 100%;
 }
 
+/* Image file group */
+.dino-main .image-group {
+    border-radius: 8px;
+}
+
 /* Call widget */
 
 window.dino-main .call-box-outer.incoming {
@@ -231,6 +241,20 @@ window.dino-main .dino-sidebar frame.auto-complete {
 
 window.dino-main .dino-sidebar frame.auto-complete list > row {
     transition: none;
+}
+
+/* Sidebar tooltip */
+
+image.dino-status-away {
+    color: #ff7800;
+}
+
+image.dino-status-xa, image.dino-status-dnd {
+    color: #e01b24;
+}
+
+image.dino-status-online, image.dino-status-chat {
+    color: #33d17a;
 }
 
 /* Time offset warning */

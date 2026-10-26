@@ -42,7 +42,7 @@ public class Module : Jingle.ContentType, XmppStreamModule {
         return yield stream.get_module(Jingle.Module.IDENTITY).is_available(stream, required_transport_type, required_components, full_jid);
     }
 
-    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size, string? precondition_name = null, Object? precondition_options = null) throws Jingle.Error {
+    public async void offer_file_stream(XmppStream stream, Jid receiver_full_jid, InputStream input_stream, string basename, int64 size, string? precondition_name = null, Object? precondition_options = null) throws Jingle.Error, Jingle.IqError {
         StanzaNode file_node;
         StanzaNode description = new StanzaNode.build("description", NS_URI)
             .add_self_xmlns()

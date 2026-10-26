@@ -21,11 +21,15 @@ class StanzaTest : Gee.TestCase {
                 .put_node(new StanzaNode.build("testbb", "ns3_uri")
                     .add_self_xmlns());
 
-        var xml1 = node1.to_xml();
-        var node2 = yield new StanzaReader.for_string(xml1).read_node();
-        fail_if_not(node1.equals(node2));
-        fail_if_not_eq_str(node1.to_string(), node2.to_string());
-        cb();
+        try {
+            var xml1 = node1.to_xml();
+            var node2 = yield new StanzaReader.for_string(xml1).read_node();
+            fail_if_not(node1.equals(node2));
+            fail_if_not_eq_str(node1.to_string(), node2.to_string());
+            cb();
+        } catch (GLib.Error e) {
+            cb(e);
+        }
     }
 
     private async void test_typical_stream(Gee.TestFinishedCallback cb) {
@@ -55,12 +59,16 @@ class StanzaTest : Gee.TestCase {
                 .put_node(new StanzaNode.build("body")
                         .put_node(new StanzaNode.text(" I'll send a friar with speed, to Mantua, with my letters to thy lord.")));
 
-        var reader = new StanzaReader.for_string(stream);
-        fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
-        fail_if_not_eq_node(node_cmp, yield reader.read_node());
-        yield reader.read_node();
-        yield fail_if_not_end_of_stream(reader);
-        cb();
+        try {
+            var reader = new StanzaReader.for_string(stream);
+            fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
+            fail_if_not_eq_node(node_cmp, yield reader.read_node());
+            yield reader.read_node();
+            yield fail_if_not_end_of_stream(reader);
+            cb();
+        } catch (GLib.Error e) {
+            cb(e);
+        }
     }
 
     private async void fail_if_not_end_of_stream(StanzaReader reader) {
@@ -105,13 +113,17 @@ class StanzaTest : Gee.TestCase {
                         .put_node(new StanzaNode.build("required", "urn:ietf:params:xml:ns:xmpp-bind")));
         var node2_cmp = new StanzaNode.build("r", "http://jabber.org/protocol/ack");
 
-        var reader = new StanzaReader.for_string(stream);
-        fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
-        fail_if_not_eq_node(node_cmp, yield reader.read_node());
-        fail_if_not_eq_node(node2_cmp, yield reader.read_node());
-        yield reader.read_node();
-        yield fail_if_not_end_of_stream(reader);
-        cb();
+        try {
+            var reader = new StanzaReader.for_string(stream);
+            fail_if_not_eq_node(root_node_cmp, yield reader.read_root_node());
+            fail_if_not_eq_node(node_cmp, yield reader.read_node());
+            fail_if_not_eq_node(node2_cmp, yield reader.read_node());
+            yield reader.read_node();
+            yield fail_if_not_end_of_stream(reader);
+            cb();
+        } catch (GLib.Error e) {
+            cb(e);
+        }
     }
 
     private void test_encoded_val() {

@@ -18,6 +18,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.1-dev\n"
 
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:38
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:81
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:87
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:64
 #: main/src/windows/preferences_window/account_preferences_subpage.vala:131
 #: main/src/ui/conversation_view_controller.vala:200
@@ -1095,6 +1098,7 @@ msgstr ""
 msgid "Could not establish a secure connection"
 msgstr ""
 
+#: main/src/plugins/omemo/ui/manage_key_dialog.vala:166
 #: main/data/preferences_window/add_account_dialog.ui:165
 msgid "Back"
 msgstr "පෙර"

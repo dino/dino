@@ -9,6 +9,9 @@ namespace Dino.Ui {
 
     public class FileTransmissionProgress : Adw.Bin {
 
+        public signal void start_download();
+        public signal void cancel_transfer();
+
         public enum State {
             UNKNOWN_SOURCE,
             DOWNLOAD_NOT_STARTED,
@@ -81,9 +84,7 @@ namespace Dino.Ui {
             }
         }
 
-#if GTK_4_14
         private static extern Gsk.Path create_progress_arc(Gsk.Path circle, float percentage);
-#endif
 
         public override void snapshot(Gtk.Snapshot snapshot) {
             base.snapshot(snapshot);
@@ -94,7 +95,6 @@ namespace Dino.Ui {
                 float line_width = (float) LINE_WIDTH;
 
                 snapshot.translate({get_width() / 2, get_height() / 2});
-#if GTK_4_14
                 var fg_color = get_color();
                 get_style_context().lookup_color("accent_color", out fg_color);
                 var builder = new Gsk.PathBuilder();
@@ -104,16 +104,6 @@ namespace Dino.Ui {
                 stroke.set_line_cap(Gsk.LineCap.ROUND);
                 var arc_path = create_progress_arc(circle_path, (float) progress_animation.value);
                 snapshot.append_stroke(arc_path, stroke, fg_color);
-#else
-                var fg_color = get_style_context().get_color();
-                get_style_context().lookup_color("accent_color", out fg_color);
-                var context = snapshot.append_cairo({{-radius, -radius}, {radius*2, radius*2}});
-                context.set_line_cap(Cairo.LineCap.ROUND);
-                context.set_line_width(line_width);
-                context.set_source_rgba(fg_color.red, fg_color.green, fg_color.blue, fg_color.alpha);
-                context.arc(0, 0, radius - line_width / 2, -0.5 * Math.PI, (progress_animation.value - 0.25) * 2 * Math.PI);
-                context.stroke();
-#endif
             }
         }
 
@@ -124,11 +114,12 @@ namespace Dino.Ui {
                     break;
                 case DOWNLOAD_NOT_STARTED_FAILED_BEFORE:
                 case DOWNLOAD_NOT_STARTED:
+                    start_download();
                     this.activate_action("file.download", null);
                     break;
                 case DOWNLOADING:
                 case UPLOADING:
-                    this.activate_action("file.cancel", null);
+                    cancel_transfer();
                     break;
             }
         }

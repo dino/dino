@@ -86,9 +86,6 @@ namespace Dino.Ui.Util {
             };
             row_text.bind_property("text", view, "subtitle", BindingFlags.SYNC_CREATE, null_string_to_empty);
             view.add_css_class("property");
-
-            Util.force_css(view, "row.property > box.header > box.title > .title { font-weight: 400; font-size: 9pt; opacity: 0.55; }");
-            Util.force_css(view, "row.property > box.header > box.title > .subtitle { font-size: inherit; opacity: 1; }");
         }
 
         var toggle_view_model = preferences_row as ViewModel.PreferencesRow.Toggle;

@@ -225,7 +225,7 @@ public class ConnectionManager : Object {
 
         XmppStream stream = stream_result.stream;
 
-        debug("[%s] New connection: %p", account.full_jid.to_string(), stream);
+        debug("[%s] New connection: %p", account.bare_jid.to_string(), stream);
 
         connections[account].established = new DateTime.now_utc();
         stream.attached_modules.connect((stream) => {

@@ -56,7 +56,13 @@ public class StanzaAttribute : StanzaEntry {
         if (ns_uri == state.current_ns_uri || (ns_uri == XMLNS_URI && name == "xmlns")) {
             return printf(ATTRIBUTE_XML_NO_NS_FORMAT, true);
         } else {
-            return printf(ATTRIBUTE_XML_FORMAT, false, state.find_name((!)ns_uri));
+            string ns_name = "_";
+            try {
+                ns_name = state.find_name((!)ns_uri);
+            } catch (IOError e) {
+                warning("Error finding name: %s", e.message);
+            }
+            return printf(ATTRIBUTE_XML_FORMAT, false, ns_name);
         }
     }
 
@@ -65,7 +71,13 @@ public class StanzaAttribute : StanzaEntry {
         if (ns_uri == state.current_ns_uri || (ns_uri == XMLNS_URI && name == "xmlns")) {
             return printf(ATTRIBUTE_XML_ANSI_NO_NS_FORMAT, true);
         } else {
-            return printf(ATTRIBUTE_XML_ANSI_FORMAT, false, state.find_name((!)ns_uri));
+            string ns_name = "_";
+            try {
+                ns_name = state.find_name((!)ns_uri);
+            } catch (IOError e) {
+                warning("Error finding name: %s", e.message);
+            }
+            return printf(ATTRIBUTE_XML_ANSI_FORMAT, false, ns_name);
         }
     }
 }

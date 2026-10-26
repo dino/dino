@@ -2,10 +2,12 @@ using Dino.Entities;
 
 namespace Dino {
 
-public string get_version() { return VERSION; }
+public extern unowned string get_version();
+
 public string get_short_version() {
-    if (!VERSION.contains("~")) return VERSION;
-    return VERSION.split("~")[0] + "+";
+    string version = get_version();
+    if (!version.contains("~")) return version;
+    return version.split("~")[0] + "+";
 }
 
 public interface Application : GLib.Application {
@@ -46,6 +48,7 @@ public interface Application : GLib.Application {
         AvatarManager.start(stream_interactor, db);
         RosterManager.start(stream_interactor, db);
         FileManager.start(stream_interactor, db);
+        FileManager2.start(stream_interactor, db);
         CallStore.start(stream_interactor, db);
         ContentItemStore.start(stream_interactor, db);
         ChatInteraction.start(stream_interactor);
@@ -131,6 +134,36 @@ public interface Application : GLib.Application {
             stream_interactor.get_module(PresenceManager.IDENTITY).request_subscription(conversation.account, conversation.counterpart);
         });
         add_action(accept_subscription_action);
+
+        SimpleAction open_file_action = new SimpleAction("file_open_externally", VariantType.INT32);
+        open_file_action.activate.connect((variant) => {
+            int file_transfer_id = variant.get_int32();
+            FileTransfer file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(file_transfer_id, null);
+
+            try{
+                AppInfo.launch_default_for_uri(file_transfer.get_file().get_uri(), null);
+            } catch (Error err) {
+                warning("Failed to open %s - %s", file_transfer.get_file().get_uri(), err.message);
+            }
+        });
+        add_action(open_file_action);
+
+        SimpleAction download_file_action = new SimpleAction("file_start_download", VariantType.INT32);
+        download_file_action.activate.connect((variant) => {
+            int file_transfer_id = variant.get_int32();
+            FileTransfer file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(file_transfer_id, null);
+
+            stream_interactor.get_module(FileManager.IDENTITY).download_file.begin(file_transfer);
+        });
+        add_action(download_file_action);
+
+        SimpleAction cancel_file_action = new SimpleAction("file_cancel_download", VariantType.INT32);
+        cancel_file_action.activate.connect((variant) => {
+            int file_transfer_id = variant.get_int32();
+            FileTransfer file_transfer = stream_interactor.get_module(FileTransferStorage.IDENTITY).get_file_by_id(file_transfer_id, null);
+            file_transfer.cancellable.cancel();
+        });
+        add_action(cancel_file_action);
     }
 
     protected void add_connection(Account account) {

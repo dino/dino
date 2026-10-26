@@ -40,7 +40,12 @@ namespace Dino {
             call.direction = Call.DIRECTION_OUTGOING;
             call.account = conversation.account;
             call.counterpart = conversation.counterpart;
-            call.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account) ?? conversation.account.full_jid;
+            if (conversation.type_.is_muc_semantic()) {
+                call.ourpart = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            }
+            if (call.ourpart == null) {
+                call.ourpart = stream_interactor.get_account_full_jid(conversation.account);
+            }
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
             call.encryption = Encryption.UNKNOWN;
             call.state = Call.State.RINGING;
@@ -190,7 +195,7 @@ namespace Dino {
 
             // This is a direct call without prior JMI. Ask user.
             if (stream_interactor.get_module(MucManager.IDENTITY).might_be_groupchat(session.peer_full_jid.bare_jid, account)) return;
-            peer_state = create_received_call(account, session.peer_full_jid, account.full_jid, counterpart_wants_video);
+            peer_state = create_received_call(account, session.peer_full_jid, session.local_full_jid, counterpart_wants_video);
             peer_state.set_session(session);
             Conversation conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(peer_state.call.counterpart.bare_jid, account, Conversation.Type.CHAT);
             call_incoming(peer_state.call, peer_state.call_state, conversation, counterpart_wants_video, false);
@@ -208,7 +213,7 @@ namespace Dino {
                 call.counterpart = to;
             } else {
                 call.direction = Call.DIRECTION_INCOMING;
-                call.ourpart = account.full_jid;
+                call.ourpart = to;
                 call.state = Call.State.RINGING;
                 call.counterpart = from;
             }
@@ -280,7 +285,7 @@ namespace Dino {
 
             Call call = new Call();
             call.direction = Call.DIRECTION_INCOMING;
-            call.ourpart = account.full_jid;
+            call.ourpart = stream_interactor.get_account_full_jid(account);
             call.counterpart = inviter_jid;
             call.account = account;
             call.time = call.local_time = call.end_time = new DateTime.now_utc();
@@ -361,7 +366,7 @@ namespace Dino {
                 // Carboned message from our account
                 if (from.equals_bare(account.bare_jid)) {
                     // Ignore carbon from ourselves
-                    if (from.equals(account.full_jid)) return;
+                    if (from.equals(stream_interactor.get_account_full_jid(account))) return;
 
                     call.ourpart = from;
                     call.state = Call.State.OTHER_DEVICE;
@@ -371,7 +376,7 @@ namespace Dino {
 
                 // We proposed the call. This is a message from our peer.
                 if (call.direction == Call.DIRECTION_OUTGOING &&
-                        from.equals_bare(peer_state.jid) && to.equals(account.full_jid)) {
+                        from.equals_bare(peer_state.jid) && to.equals(stream_interactor.get_account_full_jid(account))) {
                     // We know the full jid of our peer now
                     call_states[call].rename_peer(jmi_request_peer[call].jid, from);
                     jmi_request_peer[call].call_resource.begin(from);
@@ -478,7 +483,7 @@ namespace Dino {
                     Call call = call_state.call;
 
                     // Ignore carbon from ourselves
-                    if (from_jid.equals(account.full_jid)) return;
+                    if (from_jid.equals(stream_interactor.get_account_full_jid(account))) return;
 
                     // We accepted the call from another device
                     call.ourpart = from_jid;
@@ -493,7 +498,7 @@ namespace Dino {
 
                 // We proposed the call. This is a message from our peer.
                 if (call.direction == Call.DIRECTION_OUTGOING &&
-                        to_jid.equals(account.full_jid)) {
+                        to_jid.equals(stream_interactor.get_account_full_jid(account))) {
                     // We know the full jid of our peer now
                     call_state.rename_peer(jmi_request_peer[call].jid, from_jid);
                     jmi_request_peer[call].call_resource.begin(from_jid);

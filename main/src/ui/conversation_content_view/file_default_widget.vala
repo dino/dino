@@ -51,13 +51,13 @@ public class FileDefaultWidget : Box {
         mime_label.label = content_type != null ? content_type.get_description() : null;
     }
 
-    public void update_file_info(Xmpp.FileContentType? content_type, FileTransfer.State state, bool direction, int64 size, int64 transferred_bytes) {
-        this.state = state;
+    public void update_file_info(FileTransfer file_transfer) {
+        this.state = file_transfer.state;
 
         spinner.stop(); // A hidden spinning spinner still uses CPU. Deactivate asap
 
-        content_type_image.icon_name = get_file_icon_name(content_type);
-        string? mime_description = content_type != null ? content_type.get_description() : null;
+        content_type_image.icon_name = get_file_icon_name(file_transfer.content_type);
+        string? mime_description = file_transfer.content_type != null ? file_transfer.content_type.get_description() : null;
 
         switch (state) {
             case FileTransfer.State.COMPLETE:
@@ -66,23 +66,31 @@ public class FileDefaultWidget : Box {
 
                 // Create a menu
                 Menu menu_model = new Menu();
-                menu_model.append(_("Open"), "file.open");
-                menu_model.append(_("Save as…"), "file.save_as");
+
+                MenuItem open_file_item = new MenuItem(_("Open"), "app.file_open_externally");
+                open_file_item.set_action_and_target_value("app.file_open_externally", new Variant.int32(file_transfer.id));
+
+                MenuItem save_as_item = new MenuItem(_("Save as…"), "app.file_save_as");
+                save_as_item.set_action_and_target_value("app.file_open_save_dialog", new Variant.int32(file_transfer.id));
+
+                menu_model.append_item(open_file_item);
+                menu_model.append_item(save_as_item);
+
                 Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
                 file_menu.popover = popover_menu;
                 popover_menu.closed.connect(on_pointer_left);
                 break;
             case FileTransfer.State.IN_PROGRESS:
-                if (direction == FileTransfer.DIRECTION_RECEIVED) {
-                    if (size > 0) {
-                        int64 progress = transferred_bytes * 100 / size;
-                        mime_label.label = _("Downloading %s… (%u%%)").printf(get_size_string(size), progress);
+                if (file_transfer.direction == FileTransfer.DIRECTION_RECEIVED) {
+                    if (file_transfer.size > 0) {
+                        int64 progress = file_transfer.transferred_bytes * 100 / file_transfer.size;
+                        mime_label.label = _("Downloading %s… (%u%%)").printf(get_size_string(file_transfer.size), progress);
                     } else {
-                        mime_label.label = _("Downloading %s…").printf(get_size_string(size));
+                        mime_label.label = _("Downloading %s…").printf(get_size_string(file_transfer.size));
                     }
                 } else {
-                    int64 progress = transferred_bytes * 100 / size;
-                    mime_label.label = _("Uploading %s… (%u%%)").printf(get_size_string(size), progress);
+                    int64 progress = file_transfer.transferred_bytes * 100 / file_transfer.size;
+                    mime_label.label = _("Uploading %s… (%u%%)").printf(get_size_string(file_transfer.size), progress);
                 }
                 spinner.start();
                 image_stack.set_visible_child_name("spinner");
@@ -96,9 +104,9 @@ public class FileDefaultWidget : Box {
                 break;
             case FileTransfer.State.NOT_STARTED:
                 if (mime_description != null) {
-                    mime_label.label =  _("%s offered: %s").printf(mime_description, get_size_string(size));
-                } else if (size != -1) {
-                    mime_label.label = _("File offered: %s").printf(get_size_string(size));
+                    mime_label.label =  _("%s offered: %s").printf(mime_description, get_size_string(file_transfer.size));
+                } else if (file_transfer.size != -1) {
+                    mime_label.label = _("File offered: %s").printf(get_size_string(file_transfer.size));
                 } else {
                     mime_label.label = _("File offered");
                 }

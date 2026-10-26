@@ -1,4 +1,4 @@
-namespace Hsluv {
+namespace Xmpp.Xep.ConsistentColor.Hsluv {
 
 private const double[] M0 = {  3.240969941904521, -1.537383177570093, -0.498610760293    };
 private const double[] M1 = { -0.96924363628087, 1.87596750150772, 0.041555057407175 };
@@ -7,10 +7,6 @@ private const double[] M2 = {  0.055630079696993, -0.20397695888897, 1.056971514
 private const double[] MInv0 = { 0.41239079926595, 0.35758433938387, 0.18048078840183  };
 private const double[] MInv1 = { 0.21263900587151, 0.71516867876775, 0.072192315360733 };
 private const double[] MInv2 = { 0.019330818715591, 0.11919477979462, 0.95053215224966  };
-
-private double RefX = 0.95045592705167;
-private double RefY = 1.0;
-private double RefZ = 1.089057750759878;
 
 private double RefU = 0.19783000664283;
 private double RefV = 0.46831999493879;
@@ -129,22 +125,19 @@ private double to_linear(double c) {
 }
 
 private int[] rgb_prepare(double[] tuple) {
-    for (int i = 0; i < tuple.length; ++i) {
-        tuple[i] = round(tuple[i], 3);
-    }
-
-    for (int i = 0; i < tuple.length; ++i) {
-        double ch = tuple[i];
-
-        if (ch < -0.0001 || ch > 1.0001) {
-            return null; //throw new Error("Illegal rgb value: " + ch);
-                }
-    }
-
     var results = new int[tuple.length];
 
     for (int i = 0; i < tuple.length; ++i) {
-        results[i] = (int) Math.round(tuple[i] * 255);
+        double ch = round(tuple[i], 3);
+        if (ch < -0.0001) {
+            warning("RGB value underflow: %f", tuple[i]);
+            results[i] = 0;
+        } else if (ch > 1.0001) {
+            warning("RGB value overflow: %f", tuple[i]);
+            results[i] = 255;
+        } else {
+            results[i] = (int) Math.round(ch * 255);
+        }
     }
 
     return results;
@@ -174,17 +167,17 @@ internal double[] rgb_to_xyz(double[] tuple) {
 
 private double y_to_l(double Y) {
     if (Y <= Epsilon) {
-        return (Y / RefY) * Kappa;
+        return Y * Kappa;
     } else {
-        return 116 * Math.pow(Y / RefY, 1.0 / 3.0) - 16;
+        return 116 * Math.pow(Y, 1.0 / 3.0) - 16;
     }
 }
 
 private double l_to_y(double L) {
     if (L <= 8) {
-        return RefY * L / Kappa;
+        return L / Kappa;
     } else {
-        return RefY * Math.pow((L + 16) / 116, 3);
+        return Math.pow((L + 16) / 116, 3);
     }
 }
 
@@ -340,9 +333,9 @@ internal string rgb_to_hex(double[] tuple) {
 
 internal double[] hex_to_tgb(string hex) {
     return new double[]    {
-        hex.substring(1, 2).to_long(null, 16) / 255.0,
-        hex.substring(3, 2).to_long(null, 16) / 255.0,
-        hex.substring(5, 2).to_long(null, 16) / 255.0
+        long.parse(hex.substring(1, 2), 16) / 255.0,
+        long.parse(hex.substring(3, 2), 16) / 255.0,
+        long.parse(hex.substring(5, 2), 16) / 255.0
     };
 }
 
@@ -356,37 +349,37 @@ internal double[] rgb_to_lch(double[] tuple) {
 
 // Rgb <--> Hsluv(p)
 
-internal double[] hsluv_to_rgb(double[] tuple) {
+public double[] hsluv_to_rgb(double[] tuple) {
     return lch_to_rgb(hsluv_to_lch(tuple));
 }
 
-internal double[] rgb_to_hsluv(double[] tuple) {
+public double[] rgb_to_hsluv(double[] tuple) {
     return lch_to_hsluv(rgb_to_lch(tuple));
 }
 
-internal double[] hpluv_to_rgb(double[] tuple) {
+public double[] hpluv_to_rgb(double[] tuple) {
     return lch_to_rgb(hpluv_to_lch(tuple));
 }
 
-internal double[] rgb_to_hpluv(double[] tuple) {
+public double[] rgb_to_hpluv(double[] tuple) {
     return lch_to_hpluv(rgb_to_lch(tuple));
 }
 
 // Hex
 
-internal string hsluv_to_hex(double[] tuple) {
+public string hsluv_to_hex(double[] tuple) {
     return rgb_to_hex(hsluv_to_rgb(tuple));
 }
 
-internal string hpluv_to_hex(double[] tuple) {
+public string hpluv_to_hex(double[] tuple) {
     return rgb_to_hex(hpluv_to_rgb(tuple));
 }
 
-internal double[] hex_to_hsluv(string s) {
+public double[] hex_to_hsluv(string s) {
     return rgb_to_hsluv(hex_to_tgb(s));
 }
 
-internal double[] hex_to_hpluv(string s) {
+public double[] hex_to_hpluv(string s) {
     return rgb_to_hpluv(hex_to_tgb(s));
 }
 

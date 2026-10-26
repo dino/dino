@@ -65,10 +65,6 @@ class Parameters : Jingle.TransportParameters, Object {
         return new Parameters(Jingle.Role.RESPONDER, peer_full_jid, sid, block_size);
     }
 
-    public string transport_ns_uri() {
-        return NS_URI;
-    }
-
     public void set_content(Jingle.Content content) {
 
     }

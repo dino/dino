@@ -1,13 +1,13 @@
 using Gee;
-using Qlite;
 using Xmpp;
 
 using Dino.Entities;
+using Dino.Qlite;
 
 namespace Dino {
 
 public class Database : Qlite.Database {
-    private const int VERSION = 32;
+    private const int VERSION = 35;
 
     public class AccountTable : Table {
         public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
@@ -19,10 +19,11 @@ public class Database : Qlite.Database {
         public Column<string> roster_version = new Column.Text("roster_version") { min_version=2 };
         // no longer used. all usages already removed. remove db column at some point.
         public Column<long> mam_earliest_synced = new Column.Long("mam_earliest_synced") { min_version=4 };
+        public Column<string> user_agent_id = new Column.Text("user_agent_id") { min_version=33 };
 
         internal AccountTable(Database db) {
             base(db, "account");
-            init({id, bare_jid, resourcepart, password, alias, enabled, roster_version, mam_earliest_synced});
+            init({id, bare_jid, resourcepart, password, alias, enabled, roster_version, mam_earliest_synced, user_agent_id});
         }
     }
 
@@ -48,6 +49,7 @@ public class Database : Qlite.Database {
             base(db, "entity");
             init({id, account_id, jid_id, resource, caps_hash, last_seen});
             unique({account_id, jid_id, resource}, "IGNORE");
+            index("entity_account_jid_resource_idx", {account_id, jid_id, resource});
         }
     }
 
@@ -224,6 +226,28 @@ public class Database : Qlite.Database {
         }
     }
 
+    public class FileTransferGroupTable : Table {
+        public Column<int> id = new Column.Integer("id") { primary_key = true, auto_increment = true };
+        public Column<int> message_id = new Column.Integer("message_id");
+
+        internal FileTransferGroupTable(Database db) {
+            base(db, "file_transfer_group");
+            init({id, message_id});
+            index("file_transfer_group_message_id_idx", {message_id});
+        }
+    }
+
+    public class FileTransferGroupFileTransferTable : Table {
+        public Column<int> file_transfer_group_id = new Column.Integer("file_transfer_group_id");
+        public Column<int> file_transfer_id = new Column.Integer("file_transfer_id");
+
+        internal FileTransferGroupFileTransferTable(Database db) {
+            base(db, "file_transfer_group_file_transfer");
+            init({file_transfer_group_id, file_transfer_id});
+            index("file_transfer_group_file_transfer_id_idx", {file_transfer_group_id});
+        }
+    }
+
     public class FileHashesTable : Table {
         public Column<int> id = new Column.Integer("id");
         public Column<string> algo = new Column.Text("algo") { not_null = true };
@@ -353,6 +377,7 @@ public class Database : Qlite.Database {
             init({entity, feature});
             unique({entity, feature}, "IGNORE");
             index("entity_feature_idx", {entity});
+            index("entity_feature_feature_idx", {entity, feature});
         }
     }
 
@@ -488,6 +513,8 @@ public class Database : Qlite.Database {
     public RealJidTable real_jid { get; private set; }
     public OccupantIdTable occupantid { get; private set; }
     public FileTransferTable file_transfer { get; private set; }
+    public FileTransferGroupTable file_transfer_group { get; private set; }
+    public FileTransferGroupFileTransferTable file_transfer_group_file_transfer { get; private set; }
     public FileHashesTable file_hashes { get; private set; }
     public FileThumbnailsTable file_thumbnails { get; private set; }
     public SourcesTable sfs_sources { get; private set; }
@@ -524,6 +551,8 @@ public class Database : Qlite.Database {
         occupantid = new OccupantIdTable(this);
         real_jid = new RealJidTable(this);
         file_transfer = new FileTransferTable(this);
+        file_transfer_group = new FileTransferGroupTable(this);
+        file_transfer_group_file_transfer = new FileTransferGroupFileTransferTable(this);
         file_hashes = new FileHashesTable(this);
         file_thumbnails = new FileThumbnailsTable(this);
         sfs_sources = new SourcesTable(this);
@@ -541,7 +570,7 @@ public class Database : Qlite.Database {
         settings = new SettingsTable(this);
         account_settings = new AccountSettingsTable(this);
         conversation_settings = new ConversationSettingsTable(this);
-        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, muc_affiliation, muc_affiliation_version, settings, account_settings, conversation_settings });
+        init({ account, jid, entity, content_item, message, message_occupant_id, body_meta, message_correction, reply, real_jid, occupantid, file_transfer, file_transfer_group, file_transfer_group_file_transfer, file_hashes, file_thumbnails, sfs_sources, call, call_counterpart, conversation, avatar, entity_identity, entity_feature, roster, mam_catchup, reaction, muc_affiliation, muc_affiliation_version, settings, account_settings, conversation_settings });
 
         try {
             exec("PRAGMA journal_mode = WAL");
@@ -738,65 +767,6 @@ public class Database : Qlite.Database {
             .value(content_item.foreign_id, foreign_id)
             .value(content_item.hide, hide)
             .perform();
-    }
-
-    public Gee.List<Message> get_messages(Jid jid, Account account, Message.Type? type, int count, DateTime? before, DateTime? after, int id) {
-        QueryBuilder select = message.select();
-
-        if (before != null) {
-            if (id > 0) {
-                select.where(@"time < ? OR (time = ? AND message.id < ?)", { before.to_unix().to_string(), before.to_unix().to_string(), id.to_string() });
-            } else {
-                select.with(message.id, "<", id);
-            }
-        }
-        if (after != null) {
-            if (id > 0) {
-                select.where(@"time > ? OR (time = ? AND message.id > ?)", { after.to_unix().to_string(), after.to_unix().to_string(), id.to_string() });
-            } else {
-                select.with(message.time, ">", (long) after.to_unix());
-            }
-            if (id > 0) {
-                select.with(message.id, ">", id);
-            }
-        } else {
-            select.order_by(message.time, "DESC");
-        }
-
-        select.with(message.counterpart_id, "=", get_jid_id(jid))
-                .with(message.account_id, "=", account.id)
-                .limit(count);
-        if (jid.resourcepart != null) {
-            select.with(message.counterpart_resource, "=", jid.resourcepart);
-        }
-        if (type != null) {
-            select.with(message.type_, "=", (int) type);
-        }
-
-        select.outer_join_with(real_jid, real_jid.message_id, message.id);
-        select.outer_join_with(message_correction, message_correction.message_id, message.id);
-
-        LinkedList<Message> ret = new LinkedList<Message>();
-        foreach (Row row in select) {
-            try {
-                ret.insert(0, new Message.from_row(this, row));
-            } catch (InvalidJidError e) {
-                warning("Ignoring message with invalid Jid: %s", e.message);
-            }
-        }
-        return ret;
-    }
-
-    public Message? get_message_by_id(int id) {
-        Row? row = message.row_with(message.id, id).inner;
-        if (row != null) {
-            try {
-                return new Message.from_row(this, row);
-            } catch (InvalidJidError e) {
-                warning("Ignoring message with invalid Jid: %s", e.message);
-            }
-        }
-        return null;
     }
 
     public ArrayList<Conversation> get_conversations(Account account) {

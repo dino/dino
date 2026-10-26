@@ -36,6 +36,5 @@ namespace Xmpp.Xep.Replies {
         } catch (InvalidJidError e) {
             return null;
         }
-        return null;
     }
 }

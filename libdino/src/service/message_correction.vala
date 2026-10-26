@@ -3,7 +3,7 @@ using Gee;
 using Xmpp;
 using Xmpp.Xep;
 using Dino.Entities;
-using Qlite;
+using Dino.Qlite;
 
 namespace Dino {
 
@@ -29,7 +29,6 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
     public MessageCorrection(StreamInteractor stream_interactor, Database db) {
         this.stream_interactor = stream_interactor;
         this.db = db;
-        stream_interactor.account_added.connect(on_account_added);
         stream_interactor.get_module(MessageProcessor.IDENTITY).received_pipeline.connect(this);
         stream_interactor.get_module(MessageProcessor.IDENTITY).build_message_stanza.connect(check_add_correction_node);
         stream_interactor.get_module(PresenceManager.IDENTITY).received_offline_presence.connect((jid, account) => {
@@ -64,16 +63,18 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
 
         Jid? own_jid = null;
         if (conversation.type_ == Conversation.Type.CHAT) {
-            own_jid = conversation.account.full_jid;
+            own_jid = stream_interactor.get_account_full_jid(conversation.account);
+            if (own_jid == null) return false;
+            Message other = stream_interactor.get_module(MessageStorage.IDENTITY).get_last_message_by_sent_resource(conversation, own_jid.resourcepart);
+            return other != null && other.id == message.id;
         } else if (conversation.type_ == Conversation.Type.GROUPCHAT) {
             own_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(conversation.counterpart, conversation.account);
+            if (own_jid == null) return false;
+            return last_messages.has_key(conversation) &&
+                    last_messages[conversation].has_key(own_jid) &&
+                    last_messages[conversation][own_jid].stanza_id == stanza_id;
         }
-
-        if (own_jid == null) return false;
-
-        return last_messages.has_key(conversation) &&
-                last_messages[conversation].has_key(own_jid) &&
-                last_messages[conversation][own_jid].stanza_id == stanza_id;
+        return false;
     }
 
     private void check_add_correction_node(Entities.Message message, Xmpp.MessageStanza message_stanza, Conversation conversation) {
@@ -243,23 +244,6 @@ public class MessageCorrection : StreamInteractionModule, MessageListener {
             return row[db.message.id];
         }
         return -1;
-    }
-
-    private void on_account_added(Account account) {
-        Gee.List<Conversation> conversations = stream_interactor.get_module(ConversationManager.IDENTITY).get_active_conversations(account);
-        foreach (Conversation conversation in conversations) {
-            if (conversation.type_ != Conversation.Type.CHAT) continue;
-
-            HashMap<Jid, Message> last_conversation_messages = new HashMap<Jid, Message>(Jid.hash_func, Jid.equals_func);
-            Gee.List<Message> messages = stream_interactor.get_module(MessageStorage.IDENTITY).get_messages(conversation);
-            for (int i = messages.size - 1; i > 0; i--) {
-                Message message = messages[i];
-                if (!last_conversation_messages.has_key(message.from) && message.edit_to == null) {
-                    last_conversation_messages[message.from] = message;
-                }
-            }
-            last_messages[conversation] = last_conversation_messages;
-        }
     }
 
     private void cache_unmatched_correction(ContentItem content_item, Conversation conversation) {

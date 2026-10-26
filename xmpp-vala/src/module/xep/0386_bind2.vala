@@ -6,9 +6,11 @@ namespace Xmpp.Xep.Bind2 {
     public class Sasl2Activation : ExtensibleSaslProfile.Sasl2InlineActivation {
         public HashMap<string, Bind2InlineActivation> inline_activation_providers = new HashMap<string, Bind2InlineActivation>();
 
+        public string tag { get; set; default = "dino"; }
+
         public override StanzaNode? get_activation_node(XmppStream stream, StanzaNode inline_node) {
-            var res = new StanzaNode.build("bind", Bind2.NS_URI).add_self_xmlns().put_node(
-                    new StanzaNode.build("tag", Bind2.NS_URI).put_node(new StanzaNode.text("dino")));
+            var res = new StanzaNode.build("bind", NS_URI).add_self_xmlns().put_node(
+                    new StanzaNode.build("tag", NS_URI).put_node(new StanzaNode.text(tag)));
 
             StanzaNode bind_inline_node = inline_node.get_subnode("bind", NS_URI).get_subnode("inline", NS_URI);
 
@@ -33,7 +35,7 @@ namespace Xmpp.Xep.Bind2 {
             stream.add_flag(bind_flag);
             stream.get_module(Bind.Module.IDENTITY).bound_to_resource(stream, bind_flag.my_jid);
 
-            StanzaNode? bound_node = success_node.get_subnode("bound", Bind2.NS_URI);
+            StanzaNode? bound_node = success_node.get_subnode("bound", NS_URI);
             if (bound_node != null) {
                 foreach (var inline_activation in inline_activation_providers.values) {
                     inline_activation.on_bound(stream, bound_node);

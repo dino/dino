@@ -17,7 +17,18 @@ void main(string[] args) {
         Gtk.init();
         Dino.Ui.Application app = new Dino.Ui.Application() { search_path_generator=search_path_generator };
         Plugins.Loader loader = new Plugins.Loader(app);
-        loader.load_all();
+        if (Environment.get_variable("DINO_PLUGINS_LOAD_ALL") == "1") {
+            loader.load_all();
+        }
+#if WITH_RTP
+        loader.load_type(typeof(Plugins.Rtp.Plugin));
+#endif
+#if WITH_OPENPGP
+        loader.load_type(typeof(Plugins.OpenPgp.Plugin));
+#endif
+#if WITH_OMEMO
+        loader.load_type(typeof(Plugins.Omemo.Plugin));
+#endif
 
         app.run(args);
         loader.shutdown();

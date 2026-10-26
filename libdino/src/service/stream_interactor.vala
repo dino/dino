@@ -27,6 +27,17 @@ public class StreamInteractor : Object {
         });
     }
 
+    public Jid get_account_full_jid(Account account) {
+        XmppStream stream = get_stream(account);
+        if (stream != null) {
+            Bind.Flag flag = stream.get_flag(Bind.Flag.IDENTITY);
+            if (flag != null) {
+                return flag.my_jid;
+            }
+        }
+        return account.full_jid;
+    }
+
     public void connect_account(Account account) {
         module_manager.initialize(account);
         account_added(account);
@@ -89,12 +100,7 @@ public class ModuleIdentity<T> : Object {
     }
 
     public T? cast(StreamInteractionModule module) {
-#if VALA_0_56_11
-        // We can't typecheck due to compiler bug
-        return (T) module;
-#else
         return module.get_type().is_a(typeof(T)) ? (T?) module : null;
-#endif
     }
 
     public bool matches(StreamInteractionModule module) {

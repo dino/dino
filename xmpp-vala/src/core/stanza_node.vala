@@ -18,54 +18,62 @@ public abstract class StanzaEntry {
     public string? encoded_val {
         owned get {
             if (val == null) return null;
-            return ENCODABLE_VALUE_CHARS.replace_eval(val, -1, 0, 0, (match_info, result_builder) => {
-                int start;
-                match_info.fetch_pos(0, out start, null);
-                unowned string src = match_info.get_string();
-                switch (src[start]) {
-                    case '&': result_builder.append("&amp;"); break;
-                    case '"': result_builder.append("&quot;"); break;
-                    case '\'': result_builder.append("&apos;"); break;
-                    case '<': result_builder.append("&lt;"); break;
-                    case '>': result_builder.append("&gt;"); break;
-                    default: error("Unreachable"); break;
-                }
-                return false;
-            });
+            try {
+                return ENCODABLE_VALUE_CHARS.replace_eval(val, -1, 0, 0, (match_info, result_builder) => {
+                    int start;
+                    match_info.fetch_pos(0, out start, null);
+                    unowned string src = match_info.get_string();
+                    switch (src[start]) {
+                        case '&': result_builder.append("&amp;"); break;
+                        case '"': result_builder.append("&quot;"); break;
+                        case '\'': result_builder.append("&apos;"); break;
+                        case '<': result_builder.append("&lt;"); break;
+                        case '>': result_builder.append("&gt;"); break;
+                        default: error("Unreachable");
+                    }
+                    return false;
+                });
+            } catch (RegexError e) {
+                error("Error encoding entities in string \"%s\": %s", val, e.message);
+            }
         }
         set {
             if (value == null) {
                 val = null;
                 return;
             }
-            val = DECODABLE_VALUE_SEQUENCES.replace_eval(value, -1, 0, 0, (match_info, result_builder) => {
-                int start, end;
-                match_info.fetch_pos(0, out start, out end);
-                unowned string src = match_info.get_string();
-                switch (src[start+1]) {
-                    case 'g': result_builder.append_c('>'); break;
-                    case 'l': result_builder.append_c('<'); break;
-                    case 'q': result_builder.append_c('"'); break;
-                    case 'a':
-                        switch (src[start+2]) {
-                            case 'p': result_builder.append_c('\''); break;
-                            case 'm': result_builder.append_c('&'); break;
-                            default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
-                        }
-                        break;
-                    case '#':
-                        unichar num = -1;
-                        if (src[start+2] == 'x') {
-                            src.substring(start+3, start-end-3).scanf("%x", &num);
-                        } else {
-                            num = int.parse(src.substring(start+2, start-end-2));
-                        }
-                        result_builder.append_unichar(num);
-                        break;
-                    default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
-                }
-                return false;
-            });
+            try {
+                val = DECODABLE_VALUE_SEQUENCES.replace_eval(value, -1, 0, 0, (match_info, result_builder) => {
+                    int start, end;
+                    match_info.fetch_pos(0, out start, out end);
+                    unowned string src = match_info.get_string();
+                    switch (src[start + 1]) {
+                        case 'g': result_builder.append_c('>'); break;
+                        case 'l': result_builder.append_c('<'); break;
+                        case 'q': result_builder.append_c('"'); break;
+                        case 'a':
+                            switch (src[start + 2]) {
+                                case 'p': result_builder.append_c('\''); break;
+                                case 'm': result_builder.append_c('&'); break;
+                                default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
+                            }
+                            break;
+                        case '#':
+                            unichar num = -1;
+                            if (src[start + 2] == 'x') {
+                                src.substring(start + 3, start - end - 3).scanf("%x", &num);
+                            } else {
+                                num = int.parse(src.substring(start + 2, start - end - 2));
+                            }
+                            result_builder.append_unichar(num);
+                            break;
+                        default: critical("Invalid encoding: %s in %s", match_info.fetch(0), src); break;
+                    }
+                    return false;
+                });
+            } catch (RegexError e) {
+                error("Error decoding entities in string \"%s\": %s", value, e.message);
+            }
         }
     }
 

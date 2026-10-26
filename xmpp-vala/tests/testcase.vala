@@ -62,7 +62,7 @@ public abstract class Gee.TestCase : Object {
 
 namespace Gee {
     public delegate void TestMethod ();
-    public delegate void TestFinishedCallback ();
+    public delegate void TestFinishedCallback (GLib.Error? error = null);
     public delegate void AsyncTestMethod (TestFinishedCallback cb);
 }
 
@@ -128,8 +128,15 @@ private class Gee.TestAsyncAdaptor : Object, TestAdaptor {
         main_loop.run ();
     }
 
-    public void finish () {
-        Idle.add (() => { main_loop.quit (); return false; });
+    public void finish (GLib.Error? error = null) {
+        Idle.add(() => {
+            main_loop.quit();
+            if (error != null) {
+                Test.fail();
+                Test.message("Error: %s", error.message);
+            }
+            return false;
+        });
     }
 
     public bool finish_timeout () {

@@ -73,6 +73,9 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         stream_interactor.module_manager.get_module(account, Xep.ChatStateNotifications.Module.IDENTITY).chat_state_received.connect((stream, jid, state, stanza) => {
             on_chat_state_received.begin(account, jid, state, stanza);
         });
+        stream_interactor.module_manager.get_module(account, Xep.MessageDisplayedSynchronization.Module.IDENTITY).on_message_displayed.connect((conversation_jid, stanza_id_by_jid, stanza_id) => {
+            on_message_displayed_received(account, conversation_jid, stanza_id_by_jid, stanza_id);
+        });
     }
 
     private void clear_chat_state(Conversation conversation, Jid jid) {
@@ -120,17 +123,74 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private async void on_chat_marker_received(Account account, Jid jid, string marker, string stanza_id, MessageStanza message_stanza) {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(message_stanza.from, message_stanza.to, account, message_stanza.type_);
         if (conversation == null) return;
-        handle_chat_marker(conversation, jid, marker, stanza_id);
+        handle_chat_marker(conversation, jid, marker, stanza_id, message_stanza);
     }
 
-    private void handle_chat_marker(Conversation conversation, Jid jid, string marker, string stanza_id) {
+    private void on_message_displayed_received(Account account, Jid conversation_jid, Jid stanza_id_by_jid, string stanza_id) {
+        Conversation? conversation = null;
+        if (stanza_id_by_jid.equals(conversation_jid) && conversation_jid.is_bare()) {
+            conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(conversation_jid, account, Conversation.Type.GROUPCHAT);
+        } else if (conversation_jid.resourcepart != null && stanza_id_by_jid.equals(account.bare_jid)) {
+            conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(conversation_jid, account, Conversation.Type.GROUPCHAT_PM);
+        } else if (stanza_id_by_jid.equals(account.bare_jid)) {
+            conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(conversation_jid, account, Conversation.Type.CHAT);
+        }
+        if (conversation == null) return;
+
+        mark_displayed_up_to_stanza_id(conversation, stanza_id, true);
+    }
+
+    public bool mark_displayed_up_to_stanza_id(Conversation conversation, string stanza_id, bool server_id_only) {
+        Entities.Message? message = null;
+        if (server_id_only) {
+            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(stanza_id, conversation);
+        } else if (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
+            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(stanza_id, conversation);
+            // Outdated clients might use the message id. Or in MUCs that don't send server ids.
+            if (message == null) {
+                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+            }
+        } else {
+            message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
+        }
+        if (message == null) return false;
+        return mark_displayed_up_to_message(conversation, message);
+    }
+
+    public bool mark_displayed_up_to_message(Conversation conversation, Message message) {
+        // Don't move read marker backwards because we get old info from another client
+        if (conversation.read_up_to_message_id != -1) {
+            Message read_up_to_message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_id(conversation.read_up_to_message_id, conversation);
+            if (read_up_to_message.local_time.compare(message.local_time) > 0) {
+                return false;
+            }
+        }
+        conversation.read_up_to_message_id = message.id;
+
+        ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_content_item_for_message(conversation, message);
+        if (content_item == null) return true;
+        return mark_displayed_up_to_content_item(conversation, content_item);
+    }
+
+    public bool mark_displayed_up_to_content_item(Conversation conversation, ContentItem content_item) {
+        ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
+        if (read_up_to_item != null && read_up_to_item.compare(content_item) > 0) return false;
+        conversation.read_up_to_item = content_item.id;
+        return true;
+    }
+
+    private void handle_chat_marker(Conversation conversation, Jid jid, string marker, string stanza_id, MessageStanza? message_stanza = null) {
         // Check if the marker comes from ourselves (own jid or our jid in a MUC)
         bool own_marker = false;
         if (conversation.type_ == Conversation.Type.CHAT) {
             own_marker = conversation.account.bare_jid.to_string() == jid.bare_jid.to_string();
         } else {
             Jid? own_muc_jid = stream_interactor.get_module(MucManager.IDENTITY).get_own_jid(jid.bare_jid, conversation.account);
+            string own_occupant_id = stream_interactor.get_module(MucManager.IDENTITY).get_own_occupant_id(conversation.account, jid.bare_jid);
+            string occupant_id = Xep.OccupantIds.get_occupant_id(message_stanza.stanza);
             if (own_muc_jid != null && own_muc_jid.equals(jid)) {
+                // Don't allow groupchat displayed marker without matching occupant id
+                if (conversation.type_ == Conversation.Type.GROUPCHAT && (occupant_id == null || own_occupant_id == occupant_id)) return;
                 own_marker = true;
             }
         }
@@ -138,27 +198,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
         if (own_marker) {
             // If we received a display marker from ourselves (other device), set the conversation read up to that message.
             if (marker != Xep.ChatMarkers.MARKER_DISPLAYED && marker != Xep.ChatMarkers.MARKER_ACKNOWLEDGED) return;
-            Entities.Message? message = null;
-            if (conversation.type_ == Conversation.Type.GROUPCHAT || conversation.type_ == Conversation.Type.GROUPCHAT_PM) {
-                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(stanza_id, conversation);
-                // Outdated clients might use the message id. Or in MUCs that don't send server ids.
-                if (message == null) {
-                    message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
-                }
-            } else {
-                message = stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(stanza_id, conversation);
-            }
-            if (message == null) return;
-            // Don't move read marker backwards because we get old info from another client
-            if (conversation.read_up_to != null && conversation.read_up_to.local_time.compare(message.local_time) > 0) return;
-            conversation.read_up_to = message;
-
-            // TODO: This only marks messages as read, not http file transfers.
-            ContentItem? content_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_foreign(conversation, 1, message.id);
-            if (content_item == null) return;
-            ContentItem? read_up_to_item = stream_interactor.get_module(ContentItemStore.IDENTITY).get_item_by_id(conversation, conversation.read_up_to_item);
-            if (read_up_to_item != null && read_up_to_item.compare(content_item) > 0) return;
-            conversation.read_up_to_item = content_item.id;
+            mark_displayed_up_to_stanza_id(conversation, stanza_id, false);
         } else {
             // We can't currently handle chat markers in MUCs
             if (conversation.type_ == Conversation.Type.GROUPCHAT) return;
@@ -203,7 +243,7 @@ public class CounterpartInteractionManager : StreamInteractionModule, Object {
     private void on_receipt_received(Account account, Jid jid, string id, MessageStanza stanza) {
         Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).approx_conversation_for_stanza(stanza.from, stanza.to, account, stanza.type_);
         if (conversation == null) return;
-        handle_chat_marker(conversation, jid,Xep.ChatMarkers.MARKER_RECEIVED, id);
+        handle_chat_marker(conversation, jid,Xep.ChatMarkers.MARKER_RECEIVED, id, stanza);
     }
 }
 

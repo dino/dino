@@ -1,9 +1,9 @@
 using Gee;
-using Qlite;
 
+using Dino.Entities;
+using Dino.Qlite;
 using Xmpp;
 using Xmpp.Xep;
-using Dino.Entities;
 
 public class Dino.Reactions : StreamInteractionModule, Object {
     public static ModuleIdentity<Reactions> IDENTITY = new ModuleIdentity<Reactions>("reactions");
@@ -293,15 +293,6 @@ public class Dino.Reactions : StreamInteractionModule, Object {
 
             debug("Got ContentItem for reaction %s", stanza_id);
             process_reaction_for_message(item.id, applicable_reaction);
-        }
-    }
-
-    private Message? get_message_for_reaction(Conversation conversation, string message_id) {
-        // Query message from a specific account and counterpart. This also makes sure it's a valid reaction for the message.
-        if (conversation.type_ == Conversation.Type.CHAT) {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_stanza_id(message_id, conversation);
-        } else {
-            return stream_interactor.get_module(MessageStorage.IDENTITY).get_message_by_server_id(message_id, conversation);
         }
     }
 

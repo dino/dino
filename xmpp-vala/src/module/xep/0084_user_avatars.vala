@@ -20,12 +20,15 @@ namespace Xmpp.Xep.UserAvatars {
         stream.get_module(Pubsub.Module.IDENTITY).publish.begin(stream, null, NS_URI_METADATA, sha1, metadata_node);
     }
 
-    public void unset_avatar(XmppStream stream) {
-        StanzaNode metadata_node = new StanzaNode.build("metadata", NS_URI_METADATA).add_self_xmlns();
-        stream.get_module(Pubsub.Module.IDENTITY).delete_node(stream, null, NS_URI_METADATA);
+    public void unset_avatar(XmppStream stream, string? hash = null) {
+        var pubsub_module = stream.get_module(Pubsub.Module.IDENTITY);
+        pubsub_module.delete_node(stream, null, NS_URI_METADATA);
+        if (hash != null) {
+            pubsub_module.retract_item.begin(stream, null, NS_URI_DATA, hash, (_, res) => pubsub_module.retract_item.end(res));
+        }
     }
 
-    public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) {
+    public async Bytes? fetch_image(XmppStream stream, Jid jid, string hash) throws IOError {
         Gee.List<StanzaNode>? items = yield stream.get_module(Pubsub.Module.IDENTITY).request_all(stream, jid, NS_URI_DATA);
         if (items == null || items.size == 0 || items[0].sub_nodes.size == 0) return null;
 

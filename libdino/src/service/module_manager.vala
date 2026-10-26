@@ -47,7 +47,7 @@ public class ModuleManager {
             module_map[account] = new ArrayList<XmppStreamModule>();
             module_map[account].add(new Iq.Module());
 
-            var sasl2_module = new Xep.ExtensibleSaslProfile.Module(account.bare_jid.localpart, account.password);
+            var sasl2_module = new Xep.ExtensibleSaslProfile.Module(account.bare_jid.localpart, account.password, account.user_agent_id);
             module_map[account].add(sasl2_module);
             module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
             module_map[account].add(new Xep.StreamManagement.Module());
@@ -69,6 +69,7 @@ public class ModuleManager {
             module_map[account].add(new Presence.Module());
             module_map[account].add(new Xmpp.MessageModule());
             module_map[account].add(new Xmpp.MessageArchiveManagement.Module());
+            module_map[account].add(new Xep.EntityCapabilities.Module());
             module_map[account].add(new Xep.MessageCarbons.Module());
             module_map[account].add(new Xep.BitsOfBinary.Module());
             module_map[account].add(new Xep.Muc.Module());
@@ -84,7 +85,7 @@ public class ModuleManager {
             module_map[account].add(new Xep.InBandRegistration.Module());
             module_map[account].add(new Xep.HttpFileUpload.Module());
             module_map[account].add(new Xep.Reactions.Module());
-            module_map[account].add(new Xep.Socks5Bytestreams.Module());
+            module_map[account].add(new Xep.Socks5Bytestreams.Module.with_local_ip_address_handler(Util.get_local_ip_addresses));
             module_map[account].add(new Xep.InBandBytestreams.Module());
             module_map[account].add(new Xep.Jingle.Module());
             module_map[account].add(new Xep.JingleSocks5Bytestreams.Module());
@@ -96,10 +97,12 @@ public class ModuleManager {
             module_map[account].add(new Xep.JingleMessageInitiation.Module());
             module_map[account].add(new Xep.OccupantIds.Module());
             module_map[account].add(new Xep.MessageRetraction.Module());
-            module_map[account].add(new Xep.JingleRawUdp.Module());
+            module_map[account].add(new Xep.JingleRawUdp.Module.with_local_ip_address_handler(Util.get_local_ip_addresses));
             module_map[account].add(new Xep.Muji.Module());
             module_map[account].add(new Xep.CallInvites.Module());
             module_map[account].add(new Xep.Coin.Module());
+            module_map[account].add(new Xep.MessageDisplayedSynchronization.Module());
+            module_map[account].add(new IceUdpModule());
             initialize_account_modules(account, module_map[account]);
         }
     }

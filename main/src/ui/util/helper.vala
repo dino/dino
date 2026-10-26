@@ -81,10 +81,10 @@ public static string get_occupant_display_name(StreamInteractor stream_interacto
     return Dino.get_occupant_display_name(stream_interactor, conversation, jid, me_is_me ? _("Me") : null);
 }
 
+[Version (deprecated = true)]
 public static Gdk.RGBA get_label_pango_color(Label label, string css_color) {
-    Gtk.CssProvider provider = force_color(label, css_color);
     Gdk.RGBA color_rgba = label.get_style_context().get_color();
-    label.get_style_context().remove_provider(provider);
+    label.get_style_context().lookup_color(css_color, out color_rgba);
     return color_rgba;
 }
 
@@ -97,37 +97,6 @@ public static string rgba_to_hex(Gdk.RGBA rgba) {
             .up();
 }
 
-private const string force_background_css = "%s { background-color: %s; }";
-private const string force_color_css = "%s { color: %s; }";
-
-public static Gtk.CssProvider force_css(Gtk.Widget widget, string css) {
-    var p = new Gtk.CssProvider();
-    try {
-#if GTK_4_12 && (VALA_0_56_GREATER_11 || VALA_0_58)
-        p.load_from_string(css);
-#elif (VALA_0_56_11 || VALA_0_56_12)
-        p.load_from_data(css, css.length);
-#else
-        p.load_from_data(css.data);
-#endif
-        widget.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-    } catch (GLib.Error err) {
-        // handle err
-    }
-    return p;
-}
-
-public static void force_background(Gtk.Widget widget, string color, string selector = "*") {
-    force_css(widget, force_background_css.printf(selector, color));
-}
-
-public static Gtk.CssProvider force_color(Gtk.Widget widget, string color, string selector = "*") {
-    return force_css(widget, force_color_css.printf(selector, color));
-}
-
-public static void force_error_color(Gtk.Widget widget, string selector = "*") {
-    force_color(widget, "@error_color", selector);
-}
 
 public static bool is_dark_theme(Gtk.Widget widget) {
     Gdk.RGBA bg = widget.get_style_context().get_color();
@@ -446,18 +415,7 @@ public bool use_tooltips() {
 }
 
 public static void menu_button_set_icon_with_size(MenuButton menu_button, string icon_name, int pixel_size) {
-#if GTK_4_6 && VALA_0_52
     menu_button.set_child(new Image.from_icon_name(icon_name) { pixel_size=pixel_size });
-#else
-    menu_button.set_icon_name(icon_name);
-    var button = menu_button.get_first_child() as Button;
-    if (button == null) return;
-    var box = button.child as Box;
-    if (box == null) return;
-    var image = box.get_first_child() as Image;
-    if (image == null) return;
-    image.pixel_size = pixel_size;
-#endif
 }
 
 }

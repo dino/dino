@@ -22,6 +22,8 @@ public class FileImageWidget : Widget {
     private Gtk.Box image_overlay_toolbar = new Gtk.Box(Orientation.VERTICAL, 0) { halign=Align.END, valign=Align.START, margin_top=10, margin_start=10, margin_end=10, margin_bottom=10, vexpand=false, visible=false };
     private Label file_size_label = new Label(null) { halign=Align.START, valign=Align.END, margin_bottom=4, margin_start=4, visible=false };
 
+    private int size = -1;
+
     private FileTransfer file_transfer;
 
     private FileTransmissionProgress transmission_progress = new FileTransmissionProgress() { halign=Align.CENTER, valign=Align.CENTER, visible=false };
@@ -33,22 +35,6 @@ public class FileImageWidget : Widget {
 
     public FileImageWidget(int MAX_WIDTH=600, int MAX_HEIGHT=300) {
         this.halign = Align.START;
-
-        this.add_css_class("file-image-widget");
-
-        // Setup menu button overlay
-        MenuButton button = new MenuButton();
-        button.icon_name = "dino-view-more";
-        Menu menu_model = new Menu();
-        menu_model.append(_("Open"), "file.open");
-        menu_model.append(_("Save as…"), "file.save_as");
-        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
-        button.popover = popover_menu;
-        image_overlay_toolbar.append(button);
-        image_overlay_toolbar.add_css_class("card");
-        image_overlay_toolbar.add_css_class("toolbar");
-        image_overlay_toolbar.add_css_class("compact-card-toolbar");
-        image_overlay_toolbar.set_cursor_from_name("default");
 
         file_size_label.add_css_class("file-details");
 
@@ -65,12 +51,65 @@ public class FileImageWidget : Widget {
         gesture_click_controller.button = 1; // listen for left clicks
         gesture_click_controller.released.connect(on_image_clicked);
         stack.add_controller(gesture_click_controller);
+    }
+
+    public FileImageWidget.from_file_transfer(FileTransfer file_transfer, int size = -1) {
+        this();
+
+        this.file_transfer = file_transfer;
+        this.size = size;
+
+        this.file_transfer.bind_property("size", file_size_label, "label", BindingFlags.SYNC_CREATE, file_size_label_transform);
+        this.file_transfer.bind_property("size", transmission_progress, "file-size", BindingFlags.SYNC_CREATE);
+        this.file_transfer.bind_property("transferred-bytes", transmission_progress, "transferred-size");
+
+        setup_signals(transmission_progress, file_transfer);
+        setup_menu_button();
+
+        file_transfer.notify["state"].connect(refresh_state);
+        file_transfer.sources_changed.connect(refresh_state);
+        refresh_state();
+    }
+
+    private static void setup_signals(FileTransmissionProgress transmission_progress, FileTransfer file_transfer) {
+        var file_transfer_id = file_transfer.id;
+
+        transmission_progress.start_download.connect(() => {
+            Dino.Application.get_default().activate_action("file_start_download", new Variant.int32(file_transfer_id));
+        });
+        transmission_progress.cancel_transfer.connect(() => {
+            Dino.Application.get_default().activate_action("file_cancel_transfer", new Variant.int32(file_transfer_id));
+        });
+    }
+
+    private void setup_menu_button() {
+        MenuButton button = new MenuButton();
+        button.icon_name = "dino-view-more";
+        Menu menu_model = new Menu();
+
+        MenuItem open_file_item = new MenuItem(_("Open"), "app.file_open_externally");
+        open_file_item.set_action_and_target_value("app.file_open_externally", new Variant.int32(file_transfer.id));
+
+        MenuItem save_as_item = new MenuItem(_("Save as…"), "app.file_save_as");
+        save_as_item.set_action_and_target_value("app.file_open_save_dialog", new Variant.int32(file_transfer.id));
+
+        menu_model.append_item(open_file_item);
+        menu_model.append_item(save_as_item);
+
+        Gtk.PopoverMenu popover_menu = new Gtk.PopoverMenu.from_model(menu_model);
+        button.popover = popover_menu;
+        image_overlay_toolbar.append(button);
+        image_overlay_toolbar.add_css_class("card");
+        image_overlay_toolbar.add_css_class("toolbar");
+        image_overlay_toolbar.add_css_class("compact-card-toolbar");
+        image_overlay_toolbar.set_cursor_from_name("default");
 
         EventControllerMotion this_motion_events = new EventControllerMotion();
         this.add_controller(this_motion_events);
         this_motion_events.enter.connect((controller, x, y) => {
             (controller.widget as FileImageWidget).on_motion_event_enter();
         });
+
         attach_on_motion_event_leave(this_motion_events, button);
     }
 
@@ -86,18 +125,6 @@ public class FileImageWidget : Widget {
     private void on_motion_event_enter() {
         image_overlay_toolbar.visible = show_image_overlay_toolbar;
         file_size_label.visible = file_transfer != null && file_transfer.direction == FileTransfer.DIRECTION_RECEIVED && file_transfer.state == FileTransfer.State.NOT_STARTED && !file_transfer.sfs_sources.is_empty;
-    }
-
-    public async void set_file_transfer(FileTransfer file_transfer) {
-        this.file_transfer = file_transfer;
-
-        this.file_transfer.bind_property("size", file_size_label, "label", BindingFlags.SYNC_CREATE, file_size_label_transform);
-        this.file_transfer.bind_property("size", transmission_progress, "file-size", BindingFlags.SYNC_CREATE);
-        this.file_transfer.bind_property("transferred-bytes", transmission_progress, "transferred-size");
-
-        file_transfer.notify["state"].connect(refresh_state);
-        file_transfer.sources_changed.connect(refresh_state);
-        refresh_state();
     }
 
     private static bool file_size_label_transform(Binding binding, Value from_value, ref Value to_value) {
@@ -153,7 +180,7 @@ public class FileImageWidget : Widget {
     }
 
     public async void load_from_file(File file, string file_name) throws GLib.Error {
-        FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
+        FixedRatioPicture image = create_picture();
 
         FileInputStream file_stream = null;
         try {
@@ -201,7 +228,7 @@ public class FileImageWidget : Widget {
             throw new Error(-1, 0, "Error scaling preview image");
         }
 
-        FixedRatioPicture image = new FixedRatioPicture() { min_width=100, min_height=100, max_width=600, max_height=300 };
+        FixedRatioPicture image = create_picture();
         image.paintable = Texture.for_pixbuf(pixbuf);
         stack.add_child(image);
         stack.set_visible_child(image);
@@ -216,12 +243,12 @@ public class FileImageWidget : Widget {
                 if (n_press == 1) {
                     image_overlay_toolbar.visible = !image_overlay_toolbar.visible;
                 } else if (n_press == 2) {
-                    this.activate_action("file.open", null);
+                    Dino.Application.get_default().activate_action("file_open_externally", new Variant.int32(file_transfer.id));
                     image_overlay_toolbar.visible = false;
                 }
                 break;
             default:
-                this.activate_action("file.open", null);
+                Dino.Application.get_default().activate_action("file_open_externally", new Variant.int32(file_transfer.id));
                 image_overlay_toolbar.visible = false;
                 break;
         }
@@ -235,6 +262,20 @@ public class FileImageWidget : Widget {
     public static bool can_display(FileTransfer file_transfer) {
         return file_transfer.content_type != null && Dino.Util.is_pixbuf_supported_content_type(file_transfer.content_type) &&
                 (file_transfer.state == FileTransfer.State.COMPLETE || file_transfer.thumbnails.size > 0);
+    }
+
+    private FixedRatioPicture create_picture() {
+        if (size == -1) {
+            return new FixedRatioPicture() {
+                min_width=100, max_width=600,
+                min_height=100, max_height=300
+            };
+        } else {
+            return new FixedRatioPicture() {
+                height_request = size, width_request = size,
+                content_fit = ContentFit.COVER, halign = Align.START
+            };
+        }
     }
 
     public override void dispose() {
