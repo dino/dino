@@ -4,7 +4,8 @@ namespace Xmpp.Sasl {
     public errordomain SaslError {
         INVALID_CHALLENGE,
         CHANNEL_BINDING,
-        INVALID_SERVER_SIGNATURE
+        INVALID_SERVER_SIGNATURE,
+        RANDOM
     }
 
     public class Flag : XmppStreamFlag {
@@ -251,7 +252,10 @@ namespace Xmpp.Sasl {
             foreach (uint8 b in channel_binding_data) channel_binding += b;
         }
 
-        string client_nonce = Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x");
+        uint8[] nonce = new uint8[24];
+        FileStream? random = FileStream.open("/dev/urandom", "rb");
+        if (random == null || random.read(nonce) != nonce.length) throw new SaslError.RANDOM("Cannot read /dev/urandom");
+        string client_nonce = Base64.encode(nonce);
         string sasl_name = name.replace("=", "=3D").replace(",", "=2C");
         client_first_message = @"$(gs2_header)n=$sasl_name,r=$client_nonce";
 
