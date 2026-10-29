@@ -100,7 +100,7 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
             string client_first_message;
             Flag? scram_flag;
             try {
-                scram_flag = start_scram(stream, supported_mechanisms, name, password, out client_first_message);
+                scram_flag = start_scram(stream, supported_mechanisms, name, password, true, out client_first_message);
             } catch (SaslError e) {
                 fail_authentication(stream);
                 return;

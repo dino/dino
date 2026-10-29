@@ -20,7 +20,7 @@ class SaslTest : Gee.TestCase {
                 .put_node(new StanzaNode.build("channel-binding", "urn:xmpp:sasl-cb:0").put_attribute("type", "unknown")));
             try {
                 string first;
-                start_scram(stream, { "SCRAM-SHA-256-PLUS", "SCRAM-SHA-256", "PLAIN" }, "user", "password", out first);
+                start_scram(stream, { "SCRAM-SHA-256-PLUS", "SCRAM-SHA-256", "PLAIN" }, "user", "password", true, out first);
                 fail_if_reached("Unsupported binding must stop authentication");
             } catch (Error e) {}
         });
@@ -32,7 +32,7 @@ class SaslTest : Gee.TestCase {
         add_test("reject-stripped-binding-types", () => {
             try {
                 string first;
-                start_scram(new SaslTestStream(), { "SCRAM-SHA-256-PLUS", "SCRAM-SHA-256" }, "user", "password", out first);
+                start_scram(new SaslTestStream(), { "SCRAM-SHA-256-PLUS", "SCRAM-SHA-256" }, "user", "password", true, out first);
                 fail_if_reached("Missing binding types accepted");
             } catch (Error e) {}
         });
@@ -42,14 +42,14 @@ class SaslTest : Gee.TestCase {
                 .put_node(new StanzaNode.build("channel-binding", "urn:xmpp:sasl-cb:0").put_attribute("type", "tls-exporter")));
             try {
                 string first;
-                start_scram(stream, { "SCRAM-SHA-256", "PLAIN" }, "user", "password", out first);
+                start_scram(stream, { "SCRAM-SHA-256", "PLAIN" }, "user", "password", true, out first);
                 fail_if_reached("Stripped PLUS accepted");
             } catch (Error e) {}
         });
         add_test("escape-username", () => {
             try {
                 string first;
-                var flag = start_scram(new SaslTestStream(), { "SCRAM-SHA-256" }, "a=b,c", "password", out first);
+                var flag = start_scram(new SaslTestStream(), { "SCRAM-SHA-256" }, "a=b,c", "password", false, out first);
                 fail_if_not(first.has_prefix("n,,n=a=3Db=2Cc,r="));
                 fail_if_not_eq_str(flag.name, "a=3Db=2Cc");
             } catch (Error e) { fail_if_reached(e.message); }
@@ -112,6 +112,26 @@ class SaslTest : Gee.TestCase {
             });
         }
         add_test("sasl1-no-plain-fallback", () => { no_plain_fallback(false); });
+        add_test("sasl1-reject-stripped-plus", () => {
+            var stream = new SaslTestStream();
+            stream.features.put_node(new StanzaNode.build("sasl-channel-binding", "urn:xmpp:sasl-cb:0")
+                .put_node(new StanzaNode.build("channel-binding", "urn:xmpp:sasl-cb:0").put_attribute("type", "tls-exporter")));
+            try {
+                string first;
+                start_scram(stream, { "SCRAM-SHA-256", "PLAIN" }, "user", "password", false, out first);
+                fail_if_reached("Stripped PLUS accepted");
+            } catch (Error e) {}
+        });
+        add_test("sasl1-plus-without-announcement", () => {
+            var stream = new SaslTestStream();
+            var mechanisms = new StanzaNode.build("mechanisms", "urn:ietf:params:xml:ns:xmpp-sasl");
+            foreach (string mechanism in new string[] { "SCRAM-SHA-512-PLUS", "SCRAM-SHA-512", "SCRAM-SHA-256-PLUS", "SCRAM-SHA-256", "PLAIN" }) {
+                mechanisms.put_node(new StanzaNode.build("mechanism", "urn:ietf:params:xml:ns:xmpp-sasl").put_node(new StanzaNode.text(mechanism)));
+            }
+            stream.features.put_node(mechanisms);
+            new Sasl.Module("user", "password").received_features_node(stream);
+            fail_if_not_eq_str(stream.sent.get_attribute("mechanism"), "SCRAM-SHA-512");
+        });
         add_test("sasl2-no-plain-fallback", () => { no_plain_fallback(true); });
         add_test("sasl1-valid-success", () => { valid_success(false); });
         add_test("sasl2-valid-success", () => { valid_success(true); });
@@ -178,6 +198,11 @@ class SaslTest : Gee.TestCase {
             mechanisms.put_node(new StanzaNode.build("mechanism", ns).put_node(new StanzaNode.text(mechanism)));
         }
         stream.features.put_node(mechanisms);
+        if (!sasl2) {
+            // SASL1 only stays strict when the server announces its channel-binding types.
+            stream.features.put_node(new StanzaNode.build("sasl-channel-binding", "urn:xmpp:sasl-cb:0")
+                .put_node(new StanzaNode.build("channel-binding", "urn:xmpp:sasl-cb:0").put_attribute("type", "tls-exporter")));
+        }
         bool failed = false;
         if (sasl2) {
             var module = new Xep.ExtensibleSaslProfile.Module("user", "password", "test");

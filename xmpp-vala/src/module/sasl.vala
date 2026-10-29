@@ -144,7 +144,7 @@ namespace Xmpp.Sasl {
             string client_first_message;
             Flag? scram_flag;
             try {
-                scram_flag = start_scram(stream, supported_mechanisms, name, password, out client_first_message);
+                scram_flag = start_scram(stream, supported_mechanisms, name, password, false, out client_first_message);
             } catch (SaslError e) {
                 fail_authentication(stream);
                 return;
@@ -203,15 +203,16 @@ namespace Xmpp.Sasl {
 
     private const string CHANNEL_BINDING_NS_URI = "urn:xmpp:sasl-cb:0";
 
-    public static Flag? start_scram(XmppStream stream, string[] supported_mechanisms, string name, string password, out string client_first_message) throws SaslError {
+    public static Flag? start_scram(XmppStream stream, string[] supported_mechanisms, string name, string password, bool require_announcement, out string client_first_message) throws SaslError {
         client_first_message = "";
         bool server_offers_plus = false;
         foreach (string mechanism in supported_mechanisms) {
             if (Mechanism.is_plus(mechanism)) server_offers_plus = true;
         }
         StanzaNode? binding_node = stream.features.get_subnode("sasl-channel-binding", CHANNEL_BINDING_NS_URI);
-        // Reject inconsistent announcements in SASL1 too, so neither feature can be stripped.
-        if (server_offers_plus != (binding_node != null)) {
+        // Only relax the checks for SASL1 servers without XEP-0440, so an announcement is always enforced.
+        bool strict_binding = require_announcement || binding_node != null;
+        if (strict_binding && server_offers_plus != (binding_node != null)) {
             throw new SaslError.CHANNEL_BINDING("Incomplete channel-binding announcement");
         }
 
@@ -229,12 +230,22 @@ namespace Xmpp.Sasl {
             }
             if (binding_type != null) break;
         }
-        if (server_offers_plus && channel_binding_data == null) {
+        if (binding_node == null) {
+            // Use the RFC 9266 default, trying tls-unique first because TLS 1.3 connections refuse it.
+            foreach (string candidate in new string[] { "tls-unique", "tls-exporter" }) {
+                channel_binding_data = get_channel_binding_data(stream, candidate == "tls-unique" ? TlsChannelBindingType.UNIQUE : TlsChannelBindingType.EXPORTER);
+                if (channel_binding_data != null) {
+                    binding_type = candidate;
+                    break;
+                }
+            }
+        }
+        if (strict_binding && server_offers_plus && channel_binding_data == null) {
             throw new SaslError.CHANNEL_BINDING("No usable channel-binding type");
         }
 
         string? mechanism = Mechanism.select_scram(supported_mechanisms, channel_binding_data != null);
-        if (server_offers_plus && (mechanism == null || !Mechanism.is_plus(mechanism))) {
+        if (strict_binding && server_offers_plus && (mechanism == null || !Mechanism.is_plus(mechanism))) {
             throw new SaslError.CHANNEL_BINDING("No supported channel-binding mechanism");
         }
         if (mechanism == null) return null;
@@ -242,8 +253,8 @@ namespace Xmpp.Sasl {
         string gs2_header = "n,,";
         if (Mechanism.is_plus(mechanism)) {
             gs2_header = @"p=$(binding_type),,";
-        } else if (get_channel_binding_data(stream, TlsChannelBindingType.EXPORTER) != null ||
-                   get_channel_binding_data(stream, TlsChannelBindingType.SERVER_END_POINT) != null) {
+        } else if (!server_offers_plus && (get_channel_binding_data(stream, TlsChannelBindingType.EXPORTER) != null ||
+                   get_channel_binding_data(stream, TlsChannelBindingType.SERVER_END_POINT) != null)) {
             gs2_header = "y,,";
         }
 
