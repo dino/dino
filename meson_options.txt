@@ -17,3 +17,5 @@ option('rtp-v4l2-sl', type: 'boolean', value: false, description: 'V4L2 API (sta
 
 # Legacy plugin
 option('plugin-notification-sound', type: 'feature', value: 'disabled', description: 'Sound for chat notifications')
+
+option('libportal', type: 'feature', value: 'auto', description: 'Autostart and running in background support')
