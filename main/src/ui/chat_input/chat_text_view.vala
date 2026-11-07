@@ -78,29 +78,38 @@ public class ChatTextView : Box {
         // Get a copy of the markup spans, such that we can modify them
         var markups = new ArrayList<Xep.MessageMarkup.Span>();
         foreach (var markup in message.get_markups()) {
-            markups.add(new Xep.MessageMarkup.Span() { types=markup.types, start_char=markup.start_char, end_char=markup.end_char });
+
+            if (markup is Xep.MessageMarkup.Span) {
+                Xep.MessageMarkup.Span span = (Xep.MessageMarkup.Span) markup;
+                markups.add(new Xep.MessageMarkup.Span() { types=span.types, start_char=markup.start_char, end_char=markup.end_char });
+            }
         }
 
         text_view.buffer.text = Util.remove_fallbacks_adjust_markups(message.body, message.quoted_item_id > 0, message.get_fallbacks(), markups);
 
         foreach (var markup in markups) {
-            foreach (var ty in markup.types) {
-                TextTag tag = null;
-                switch (ty) {
-                    case Xep.MessageMarkup.SpanType.EMPHASIS:
-                        tag = italic_tag;
-                        break;
-                    case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
-                        tag = bold_tag;
-                        break;
-                    case Xep.MessageMarkup.SpanType.DELETED:
-                        tag = strikethrough_tag;
-                        break;
+
+            if (markup is Xep.MessageMarkup.Span) {
+                var span = markup as Xep.MessageMarkup.Span;
+
+                foreach (var ty in span.types) {
+                    TextTag tag = null;
+                    switch (ty) {
+                        case Xep.MessageMarkup.SpanType.EMPHASIS:
+                            tag = italic_tag;
+                            break;
+                        case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
+                            tag = bold_tag;
+                            break;
+                        case Xep.MessageMarkup.SpanType.DELETED:
+                            tag = strikethrough_tag;
+                            break;
+                    }
+                    TextIter start_selection, end_selection;
+                    text_view.buffer.get_iter_at_offset(out start_selection, span.start_char);
+                    text_view.buffer.get_iter_at_offset(out end_selection, span.end_char);
+                    text_view.buffer.apply_tag(tag, start_selection, end_selection);
                 }
-                TextIter start_selection, end_selection;
-                text_view.buffer.get_iter_at_offset(out start_selection, markup.start_char);
-                text_view.buffer.get_iter_at_offset(out end_selection, markup.end_char);
-                text_view.buffer.apply_tag(tag, start_selection, end_selection);
             }
         }
     }

@@ -4,17 +4,27 @@ namespace Xmpp.Xep.MessageMarkup {
 
     public const string NS_URI = "urn:xmpp:markup:0";
 
+    public class Markup : Object {
+        public int start_char { get; set; }
+        public int end_char { get; set; }
+    }
+
     public enum SpanType {
         EMPHASIS,
         STRONG_EMPHASIS,
         DELETED,
+        CODE
     }
 
-    public class Span : Object {
+    public class Span : Markup {
         public Gee.List<SpanType> types { get; set; }
-        public int start_char { get; set; }
-        public int end_char { get; set; }
     }
+
+    public class CodeBlock : Markup {
+        public string? language { get; set; }
+    }
+
+    public class BlockQuote : Markup { }
 
     public Gee.List<Span> get_spans(MessageStanza stanza) {
         var ret = new ArrayList<Span>();
@@ -33,20 +43,25 @@ namespace Xmpp.Xep.MessageMarkup {
         return ret;
     }
 
-    public void add_spans(MessageStanza stanza, Gee.List<Span> spans) {
-        if (spans.is_empty) return;
+    public void add_markups(MessageStanza stanza, Gee.List<Markup> markups) {
+        if (markups.is_empty) return;
 
         StanzaNode markup_node = new StanzaNode.build("markup", NS_URI).add_self_xmlns();
 
-        foreach (var span in spans) {
-            StanzaNode span_node = new StanzaNode.build("span", NS_URI)
-                    .put_attribute("start", span.start_char.to_string(), NS_URI)
-                    .put_attribute("end", span.end_char.to_string(), NS_URI);
+        foreach (var markup in markups) {
 
-            foreach (var type in span.types) {
-                span_node.put_node(new StanzaNode.build(span_type_to_str(type), NS_URI));
+            if (markup is MessageMarkup.Span) {
+                MessageMarkup.Span span = (MessageMarkup.Span) markup;
+
+                StanzaNode span_node = new StanzaNode.build("span", NS_URI)
+                        .put_attribute("start", span.start_char.to_string(), NS_URI)
+                        .put_attribute("end", span.end_char.to_string(), NS_URI);
+
+                foreach (var type in span.types) {
+                    span_node.put_node(new StanzaNode.build(span_type_to_str(type), NS_URI));
+                }
+                markup_node.put_node(span_node);
             }
-            markup_node.put_node(span_node);
         }
 
         stanza.stanza.put_node(markup_node);
@@ -60,6 +75,8 @@ namespace Xmpp.Xep.MessageMarkup {
                 return "strong";
             case Xep.MessageMarkup.SpanType.DELETED:
                 return "deleted";
+            case Xep.MessageMarkup.SpanType.CODE:
+                return "code";
             default:
                 return "";
         }
@@ -73,6 +90,8 @@ namespace Xmpp.Xep.MessageMarkup {
                 return Xep.MessageMarkup.SpanType.STRONG_EMPHASIS;
             case "deleted":
                 return Xep.MessageMarkup.SpanType.DELETED;
+            case "code":
+                return Xep.MessageMarkup.SpanType.CODE;
             default:
                 return Xep.MessageMarkup.SpanType.EMPHASIS;
         }

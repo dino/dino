@@ -79,9 +79,18 @@ public class MessageMetaItem : ContentMetaItem {
         Message message = message_item.message;
 
         // Get a copy of the markup spans, such that we can modify them
-        var markups = new ArrayList<Xep.MessageMarkup.Span>();
+        var markups = new ArrayList<Xep.MessageMarkup.Markup>();
         foreach (var markup in message.get_markups()) {
-            markups.add(new Xep.MessageMarkup.Span() { types=markup.types, start_char=markup.start_char, end_char=markup.end_char });
+            if (markup is Xep.MessageMarkup.Span) {
+                Xep.MessageMarkup.Span span = (Xep.MessageMarkup.Span) markup;
+                markups.add(new Xep.MessageMarkup.Span() { types=span.types, start_char=span.start_char + 1, end_char=span.end_char - 1 });
+            } else if (markup is Xep.MessageMarkup.BlockQuote) {
+                Xep.MessageMarkup.BlockQuote quote = (Xep.MessageMarkup.BlockQuote) markup;
+                markups.add(new Xep.MessageMarkup.BlockQuote() { start_char=quote.start_char + 1, end_char=quote.end_char - 1 });
+            } else if (markup is Xep.MessageMarkup.CodeBlock) {
+                Xep.MessageMarkup.CodeBlock quote = (Xep.MessageMarkup.CodeBlock) markup;
+                markups.add(new Xep.MessageMarkup.CodeBlock() { start_char=quote.start_char + 1, end_char=quote.end_char - 1 });
+            }
         }
 
         string markup_text = message.body;
@@ -100,41 +109,94 @@ public class MessageMetaItem : ContentMetaItem {
 
         markup_text = Util.remove_fallbacks_adjust_markups(markup_text, message.quoted_item_id > 0, message.get_fallbacks(), markups);
 
-        var bold_attr = Pango.attr_weight_new(Pango.Weight.BOLD);
-        var italic_attr = Pango.attr_style_new(Pango.Style.ITALIC);
-        var strikethrough_attr = Pango.attr_strikethrough_new(true);
-
         // Prefix message with name instead of /me
         if (markup_text.has_prefix("/me ")) {
             string display_name = Util.get_participant_display_name(stream_interactor, conversation, message.from);
             markup_text = display_name + " " + markup_text.substring(4);
 
-            foreach (Xep.MessageMarkup.Span span in markups) {
-                int length = display_name.char_count() - 4 + 1;
-                span.start_char += length;
-                span.end_char += length;
+            foreach (Xep.MessageMarkup.Markup markup in markups) {
+                if (markup is Xep.MessageMarkup.Span || markup is Xep.MessageMarkup.BlockQuote) {
+                    int length_to_adjust = display_name.char_count() - 4 + 1;
+                    markup.start_char += length_to_adjust;
+                    markup.end_char += length_to_adjust;
+                }
             }
 
-            bold_attr.end_index = display_name.length;
-            italic_attr.end_index = display_name.length;
-            attrs.insert(bold_attr.copy());
-            attrs.insert(italic_attr.copy());
+            var markup_types = new ArrayList<Xep.MessageMarkup.SpanType>();
+            markup_types.add(Xep.MessageMarkup.SpanType.EMPHASIS);
+            markup_types.add(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+            markups.add(new Xep.MessageMarkup.Span() { types=markup_types, start_char=0, end_char=display_name.char_count()});
         }
 
-        foreach (var markup in markups) {
-            foreach (var ty in markup.types) {
-                Attribute attr = null;
-                switch (ty) {
-                    case Xep.MessageMarkup.SpanType.EMPHASIS:
-                        attr = Pango.attr_style_new(Pango.Style.ITALIC);
-                        break;
-                    case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
-                        attr = Pango.attr_weight_new(Pango.Weight.BOLD);
-                        break;
-                    case Xep.MessageMarkup.SpanType.DELETED:
-                        attr = Pango.attr_strikethrough_new(true);
-                        break;
+        string? highlight_word = conversation.type_ == Conversation.Type.GROUPCHAT ? conversation.nickname : null;
+        if (highlight_word != null) {
+            try {
+                Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b", RegexCompileFlags.CASELESS);
+                MatchInfo match_info;
+                highlight_regex.match(markup_text, 0, out match_info);
+                if (match_info.matches()) {
+                    int start, end;
+                    match_info.fetch_pos(0, out start, out end);
+
+                    var markup_types = new ArrayList<Xep.MessageMarkup.SpanType>();
+                    markup_types.add(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+                    markups.add(new Xep.MessageMarkup.Span() { types=markup_types, start_char=start, end_char=end});
                 }
+            } catch (RegexError e) {
+                assert_not_reached();
+            }
+        }
+
+        // Parse the markup directives from markdown
+        var parsed = Xep.MessageStyling.parse(markup_text);
+        markups.add_all(parsed);
+
+        // Add markups to make the markdown characters (*, _, etc) greyed out
+//        foreach (var markup in parsed) {
+//            if (markup is Xep.MessageMarkup.Span) {
+//                var span = markup as Xep.MessageMarkup.Span;
+//
+//                var grey = new ArrayList<Xep.MessageMarkup.SpanType>();
+//                grey.add(Xep.MessageMarkup.SpanType.GREYED_OUT);
+//                markups.add(new Xep.MessageMarkup.Span() { types=grey, start_char=span.start_char - 1, end_char=span.start_char});
+//                markups.add(new Xep.MessageMarkup.Span() { types=grey, start_char=span.end_char, end_char=span.end_char + 1});
+//            }
+//        }
+
+        // Apply the pango attributes
+        foreach (var markup in markups) {
+
+            if (markup is Xep.MessageMarkup.Span) {
+                var span = markup as Xep.MessageMarkup.Span;
+
+                foreach (var ty in span.types) {
+                    Attribute attr = null;
+                    switch (ty) {
+                        case Xep.MessageMarkup.SpanType.EMPHASIS:
+                            attr = Pango.attr_style_new(Pango.Style.ITALIC);
+                            break;
+                        case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
+                            attr = Pango.attr_weight_new(Pango.Weight.BOLD);
+                            break;
+                        case Xep.MessageMarkup.SpanType.DELETED:
+                            attr = Pango.attr_strikethrough_new(true);
+                            break;
+                        case Xep.MessageMarkup.SpanType.CODE:
+                            attr = Pango.attr_family_new("monospace");
+                            break;
+                    }
+                    if (attr == null) continue;
+                    attr.start_index = markup_text.index_of_nth_char(span.start_char);
+                    attr.end_index = markup_text.index_of_nth_char(span.end_char);
+                    attrs.insert(attr.copy());
+                }
+            } else if (markup is Xep.MessageMarkup.BlockQuote) {
+                Attribute attr = Pango.attr_foreground_alpha_new(40000);
+                attr.start_index = markup_text.index_of_nth_char(markup.start_char);
+                attr.end_index = markup_text.index_of_nth_char(markup.end_char);
+                attrs.insert(attr.copy());
+            } else if (markup is Xep.MessageMarkup.CodeBlock) {
+                Attribute attr = Pango.attr_family_new("monospace");
                 attr.start_index = markup_text.index_of_nth_char(markup.start_char);
                 attr.end_index = markup_text.index_of_nth_char(markup.end_char);
                 attrs.insert(attr.copy());
