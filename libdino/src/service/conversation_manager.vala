@@ -48,13 +48,8 @@ public class ConversationManager : StreamInteractionModule, Object {
 
         // Create a new converation
         Conversation conversation = new Conversation(jid, account, type);
-        // Set encryption for conversation
-        if (type == Conversation.Type.CHAT ||
-                (type == Conversation.Type.GROUPCHAT && stream_interactor.get_module(MucManager.IDENTITY).is_private_room(account, jid))) {
-            conversation.encryption = Application.get_default().settings.get_default_encryption(account);
-        } else {
-            conversation.encryption = Encryption.NONE;
-        }
+
+        conversation.encryption = Encryption.NONE;
 
         add_conversation(conversation);
         conversation.persist(db);
@@ -145,6 +140,15 @@ public class ConversationManager : StreamInteractionModule, Object {
         }
         if (!conversation.active) {
             conversation.active = true;
+
+            // Set encryption for conversation
+            if (conversation.type_ == Conversation.Type.CHAT ||
+                    (conversation.type_ == Conversation.Type.GROUPCHAT && stream_interactor.get_module(MucManager.IDENTITY).is_private_room(conversation.account, conversation.counterpart))) {
+                conversation.encryption = Application.get_default().settings.get_default_encryption(conversation.account);
+            } else {
+                conversation.encryption = Encryption.NONE;
+            }
+
             conversation_activated(conversation);
         }
     }
