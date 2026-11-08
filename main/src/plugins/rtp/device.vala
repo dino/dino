@@ -487,6 +487,9 @@ public class Dino.Plugins.Rtp.Device : MediaDevice, Object {
         device_caps = get_best_caps();
         if (is_source) {
             element.@set("do-timestamp", true);
+            if (media == "video" && protocol == DeviceProtocol.PIPEWIRE) {
+                element.@set("always-copy", true);
+            }
             filter = Gst.ElementFactory.make("capsfilter", @"caps_filter_$id");
             filter.@set("caps", device_caps);
             pipe.add(filter);
