@@ -51,6 +51,9 @@
                                         </style>
                                         <child>
                                             <object class="GtkButton" id="add_button">
+                                                <accessibility>
+                                                    <property name="label" translatable="1">Add</property>
+                                                </accessibility>
                                                 <child>
                                                     <object class="GtkImage">
                                                         <property name="icon-name">dino-list-add-symbolic</property>
@@ -62,6 +65,9 @@
                                         <child>
                                             <object class="GtkButton" id="remove_button">
                                                 <property name="sensitive">0</property>
+                                                <accessibility>
+                                                    <property name="label" translatable="1">Remove</property>
+                                                </accessibility>
                                                 <child>
                                                     <object class="GtkImage">
                                                         <property name="icon-name">dino-list-remove-symbolic</property>
