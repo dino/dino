@@ -79,15 +79,21 @@ public class MessageMetaItem : ContentMetaItem {
         Message message = message_item.message;
 
         // Get a copy of the markup spans, such that we can modify them
-        var markups = new ArrayList<Xep.MessageMarkup.Span>();
+        var markups = new ArrayList<Xep.MessageMarkup.Markup>();
         foreach (var markup in message.get_markups()) {
-            markups.add(new Xep.MessageMarkup.Span() { types=markup.types, start_char=markup.start_char, end_char=markup.end_char });
+            if (markup is Xep.MessageMarkup.Span) {
+                Xep.MessageMarkup.Span span = (Xep.MessageMarkup.Span) markup;
+                markups.add(new Xep.MessageMarkup.Span() { types=span.types, start_char=span.start_char + 1, end_char=span.end_char - 1 });
+            } else if (markup is Xep.MessageMarkup.BlockQuote) {
+                Xep.MessageMarkup.BlockQuote quote = (Xep.MessageMarkup.BlockQuote) markup;
+                markups.add(new Xep.MessageMarkup.BlockQuote() { start_char=quote.start_char + 1, end_char=quote.end_char - 1 });
+            } else if (markup is Xep.MessageMarkup.CodeBlock) {
+                Xep.MessageMarkup.CodeBlock quote = (Xep.MessageMarkup.CodeBlock) markup;
+                markups.add(new Xep.MessageMarkup.CodeBlock() { start_char=quote.start_char + 1, end_char=quote.end_char - 1 });
+            }
         }
 
         string markup_text = message.body;
-
-        var attrs = new AttrList();
-        label.set_attributes(attrs);
 
         if (markup_text == null) return; // TODO remove
 
@@ -100,54 +106,56 @@ public class MessageMetaItem : ContentMetaItem {
 
         markup_text = Util.remove_fallbacks_adjust_markups(markup_text, message.quoted_item_id > 0, message.get_fallbacks(), markups);
 
-        var bold_attr = Pango.attr_weight_new(Pango.Weight.BOLD);
-        var italic_attr = Pango.attr_style_new(Pango.Style.ITALIC);
-        var strikethrough_attr = Pango.attr_strikethrough_new(true);
-
         // Prefix message with name instead of /me
         if (markup_text.has_prefix("/me ")) {
             string display_name = Util.get_participant_display_name(stream_interactor, conversation, message.from);
             markup_text = display_name + " " + markup_text.substring(4);
 
-            foreach (Xep.MessageMarkup.Span span in markups) {
-                int length = display_name.char_count() - 4 + 1;
-                span.start_char += length;
-                span.end_char += length;
-            }
-
-            bold_attr.end_index = display_name.length;
-            italic_attr.end_index = display_name.length;
-            attrs.insert(bold_attr.copy());
-            attrs.insert(italic_attr.copy());
-        }
-
-        foreach (var markup in markups) {
-            foreach (var ty in markup.types) {
-                Attribute attr = null;
-                switch (ty) {
-                    case Xep.MessageMarkup.SpanType.EMPHASIS:
-                        attr = Pango.attr_style_new(Pango.Style.ITALIC);
-                        break;
-                    case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
-                        attr = Pango.attr_weight_new(Pango.Weight.BOLD);
-                        break;
-                    case Xep.MessageMarkup.SpanType.DELETED:
-                        attr = Pango.attr_strikethrough_new(true);
-                        break;
+            foreach (Xep.MessageMarkup.Markup markup in markups) {
+                if (markup is Xep.MessageMarkup.Span || markup is Xep.MessageMarkup.BlockQuote) {
+                    int length_to_adjust = display_name.char_count() - 4 + 1;
+                    markup.start_char += length_to_adjust;
+                    markup.end_char += length_to_adjust;
                 }
-                attr.start_index = markup_text.index_of_nth_char(markup.start_char);
-                attr.end_index = markup_text.index_of_nth_char(markup.end_char);
-                attrs.insert(attr.copy());
+            }
+
+            var markup_types = new ArrayList<Xep.MessageMarkup.SpanType>();
+            markup_types.add(Xep.MessageMarkup.SpanType.EMPHASIS);
+            markup_types.add(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+            markups.add(new Xep.MessageMarkup.Span() { types=markup_types, start_char=0, end_char=display_name.char_count()});
+        }
+
+        // Collect markup for the own highlighted nickname in MUCs
+        if (conversation.type_ == Conversation.Type.GROUPCHAT) {
+            markups.add_all(get_markup_for_highlight_word(markup_text, conversation.nickname));
+        }
+
+        // Parse the markup directives from markdown
+        var parsed = Xep.MessageStyling.parse(markup_text);
+        markups.add_all(parsed);
+
+        // Add markups to make the markdown characters (*, _, etc) greyed out
+        foreach (var markup in parsed) {
+            if (markup is Xep.MessageMarkup.Span) {
+                var span = markup as Xep.MessageMarkup.Span;
+
+                var grey = new ArrayList<CustomSpanType>();
+                grey.add(CustomSpanType.GREYED_OUT);
+                markups.add(new CustomSpan() { types=grey, start_char=span.start_char - 1, end_char=span.start_char});
+                markups.add(new CustomSpan() { types=grey, start_char=span.end_char, end_char=span.end_char + 1});
             }
         }
+
+        // Apply the pango attributes
+        label.set_attributes(get_attr_list_for_markups(markup_text, markups));
 
         // Work around pango bug
         markup_text = Util.unbreak_space_around_non_spacing_mark((owned) markup_text);
 
         if (conversation.type_ == Conversation.Type.GROUPCHAT) {
-            markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent);
+            markup_text = Util.parse_add_markup_theme(markup_text, conversation.nickname, true, false, false, Util.is_dark_theme(this.label), ref theme_dependent);
         } else {
-            markup_text = Util.parse_add_markup_theme(markup_text, null, true, true, true, Util.is_dark_theme(this.label), ref theme_dependent);
+            markup_text = Util.parse_add_markup_theme(markup_text, null, true, false, false, Util.is_dark_theme(this.label), ref theme_dependent);
         }
 
         int only_emoji_count = Util.get_only_emoji_count(markup_text);
@@ -199,6 +207,87 @@ public class MessageMetaItem : ContentMetaItem {
             label.disconnect(realize_id);
         }
         label.label = markup_text;
+    }
+
+    private Gee.List<Xep.MessageMarkup.Markup> get_markup_for_highlight_word(string text, string highlight_word) {
+        var markups = new ArrayList<Xep.MessageMarkup.Markup>();
+
+        try {
+            Regex highlight_regex = new Regex("\\b" + Regex.escape_string(highlight_word.down()) + "\\b", RegexCompileFlags.CASELESS);
+            MatchInfo match_info;
+            highlight_regex.match(text, 0, out match_info);
+            if (match_info.matches()) {
+                int start, end;
+                match_info.fetch_pos(0, out start, out end);
+
+                var markup_types = new ArrayList<Xep.MessageMarkup.SpanType>();
+                markup_types.add(Xep.MessageMarkup.SpanType.STRONG_EMPHASIS);
+                markups.add(new Xep.MessageMarkup.Span() { types=markup_types, start_char=start, end_char=end});
+            }
+        } catch (RegexError e) {
+            assert_not_reached();
+        }
+
+        return markups;
+    }
+
+    private Pango.AttrList get_attr_list_for_markups(string text, Gee.List<Xep.MessageMarkup.Markup> markups) {
+        var attrs = new AttrList();
+
+        foreach (var markup in markups) {
+
+            if (markup is Xep.MessageMarkup.Span) {
+                var span = markup as Xep.MessageMarkup.Span;
+
+                foreach (var ty in span.types) {
+                    Attribute attr = null;
+                    switch (ty) {
+                        case Xep.MessageMarkup.SpanType.EMPHASIS:
+                            attr = Pango.attr_style_new(Pango.Style.ITALIC);
+                            break;
+                        case Xep.MessageMarkup.SpanType.STRONG_EMPHASIS:
+                            attr = Pango.attr_weight_new(Pango.Weight.BOLD);
+                            break;
+                        case Xep.MessageMarkup.SpanType.DELETED:
+                            attr = Pango.attr_strikethrough_new(true);
+                            break;
+                        case Xep.MessageMarkup.SpanType.CODE:
+                            attr = Pango.attr_family_new("monospace");
+                            break;
+                    }
+                    if (attr == null) continue;
+                    attr.start_index = text.index_of_nth_char(span.start_char);
+                    attr.end_index = text.index_of_nth_char(span.end_char);
+                    attrs.insert(attr.copy());
+                }
+            } else if (markup is CustomSpan) {
+                var custom_span = markup as CustomSpan;
+
+                foreach (var ty in custom_span.types) {
+                    Attribute attr = null;
+                    switch (ty) {
+                        case CustomSpanType.GREYED_OUT:
+                            attr = Pango.attr_foreground_alpha_new(40000);
+                            break;
+                    }
+                    if (attr == null) continue;
+                    attr.start_index = text.index_of_nth_char(custom_span.start_char);
+                    attr.end_index = text.index_of_nth_char(custom_span.end_char);
+                    attrs.insert(attr.copy());
+                }
+            } else if (markup is Xep.MessageMarkup.BlockQuote) {
+                Attribute attr = Pango.attr_foreground_alpha_new(40000);
+                attr.start_index = text.index_of_nth_char(markup.start_char);
+                attr.end_index = text.index_of_nth_char(markup.end_char);
+                attrs.insert(attr.copy());
+            } else if (markup is Xep.MessageMarkup.CodeBlock) {
+                Attribute attr = Pango.attr_family_new("monospace");
+                attr.start_index = text.index_of_nth_char(markup.start_char);
+                attr.end_index = text.index_of_nth_char(markup.end_char);
+                attrs.insert(attr.copy());
+            }
+        }
+        return attrs;
     }
 
     public void update_label() {
@@ -358,5 +447,13 @@ public class MessageItemEditMode : Box {
         send_button.sensitive = chat_text_view.text_view.buffer.text != "";
     }
 }
+
+    public enum CustomSpanType {
+        GREYED_OUT
+    }
+
+    public class CustomSpan : Xep.MessageMarkup.Markup {
+        public Gee.List<CustomSpanType> types { get; set; }
+    }
 
 }

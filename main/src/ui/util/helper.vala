@@ -305,8 +305,60 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
     return s;
 }
 
+    public string parse_links_add_markup(string text) {
+        MatchInfo match_info;
+        get_url_regex().match(text, 0, out match_info);
+        while (match_info.matches()) {
+            int start, end;
+            match_info.fetch_pos(0, out start, out end);
+            string link = text[start:end];
+            if (GLib.Uri.parse_scheme(link).down() in ALLOWED_SCHEMAS) {
+                Map<unichar, unichar> matching_chars = get_matching_chars();
+                unichar close_char;
+                int last_char_index = link.length;
+                while (link.get_prev_char(ref last_char_index, out close_char)) {
+                    if (matching_chars.has_key(close_char)) {
+                        unichar open_char = matching_chars[close_char];
+                        unichar char;
+                        int index = 0;
+                        int open = 0, close = 0;
+                        while (link.get_next_char(ref index, out char)) {
+                            if (char == open_char) {
+                                open++;
+                            } else if (char == close_char) {
+                                close++;
+                            }
+                        }
+                        if (close > open) {
+                            // Remove last char from url
+                            end -= close_char.to_string().length;
+                            link = text[start:end];
+                        } else {
+                            break;
+                        }
+                    } else if (close_char in NON_TRAILING_CHARS) {
+                        // Remove last char from url
+                        end -= close_char.to_string().length;
+                        link = text[start:end];
+                    } else {
+                        break;
+                    }
+                }
+
+                return parse_links_add_markup(text[0:start]) +
+                        "<a href=\"" + Markup.escape_text(link) + "\">" +
+                        link +
+                        "</a>" +
+                        parse_links_add_markup(text[end:text.length]);
+            }
+            match_info.next();
+        }
+
+        return Markup.escape_text(text);
+    }
+
     // Modifies `markups`.
-    public string remove_fallbacks_adjust_markups(string text, bool contains_quote, Gee.List<Xep.FallbackIndication.Fallback> fallbacks, Gee.List<Xep.MessageMarkup.Span> markups) {
+    public string remove_fallbacks_adjust_markups(string text, bool contains_quote, Gee.List<Xep.FallbackIndication.Fallback> fallbacks, Gee.List<Xep.MessageMarkup.Markup> markups) {
         string processed_text = text;
 
         foreach (var fallback in fallbacks) {
@@ -316,12 +368,16 @@ public static string parse_add_markup_theme(string s_, string? highlight_word, b
                             processed_text[processed_text.index_of_nth_char(fallback_location.to_char):processed_text.length];
 
                     int length = fallback_location.to_char - fallback_location.from_char;
-                    foreach (Xep.MessageMarkup.Span span in markups) {
-                        if (span.start_char > fallback_location.to_char) {
-                            span.start_char -= length;
-                        }
-                        if (span.end_char > fallback_location.to_char) {
-                            span.end_char -= length;
+                    foreach (Xep.MessageMarkup.Markup markup in markups) {
+                        if (markup is Xep.MessageMarkup.Span) {
+                            var span = markup as Xep.MessageMarkup.Span;
+
+                            if (span.start_char > fallback_location.to_char) {
+                                span.start_char -= length;
+                            }
+                            if (span.end_char > fallback_location.to_char) {
+                                span.end_char -= length;
+                            }
                         }
                     }
                 }

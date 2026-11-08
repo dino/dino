@@ -461,7 +461,7 @@ public class MessageProcessor : StreamInteractionModule, Object {
             }
         }
 
-        MessageMarkup.add_spans(new_message, message.get_markups());
+        MessageMarkup.add_markups(new_message, message.get_markups());
 
         build_message_stanza(message, new_message, conversation);
         pre_message_send(message, new_message, conversation);

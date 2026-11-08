@@ -72,7 +72,7 @@ public class Message : Object {
     public int quoted_item_id { get; private set; default=0; }
 
     private Gee.List<Xep.FallbackIndication.Fallback> fallbacks = null;
-    private Gee.List<Xep.MessageMarkup.Span> markups = null;
+    private Gee.List<Xep.MessageMarkup.Markup> markups = null;
 
     private Database? db;
 
@@ -179,25 +179,30 @@ public class Message : Object {
         return fallbacks;
     }
 
-    public Gee.List<Xep.MessageMarkup.Span> get_markups() {
+    public Gee.List<Xep.MessageMarkup.Markup> get_markups() {
         if (markups != null) return markups;
         fetch_body_meta();
 
         return markups;
     }
 
-    public void persist_markups(Gee.List<Xep.MessageMarkup.Span> markups, int message_id) {
+    public void persist_markups(Gee.List<Xep.MessageMarkup.Markup> markups, int message_id) {
         this.markups = markups;
 
-        foreach (var span in markups) {
-            foreach (var ty in span.types) {
-                db.body_meta.insert()
-                        .value(db.body_meta.info_type, Xep.MessageMarkup.NS_URI)
-                        .value(db.body_meta.message_id, message_id)
-                        .value(db.body_meta.info, Xep.MessageMarkup.span_type_to_str(ty))
-                        .value(db.body_meta.from_char, span.start_char)
-                        .value(db.body_meta.to_char, span.end_char)
-                        .perform();
+        foreach (var markup in markups) {
+
+            if (markup is Xep.MessageMarkup.Span) {
+                Xep.MessageMarkup.Span span = (Xep.MessageMarkup.Span) markup;
+
+                foreach (var ty in span.types) {
+                    db.body_meta.insert()
+                            .value(db.body_meta.info_type, Xep.MessageMarkup.NS_URI)
+                            .value(db.body_meta.message_id, message_id)
+                            .value(db.body_meta.info, Xep.MessageMarkup.span_type_to_str(ty))
+                            .value(db.body_meta.from_char, span.start_char)
+                            .value(db.body_meta.to_char, span.end_char)
+                            .perform();
+                }
             }
         }
     }
