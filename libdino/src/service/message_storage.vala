@@ -102,6 +102,7 @@ public class MessageStorage : StreamInteractionModule, Object {
                 if (message == null) {
                     message = create_message_from_row(row, conversation);
                 }
+                ret.add(message);
             } catch (InvalidJidError e) {
                 warning("Ignoring message with invalid Jid: %s", e.message);
             }
