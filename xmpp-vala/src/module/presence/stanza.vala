@@ -69,7 +69,7 @@ public class Stanza : Xmpp.Stanza {
                     show_node = new StanzaNode.build(NODE_SHOW);
                     stanza.put_node(show_node);
                 }
-                show_node.val = value;
+                show_node.put_node(new StanzaNode.text(value));
             }
         }
     }
@@ -78,7 +78,13 @@ public class Stanza : Xmpp.Stanza {
         get {
             return base.type_ ?? TYPE_AVAILABLE;
         }
-        set { base.type_ = value; }
+        set {
+            if (value == TYPE_AVAILABLE) {
+                base.type_ = null;
+            } else {
+                base.type_ = value;
+            }
+        }
     }
 
     public Stanza(string? id = null) {
