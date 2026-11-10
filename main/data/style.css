@@ -156,22 +156,6 @@ window.dino-main .file-image-widget {
     border-radius: 6px;
 }
 
-window.dino-main .file-image-widget .file-box-outer {
-    color: #eee;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-window.dino-main .file-image-widget .file-box-outer button {
-    color: #eee;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-window.dino-main .file-image-widget .file-box-outer button:hover {
-    background: rgba(100, 100, 100, 0.5);
-}
-
 .dino-main .file-image-widget picture {
     border-radius: 6px;
 }
