@@ -46,13 +46,13 @@ public class Module : BookmarksProvider, XmppStreamModule {
     }
 
     public async void add_conference(XmppStream stream, Conference conference) throws IOError {
-        Set<Conference>? conferences = yield get_conferences(stream);
+        Set<Conference> conferences = (yield get_conferences(stream)) ?? new HashSet<Conference>();
         conferences.add(conference);
         yield set_conferences(stream, conferences);
     }
 
     public async void replace_conference(XmppStream stream, Jid muc_jid, Conference modified_conference) throws IOError {
-        Set<Conference>? conferences = yield get_conferences(stream);
+        Set<Conference> conferences = (yield get_conferences(stream)) ?? new HashSet<Conference>();
         foreach (Conference conference in conferences) {
             if (conference.jid.equals(muc_jid)) {
                 conference.autojoin = modified_conference.autojoin;
