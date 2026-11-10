@@ -206,7 +206,8 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
             uint32 notification_id = yield dbus_notifications.notify("Dino", 0, "im.dino.Dino", summary, body, actions, hash_table, -1);
 
             add_action_listener(notification_id, "default", () => {
-                GLib.Application.get_default().activate_action("preferences-account", new Variant.int32(account.id));
+                var variant = new Variant.tuple(new Variant[] {new Variant.string("account"), new Variant.int32(account.id)});
+                GLib.Application.get_default().activate_action("preferences-subpage", variant);
             });
         } catch (Error e) {
             warning("Failed showing connection error notification: %s", e.message);

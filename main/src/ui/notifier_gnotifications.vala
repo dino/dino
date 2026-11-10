@@ -102,7 +102,8 @@ namespace Dino.Ui {
 
         public async void notify_connection_error(Account account, ConnectionManager.ConnectionError error) {
             Notification notification = new Notification(_("Could not connect to %s").printf(account.bare_jid.domainpart));
-            notification.set_default_action_and_target_value("app.preferences-account", new Variant.int32(account.id));
+            var variant = new Variant.tuple(new Variant[] {new Variant.string("account"), new Variant.int32(account.id)});
+            notification.set_default_action_and_target_value("app.preferences-subpage", variant);
             switch (error.source) {
                 case ConnectionManager.ConnectionError.Source.SASL:
                     notification.set_body("Wrong password");

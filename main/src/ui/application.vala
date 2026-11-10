@@ -117,13 +117,27 @@ public class Dino.Ui.Application : Adw.Application, Dino.Application {
         add_action(preferences_action);
         set_accels_for_action("app.preferences", KEY_COMBINATION_SHOW_SETTINGS);
 
-        SimpleAction preferences_account_action = new SimpleAction("preferences-account", VariantType.INT32);
-        preferences_account_action.activate.connect((variant) => {
-            Account? account = db.get_account_by_id(variant.get_int32());
-            if (account == null) return;
-            show_preferences_account_window(account);
+        SimpleAction preferences_subpage_action = new SimpleAction("preferences-subpage", new VariantType.tuple(new VariantType[]{VariantType.STRING, VariantType.INT32}));
+        preferences_subpage_action.activate.connect((variant) => {
+            string page_name = variant.get_child_value(0).get_string();
+            Account? account = db.get_account_by_id(variant.get_child_value(1).get_int32());
+
+            Ui.PreferencesDialog dialog = new Ui.PreferencesDialog();
+            dialog.model.populate(db, stream_interactor);
+
+            switch (page_name) {
+                case "account":
+                    dialog.accounts_page.account_chosen(account);
+                    break;
+                case "encryption":
+                    dialog.set_visible_page(dialog.encryption_page);
+                    // TODO select account
+                    break;
+            }
+            dialog.present(window);
+
         });
-        add_action(preferences_account_action);
+        add_action(preferences_subpage_action);
 
         SimpleAction about_action = new SimpleAction("about", null);
         about_action.activate.connect(show_about_window);
