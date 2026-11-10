@@ -9,7 +9,7 @@ public const string NS_URI_ITEMS = NS_URI + "#items";
 public class Module : XmppStreamModule, Iq.Handler {
     public static ModuleIdentity<Module> IDENTITY = new ModuleIdentity<Module>(NS_URI, "0030_service_discovery_module");
 
-    private HashMap<Jid, Future<InfoResult?>> active_info_requests = new HashMap<Jid, Future<InfoResult?>>(Jid.hash_func, Jid.equals_func);
+    private HashMap<Jid, Future<InfoResult>> active_info_requests = new HashMap<Jid, Future<InfoResult?>>(Jid.hash_func, Jid.equals_func);
 
     public Identity own_identity;
     public CapsCache cache;
@@ -48,14 +48,14 @@ public class Module : XmppStreamModule, Iq.Handler {
     public async InfoResult? request_info(XmppStream stream, Jid jid) throws IOError {
         var future = active_info_requests[jid];
         if (future == null) {
-            var promise = new Promise<InfoResult?>();
+            var promise = new Promise<InfoResult>();
             future = promise.future;
             active_info_requests[jid] = future;
 
             Iq.Stanza iq = new Iq.Stanza.get(new StanzaNode.build("query", NS_URI_INFO).add_self_xmlns()) { to=jid };
             try {
                 Iq.Stanza iq_response = yield stream.get_module(Iq.Module.IDENTITY).send_iq_async(stream, iq);
-                InfoResult? result = InfoResult.create_from_iq(iq_response);
+                InfoResult result = InfoResult.create_from_iq(iq_response);
 
                 promise.set_value(result);
             } catch (IOError e) {
@@ -65,7 +65,7 @@ public class Module : XmppStreamModule, Iq.Handler {
         }
 
         try {
-            InfoResult? res = yield future.wait_async();
+            InfoResult res = yield future.wait_async();
             return res;
         } catch (FutureError error) {
             if (error is FutureError.EXCEPTION) {

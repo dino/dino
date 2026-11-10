@@ -143,7 +143,7 @@ public class Module : XmppStreamModule {
     }
 
     private bool check_ns_in_info(XmppStream stream, Jid jid, Xep.ServiceDiscovery.InfoResult? info_result) {
-        if (info_result == null) return false;
+        if (info_result == null || !info_result.success) return false;
 
         bool ver_available = false;
         bool ver_0_available = false;

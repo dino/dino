@@ -278,7 +278,7 @@ public class EntityInfo : StreamInteractionModule, Object {
         if (stream == null) return null;
 
         ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, jid);
-        if (info_result == null) return null;
+        if (info_result == null || !info_result.success) return null;
 
         var computed_hash = EntityCapabilities.Module.compute_hash_for_info_result(info_result);
 
