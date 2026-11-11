@@ -204,7 +204,8 @@ public class MessageProcessor : StreamInteractionModule, Object {
         if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_GROUPCHAT) {
             return Entities.Message.Type.GROUPCHAT;
         }
-        if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_CHAT) {
+        if (message_stanza.type_ == Xmpp.MessageStanza.TYPE_CHAT ||
+                message_stanza.type_ == Xmpp.MessageStanza.TYPE_NORMAL) {
             Conversation? conversation = stream_interactor.get_module(ConversationManager.IDENTITY).get_conversation(message.counterpart.bare_jid, account);
             if (conversation != null) {
                 if (conversation.type_ == Conversation.Type.CHAT) {
@@ -222,8 +223,6 @@ public class MessageProcessor : StreamInteractionModule, Object {
                     foreach (Xep.ServiceDiscovery.Identity identity in identities) {
                         if (identity.category == Xep.ServiceDiscovery.Identity.CATEGORY_CONFERENCE) {
                             return Entities.Message.Type.GROUPCHAT_PM;
-                        } else {
-                            return Entities.Message.Type.CHAT;
                         }
                     }
                 }
