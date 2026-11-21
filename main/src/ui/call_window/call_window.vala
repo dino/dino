@@ -28,8 +28,8 @@ namespace Dino.Ui {
         private double latest_motion_y = -1;
         private const double MOTION_RELEVANCE_THRESHOLD = 2;
 
-        private int own_video_width = 150;
-        private int own_video_height = 100;
+        private int own_video_width = 0;
+        private int own_video_height = 0;
 
         private bool hide_control_elements = false;
         private uint hide_control_handler = 0;
@@ -174,17 +174,26 @@ namespace Dino.Ui {
                 own_video = new Box(Orientation.HORIZONTAL, 0);
             }
             own_video.hexpand = own_video.vexpand = true;
-            own_video.visible = true;
+            own_video.visible = this.own_video_width > 0;
             own_video_box.append(own_video);
         }
 
         public void set_own_video_ratio(int width, int height) {
+            var show = this.own_video_width == 0;
+
             if (width / height > 150 / 100) {
                 this.own_video_width = 150;
                 this.own_video_height = height * 150 / width;
             } else {
                 this.own_video_width = width * 100 / height;
                 this.own_video_height = 100;
+            }
+            if (show) {
+                Widget to_show = own_video_box.get_first_child();
+                if (to_show != null) {
+                    to_show.visible = true;
+                    to_show = to_show.get_next_sibling();
+                }
             }
         }
 
