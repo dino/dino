@@ -71,6 +71,7 @@ sources = files(
     'src/ui/main_window_controller.vala',
     'src/ui/notifier_freedesktop.vala',
     'src/ui/notifier_gnotifications.vala',
+    'src/ui/launcher_entry.vala',
     'src/ui/occupant_menu/list.vala',
     'src/ui/occupant_menu/list_row.vala',
     'src/ui/occupant_menu/view.vala',
