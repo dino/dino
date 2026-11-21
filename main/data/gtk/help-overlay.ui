@@ -59,6 +59,29 @@
                 </child>
                 <child>
                     <object class="GtkShortcutsGroup">
+                        <property name="title" translatable="yes">Message editor</property>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;B</property>
+                                <property name="title" translatable="yes">Make the selected text Strong (bold font)</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;I</property>
+                                <property name="title" translatable="yes">Make the selected text Emphasized (italic font)</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="accelerator">&lt;ctrl&gt;S</property>
+                                <property name="title" translatable="yes">Make the selected text Deleted (strikethrough font)</property>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkShortcutsGroup">
                         <property name="title" translatable="yes">Navigation</property>
                         <child>
                             <object class="GtkShortcutsShortcut">
