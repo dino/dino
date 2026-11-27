@@ -107,6 +107,15 @@
                                                                     </object>
                                                                 </child>
                                                                 <child>
+                                                                    <object class="GtkButton" id="sign_in_oauth_button">
+                                                                        <property name="visible">False</property>
+                                                                        <property name="label" translatable="1">Sign in with OAuth</property>
+                                                                        <style>
+                                                                            <class name="pill"/>
+                                                                        </style>
+                                                                    </object>
+                                                                </child>
+                                                                <child>
                                                                     <object class="GtkButton" id="sign_in_serverlist_button">
                                                                         <property name="label" translatable="1">Create account</property>
                                                                         <style>

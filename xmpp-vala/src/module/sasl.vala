@@ -6,6 +6,7 @@ namespace Xmpp.Sasl {
         public string mechanism;
         public string name;
         public string password;
+        public string? oauth_token;
         public string client_nonce;
         public uint8[] server_signature;
         public bool finished = false;
@@ -18,6 +19,7 @@ namespace Xmpp.Sasl {
         public const string PLAIN = "PLAIN";
         public const string SCRAM_SHA_1 = "SCRAM-SHA-1";
         public const string SCRAM_SHA_1_PLUS = "SCRAM-SHA-1-PLUS";
+        public const string OAUTHBEARER = "OAUTHBEARER";
     }
 
     public class Module : XmppStreamNegotiationModule {
@@ -25,9 +27,12 @@ namespace Xmpp.Sasl {
 
         public string name { get; set; }
         public string password { get; set; }
+        public string? oauth_token { get; set; }
+        public bool oauth_discovery { get; set; default = false; }
         public bool use_full_name = false;
 
         public signal void received_auth_failure(XmppStream stream, StanzaNode node);
+        public signal void received_oauth_challenge(XmppStream stream, string challenge);
 
         public Module(string name, string password) {
             this.name = name;
@@ -66,13 +71,20 @@ namespace Xmpp.Sasl {
                     }
                     stream.require_setup();
                     flag.password = null; // Remove password from memory
+                    flag.oauth_token = null; // Remove OAuth token from memory
                     flag.finished = true;
                 } else if (node.name == "failure") {
                     stream.remove_flag(stream.get_flag(Flag.IDENTITY));
                     received_auth_failure(stream, node);
                 } else if (node.name == "challenge" && stream.has_flag(Flag.IDENTITY)) {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
-                    if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
+                    if (flag.mechanism == Mechanism.OAUTHBEARER) {
+                        // RFC 7628 requires a final dummy response after an error challenge.
+                        string challenge = (string) Base64.decode(node.get_string_content());
+                        if (challenge.length > 0) received_oauth_challenge(stream, challenge);
+                        stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
+                                .put_node(new StanzaNode.text(Base64.encode((uchar[]) "\x01".to_utf8()))));
+                    } else if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
                         try {
                             var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
                             flag.server_signature = challenge_response.expected_server_signature;
@@ -114,7 +126,18 @@ namespace Xmpp.Sasl {
                     name = split[0];
                 }
             }
-            if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
+            bool oauth_available = oauth_discovery || (oauth_token != null && oauth_token.length > 0);
+            if (oauth_available && Mechanism.OAUTHBEARER in supported_mechanisms) {
+                string token = oauth_discovery ? "" : (oauth_token ?? "");
+                stream.write(new StanzaNode.build("auth", NS_URI).add_self_xmlns()
+                        .put_attribute("mechanism", Mechanism.OAUTHBEARER)
+                        .put_node(new StanzaNode.text(Base64.encode(get_oauth_bearer_bytes(name, token)))));
+                var flag = new Flag();
+                flag.mechanism = Mechanism.OAUTHBEARER;
+                flag.name = name;
+                flag.oauth_token = token;
+                stream.add_flag(flag);
+            } else if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
                 string normalized_password = password.normalize(-1, NormalizeMode.NFKC);
                 string client_nonce = Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x");
                 string initial_message = @"n=$name,r=$client_nonce";
@@ -151,6 +174,29 @@ namespace Xmpp.Sasl {
 
         public override string get_ns() { return NS_URI; }
         public override string get_id() { return IDENTITY.id; }
+    }
+
+    public static uchar[] get_oauth_bearer_bytes(string name_s, string token) {
+        string escaped_name = sasl_escape(name_s.normalize(-1, NormalizeMode.NFKC));
+        string message = token.length > 0
+            ? "n,a=" + escaped_name + ",\x01auth=Bearer " + token + "\x01\x01"
+            : "n,a=" + escaped_name + ",\x01auth=\x01\x01";
+        return (uchar[]) message.to_utf8();
+    }
+
+    private static string sasl_escape(string value) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length; i++) {
+            char c = value[i];
+            if (c == ',') {
+                result.append("=2C");
+            } else if (c == '=') {
+                result.append("=3D");
+            } else {
+                result.append_c(c);
+            }
+        }
+        return result.str;
     }
 
     public static uchar[] get_plain_bytes(string name_s, string password_s) {
