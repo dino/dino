@@ -37,6 +37,10 @@ public class ModuleManager {
                 ((Bind.Module) module).requested_resource = account.resourcepart;
             } else if (module.get_id() == Sasl.Module.IDENTITY.id) {
                 ((Sasl.Module) module).password = account.password;
+                ((Sasl.Module) module).oauth_token = account.oauth_token;
+            } else if (module.get_id() == Xep.ExtensibleSaslProfile.Module.IDENTITY.id) {
+                ((Xep.ExtensibleSaslProfile.Module) module).password = account.password;
+                ((Xep.ExtensibleSaslProfile.Module) module).oauth_token = account.oauth_token;
             }
         }
         return modules;
@@ -48,8 +52,11 @@ public class ModuleManager {
             module_map[account].add(new Iq.Module());
 
             var sasl2_module = new Xep.ExtensibleSaslProfile.Module(account.bare_jid.localpart, account.password, account.user_agent_id);
+            sasl2_module.oauth_token = account.oauth_token;
             module_map[account].add(sasl2_module);
-            module_map[account].add(new Sasl.Module(account.bare_jid.to_string(), account.password));
+            var sasl_module = new Sasl.Module(account.bare_jid.to_string(), account.password);
+            sasl_module.oauth_token = account.oauth_token;
+            module_map[account].add(sasl_module);
             module_map[account].add(new Xep.StreamManagement.Module());
 
             var bind2_sasl2_activation = new Xep.Bind2.Sasl2Activation();

@@ -16,6 +16,44 @@ public class Account : Object {
     [Version (deprecated = true)]
     public Jid full_jid { get; private set; }
     public string? password { get; set; }
+
+    private string? _oauth_token;
+    public string? oauth_token {
+        get { return _oauth_token; }
+        set { _oauth_token = value; store_oauth_setting("oauth-access-token", value); notify_property("oauth-token"); }
+    }
+    private string? _oauth_refresh_token;
+    public string? oauth_refresh_token {
+        get { return _oauth_refresh_token; }
+        set { _oauth_refresh_token = value; store_oauth_setting("oauth-refresh-token", value); notify_property("oauth-refresh-token"); }
+    }
+    private string? _oauth_issuer;
+    public string? oauth_issuer {
+        get { return _oauth_issuer; }
+        set { _oauth_issuer = value; store_oauth_setting("oauth-issuer", value); notify_property("oauth-issuer"); }
+    }
+    private string? _oauth_token_endpoint;
+    public string? oauth_token_endpoint {
+        get { return _oauth_token_endpoint; }
+        set { _oauth_token_endpoint = value; store_oauth_setting("oauth-token-endpoint", value); notify_property("oauth-token-endpoint"); }
+    }
+    private string? _oauth_client_id;
+    public string? oauth_client_id {
+        get { return _oauth_client_id; }
+        set { _oauth_client_id = value; store_oauth_setting("oauth-client-id", value); notify_property("oauth-client-id"); }
+    }
+    private string? _oauth_client_secret;
+    public string? oauth_client_secret {
+        get { return _oauth_client_secret; }
+        set { _oauth_client_secret = value; store_oauth_setting("oauth-client-secret", value); notify_property("oauth-client-secret"); }
+    }
+    private int64 _oauth_expires_at;
+    public int64 oauth_expires_at {
+        get { return _oauth_expires_at; }
+        set { _oauth_expires_at = value; store_oauth_setting("oauth-expires-at", value.to_string()); notify_property("oauth-expires-at"); }
+    }
+    public bool oauth { get { return _oauth_token != null && _oauth_token.length > 0; } }
+
     public string display_name {
         owned get { return (alias != null && alias.length > 0) ? alias.dup() : bare_jid.to_string(); }
     }
@@ -47,6 +85,8 @@ public class Account : Object {
         roster_version = row[db.account.roster_version];
         user_agent_id = row[db.account.user_agent_id];
 
+        load_oauth_settings();
+
         notify.connect(on_update);
 
         // Add user agent id if missing
@@ -66,14 +106,54 @@ public class Account : Object {
                 .value(db.account.roster_version, roster_version)
                 .perform();
 
+        persist_oauth_settings();
+
         notify.connect(on_update);
     }
 
     public void remove() {
+        db.account_settings.delete().with(db.account_settings.account_id, "=", id).perform();
         db.account.delete().with(db.account.bare_jid, "=", bare_jid.to_string()).perform();
         notify.disconnect(on_update);
         id = -1;
         db = null;
+    }
+
+    private void load_oauth_settings() {
+        _oauth_token = db.account_settings.get_value(id, "oauth-access-token");
+        _oauth_refresh_token = db.account_settings.get_value(id, "oauth-refresh-token");
+        _oauth_issuer = db.account_settings.get_value(id, "oauth-issuer");
+        _oauth_token_endpoint = db.account_settings.get_value(id, "oauth-token-endpoint");
+        _oauth_client_id = db.account_settings.get_value(id, "oauth-client-id");
+        _oauth_client_secret = db.account_settings.get_value(id, "oauth-client-secret");
+        string? expires_at = db.account_settings.get_value(id, "oauth-expires-at");
+        _oauth_expires_at = expires_at != null ? int64.parse(expires_at) : 0;
+    }
+
+    private void persist_oauth_settings() {
+        store_oauth_setting("oauth-access-token", _oauth_token);
+        store_oauth_setting("oauth-refresh-token", _oauth_refresh_token);
+        store_oauth_setting("oauth-issuer", _oauth_issuer);
+        store_oauth_setting("oauth-token-endpoint", _oauth_token_endpoint);
+        store_oauth_setting("oauth-client-id", _oauth_client_id);
+        store_oauth_setting("oauth-client-secret", _oauth_client_secret);
+        if (_oauth_expires_at > 0) store_oauth_setting("oauth-expires-at", _oauth_expires_at.to_string());
+    }
+
+    private void store_oauth_setting(string key, string? value) {
+        if (db == null || id <= 0) return;
+        if (value == null) {
+            db.account_settings.delete()
+                    .with(db.account_settings.account_id, "=", id)
+                    .with(db.account_settings.key, "=", key)
+                    .perform();
+        } else {
+            db.account_settings.upsert()
+                    .value(db.account_settings.key, key, true)
+                    .value(db.account_settings.account_id, id, true)
+                    .value(db.account_settings.value, value)
+                    .perform();
+        }
     }
 
     public void set_random_resource() {

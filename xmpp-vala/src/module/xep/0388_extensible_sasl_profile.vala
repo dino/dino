@@ -11,11 +11,14 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
 
         public string name { get; set; }
         public string password { get; set; }
+        public string? oauth_token { get; set; }
+        public bool oauth_discovery { get; set; default = false; }
         public string user_agent_id { get; set; }
         public string? user_agent_software { get; set; default = "Dino"; }
         public string? user_agent_device { get; set; }
 
         public signal void received_auth_failure(XmppStream stream, StanzaNode node);
+        public signal void received_oauth_challenge(XmppStream stream, string challenge);
 
         public Module(string name, string password, string user_agent_id) {
             this.name = name;
@@ -38,6 +41,7 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
                 if (node.name == "success") {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
                     flag.password = null; // Remove password from memory
+                    flag.oauth_token = null; // Remove OAuth token from memory
                     flag.finished = true;
 
                     stream.expect_further_negotiation_stanzas = true;
@@ -55,7 +59,13 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
                     }
                 } else if (node.name == "challenge" && stream.has_flag(Flag.IDENTITY)) {
                     Flag flag = stream.get_flag(Flag.IDENTITY);
-                    if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
+                    if (flag.mechanism == Mechanism.OAUTHBEARER) {
+                        // RFC 7628 requires a final dummy response after an error challenge.
+                        string challenge = (string) Base64.decode(node.get_string_content());
+                        if (challenge.length > 0) received_oauth_challenge(stream, challenge);
+                        stream.write(new StanzaNode.build("response", NS_URI).add_self_xmlns()
+                                .put_node(new StanzaNode.text(Base64.encode((uchar[]) "\x01".to_utf8()))));
+                    } else if (flag.mechanism == Mechanism.SCRAM_SHA_1) {
                         try {
                             var challenge_response = compute_challenge_response(node.get_string_content(), flag.password, flag.client_nonce, flag.name);
                             flag.server_signature = challenge_response.expected_server_signature;
@@ -87,7 +97,19 @@ namespace Xmpp.Xep.ExtensibleSaslProfile {
 
             var authenticate_node = new StanzaNode.build("authenticate", NS_URI).add_self_xmlns();
 
-            if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
+            bool oauth_available = oauth_discovery || (oauth_token != null && oauth_token.length > 0);
+            if (oauth_available && Mechanism.OAUTHBEARER in supported_mechanisms) {
+                string token = oauth_discovery ? "" : (oauth_token ?? "");
+                authenticate_node
+                        .put_attribute("mechanism", Mechanism.OAUTHBEARER)
+                        .put_node(new StanzaNode.build("initial-response", NS_URI)
+                            .put_node(new StanzaNode.text(Base64.encode(get_oauth_bearer_bytes(name, token)))));
+                var flag = new Flag();
+                flag.mechanism = Mechanism.OAUTHBEARER;
+                flag.name = name;
+                flag.oauth_token = token;
+                stream.add_flag(flag);
+            } else if (Mechanism.SCRAM_SHA_1 in supported_mechanisms) {
                 string normalized_password = password.normalize(-1, NormalizeMode.NFKC);
                 string client_nonce = Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x") + Random.next_int().to_string("%.8x");
                 string initial_message = @"n=$name,r=$client_nonce";

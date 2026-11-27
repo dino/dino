@@ -33,6 +33,7 @@ public class AddAccountDialog : Adw.Dialog {
     [GtkChild] private unowned Adw.PasswordEntryRow password_entry;
     [GtkChild] private unowned Button sign_in_continue_button;
     [GtkChild] private unowned Spinner sign_in_continue_spinner;
+    [GtkChild] private unowned Button sign_in_oauth_button;
     [GtkChild] private unowned Button sign_in_serverlist_button;
 
     // Sign in - TLS error
@@ -73,6 +74,7 @@ public class AddAccountDialog : Adw.Dialog {
     private HashMap<ListBoxRow, string> list_box_jids = new HashMap<ListBoxRow, string>();
     private Jid? server_jid = null;
     private Jid? login_jid = null;
+    private Register.OAuthDiscovery? oauth_discovery = null;
     private Xep.InBandRegistration.Form? form = null;
 
     public AddAccountDialog(StreamInteractor stream_interactor, Database db) {
@@ -83,6 +85,7 @@ public class AddAccountDialog : Adw.Dialog {
         // Sign in - Jid
         jid_entry.changed.connect(on_jid_entry_changed);
         sign_in_continue_button.clicked.connect(on_sign_in_continue_button_clicked);
+        sign_in_oauth_button.clicked.connect(on_sign_in_oauth_button_clicked);
         sign_in_serverlist_button.clicked.connect(show_select_server);
 
         // Sign in - TLS error
@@ -134,6 +137,9 @@ public class AddAccountDialog : Adw.Dialog {
         }
         password_entry.text = "";
         password_group.visible = false;
+        oauth_discovery = null;
+        sign_in_oauth_button.visible = false;
+        sign_in_oauth_button.sensitive = true;
         sign_in_serverlist_button.visible = true;
     }
 
@@ -181,6 +187,8 @@ public class AddAccountDialog : Adw.Dialog {
     }
 
     private void on_jid_entry_changed() {
+        oauth_discovery = null;
+        sign_in_oauth_button.visible = false;
         try {
             login_jid = Jid.from_string(jid_entry.text);
             if (login_jid.localpart != null && login_jid.resourcepart == null) {
@@ -234,13 +242,17 @@ public class AddAccountDialog : Adw.Dialog {
             } else {
                 // Only JID field was visible: Check if server exists
                 Register.ServerAvailabilityReturn server_status = yield Register.check_server_availability(login_jid);
-                sign_in_continue_spinner.visible = false;
-                sign_in_continue_button.sensitive = true;
                 if (server_status.available) {
+                    oauth_discovery = yield Register.discover_oauth(login_jid);
+                    sign_in_continue_spinner.visible = false;
+                    sign_in_continue_button.sensitive = true;
                     password_group.visible = true;
                     password_entry.grab_focus();
                     sign_in_serverlist_button.visible = false;
+                    sign_in_oauth_button.visible = oauth_discovery != null;
                 } else {
+                    sign_in_continue_spinner.visible = false;
+                    sign_in_continue_button.sensitive = true;
                     if (server_status.error_flags != null) {
                         show_tls_error(login_jid.domainpart, server_status.error_flags);
                     } else {
@@ -251,6 +263,56 @@ public class AddAccountDialog : Adw.Dialog {
             }
         } catch (InvalidJidError e) {
             warning("Invalid address from interface allowed login: %s", e.message);
+            sign_in_error_label.visible = true;
+            sign_in_error_label.label = _("Invalid address");
+        }
+    }
+
+    private async void on_sign_in_oauth_button_clicked() {
+        if (oauth_discovery == null) return;
+        try {
+            login_jid = Jid.from_string(jid_entry.text);
+            sign_in_error_label.visible = false;
+            sign_in_oauth_button.sensitive = false;
+            sign_in_continue_button.sensitive = false;
+            sign_in_continue_spinner.visible = true;
+
+            var oauth = new OAuth(db);
+            OAuth.Token? token = yield oauth.authorize(login_jid, oauth_discovery);
+            if (token == null) {
+                sign_in_continue_spinner.visible = false;
+                sign_in_oauth_button.sensitive = true;
+                sign_in_continue_button.sensitive = true;
+                sign_in_error_label.visible = true;
+                sign_in_error_label.label = oauth.last_error != null ? oauth.last_error : _("OAuth sign in failed");
+                return;
+            }
+
+            Account account = new Account(login_jid, "");
+            account.oauth_token = token.access_token;
+            account.oauth_refresh_token = token.refresh_token;
+            account.oauth_issuer = token.issuer;
+            account.oauth_token_endpoint = token.token_endpoint;
+            account.oauth_client_id = token.client_id;
+            account.oauth_client_secret = token.client_secret;
+            if (token.expires_in > 0) {
+                account.oauth_expires_at = new DateTime.now_utc().add_seconds((int) token.expires_in).to_unix();
+            }
+
+            ConnectionManager.ConnectionError.Source? error = yield stream_interactor.get_module(Register.IDENTITY).add_check_account(account);
+            sign_in_continue_spinner.visible = false;
+            sign_in_oauth_button.sensitive = true;
+            sign_in_continue_button.sensitive = true;
+
+            if (error != null) {
+                sign_in_error_label.visible = true;
+                sign_in_error_label.label = _("OAuth sign in failed");
+            } else {
+                add_activate_account(account);
+                show_success(account);
+            }
+        } catch (InvalidJidError e) {
+            warning("Invalid address from interface allowed OAuth login: %s", e.message);
             sign_in_error_label.visible = true;
             sign_in_error_label.label = _("Invalid address");
         }
